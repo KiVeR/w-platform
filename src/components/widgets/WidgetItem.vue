@@ -112,9 +112,10 @@ function handleClick() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-3) var(--space-2);
+  padding: var(--space-2) var(--space-2);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
+  aspect-ratio: 1;
   border-radius: var(--radius-lg);
   cursor: grab;
   transition: all var(--transition-fast);
@@ -160,9 +161,13 @@ function handleClick() {
   font-weight: var(--font-medium);
   color: var(--color-text-primary);
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
+
+  /* Support sur 2 lignes */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.2;
 }
 </style>
