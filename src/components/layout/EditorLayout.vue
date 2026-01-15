@@ -9,16 +9,21 @@ const uiStore = useUIStore()
 </script>
 
 <template>
-  <div class="editor-layout">
-    <EditorToolbar />
-
-    <div class="editor-content">
+  <div class="app-shell">
+    <div class="shell-left">
       <transition name="slide-left">
         <LeftSidebar v-if="uiStore.leftSidebarOpen" />
       </transition>
+    </div>
 
-      <CenterCanvas />
+    <div class="shell-main">
+      <EditorToolbar />
+      <div class="canvas-wrapper">
+        <CenterCanvas />
+      </div>
+    </div>
 
+    <div class="shell-right">
       <transition name="slide-right">
         <RightSidebar v-if="uiStore.rightSidebarOpen" />
       </transition>
@@ -27,16 +32,36 @@ const uiStore = useUIStore()
 </template>
 
 <style scoped>
-.editor-layout {
+.app-shell {
   display: flex;
-  flex-direction: column;
   height: 100vh;
-  background-color: var(--color-background);
+  width: 100vw;
+  background-color: var(--color-background-subtle); /* Neutral/Darker background */
+  overflow: hidden;
 }
 
-.editor-content {
+.shell-left,
+.shell-right {
   display: flex;
+  flex-direction: column;
+  z-index: 20;
+  /* Fixed width is handled by the components themselves, but we wrap them to control flow */
+  flex-shrink: 0;
+}
+
+.shell-main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0; /* Prevent flex overflow */
+}
+
+.canvas-wrapper {
+  flex: 1;
+  padding: 16px; /* The "frame" margin */
+  background-color: transparent;
+  display: flex;
   overflow: hidden;
 }
 

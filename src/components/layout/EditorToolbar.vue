@@ -142,11 +142,12 @@ function handleRedo() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 56px;
+  height: 56px; /* Explicit alignment height */
   padding: 0 16px;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
+  width: 100%;
 }
 
 .toolbar-left,
@@ -182,20 +183,23 @@ function handleRedo() {
 .mode-switch {
   display: flex;
   background-color: var(--color-background);
-  border-radius: 8px;
-  padding: 4px;
+  border-radius: 6px;
+  padding: 2px;
+  border: 1px solid var(--color-border);
 }
 
 .mode-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   border: none;
   background: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--color-text-muted);
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  min-width: 100px; /* Ensure uniform width */
+  text-align: center;
 }
 
 .mode-btn:hover {
@@ -203,8 +207,10 @@ function handleRedo() {
 }
 
 .mode-btn.active {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
 }
 
 .toolbar-btn {

@@ -44,11 +44,13 @@ const activeTab = ref<Tab>('widgets')
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  height: 100%;
 }
 
 .sidebar-tabs {
   display: flex;
   border-bottom: 1px solid var(--color-border);
+  height: 56px; /* Explicit alignment height */
 }
 
 .tab-btn {

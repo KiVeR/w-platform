@@ -69,10 +69,14 @@ const tabs: { value: OptionsTab, label: string }[] = [
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  height: 100%;
 }
 
 .sidebar-header {
-  padding: 12px 16px;
+  padding: 0 16px; /* Removed vertical padding, handled by flex alignment */
+  height: 56px; /* Explicit alignment height */
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid var(--color-border);
 }
 

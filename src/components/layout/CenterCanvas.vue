@@ -17,12 +17,15 @@ const uiStore = useUIStore()
 
 <style scoped>
 .center-canvas {
-  flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--color-background);
   overflow: hidden;
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25)); /* Deep shadow */
+  border: 1px solid var(--color-border);
 }
 </style>
