@@ -3197,6 +3197,7 @@ __metadata:
     eslint: "npm:^9.39.2"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^16.2.7"
+    lucide-vue-next: "npm:^0.562.0"
     pinia: "npm:^3.0.4"
     tailwindcss: "npm:^4.1.18"
     typescript: "npm:~5.9.3"
@@ -3420,6 +3421,15 @@ __metadata:
   version: 11.2.4
   resolution: "lru-cache@npm:11.2.4"
   checksum: 10c0/4a24f9b17537619f9144d7b8e42cd5a225efdfd7076ebe7b5e7dc02b860a818455201e67fbf000765233fe7e339d3c8229fc815e9b58ee6ede511e07608c19b2
+  languageName: node
+  linkType: hard
+
+"lucide-vue-next@npm:^0.562.0":
+  version: 0.562.0
+  resolution: "lucide-vue-next@npm:0.562.0"
+  peerDependencies:
+    vue: ">=3.0.1"
+  checksum: 10c0/5ba792ea5e48d01fc99a3c5ae4a59d9767e5d4c7826901800831cf051cf85eb4a680b3564d2910ed4d17dc1d35223c37d006bdbcdb291d90a9491b9c6a20ae14
   languageName: node
   linkType: hard
 

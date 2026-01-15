@@ -1,19 +1,18 @@
 <script setup lang="ts">
+import type { Palette } from '@/config/palettes'
+import { Moon, Sun } from 'lucide-vue-next'
 import { palettes } from '@/config/palettes'
 import { useEditorStore } from '@/stores/editor'
 import ColorPicker from './inputs/ColorPicker.vue'
 
 const editorStore = useEditorStore()
 
-function selectPalette(paletteName: string) {
-  const palette = palettes.find(p => p.name === paletteName)
-  if (palette) {
-    editorStore.updateGlobalStyles({
-      palette: paletteName,
-      backgroundColor: palette.background,
-      textColor: palette.text,
-    })
-  }
+function selectPalette(palette: Palette) {
+  editorStore.updateGlobalStyles({
+    palette: palette.name,
+    backgroundColor: palette.background,
+    textColor: palette.text,
+  })
 }
 </script>
 
@@ -31,14 +30,23 @@ function selectPalette(paletteName: string) {
           v-for="palette in palettes"
           :key="palette.name"
           class="palette-item"
-          :class="{ active: editorStore.globalStyles.palette === palette.name }"
-          @click="selectPalette(palette.name)"
+          :class="{
+            active: editorStore.globalStyles.palette === palette.name,
+            dark: palette.isDark,
+          }"
+          :aria-label="`Sélectionner la palette ${palette.label}`"
+          :aria-pressed="editorStore.globalStyles.palette === palette.name"
+          @click="selectPalette(palette)"
         >
-          <div class="palette-preview">
+          <div class="palette-preview" :style="{ backgroundColor: palette.background }">
             <div class="palette-color" :style="{ backgroundColor: palette.primary }" />
-            <div class="palette-color" :style="{ backgroundColor: palette.secondary }" />
+            <div class="palette-color" :style="{ backgroundColor: palette.primaryDark }" />
           </div>
-          <span class="palette-label">{{ palette.label }}</span>
+          <div class="palette-info">
+            <span class="palette-label">{{ palette.label }}</span>
+            <Moon v-if="palette.isDark" :size="12" class="palette-icon" />
+            <Sun v-else :size="12" class="palette-icon" />
+          </div>
         </button>
       </div>
     </div>
@@ -67,70 +75,94 @@ function selectPalette(paletteName: string) {
 .global-options {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 .section-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
   color: var(--color-text);
-  margin: 0 0 4px 0;
+  margin: 0 0 var(--space-1) 0;
 }
 
 .option-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .option-label {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   color: var(--color-text);
 }
 
 .palette-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .palette-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 8px;
+  padding: var(--space-3) var(--space-2);
   border: 2px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .palette-item:hover {
   border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.palette-item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .palette-item.active {
   border-color: var(--color-primary);
-  background: rgba(20, 184, 166, 0.05);
+  background: var(--color-primary-50);
 }
 
 .palette-preview {
   display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
 }
 
 .palette-color {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.palette-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .palette-label {
-  font-size: 11px;
-  font-weight: 500;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
   color: var(--color-text);
+}
+
+.palette-icon {
+  color: var(--color-text-muted);
+}
+
+.palette-item.dark .palette-label {
+  color: var(--color-text-secondary);
 }
 </style>

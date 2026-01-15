@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { ChevronDown, ChevronUp, Copy, GripVertical, Trash2 } from 'lucide-vue-next'
+import { computed } from 'vue'
 // Wellpack widgets
 import BarcodeWidget from '@/components/widgets/registry/BarcodeWidget.vue'
-import ButtonWidget from '@/components/widgets/registry/ButtonWidget.vue'
 
+import ButtonWidget from '@/components/widgets/registry/ButtonWidget.vue'
 import ClickToCallWidget from '@/components/widgets/registry/ClickToCallWidget.vue'
 import DriveWidget from '@/components/widgets/registry/DriveWidget.vue'
 import EffectWidget from '@/components/widgets/registry/EffectWidget.vue'
@@ -76,6 +78,19 @@ const widgetComponents: Record<string, any> = {
 // Les widgets containers n'affichent pas les actions latérales de la même façon
 const isContainer = ['row', 'form'].includes(props.widget.type)
 
+// Computed pour savoir si le widget est en première ou dernière position
+const isFirst = computed(() => {
+  const items = widgetsStore.sortedItems
+  const index = items.findIndex(w => w.id === props.widget.id)
+  return index === 0
+})
+
+const isLast = computed(() => {
+  const items = widgetsStore.sortedItems
+  const index = items.findIndex(w => w.id === props.widget.id)
+  return index === items.length - 1
+})
+
 function handleDelete() {
   widgetsStore.removeWidget(props.widget.id)
   selectionStore.deselect()
@@ -117,24 +132,53 @@ function handleMoveDown() {
     @mouseenter="emit('mouseenter')"
     @mouseleave="emit('mouseleave')"
   >
-    <!-- Widget Actions -->
-    <div v-if="isSelected" class="widget-actions">
-      <button class="action-btn widget-handle" title="Déplacer">
-        ⋮⋮
-      </button>
-      <button class="action-btn" title="Monter" @click.stop="handleMoveUp">
-        ↑
-      </button>
-      <button class="action-btn" title="Descendre" @click.stop="handleMoveDown">
-        ↓
-      </button>
-      <button class="action-btn" title="Dupliquer" @click.stop="handleDuplicate">
-        ⧉
-      </button>
-      <button class="action-btn delete" title="Supprimer" @click.stop="handleDelete">
-        🗑
-      </button>
-    </div>
+    <!-- Floating Toolbar -->
+    <Transition name="toolbar-fade">
+      <div v-if="isSelected" class="widget-toolbar" role="toolbar" aria-label="Actions du widget">
+        <button
+          class="toolbar-action widget-handle"
+          title="Déplacer"
+          aria-label="Déplacer le widget"
+        >
+          <GripVertical :size="14" />
+        </button>
+        <button
+          class="toolbar-action"
+          :disabled="isFirst"
+          title="Monter (Alt+↑)"
+          aria-label="Monter le widget"
+          @click.stop="handleMoveUp"
+        >
+          <ChevronUp :size="14" />
+        </button>
+        <button
+          class="toolbar-action"
+          :disabled="isLast"
+          title="Descendre (Alt+↓)"
+          aria-label="Descendre le widget"
+          @click.stop="handleMoveDown"
+        >
+          <ChevronDown :size="14" />
+        </button>
+        <div class="toolbar-divider" />
+        <button
+          class="toolbar-action"
+          title="Dupliquer (Ctrl+D)"
+          aria-label="Dupliquer le widget"
+          @click.stop="handleDuplicate"
+        >
+          <Copy :size="14" />
+        </button>
+        <button
+          class="toolbar-action danger"
+          title="Supprimer (Delete)"
+          aria-label="Supprimer le widget"
+          @click.stop="handleDelete"
+        >
+          <Trash2 :size="14" />
+        </button>
+      </div>
+    </Transition>
 
     <!-- Widget Content -->
     <component
@@ -165,47 +209,76 @@ function handleMoveDown() {
   outline-offset: 4px;
 }
 
-.widget-actions {
+/* Floating Toolbar */
+.widget-toolbar {
   position: absolute;
-  top: 50%;
-  left: -40px;
-  transform: translateY(-50%);
+  top: -44px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  z-index: 10;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
 }
 
-.action-btn {
-  width: 28px;
-  height: 28px;
+.toolbar-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
-.action-btn:hover {
-  background-color: var(--color-background);
-  border-color: var(--color-primary);
+.toolbar-action:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
 }
 
-.action-btn.widget-handle {
+.toolbar-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.toolbar-action.widget-handle {
   cursor: grab;
 }
 
-.action-btn.widget-handle:active {
+.toolbar-action.widget-handle:active {
   cursor: grabbing;
 }
 
-.action-btn.delete:hover {
-  background-color: #fee2e2;
-  border-color: #ef4444;
-  color: #ef4444;
+.toolbar-action.danger:hover:not(:disabled) {
+  background: var(--color-error-100);
+  color: var(--color-error-500);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+  margin: 0 var(--space-1);
+}
+
+/* Toolbar animation */
+.toolbar-fade-enter-active,
+.toolbar-fade-leave-active {
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.toolbar-fade-enter-from,
+.toolbar-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
 }
 </style>

@@ -1,5 +1,32 @@
 <script setup lang="ts">
 import type { WidgetConfig } from '@/types/widget'
+import {
+  AlignLeft,
+  Barcode,
+  Car,
+  ClipboardList,
+  Columns,
+  FlipHorizontal,
+  Heading,
+  Image,
+  Images,
+  Link2,
+  MapPin,
+  Minus,
+  MousePointer,
+  MoveVertical,
+  Phone,
+  Play,
+  Share2,
+  SlidersHorizontal,
+  Snowflake,
+  Sparkles,
+  Square,
+  Star,
+  Store,
+  TextCursorInput,
+} from 'lucide-vue-next'
+import { ref } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
@@ -7,8 +34,38 @@ const props = defineProps<{
 }>()
 
 const widgetsStore = useWidgetsStore()
+const isDragging = ref(false)
+
+// Mapping des types de widgets vers les icônes Lucide
+const iconMap: Record<string, any> = {
+  'title': Heading,
+  'text': AlignLeft,
+  'image': Image,
+  'button': MousePointer,
+  'separator': Minus,
+  'spacer': MoveVertical,
+  'click-to-call': Phone,
+  'row': Columns,
+  'column': Square,
+  'form': ClipboardList,
+  'form-field': TextCursorInput,
+  'video': Play,
+  'map': MapPin,
+  'social': Share2,
+  'icon': Star,
+  'barcode': Barcode,
+  'store-locator': Store,
+  'drive': Car,
+  'scratch': Sparkles,
+  'flipcard': FlipHorizontal,
+  'gallery': Images,
+  'slider': SlidersHorizontal,
+  'link-image': Link2,
+  'effect': Snowflake,
+}
 
 function handleDragStart(event: DragEvent) {
+  isDragging.value = true
   if (event.dataTransfer) {
     event.dataTransfer.setData('widget-type', props.config.type)
     event.dataTransfer.effectAllowed = 'copy'
@@ -17,11 +74,11 @@ function handleDragStart(event: DragEvent) {
 }
 
 function handleDragEnd() {
+  isDragging.value = false
   widgetsStore.setDraggedWidgetType(null)
 }
 
 function handleClick() {
-  // Add widget directly on click
   widgetsStore.addWidget(props.config.type)
 }
 </script>
@@ -29,13 +86,19 @@ function handleClick() {
 <template>
   <div
     class="widget-item"
+    :class="{ dragging: isDragging }"
     draggable="true"
+    role="button"
+    tabindex="0"
+    :aria-label="`Ajouter widget ${config.label}`"
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
     @click="handleClick"
+    @keydown.enter="handleClick"
+    @keydown.space.prevent="handleClick"
   >
     <div class="widget-icon">
-      {{ config.icon }}
+      <component :is="iconMap[config.type]" :size="20" />
     </div>
     <div class="widget-label">
       {{ config.label }}
@@ -49,35 +112,53 @@ function handleClick() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 8px;
+  padding: var(--space-3) var(--space-2);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   cursor: grab;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
   user-select: none;
 }
 
 .widget-item:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-50);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-.widget-item:active {
+.widget-item:hover .widget-icon {
+  color: var(--color-primary-600);
+}
+
+.widget-item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.widget-item:active,
+.widget-item.dragging {
   cursor: grabbing;
-  transform: scale(0.98);
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 .widget-icon {
-  font-size: 24px;
-  margin-bottom: 6px;
-  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: var(--space-1);
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
 }
 
 .widget-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-text);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;

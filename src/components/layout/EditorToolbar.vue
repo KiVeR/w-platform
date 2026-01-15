@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { EditorMode } from '@/stores/ui'
+import { Menu, Redo2, Save, Settings, Undo2 } from 'lucide-vue-next'
 import { useEditorStore } from '@/stores/editor'
 import { useHistoryStore } from '@/stores/history'
 import { useUIStore } from '@/stores/ui'
@@ -43,9 +44,11 @@ function handleRedo() {
       <button
         class="toolbar-btn"
         :title="uiStore.leftSidebarOpen ? 'Masquer widgets' : 'Afficher widgets'"
+        :aria-label="uiStore.leftSidebarOpen ? 'Masquer la palette de widgets' : 'Afficher la palette de widgets'"
+        :aria-pressed="uiStore.leftSidebarOpen"
         @click="uiStore.toggleLeftSidebar"
       >
-        <span class="icon">☰</span>
+        <Menu :size="18" :stroke-width="2" />
       </button>
 
       <div class="toolbar-title">
@@ -73,35 +76,40 @@ function handleRedo() {
         class="toolbar-btn"
         :disabled="!historyStore.canUndo"
         title="Annuler (Ctrl+Z)"
+        aria-label="Annuler"
         @click="handleUndo"
       >
-        <span class="icon">↶</span>
+        <Undo2 :size="18" :stroke-width="2" />
       </button>
 
       <button
         class="toolbar-btn"
         :disabled="!historyStore.canRedo"
         title="Rétablir (Ctrl+Y)"
+        aria-label="Rétablir"
         @click="handleRedo"
       >
-        <span class="icon">↷</span>
+        <Redo2 :size="18" :stroke-width="2" />
       </button>
 
       <button
         class="toolbar-btn save-btn"
         :disabled="!editorStore.isDirty"
+        aria-label="Sauvegarder"
         @click="handleSave"
       >
-        <span class="icon">💾</span>
+        <Save :size="18" :stroke-width="2" />
         <span class="btn-text">Sauvegarder</span>
       </button>
 
       <button
         class="toolbar-btn"
         :title="uiStore.rightSidebarOpen ? 'Masquer options' : 'Afficher options'"
+        :aria-label="uiStore.rightSidebarOpen ? 'Masquer le panneau d\'options' : 'Afficher le panneau d\'options'"
+        :aria-pressed="uiStore.rightSidebarOpen"
         @click="uiStore.toggleRightSidebar"
       >
-        <span class="icon">⚙</span>
+        <Settings :size="18" :stroke-width="2" />
       </button>
     </div>
   </header>
@@ -201,8 +209,8 @@ function handleRedo() {
   cursor: not-allowed;
 }
 
-.toolbar-btn .icon {
-  font-size: 16px;
+.toolbar-btn svg {
+  flex-shrink: 0;
 }
 
 .save-btn {

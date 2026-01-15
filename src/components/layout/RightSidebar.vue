@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { OptionsTab } from '@/stores/ui'
+import { Home } from 'lucide-vue-next'
 import GlobalOptions from '@/components/options/GlobalOptions.vue'
 import OptionsPanel from '@/components/options/OptionsPanel.vue'
 import { useSelectionStore } from '@/stores/selection'
@@ -22,9 +23,10 @@ const tabs: { value: OptionsTab, label: string }[] = [
           class="breadcrumb-item home"
           :class="{ active: uiStore.activeTab === 'global' }"
           title="Options globales"
+          aria-label="Options globales de la page"
           @click="uiStore.setActiveTab('global')"
         >
-          🏠
+          <Home :size="16" />
         </button>
         <span v-if="selectionStore.selectedWidget" class="breadcrumb-separator">›</span>
         <span v-if="selectionStore.selectedWidget" class="breadcrumb-item widget-name">
