@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { SocialLink, SocialPlatform, Widget } from '@/types/widget'
 import { computed } from 'vue'
-import type { Widget, SocialPlatform, SocialLink } from '@/types/widget'
 
 const props = defineProps<{
   widget: Widget
@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 // Configuration des plateformes sociales
-const platformConfig: Record<SocialPlatform, { icon: string; color: string; label: string }> = {
+const platformConfig: Record<SocialPlatform, { icon: string, color: string, label: string }> = {
   facebook: { icon: 'f', color: '#1877f2', label: 'Facebook' },
   instagram: { icon: '📷', color: '#e4405f', label: 'Instagram' },
   twitter: { icon: '𝕏', color: '#000000', label: 'X (Twitter)' },
@@ -17,7 +17,7 @@ const platformConfig: Record<SocialPlatform, { icon: string; color: string; labe
   tiktok: { icon: '♪', color: '#000000', label: 'TikTok' },
   whatsapp: { icon: '💬', color: '#25d366', label: 'WhatsApp' },
   telegram: { icon: '✈', color: '#0088cc', label: 'Telegram' },
-  email: { icon: '✉', color: '#6b7280', label: 'Email' }
+  email: { icon: '✉', color: '#6b7280', label: 'Email' },
 }
 
 const enabledLinks = computed(() => {
@@ -59,10 +59,10 @@ function getHref(link: SocialLink) {
     class="social-widget"
     :class="[socialStyle, sizeClass]"
     :style="{
-      justifyContent: widget.styles.textAlign === 'center' ? 'center' :
-                       widget.styles.textAlign === 'right' ? 'flex-end' : 'flex-start',
+      justifyContent: widget.styles.textAlign === 'center' ? 'center'
+        : widget.styles.textAlign === 'right' ? 'flex-end' : 'flex-start',
       padding: widget.styles.padding,
-      margin: widget.styles.margin
+      margin: widget.styles.margin,
     }"
   >
     <!-- Liens activés -->
@@ -75,7 +75,7 @@ function getHref(link: SocialLink) {
         rel="noopener noreferrer"
         class="social-link"
         :style="{
-          '--platform-color': getPlatformConfig(link.platform).color
+          '--platform-color': getPlatformConfig(link.platform).color,
         }"
         :title="getPlatformConfig(link.platform).label"
       >
@@ -95,8 +95,12 @@ function getHref(link: SocialLink) {
         <span class="placeholder-icon" style="--platform-color: #0077b5">in</span>
         <span class="placeholder-icon" style="--platform-color: #ff0000">▶</span>
       </div>
-      <p class="placeholder-text">Réseaux sociaux</p>
-      <p class="placeholder-hint">Configurez vos liens dans le panneau</p>
+      <p class="placeholder-text">
+        Réseaux sociaux
+      </p>
+      <p class="placeholder-hint">
+        Configurez vos liens dans le panneau
+      </p>
     </div>
   </div>
 </template>

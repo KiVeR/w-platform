@@ -14,7 +14,7 @@ export const palettes: Palette[] = [
     primary: '#14b8a6',
     secondary: '#0d9488',
     background: '#ffffff',
-    text: '#1e293b'
+    text: '#1e293b',
   },
   {
     name: 'coral',
@@ -22,7 +22,7 @@ export const palettes: Palette[] = [
     primary: '#f97316',
     secondary: '#ea580c',
     background: '#ffffff',
-    text: '#1e293b'
+    text: '#1e293b',
   },
   {
     name: 'violet',
@@ -30,7 +30,7 @@ export const palettes: Palette[] = [
     primary: '#8b5cf6',
     secondary: '#7c3aed',
     background: '#ffffff',
-    text: '#1e293b'
+    text: '#1e293b',
   },
   {
     name: 'blue',
@@ -38,7 +38,7 @@ export const palettes: Palette[] = [
     primary: '#3b82f6',
     secondary: '#2563eb',
     background: '#ffffff',
-    text: '#1e293b'
+    text: '#1e293b',
   },
   {
     name: 'pink',
@@ -46,7 +46,7 @@ export const palettes: Palette[] = [
     primary: '#ec4899',
     secondary: '#db2777',
     background: '#ffffff',
-    text: '#1e293b'
+    text: '#1e293b',
   },
   {
     name: 'dark',
@@ -54,10 +54,10 @@ export const palettes: Palette[] = [
     primary: '#14b8a6',
     secondary: '#0d9488',
     background: '#1e293b',
-    text: '#f8fafc'
-  }
+    text: '#f8fafc',
+  },
 ]
 
-export const getPalette = (name: string): Palette | undefined => {
+export function getPalette(name: string): Palette | undefined {
   return palettes.find(p => p.name === name)
 }

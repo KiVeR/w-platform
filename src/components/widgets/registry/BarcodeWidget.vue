@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -20,7 +20,7 @@ function calculateCheckDigit(code: string): string {
   for (let i = 0; i < code.length; i++) {
     const char = code[i]
     if (char) {
-      const digit = parseInt(char, 10)
+      const digit = Number.parseInt(char, 10)
       sum += i % 2 === 0 ? digit : digit * 3
     }
   }
@@ -31,23 +31,26 @@ function calculateCheckDigit(code: string): string {
 // Nettoyage et formatage du code selon le type
 function formatBarcodeCode(code: string, type: 'ean13' | 'ean8'): string {
   // Nettoyer le code (garder seulement les chiffres)
-  const cleanCode = code.replace(/[^0-9]/g, '')
+  const cleanCode = code.replace(/\D/g, '')
 
   if (type === 'ean13') {
     // EAN-13 : 12 chiffres + 1 checksum = 13
     if (cleanCode.length <= 12) {
       const padded = cleanCode.padStart(12, '0')
       return calculateCheckDigit(padded)
-    } else {
+    }
+    else {
       const truncated = cleanCode.substring(0, 12)
       return calculateCheckDigit(truncated)
     }
-  } else {
+  }
+  else {
     // EAN-8 : 7 chiffres + 1 checksum = 8
     if (cleanCode.length <= 7) {
       const padded = cleanCode.padStart(7, '0')
       return calculateCheckDigit(padded)
-    } else {
+    }
+    else {
       const truncated = cleanCode.substring(0, 7)
       return calculateCheckDigit(truncated)
     }
@@ -67,7 +70,7 @@ function generateBarcodeUrl(code: string, color: string, type: 'ean13' | 'ean8')
     includetext: 'true',
     scaleX: '2',
     scaleY: '1',
-    textyalign: 'below'
+    textyalign: 'below',
   })
 
   return `${BWIP_API_URL}?${params.toString()}`
@@ -116,7 +119,8 @@ async function generateBarcode() {
     }
 
     reader.readAsDataURL(blob)
-  } catch (error) {
+  }
+  catch (error) {
     errorMessage.value = 'Impossible de générer le code barre'
     isLoading.value = false
     console.error('Erreur génération code barre:', error)
@@ -128,12 +132,12 @@ watch(
   () => [
     props.widget.content.barcodeCode,
     props.widget.content.barcodeColor,
-    props.widget.content.barcodeType
+    props.widget.content.barcodeType,
   ],
   () => {
     generateBarcode()
   },
-  { deep: true }
+  { deep: true },
 )
 
 // Générer au montage
@@ -152,43 +156,59 @@ const barcodeTypeLabel = computed(() => {
     :style="{
       padding: widget.styles.padding,
       margin: widget.styles.margin,
-      textAlign: widget.styles.textAlign
+      textAlign: widget.styles.textAlign,
     }"
   >
     <!-- Loading -->
     <div v-if="isLoading" class="barcode-loading">
-      <div class="loading-spinner"></div>
+      <div class="loading-spinner" />
       <span>Génération...</span>
     </div>
 
     <!-- Variable placeholder -->
     <div v-else-if="hasVariable" class="barcode-variable">
-      <div class="variable-icon">📊</div>
-      <p class="variable-code">{{ widget.content.barcodeCode }}</p>
-      <p class="variable-hint">Variable dynamique - Le code barre sera généré lors du rendu</p>
+      <div class="variable-icon">
+        📊
+      </div>
+      <p class="variable-code">
+        {{ widget.content.barcodeCode }}
+      </p>
+      <p class="variable-hint">
+        Variable dynamique - Le code barre sera généré lors du rendu
+      </p>
     </div>
 
     <!-- Erreur -->
     <div v-else-if="errorMessage" class="barcode-error">
-      <div class="error-icon">⚠️</div>
+      <div class="error-icon">
+        ⚠️
+      </div>
       <p>{{ errorMessage }}</p>
     </div>
 
     <!-- Code barre généré -->
     <div v-else-if="barcodeImageSrc" class="barcode-container">
-      <div class="barcode-type-badge">{{ barcodeTypeLabel }}</div>
+      <div class="barcode-type-badge">
+        {{ barcodeTypeLabel }}
+      </div>
       <img
         :src="barcodeImageSrc"
         :alt="`Code barre ${widget.content.barcodeCode}`"
         class="barcode-image"
-      />
+      >
     </div>
 
     <!-- Placeholder -->
     <div v-else class="barcode-placeholder">
-      <div class="placeholder-icon">📊</div>
-      <p class="placeholder-text">Code barre</p>
-      <p class="placeholder-hint">Entrez un code EAN-13 ou EAN-8</p>
+      <div class="placeholder-icon">
+        📊
+      </div>
+      <p class="placeholder-text">
+        Code barre
+      </p>
+      <p class="placeholder-hint">
+        Entrez un code EAN-13 ou EAN-8
+      </p>
     </div>
   </div>
 </template>

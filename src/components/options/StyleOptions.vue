@@ -17,7 +17,7 @@ const fontSizes = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px
 const textAligns = [
   { value: 'left', label: '⬅ Gauche' },
   { value: 'center', label: '↔ Centre' },
-  { value: 'right', label: '➡ Droite' }
+  { value: 'right', label: '➡ Droite' },
 ]
 </script>
 
@@ -49,7 +49,9 @@ const textAligns = [
         :value="widget.styles.fontSize"
         @change="updateStyle('fontSize', ($event.target as HTMLSelectElement).value)"
       >
-        <option v-for="size in fontSizes" :key="size" :value="size">{{ size }}</option>
+        <option v-for="size in fontSizes" :key="size" :value="size">
+          {{ size }}
+        </option>
       </select>
     </div>
 
@@ -79,8 +81,8 @@ const textAligns = [
           min="0"
           max="50"
           :value="parseInt(widget.styles.borderRadius || '8')"
-          @input="updateStyle('borderRadius', ($event.target as HTMLInputElement).value + 'px')"
-        />
+          @input="updateStyle('borderRadius', `${($event.target as HTMLInputElement).value}px`)"
+        >
         <span class="range-value">{{ widget.styles.borderRadius || '8px' }}</span>
       </div>
     </div>
@@ -104,8 +106,8 @@ const textAligns = [
           min="1"
           max="10"
           :value="parseInt(widget.styles.borderWidth || '1')"
-          @input="updateStyle('borderWidth', ($event.target as HTMLInputElement).value + 'px')"
-        />
+          @input="updateStyle('borderWidth', `${($event.target as HTMLInputElement).value}px`)"
+        >
         <span class="range-value">{{ widget.styles.borderWidth || '1px' }}</span>
       </div>
     </div>
@@ -120,8 +122,8 @@ const textAligns = [
           min="0"
           max="48"
           :value="parseInt(widget.styles.padding || '16')"
-          @input="updateStyle('padding', ($event.target as HTMLInputElement).value + 'px')"
-        />
+          @input="updateStyle('padding', `${($event.target as HTMLInputElement).value}px`)"
+        >
         <span class="range-value">{{ widget.styles.padding || '16px' }}</span>
       </div>
     </div>

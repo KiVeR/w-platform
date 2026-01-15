@@ -66,6 +66,6 @@ export const useUIStore = defineStore('ui', () => {
     openLeftSidebar,
     closeLeftSidebar,
     openRightSidebar,
-    closeRightSidebar
+    closeRightSidebar,
   }
 })

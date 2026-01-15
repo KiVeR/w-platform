@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -21,7 +21,7 @@ const hasLink = computed(() => !!href.value)
     :style="{
       padding: widget.styles.padding,
       margin: widget.styles.margin,
-      textAlign: widget.styles.textAlign
+      textAlign: widget.styles.textAlign,
     }"
   >
     <div v-if="hasImage" class="link-image-container">
@@ -40,7 +40,7 @@ const hasLink = computed(() => !!href.value)
         :class="{ 'has-link': hasLink }"
         @click.prevent
       >
-        <img :src="src" :alt="alt" class="linked-image" />
+        <img :src="src" :alt="alt" class="linked-image">
         <div v-if="hasLink" class="link-overlay">
           <span class="link-icon">🔗</span>
         </div>
@@ -54,9 +54,15 @@ const hasLink = computed(() => !!href.value)
 
     <!-- État vide -->
     <div v-else class="link-image-empty">
-      <div class="empty-icon">🔗</div>
-      <p class="empty-text">Image lien</p>
-      <p class="empty-hint">Configurez l'image et le lien dans les options</p>
+      <div class="empty-icon">
+        🔗
+      </div>
+      <p class="empty-text">
+        Image lien
+      </p>
+      <p class="empty-hint">
+        Configurez l'image et le lien dans les options
+      </p>
     </div>
   </div>
 </template>

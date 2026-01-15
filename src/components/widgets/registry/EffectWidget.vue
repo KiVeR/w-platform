@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -33,12 +33,12 @@ function createParticles() {
     y: Math.random() * 100,
     size: effectSize.value * (0.5 + Math.random() * 0.5),
     speed: (effectSpeed.value / 100) * (0.5 + Math.random() * 0.5),
-    opacity: 0.5 + Math.random() * 0.5
+    opacity: 0.5 + Math.random() * 0.5,
   }))
 }
 
 function animate() {
-  particles.value = particles.value.map(p => {
+  particles.value = particles.value.map((p) => {
     let newY = effectDirection.value === 'down'
       ? p.y + p.speed
       : p.y - p.speed
@@ -46,7 +46,8 @@ function animate() {
     if (effectDirection.value === 'down' && newY > 100) {
       newY = -10
       p.x = Math.random() * 100
-    } else if (effectDirection.value === 'up' && newY < -10) {
+    }
+    else if (effectDirection.value === 'up' && newY < -10) {
       newY = 100
       p.x = Math.random() * 100
     }
@@ -89,7 +90,7 @@ onUnmounted(() => {
     class="effect-widget"
     :style="{
       margin: widget.styles.margin,
-      height: widget.styles.height || '100px'
+      height: widget.styles.height || '100px',
     }"
   >
     <!-- Config badge -->
@@ -107,7 +108,7 @@ onUnmounted(() => {
           left: `${particle.x}%`,
           top: `${particle.y}%`,
           fontSize: `${particle.size}px`,
-          opacity: particle.opacity
+          opacity: particle.opacity,
         }"
       >
         {{ effectImage }}

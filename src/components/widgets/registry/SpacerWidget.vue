@@ -13,7 +13,7 @@ defineProps<{
     :style="{
       height: widget.styles.height || '32px',
       margin: widget.styles.margin,
-      padding: widget.styles.padding
+      padding: widget.styles.padding,
     }"
   >
     <div class="spacer-indicator">

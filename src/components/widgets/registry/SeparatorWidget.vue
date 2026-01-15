@@ -14,9 +14,9 @@ defineProps<{
       :style="{
         borderStyle: widget.styles.borderStyle,
         borderColor: widget.styles.borderColor,
-        borderWidth: widget.styles.borderWidth
+        borderWidth: widget.styles.borderWidth,
       }"
-    />
+    >
   </div>
 </template>
 

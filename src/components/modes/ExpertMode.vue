@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useEditorStore } from '@/stores/editor'
 import { useWidgetsStore } from '@/stores/widgets'
 
@@ -12,7 +12,7 @@ const activeTab = ref<'html' | 'css'>('html')
 const generatedHtml = computed(() => {
   let html = ''
   for (const widget of widgetsStore.sortedItems) {
-    html += generateWidgetHtml(widget) + '\n'
+    html += `${generateWidgetHtml(widget)}\n`
   }
   return html || '<!-- Aucun widget -->'
 })
@@ -80,13 +80,14 @@ function generateWidgetHtml(widget: any): string {
   <img src="${widget.content.src || ''}" alt="${escapeHtml(widget.content.alt || 'Image')}" />
 </div>`
 
-    case 'button':
+    case 'button': {
       const href = widget.content.action === 'tel'
         ? `tel:${widget.content.phone}`
         : widget.content.href || '#'
       return `<div class="widget button-widget">
   <a href="${href}" style="${styles}">${escapeHtml(widget.content.text || 'Bouton')}</a>
 </div>`
+    }
 
     case 'click-to-call':
       return `<div class="widget click-to-call-widget">

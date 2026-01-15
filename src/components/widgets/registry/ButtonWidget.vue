@@ -29,7 +29,7 @@ function getHref(widget: Widget): string {
         fontSize: widget.styles.fontSize,
         fontWeight: widget.styles.fontWeight,
         borderRadius: widget.styles.borderRadius,
-        textAlign: widget.styles.textAlign
+        textAlign: widget.styles.textAlign,
       }"
       @click.prevent
     >

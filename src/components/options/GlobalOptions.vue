@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useEditorStore } from '@/stores/editor'
 import { palettes } from '@/config/palettes'
+import { useEditorStore } from '@/stores/editor'
 import ColorPicker from './inputs/ColorPicker.vue'
 
 const editorStore = useEditorStore()
@@ -11,7 +11,7 @@ function selectPalette(paletteName: string) {
     editorStore.updateGlobalStyles({
       palette: paletteName,
       backgroundColor: palette.background,
-      textColor: palette.text
+      textColor: palette.text,
     })
   }
 }
@@ -19,7 +19,9 @@ function selectPalette(paletteName: string) {
 
 <template>
   <div class="global-options">
-    <h3 class="section-title">Options générales de l'app</h3>
+    <h3 class="section-title">
+      Options générales de l'app
+    </h3>
 
     <!-- Palette Selection -->
     <div class="option-group">
@@ -33,8 +35,8 @@ function selectPalette(paletteName: string) {
           @click="selectPalette(palette.name)"
         >
           <div class="palette-preview">
-            <div class="palette-color" :style="{ backgroundColor: palette.primary }"></div>
-            <div class="palette-color" :style="{ backgroundColor: palette.secondary }"></div>
+            <div class="palette-color" :style="{ backgroundColor: palette.primary }" />
+            <div class="palette-color" :style="{ backgroundColor: palette.secondary }" />
           </div>
           <span class="palette-label">{{ palette.label }}</span>
         </button>

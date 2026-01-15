@@ -1,5 +1,5 @@
 export { useEditorStore } from './editor'
-export { useWidgetsStore } from './widgets'
+export { useHistoryStore } from './history'
 export { useSelectionStore } from './selection'
 export { useUIStore } from './ui'
-export { useHistoryStore } from './history'
+export { useWidgetsStore } from './widgets'

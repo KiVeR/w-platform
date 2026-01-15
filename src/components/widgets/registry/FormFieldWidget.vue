@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { FormFieldType, Widget } from '@/types/widget'
 import { computed } from 'vue'
-import type { Widget, FormFieldType } from '@/types/widget'
 import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
@@ -15,7 +15,8 @@ const widgetsStore = useWidgetsStore()
 const fieldType = computed(() => props.widget.content.fieldType || 'text')
 const label = computed(() => props.widget.content.label || 'Label')
 const placeholder = computed(() => {
-  if (props.widget.content.placeholder) return props.widget.content.placeholder
+  if (props.widget.content.placeholder)
+    return props.widget.content.placeholder
   // Placeholders par défaut selon le type
   const defaults: Record<FormFieldType, string> = {
     text: 'Votre texte...',
@@ -26,7 +27,7 @@ const placeholder = computed(() => {
     select: '',
     checkbox: '',
     radio: '',
-    textarea: 'Votre message...'
+    textarea: 'Votre message...',
   }
   return defaults[fieldType.value] || ''
 })
@@ -44,7 +45,9 @@ function handleRemove() {
     class="form-field-widget"
     :class="{ 'is-selected': isSelected }"
   >
-    <div class="field-handle" title="Glisser pour réordonner">⋮⋮</div>
+    <div class="field-handle" title="Glisser pour réordonner">
+      ⋮⋮
+    </div>
 
     <div class="field-content">
       <label class="field-label">
@@ -59,7 +62,7 @@ function handleRemove() {
         class="field-input"
         :placeholder="placeholder"
         disabled
-      />
+      >
 
       <!-- Textarea -->
       <textarea
@@ -76,7 +79,9 @@ function handleRemove() {
         class="field-select"
         disabled
       >
-        <option value="">Choisissez...</option>
+        <option value="">
+          Choisissez...
+        </option>
         <option v-for="opt in options" :key="opt.value" :value="opt.value">
           {{ opt.label }}
         </option>
@@ -84,14 +89,14 @@ function handleRemove() {
 
       <!-- Checkbox -->
       <div v-else-if="fieldType === 'checkbox'" class="field-checkbox">
-        <input type="checkbox" disabled />
+        <input type="checkbox" disabled>
         <span>{{ label }}</span>
       </div>
 
       <!-- Radio -->
       <div v-else-if="fieldType === 'radio'" class="field-radio-group">
         <div v-for="opt in options" :key="opt.value" class="field-radio">
-          <input type="radio" :name="widget.id" disabled />
+          <input type="radio" :name="widget.id" disabled>
           <span>{{ opt.label }}</span>
         </div>
       </div>
@@ -100,8 +105,8 @@ function handleRemove() {
     <button
       v-if="editable"
       class="field-remove"
-      @click.stop="handleRemove"
       title="Supprimer ce champ"
+      @click.stop="handleRemove"
     >
       ×
     </button>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -8,23 +8,26 @@ const props = defineProps<{
 }>()
 
 // Détection automatique de la plateforme et extraction de l'ID
-function parseVideoUrl(url: string): { provider: 'youtube' | 'vimeo' | 'custom'; videoId: string } {
-  if (!url) return { provider: 'custom', videoId: '' }
+function parseVideoUrl(url: string): { provider: 'youtube' | 'vimeo' | 'custom', videoId: string } {
+  if (!url)
+    return { provider: 'custom', videoId: '' }
 
   // YouTube patterns
   const youtubePatterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
-    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/,
+    /youtube\.com\/shorts\/([\w-]{11})/,
   ]
   for (const pattern of youtubePatterns) {
     const match = url.match(pattern)
-    if (match) return { provider: 'youtube', videoId: match[1] || '' }
+    if (match)
+      return { provider: 'youtube', videoId: match[1] || '' }
   }
 
   // Vimeo patterns
-  const vimeoPattern = /(?:vimeo\.com\/)(\d+)/
+  const vimeoPattern = /vimeo\.com\/(\d+)/
   const vimeoMatch = url.match(vimeoPattern)
-  if (vimeoMatch) return { provider: 'vimeo', videoId: vimeoMatch[1] || '' }
+  if (vimeoMatch)
+    return { provider: 'vimeo', videoId: vimeoMatch[1] || '' }
 
   return { provider: 'custom', videoId: '' }
 }
@@ -74,7 +77,7 @@ const providerName = computed(() => {
     :style="{
       borderRadius: widget.styles.borderRadius,
       padding: widget.styles.padding,
-      margin: widget.styles.margin
+      margin: widget.styles.margin,
     }"
   >
     <!-- Preview avec vidéo -->
@@ -93,9 +96,15 @@ const providerName = computed(() => {
 
     <!-- Placeholder quand pas de vidéo -->
     <div v-else class="video-placeholder">
-      <div class="placeholder-icon">🎥</div>
-      <p class="placeholder-text">Collez une URL YouTube ou Vimeo</p>
-      <p class="placeholder-hint">Détection automatique de la plateforme</p>
+      <div class="placeholder-icon">
+        🎥
+      </div>
+      <p class="placeholder-text">
+        Collez une URL YouTube ou Vimeo
+      </p>
+      <p class="placeholder-hint">
+        Détection automatique de la plateforme
+      </p>
       <div class="placeholder-examples">
         <span class="example-badge youtube">▶️ YouTube</span>
         <span class="example-badge vimeo">🎬 Vimeo</span>

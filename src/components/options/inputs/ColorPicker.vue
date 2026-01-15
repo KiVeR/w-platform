@@ -27,11 +27,11 @@ function handleTextInput(event: Event) {
 
   // Auto-add # if missing
   if (value && !value.startsWith('#')) {
-    value = '#' + value
+    value = `#${value}`
   }
 
   // Validate hex color
-  if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(value)) {
+  if (/^#(?:[0-9A-F]{3}|[0-9A-F]{6})$/i.test(value)) {
     localValue.value = value
     emit('update:value', value)
   }
@@ -45,15 +45,15 @@ function handleTextInput(event: Event) {
       class="color-input"
       :value="localValue"
       @input="handleInput"
-    />
+    >
     <input
       type="text"
       class="color-text"
       :value="localValue"
-      @change="handleTextInput"
       placeholder="#000000"
       maxlength="7"
-    />
+      @change="handleTextInput"
+    >
   </div>
 </template>
 

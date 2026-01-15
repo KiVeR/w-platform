@@ -1,12 +1,15 @@
 {
   "name": "landing-page-editor",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -19,12 +22,21 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^7.0.1",
     "@types/node": "^24.10.1",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/utils": "^8.53.0",
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/compiler-sfc": "^3.5.26",
     "@vue/tsconfig": "^0.8.1",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vue-tsc": "^3.1.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": "eslint --fix"
   }
 }

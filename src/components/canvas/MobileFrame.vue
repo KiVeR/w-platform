@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
   showFrame?: boolean
 }>(), {
   device: 'mobile',
-  showFrame: true
+  showFrame: true,
 })
 
 const dimensions = computed(() => {
@@ -29,17 +29,19 @@ const dimensions = computed(() => {
       class="mobile-frame"
       :class="{ 'with-frame': showFrame }"
       :style="{
-        width: dimensions.width + 'px',
-        height: dimensions.height + 'px'
+        width: `${dimensions.width}px`,
+        height: `${dimensions.height}px`,
       }"
     >
-      <div v-if="showFrame" class="frame-notch"></div>
+      <div v-if="showFrame" class="frame-notch" />
       <div class="frame-content">
-        <slot></slot>
+        <slot />
       </div>
-      <div v-if="showFrame" class="frame-home-indicator"></div>
+      <div v-if="showFrame" class="frame-home-indicator" />
     </div>
-    <div v-if="showFrame" class="device-label">{{ dimensions.label }}</div>
+    <div v-if="showFrame" class="device-label">
+      {{ dimensions.label }}
+    </div>
   </div>
 </template>
 

@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useUIStore, type EditorMode } from '@/stores/ui'
+import type { EditorMode } from '@/stores/ui'
 import { useEditorStore } from '@/stores/editor'
 import { useHistoryStore } from '@/stores/history'
+import { useUIStore } from '@/stores/ui'
 
 const uiStore = useUIStore()
 const editorStore = useEditorStore()
 const historyStore = useHistoryStore()
 
-const modes: { value: EditorMode; label: string }[] = [
+const modes: { value: EditorMode, label: string }[] = [
   { value: 'designer', label: 'Mode designer' },
   { value: 'preview', label: 'Mode aperçu' },
-  { value: 'expert', label: 'Mode expert' }
+  { value: 'expert', label: 'Mode expert' },
 ]
 
 function handleSave() {
@@ -41,8 +42,8 @@ function handleRedo() {
     <div class="toolbar-left">
       <button
         class="toolbar-btn"
-        @click="uiStore.toggleLeftSidebar"
         :title="uiStore.leftSidebarOpen ? 'Masquer widgets' : 'Afficher widgets'"
+        @click="uiStore.toggleLeftSidebar"
       >
         <span class="icon">☰</span>
       </button>
@@ -70,26 +71,26 @@ function handleRedo() {
     <div class="toolbar-right">
       <button
         class="toolbar-btn"
-        @click="handleUndo"
         :disabled="!historyStore.canUndo"
         title="Annuler (Ctrl+Z)"
+        @click="handleUndo"
       >
         <span class="icon">↶</span>
       </button>
 
       <button
         class="toolbar-btn"
-        @click="handleRedo"
         :disabled="!historyStore.canRedo"
         title="Rétablir (Ctrl+Y)"
+        @click="handleRedo"
       >
         <span class="icon">↷</span>
       </button>
 
       <button
         class="toolbar-btn save-btn"
-        @click="handleSave"
         :disabled="!editorStore.isDirty"
+        @click="handleSave"
       >
         <span class="icon">💾</span>
         <span class="btn-text">Sauvegarder</span>
@@ -97,8 +98,8 @@ function handleRedo() {
 
       <button
         class="toolbar-btn"
-        @click="uiStore.toggleRightSidebar"
         :title="uiStore.rightSidebarOpen ? 'Masquer options' : 'Afficher options'"
+        @click="uiStore.toggleRightSidebar"
       >
         <span class="icon">⚙</span>
       </button>

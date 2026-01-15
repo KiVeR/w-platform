@@ -17,7 +17,7 @@ defineProps<{
         color: widget.styles.color,
         fontSize: widget.styles.fontSize,
         fontWeight: widget.styles.fontWeight,
-        borderRadius: widget.styles.borderRadius
+        borderRadius: widget.styles.borderRadius,
       }"
       @click.prevent
     >

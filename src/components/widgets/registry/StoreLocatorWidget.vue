@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -21,18 +21,20 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
     :style="{
       padding: widget.styles.padding,
       margin: widget.styles.margin,
-      textAlign: widget.styles.textAlign
+      textAlign: widget.styles.textAlign,
     }"
   >
     <!-- Titre -->
-    <h3 v-if="label" class="store-locator-label">{{ label }}</h3>
+    <h3 v-if="label" class="store-locator-label">
+      {{ label }}
+    </h3>
 
     <!-- Bouton principal (style GrapesJS original) -->
     <button
       class="store-locator-button"
       :style="{
         borderColor: buttonColor,
-        color: buttonColor
+        color: buttonColor,
       }"
       @click.prevent
     >
@@ -51,8 +53,12 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
           :key="index"
           class="store-item"
         >
-          <div class="store-name">{{ store.name }}</div>
-          <div class="store-address">{{ store.address }}</div>
+          <div class="store-name">
+            {{ store.name }}
+          </div>
+          <div class="store-address">
+            {{ store.address }}
+          </div>
         </div>
         <div v-if="stores.length > 3" class="stores-more">
           +{{ stores.length - 3 }} autres...
@@ -62,8 +68,12 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 
     <!-- État vide -->
     <div v-else class="stores-empty">
-      <p class="empty-text">Aucun lieu configuré</p>
-      <p class="empty-hint">Ajoutez des lieux dans les options</p>
+      <p class="empty-text">
+        Aucun lieu configuré
+      </p>
+      <p class="empty-hint">
+        Ajoutez des lieux dans les options
+      </p>
     </div>
   </div>
 </template>

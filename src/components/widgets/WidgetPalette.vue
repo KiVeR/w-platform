@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { widgetCategories, getWidgetsByCategory } from '@/config/widgets'
+import { getWidgetsByCategory, widgetCategories } from '@/config/widgets'
 import WidgetItem from './WidgetItem.vue'
 </script>
 
@@ -10,7 +10,9 @@ import WidgetItem from './WidgetItem.vue'
       :key="category.id"
       class="widget-category"
     >
-      <h3 class="category-title">{{ category.label }}</h3>
+      <h3 class="category-title">
+        {{ category.label }}
+      </h3>
       <div class="widget-grid">
         <WidgetItem
           v-for="config in getWidgetsByCategory(category.id)"

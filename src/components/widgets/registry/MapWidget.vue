@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -47,7 +47,7 @@ const mapStyleLabel = computed(() => {
     :style="{
       borderRadius: widget.styles.borderRadius,
       padding: widget.styles.padding,
-      margin: widget.styles.margin
+      margin: widget.styles.margin,
     }"
   >
     <!-- Carte Google Maps -->
@@ -63,16 +63,22 @@ const mapStyleLabel = computed(() => {
         referrerpolicy="no-referrer-when-downgrade"
         class="map-iframe"
       />
-      <div class="map-address-overlay" v-if="widget.content.address">
+      <div v-if="widget.content.address" class="map-address-overlay">
         <span class="address-text">{{ widget.content.address }}</span>
       </div>
     </div>
 
     <!-- Placeholder -->
     <div v-else class="map-placeholder">
-      <div class="placeholder-icon">📍</div>
-      <p class="placeholder-text">Google Maps</p>
-      <p class="placeholder-hint">Entrez une adresse ou des coordonnées</p>
+      <div class="placeholder-icon">
+        📍
+      </div>
+      <p class="placeholder-text">
+        Google Maps
+      </p>
+      <p class="placeholder-hint">
+        Entrez une adresse ou des coordonnées
+      </p>
       <div class="map-styles-preview">
         <span class="style-chip active">🗺️ Plan</span>
         <span class="style-chip">🛰️ Satellite</span>

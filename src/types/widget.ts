@@ -1,54 +1,54 @@
-export type WidgetType =
+export type WidgetType
   // Base
-  | 'title'
-  | 'text'
-  | 'image'
-  | 'button'
-  | 'separator'
-  | 'spacer'
-  | 'click-to-call'
+  = | 'title'
+    | 'text'
+    | 'image'
+    | 'button'
+    | 'separator'
+    | 'spacer'
+    | 'click-to-call'
   // Structure
-  | 'row'
-  | 'column'
+    | 'row'
+    | 'column'
   // Forms
-  | 'form'
-  | 'form-field'
+    | 'form'
+    | 'form-field'
   // Media
-  | 'video'
-  | 'map'
-  | 'social'
-  | 'icon'
+    | 'video'
+    | 'map'
+    | 'social'
+    | 'icon'
   // Wellpack
-  | 'barcode'
-  | 'store-locator'
-  | 'drive'
-  | 'scratch'
-  | 'flipcard'
+    | 'barcode'
+    | 'store-locator'
+    | 'drive'
+    | 'scratch'
+    | 'flipcard'
   // Advanced
-  | 'gallery'
-  | 'slider'
-  | 'link-image'
-  | 'effect'
+    | 'gallery'
+    | 'slider'
+    | 'link-image'
+    | 'effect'
 
-export type FormFieldType =
-  | 'text'
-  | 'email'
-  | 'tel'
-  | 'number'
-  | 'date'
-  | 'select'
-  | 'checkbox'
-  | 'radio'
-  | 'textarea'
+export type FormFieldType
+  = | 'text'
+    | 'email'
+    | 'tel'
+    | 'number'
+    | 'date'
+    | 'select'
+    | 'checkbox'
+    | 'radio'
+    | 'textarea'
 
 export interface SelectOption {
   value: string
   label: string
 }
 
-export type SocialPlatform =
-  | 'facebook' | 'instagram' | 'twitter' | 'linkedin'
-  | 'youtube' | 'tiktok' | 'whatsapp' | 'telegram' | 'email'
+export type SocialPlatform
+  = | 'facebook' | 'instagram' | 'twitter' | 'linkedin'
+    | 'youtube' | 'tiktok' | 'whatsapp' | 'telegram' | 'email'
 
 export interface SocialLink {
   platform: SocialPlatform
@@ -249,6 +249,6 @@ export interface WidgetConfig {
   defaultContent: WidgetContent
   defaultStyles: WidgetStyles
   canHaveChildren?: boolean
-  allowedChildren?: WidgetType[]     // Si défini, seuls ces types sont autorisés
-  disallowedChildren?: WidgetType[]  // Types explicitement interdits
+  allowedChildren?: WidgetType[] // Si défini, seuls ces types sont autorisés
+  disallowedChildren?: WidgetType[] // Types explicitement interdits
 }

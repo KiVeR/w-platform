@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import type { Widget } from '@/types/widget'
+import { ref, watch } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
@@ -51,13 +51,12 @@ function handleKeydown(event: KeyboardEvent) {
         fontSize: widget.styles.fontSize,
         fontWeight: widget.styles.fontWeight,
         color: widget.styles.color,
-        textAlign: widget.styles.textAlign
+        textAlign: widget.styles.textAlign,
       }"
+      autofocus
       @blur="stopEditing"
       @keydown="handleKeydown"
-      ref="inputRef"
-      autofocus
-    />
+    >
     <h1
       v-else
       class="title-text"

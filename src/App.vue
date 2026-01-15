@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import EditorLayout from '@/components/layout/EditorLayout.vue'
-import { useHistoryStore } from '@/stores/history'
 import { useEditorStore } from '@/stores/editor'
-import { useWidgetsStore } from '@/stores/widgets'
+import { useHistoryStore } from '@/stores/history'
 import { useSelectionStore } from '@/stores/selection'
+import { useWidgetsStore } from '@/stores/widgets'
 
 const historyStore = useHistoryStore()
 const editorStore = useEditorStore()

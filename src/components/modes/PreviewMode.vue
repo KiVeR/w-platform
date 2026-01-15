@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import MobileFrame from '@/components/canvas/MobileFrame.vue'
 import CanvasDropzone from '@/components/canvas/CanvasDropzone.vue'
+import MobileFrame from '@/components/canvas/MobileFrame.vue'
 
 type Device = 'mobile' | 'tablet' | 'desktop'
 const devices: Device[] = ['mobile', 'tablet', 'desktop']

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useUIStore } from '@/stores/ui'
-import LeftSidebar from './LeftSidebar.vue'
 import CenterCanvas from './CenterCanvas.vue'
-import RightSidebar from './RightSidebar.vue'
 import EditorToolbar from './EditorToolbar.vue'
+import LeftSidebar from './LeftSidebar.vue'
+import RightSidebar from './RightSidebar.vue'
 
 const uiStore = useUIStore()
 </script>

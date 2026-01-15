@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -18,7 +18,7 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
     :style="{
       padding: widget.styles.padding,
       margin: widget.styles.margin,
-      textAlign: widget.styles.textAlign
+      textAlign: widget.styles.textAlign,
     }"
   >
     <!-- Bouton galerie -->
@@ -35,19 +35,25 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
           :key="index"
           class="gallery-thumb"
         >
-          <img :src="image.src" :alt="image.alt || `Image ${index + 1}`" />
+          <img :src="image.src" :alt="image.alt || `Image ${index + 1}`">
           <div v-if="index === 3 && images.length > 4" class="more-overlay">
             +{{ images.length - 4 }}
           </div>
         </div>
       </div>
-      <div class="images-count">{{ images.length }} image{{ images.length > 1 ? 's' : '' }}</div>
+      <div class="images-count">
+        {{ images.length }} image{{ images.length > 1 ? 's' : '' }}
+      </div>
     </div>
 
     <!-- État vide -->
     <div v-else class="gallery-empty">
-      <p class="empty-text">Aucune image</p>
-      <p class="empty-hint">Ajoutez des images dans les options</p>
+      <p class="empty-text">
+        Aucune image
+      </p>
+      <p class="empty-hint">
+        Ajoutez des images dans les options
+      </p>
     </div>
   </div>
 </template>

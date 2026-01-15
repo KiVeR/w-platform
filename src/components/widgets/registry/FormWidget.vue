@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { Widget, WidgetType } from '@/types/widget'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'
-import type { Widget, WidgetType } from '@/types/widget'
-import { useWidgetsStore } from '@/stores/widgets'
-import { useSelectionStore } from '@/stores/selection'
-import { canAcceptChild } from '@/config/widgets'
-import FormFieldWidget from './FormFieldWidget.vue'
 import WidgetRendererInner from '@/components/canvas/WidgetRendererInner.vue'
+import { canAcceptChild } from '@/config/widgets'
+import { useSelectionStore } from '@/stores/selection'
+import { useWidgetsStore } from '@/stores/widgets'
+import FormFieldWidget from './FormFieldWidget.vue'
 
 const props = defineProps<{
   widget: Widget
@@ -20,14 +20,14 @@ const children = computed({
   get: () => props.widget.children || [],
   set: (value) => {
     widgetsStore.updateWidgetChildren(props.widget.id, value)
-  }
+  },
 })
 
 const formStyle = computed(() => ({
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
   backgroundColor: props.widget.styles.backgroundColor,
-  borderRadius: props.widget.styles.borderRadius
+  borderRadius: props.widget.styles.borderRadius,
 }))
 
 function addField() {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -17,22 +17,26 @@ const currentIndex = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
 const currentImage = computed(() => {
-  if (!hasImages.value) return null
+  if (!hasImages.value)
+    return null
   return images.value[currentIndex.value]
 })
 
 function next() {
-  if (!hasImages.value) return
+  if (!hasImages.value)
+    return
   currentIndex.value = (currentIndex.value + 1) % images.value.length
 }
 
 function prev() {
-  if (!hasImages.value) return
+  if (!hasImages.value)
+    return
   currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length
 }
 
 function startAutoplay() {
-  if (timer) clearInterval(timer)
+  if (timer)
+    clearInterval(timer)
   if (autoplay.value && hasImages.value && images.value.length > 1) {
     timer = setInterval(next, interval.value)
   }
@@ -63,7 +67,7 @@ onUnmounted(() => {
     class="slider-widget"
     :style="{
       padding: widget.styles.padding,
-      margin: widget.styles.margin
+      margin: widget.styles.margin,
     }"
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
@@ -81,7 +85,7 @@ onUnmounted(() => {
           :src="currentImage.src"
           :alt="currentImage.alt || `Slide ${currentIndex + 1}`"
           class="slider-image"
-        />
+        >
 
         <!-- Chevrons -->
         <button
@@ -116,9 +120,15 @@ onUnmounted(() => {
 
     <!-- État vide -->
     <div v-else class="slider-empty">
-      <div class="empty-icon">🎠</div>
-      <p class="empty-text">Carrousel</p>
-      <p class="empty-hint">Ajoutez des images dans les options</p>
+      <div class="empty-icon">
+        🎠
+      </div>
+      <p class="empty-text">
+        Carrousel
+      </p>
+      <p class="empty-hint">
+        Ajoutez des images dans les options
+      </p>
     </div>
   </div>
 </template>

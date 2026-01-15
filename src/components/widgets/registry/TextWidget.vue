@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import type { Widget } from '@/types/widget'
+import { ref, watch } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
@@ -46,12 +46,12 @@ function handleKeydown(event: KeyboardEvent) {
       :style="{
         fontSize: widget.styles.fontSize,
         color: widget.styles.color,
-        textAlign: widget.styles.textAlign
+        textAlign: widget.styles.textAlign,
       }"
-      @blur="stopEditing"
-      @keydown="handleKeydown"
       rows="4"
       autofocus
+      @blur="stopEditing"
+      @keydown="handleKeydown"
     />
     <p
       v-else

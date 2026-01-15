@@ -28,7 +28,9 @@ const activeTab = ref<Tab>('widgets')
     <div class="sidebar-content">
       <WidgetPalette v-if="activeTab === 'widgets'" />
       <div v-else class="effects-placeholder">
-        <p class="placeholder-text">Effets à venir...</p>
+        <p class="placeholder-text">
+          Effets à venir...
+        </p>
       </div>
     </div>
   </aside>

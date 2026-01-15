@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -22,7 +22,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
     :style="{
       padding: widget.styles.padding,
       margin: widget.styles.margin,
-      textAlign: widget.styles.textAlign
+      textAlign: widget.styles.textAlign,
     }"
   >
     <div v-if="hasImages" class="scratch-container">
@@ -39,13 +39,13 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
           :src="imageBg"
           alt="Image révélée"
           class="scratch-image bg"
-        />
+        >
         <!-- Image du dessus (à gratter) - avec effet -->
         <img
           :src="imageFg"
           alt="Image à gratter"
           class="scratch-image fg"
-        />
+        >
         <!-- Overlay d'indication -->
         <div class="scratch-overlay">
           <span class="scratch-hint">✋ Grattez pour découvrir</span>
@@ -61,9 +61,15 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
 
     <!-- État vide -->
     <div v-else class="scratch-empty">
-      <div class="empty-icon">🎰</div>
-      <p class="empty-text">Carte à gratter</p>
-      <p class="empty-hint">Configurez les images dans les options</p>
+      <div class="empty-icon">
+        🎰
+      </div>
+      <p class="empty-text">
+        Carte à gratter
+      </p>
+      <p class="empty-hint">
+        Configurez les images dans les options
+      </p>
     </div>
   </div>
 </template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'
-import type { Widget } from '@/types/widget'
-import { useWidgetsStore } from '@/stores/widgets'
 import { useSelectionStore } from '@/stores/selection'
+import { useWidgetsStore } from '@/stores/widgets'
 import ColumnWidget from './ColumnWidget.vue'
 
 const props = defineProps<{
@@ -18,7 +18,7 @@ const children = computed({
   get: () => props.widget.children || [],
   set: (value) => {
     widgetsStore.updateWidgetChildren(props.widget.id, value)
-  }
+  },
 })
 
 const rowStyle = computed(() => ({
@@ -29,7 +29,7 @@ const rowStyle = computed(() => ({
   alignItems: props.widget.content.align || 'stretch',
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
-  minHeight: '60px'
+  minHeight: '60px',
 }))
 
 function addColumn() {
@@ -60,8 +60,8 @@ function addColumn() {
     <button
       v-if="editable && children.length < 4"
       class="add-column-btn"
-      @click.stop="addColumn"
       title="Ajouter une colonne"
+      @click.stop="addColumn"
     >
       <span>+</span>
     </button>

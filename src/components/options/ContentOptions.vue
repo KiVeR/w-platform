@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { FormFieldType, GalleryImage, SelectOption, SocialLink, SocialPlatform, StoreLocation, Widget, WidgetContent } from '@/types/widget'
 import { computed } from 'vue'
-import type { Widget, FormFieldType, SelectOption, WidgetContent, SocialPlatform, SocialLink, StoreLocation, GalleryImage } from '@/types/widget'
 import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
@@ -24,7 +24,7 @@ const optionsText = computed({
       .filter(line => line.trim())
       .map(parseOptionLine)
     updateContent('options', options)
-  }
+  },
 })
 
 function parseOptionLine(line: string): SelectOption {
@@ -32,11 +32,11 @@ function parseOptionLine(line: string): SelectOption {
   const trimmedValue = value?.trim() || ''
   return {
     value: trimmedValue,
-    label: label?.trim() || trimmedValue
+    label: label?.trim() || trimmedValue,
   }
 }
 
-const fieldTypes: { value: FormFieldType; label: string }[] = [
+const fieldTypes: { value: FormFieldType, label: string }[] = [
   { value: 'text', label: 'Texte' },
   { value: 'email', label: 'Email' },
   { value: 'tel', label: 'Téléphone' },
@@ -45,7 +45,7 @@ const fieldTypes: { value: FormFieldType; label: string }[] = [
   { value: 'textarea', label: 'Zone de texte' },
   { value: 'select', label: 'Liste déroulante' },
   { value: 'checkbox', label: 'Case à cocher' },
-  { value: 'radio', label: 'Boutons radio' }
+  { value: 'radio', label: 'Boutons radio' },
 ]
 
 // Social widget helpers
@@ -58,7 +58,7 @@ const socialLabels: Record<SocialPlatform, string> = {
   tiktok: 'TikTok',
   whatsapp: 'WhatsApp',
   telegram: 'Telegram',
-  email: 'Email'
+  email: 'Email',
 }
 
 const socialPlaceholders: Record<SocialPlatform, string> = {
@@ -70,7 +70,7 @@ const socialPlaceholders: Record<SocialPlatform, string> = {
   tiktok: 'https://tiktok.com/@...',
   whatsapp: '+33612345678',
   telegram: '@username',
-  email: 'contact@example.com'
+  email: 'contact@example.com',
 }
 
 function getSocialLabel(platform: SocialPlatform): string {
@@ -100,7 +100,7 @@ function addStore(): void {
     address: '',
     latitude: 0,
     longitude: 0,
-    phone: ''
+    phone: '',
   })
   updateContent('storeLocatorStores', stores)
 }
@@ -128,7 +128,7 @@ function addDriveStore(): void {
     latitude: 0,
     longitude: 0,
     phone: '',
-    openingHours: ''
+    openingHours: '',
   })
   updateContent('driveStores', stores)
 }
@@ -203,9 +203,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.text"
-          @input="updateContent('text', ($event.target as HTMLInputElement).value)"
           placeholder="Entrez le titre"
-        />
+          @input="updateContent('text', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -216,9 +216,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
         <textarea
           class="option-textarea"
           :value="widget.content.text"
-          @input="updateContent('text', ($event.target as HTMLTextAreaElement).value)"
           placeholder="Entrez le texte"
           rows="5"
+          @input="updateContent('text', ($event.target as HTMLTextAreaElement).value)"
         />
       </div>
     </template>
@@ -231,9 +231,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.src"
-          @input="updateContent('src', ($event.target as HTMLInputElement).value)"
           placeholder="https://exemple.com/image.jpg"
-        />
+          @input="updateContent('src', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Texte alternatif</label>
@@ -241,9 +241,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.alt"
-          @input="updateContent('alt', ($event.target as HTMLInputElement).value)"
           placeholder="Description de l'image"
-        />
+          @input="updateContent('alt', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -255,9 +255,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.text"
-          @input="updateContent('text', ($event.target as HTMLInputElement).value)"
           placeholder="Cliquez ici"
-        />
+          @input="updateContent('text', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Action</label>
@@ -266,9 +266,15 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.action"
           @change="updateContent('action', ($event.target as HTMLSelectElement).value as 'link' | 'tel' | 'email')"
         >
-          <option value="link">Lien</option>
-          <option value="tel">Téléphone</option>
-          <option value="email">Email</option>
+          <option value="link">
+            Lien
+          </option>
+          <option value="tel">
+            Téléphone
+          </option>
+          <option value="email">
+            Email
+          </option>
         </select>
       </div>
       <div v-if="widget.content.action === 'tel'" class="option-group">
@@ -277,9 +283,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="tel"
           class="option-input"
           :value="widget.content.phone"
-          @input="updateContent('phone', ($event.target as HTMLInputElement).value)"
           placeholder="+33123456789"
-        />
+          @input="updateContent('phone', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div v-else class="option-group">
         <label class="option-label">{{ widget.content.action === 'email' ? 'Email' : 'URL' }} *</label>
@@ -287,9 +293,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :type="widget.content.action === 'email' ? 'email' : 'url'"
           class="option-input"
           :value="widget.content.href"
-          @input="updateContent('href', ($event.target as HTMLInputElement).value)"
           :placeholder="widget.content.action === 'email' ? 'contact@exemple.com' : 'https://exemple.com'"
-        />
+          @input="updateContent('href', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -301,9 +307,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.text"
-          @input="updateContent('text', ($event.target as HTMLInputElement).value)"
           placeholder="Appeler"
-        />
+          @input="updateContent('text', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Téléphone *</label>
@@ -311,9 +317,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="tel"
           class="option-input"
           :value="widget.content.phone"
-          @input="updateContent('phone', ($event.target as HTMLInputElement).value)"
           placeholder="+33123456789"
-        />
+          @input="updateContent('phone', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -328,8 +334,8 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             min="8"
             max="200"
             :value="parseInt(widget.styles.height || '32')"
-            @input="widgetsStore.updateWidgetStyles(widget.id, { height: ($event.target as HTMLInputElement).value + 'px' })"
-          />
+            @input="widgetsStore.updateWidgetStyles(widget.id, { height: `${($event.target as HTMLInputElement).value}px` })"
+          >
           <span class="range-value">{{ widget.styles.height || '32px' }}</span>
         </div>
       </div>
@@ -344,9 +350,15 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.styles.borderStyle"
           @change="widgetsStore.updateWidgetStyles(widget.id, { borderStyle: ($event.target as HTMLSelectElement).value as any })"
         >
-          <option value="solid">Solide</option>
-          <option value="dashed">Tirets</option>
-          <option value="dotted">Pointillés</option>
+          <option value="solid">
+            Solide
+          </option>
+          <option value="dashed">
+            Tirets
+          </option>
+          <option value="dotted">
+            Pointillés
+          </option>
         </select>
       </div>
     </template>
@@ -360,10 +372,18 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.gap"
           @change="updateContent('gap', ($event.target as HTMLSelectElement).value)"
         >
-          <option value="8px">Petit (8px)</option>
-          <option value="16px">Moyen (16px)</option>
-          <option value="24px">Grand (24px)</option>
-          <option value="32px">Très grand (32px)</option>
+          <option value="8px">
+            Petit (8px)
+          </option>
+          <option value="16px">
+            Moyen (16px)
+          </option>
+          <option value="24px">
+            Grand (24px)
+          </option>
+          <option value="32px">
+            Très grand (32px)
+          </option>
         </select>
       </div>
       <div class="option-group">
@@ -373,10 +393,18 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.align"
           @change="updateContent('align', ($event.target as HTMLSelectElement).value as 'start' | 'center' | 'end' | 'stretch')"
         >
-          <option value="stretch">Étirer</option>
-          <option value="start">Haut</option>
-          <option value="center">Centre</option>
-          <option value="end">Bas</option>
+          <option value="stretch">
+            Étirer
+          </option>
+          <option value="start">
+            Haut
+          </option>
+          <option value="center">
+            Centre
+          </option>
+          <option value="end">
+            Bas
+          </option>
         </select>
       </div>
       <div class="option-group">
@@ -385,7 +413,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.wrap !== false"
             @change="updateContent('wrap', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Retour à la ligne sur mobile
         </label>
       </div>
@@ -400,13 +428,27 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.columnWidth"
           @change="updateContent('columnWidth', ($event.target as HTMLSelectElement).value)"
         >
-          <option value="auto">Auto (flexible)</option>
-          <option value="25%">25%</option>
-          <option value="33%">33%</option>
-          <option value="50%">50%</option>
-          <option value="66%">66%</option>
-          <option value="75%">75%</option>
-          <option value="100%">100%</option>
+          <option value="auto">
+            Auto (flexible)
+          </option>
+          <option value="25%">
+            25%
+          </option>
+          <option value="33%">
+            33%
+          </option>
+          <option value="50%">
+            50%
+          </option>
+          <option value="66%">
+            66%
+          </option>
+          <option value="75%">
+            75%
+          </option>
+          <option value="100%">
+            100%
+          </option>
         </select>
       </div>
     </template>
@@ -419,9 +461,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.successMessage"
-          @input="updateContent('successMessage', ($event.target as HTMLInputElement).value)"
           placeholder="Merci ! Votre message a été envoyé."
-        />
+          @input="updateContent('successMessage', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">URL de redirection</label>
@@ -429,9 +471,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.redirectUrl"
-          @input="updateContent('redirectUrl', ($event.target as HTMLInputElement).value)"
           placeholder="https://exemple.com/merci"
-        />
+          @input="updateContent('redirectUrl', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label checkbox-label">
@@ -439,7 +481,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.emailNotify"
             @change="updateContent('emailNotify', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Envoyer une notification par email
         </label>
       </div>
@@ -450,9 +492,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="email"
             class="option-input"
             :value="widget.content.emailTo"
-            @input="updateContent('emailTo', ($event.target as HTMLInputElement).value)"
             placeholder="contact@exemple.com"
-          />
+            @input="updateContent('emailTo', ($event.target as HTMLInputElement).value)"
+          >
         </div>
         <div class="option-group">
           <label class="option-label">Sujet de l'email</label>
@@ -460,9 +502,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="text"
             class="option-input"
             :value="widget.content.emailSubject"
-            @input="updateContent('emailSubject', ($event.target as HTMLInputElement).value)"
             placeholder="Nouveau message"
-          />
+            @input="updateContent('emailSubject', ($event.target as HTMLInputElement).value)"
+          >
         </div>
       </template>
     </template>
@@ -487,9 +529,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.label"
-          @input="updateContent('label', ($event.target as HTMLInputElement).value)"
           placeholder="Votre nom"
-        />
+          @input="updateContent('label', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div v-if="!['checkbox', 'radio'].includes(widget.content.fieldType || '')" class="option-group">
         <label class="option-label">Placeholder</label>
@@ -497,9 +539,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.placeholder"
-          @input="updateContent('placeholder', ($event.target as HTMLInputElement).value)"
           placeholder="Texte d'aide..."
-        />
+          @input="updateContent('placeholder', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label checkbox-label">
@@ -507,7 +549,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.required"
             @change="updateContent('required', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Champ obligatoire
         </label>
       </div>
@@ -519,9 +561,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           <textarea
             class="option-textarea"
             :value="optionsText"
-            @input="optionsText = ($event.target as HTMLTextAreaElement).value"
             placeholder="valeur::Label&#10;valeur2::Label 2"
             rows="4"
+            @input="optionsText = ($event.target as HTMLTextAreaElement).value"
           />
           <span class="option-hint">Format: valeur::Label (une option par ligne)</span>
         </div>
@@ -536,9 +578,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.videoUrl"
-          @input="updateContent('videoUrl', ($event.target as HTMLInputElement).value)"
           placeholder="https://youtube.com/watch?v=..."
-        />
+          @input="updateContent('videoUrl', ($event.target as HTMLInputElement).value)"
+        >
         <span class="option-hint">YouTube ou Vimeo détecté automatiquement</span>
       </div>
       <div class="option-group">
@@ -547,7 +589,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.autoplay"
             @change="updateContent('autoplay', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Lecture automatique
         </label>
       </div>
@@ -557,7 +599,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.muted"
             @change="updateContent('muted', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Son coupé
         </label>
       </div>
@@ -567,7 +609,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.loop"
             @change="updateContent('loop', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Boucle
         </label>
       </div>
@@ -577,7 +619,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="checkbox"
             :checked="widget.content.controls !== false"
             @change="updateContent('controls', ($event.target as HTMLInputElement).checked)"
-          />
+          >
           Afficher les contrôles
         </label>
       </div>
@@ -591,9 +633,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.address"
-          @input="updateContent('address', ($event.target as HTMLInputElement).value)"
           placeholder="123 rue Example, Paris"
-        />
+          @input="updateContent('address', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Zoom (1-20)</label>
@@ -603,7 +645,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           max="20"
           :value="widget.content.zoom || 15"
           @input="updateContent('zoom', parseInt(($event.target as HTMLInputElement).value))"
-        />
+        >
         <span class="option-value">{{ widget.content.zoom || 15 }}</span>
       </div>
       <div class="option-group">
@@ -613,10 +655,18 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.mapStyle"
           @change="updateContent('mapStyle', ($event.target as HTMLSelectElement).value as 'roadmap' | 'satellite' | 'hybrid' | 'terrain')"
         >
-          <option value="roadmap">Plan</option>
-          <option value="satellite">Satellite</option>
-          <option value="hybrid">Hybride</option>
-          <option value="terrain">Terrain</option>
+          <option value="roadmap">
+            Plan
+          </option>
+          <option value="satellite">
+            Satellite
+          </option>
+          <option value="hybrid">
+            Hybride
+          </option>
+          <option value="terrain">
+            Terrain
+          </option>
         </select>
       </div>
     </template>
@@ -630,9 +680,15 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.socialStyle"
           @change="updateContent('socialStyle', ($event.target as HTMLSelectElement).value as 'icons' | 'buttons' | 'pills')"
         >
-          <option value="icons">Icônes rondes</option>
-          <option value="pills">Pilules</option>
-          <option value="buttons">Boutons</option>
+          <option value="icons">
+            Icônes rondes
+          </option>
+          <option value="pills">
+            Pilules
+          </option>
+          <option value="buttons">
+            Boutons
+          </option>
         </select>
       </div>
       <div class="option-group">
@@ -642,9 +698,15 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.socialSize"
           @change="updateContent('socialSize', ($event.target as HTMLSelectElement).value as 'small' | 'medium' | 'large')"
         >
-          <option value="small">Petit</option>
-          <option value="medium">Moyen</option>
-          <option value="large">Grand</option>
+          <option value="small">
+            Petit
+          </option>
+          <option value="medium">
+            Moyen
+          </option>
+          <option value="large">
+            Grand
+          </option>
         </select>
       </div>
       <div class="social-links-editor">
@@ -659,7 +721,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
               type="checkbox"
               :checked="link.enabled"
               @change="updateSocialLink(index, 'enabled', ($event.target as HTMLInputElement).checked)"
-            />
+            >
             <span class="social-platform">{{ getSocialLabel(link.platform) }}</span>
           </label>
           <input
@@ -667,9 +729,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="text"
             class="option-input social-url"
             :value="link.url"
-            @input="updateSocialLink(index, 'url', ($event.target as HTMLInputElement).value)"
             :placeholder="getSocialPlaceholder(link.platform)"
-          />
+            @input="updateSocialLink(index, 'url', ($event.target as HTMLInputElement).value)"
+          >
         </div>
       </div>
     </template>
@@ -683,9 +745,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="text"
             class="option-input icon-input"
             :value="widget.content.iconName"
-            @input="updateContent('iconName', ($event.target as HTMLInputElement).value)"
             placeholder="⭐"
-          />
+            @input="updateContent('iconName', ($event.target as HTMLInputElement).value)"
+          >
           <div class="icon-suggestions">
             <button
               v-for="emoji in popularEmojis"
@@ -706,11 +768,21 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.iconSize"
           @change="updateContent('iconSize', ($event.target as HTMLSelectElement).value)"
         >
-          <option value="24px">Petit (24px)</option>
-          <option value="36px">Moyen (36px)</option>
-          <option value="48px">Grand (48px)</option>
-          <option value="64px">Très grand (64px)</option>
-          <option value="96px">Énorme (96px)</option>
+          <option value="24px">
+            Petit (24px)
+          </option>
+          <option value="36px">
+            Moyen (36px)
+          </option>
+          <option value="48px">
+            Grand (48px)
+          </option>
+          <option value="64px">
+            Très grand (64px)
+          </option>
+          <option value="96px">
+            Énorme (96px)
+          </option>
         </select>
       </div>
       <div class="option-group">
@@ -719,9 +791,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.href"
-          @input="updateContent('href', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('href', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -734,8 +806,12 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.barcodeType"
           @change="updateContent('barcodeType', ($event.target as HTMLSelectElement).value as 'ean13' | 'ean8')"
         >
-          <option value="ean13">EAN-13 (13 chiffres)</option>
-          <option value="ean8">EAN-8 (8 chiffres)</option>
+          <option value="ean13">
+            EAN-13 (13 chiffres)
+          </option>
+          <option value="ean8">
+            EAN-8 (8 chiffres)
+          </option>
         </select>
       </div>
       <div class="option-group">
@@ -744,9 +820,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.barcodeCode"
-          @input="updateContent('barcodeCode', ($event.target as HTMLInputElement).value)"
           :placeholder="widget.content.barcodeType === 'ean8' ? '12345678' : '1234567890123'"
-        />
+          @input="updateContent('barcodeCode', ($event.target as HTMLInputElement).value)"
+        >
         <span class="option-hint">
           {{ widget.content.barcodeType === 'ean8' ? '7-8 chiffres pour EAN-8' : '12-13 chiffres pour EAN-13' }}
           (le checksum est calculé automatiquement)
@@ -758,9 +834,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.barcodeVariable"
-          @input="updateContent('barcodeVariable', ($event.target as HTMLInputElement).value)"
           placeholder="${barcode}"
-        />
+          @input="updateContent('barcodeVariable', ($event.target as HTMLInputElement).value)"
+        >
         <span class="option-hint">
           Utiliser une variable comme ${barcode} pour un code dynamique
         </span>
@@ -773,14 +849,14 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             class="color-picker"
             :value="widget.content.barcodeColor || '#000000'"
             @input="updateContent('barcodeColor', ($event.target as HTMLInputElement).value)"
-          />
+          >
           <input
             type="text"
             class="option-input color-text"
             :value="widget.content.barcodeColor || '#000000'"
-            @input="updateContent('barcodeColor', ($event.target as HTMLInputElement).value)"
             placeholder="#000000"
-          />
+            @input="updateContent('barcodeColor', ($event.target as HTMLInputElement).value)"
+          >
         </div>
       </div>
     </template>
@@ -793,9 +869,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.storeLocatorLabel"
-          @input="updateContent('storeLocatorLabel', ($event.target as HTMLInputElement).value)"
           placeholder="Nos magasins"
-        />
+          @input="updateContent('storeLocatorLabel', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Texte du bouton</label>
@@ -803,9 +879,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.storeLocatorButtonText"
-          @input="updateContent('storeLocatorButtonText', ($event.target as HTMLInputElement).value)"
           placeholder="Voir tous les lieux"
-        />
+          @input="updateContent('storeLocatorButtonText', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Couleur du bouton</label>
@@ -815,14 +891,14 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             class="color-picker"
             :value="widget.content.storeLocatorButtonColor || '#14b8a6'"
             @input="updateContent('storeLocatorButtonColor', ($event.target as HTMLInputElement).value)"
-          />
+          >
           <input
             type="text"
             class="option-input color-text"
             :value="widget.content.storeLocatorButtonColor || '#14b8a6'"
-            @input="updateContent('storeLocatorButtonColor', ($event.target as HTMLInputElement).value)"
             placeholder="#14b8a6"
-          />
+            @input="updateContent('storeLocatorButtonColor', ($event.target as HTMLInputElement).value)"
+          >
         </div>
       </div>
       <div class="option-group">
@@ -834,7 +910,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             class="store-edit-item"
           >
             <div class="store-edit-header">
-              <span class="store-edit-name">{{ store.name || 'Lieu ' + (index + 1) }}</span>
+              <span class="store-edit-name">{{ store.name || `Lieu ${index + 1}` }}</span>
               <button
                 type="button"
                 class="store-remove-btn"
@@ -847,41 +923,41 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
               type="text"
               class="option-input"
               :value="store.name"
-              @input="updateStore(index, 'name', ($event.target as HTMLInputElement).value)"
               placeholder="Nom du lieu *"
-            />
+              @input="updateStore(index, 'name', ($event.target as HTMLInputElement).value)"
+            >
             <input
               type="text"
               class="option-input"
               :value="store.address"
-              @input="updateStore(index, 'address', ($event.target as HTMLInputElement).value)"
               placeholder="Adresse *"
-            />
+              @input="updateStore(index, 'address', ($event.target as HTMLInputElement).value)"
+            >
             <div class="store-coords">
               <input
                 type="number"
                 step="any"
                 class="option-input"
                 :value="store.latitude"
-                @input="updateStore(index, 'latitude', parseFloat(($event.target as HTMLInputElement).value))"
                 placeholder="Latitude *"
-              />
+                @input="updateStore(index, 'latitude', parseFloat(($event.target as HTMLInputElement).value))"
+              >
               <input
                 type="number"
                 step="any"
                 class="option-input"
                 :value="store.longitude"
-                @input="updateStore(index, 'longitude', parseFloat(($event.target as HTMLInputElement).value))"
                 placeholder="Longitude *"
-              />
+                @input="updateStore(index, 'longitude', parseFloat(($event.target as HTMLInputElement).value))"
+              >
             </div>
             <input
               type="tel"
               class="option-input"
               :value="store.phone"
-              @input="updateStore(index, 'phone', ($event.target as HTMLInputElement).value)"
               placeholder="Téléphone (optionnel)"
-            />
+              @input="updateStore(index, 'phone', ($event.target as HTMLInputElement).value)"
+            >
           </div>
           <button
             type="button"
@@ -902,9 +978,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.driveButtonText"
-          @input="updateContent('driveButtonText', ($event.target as HTMLInputElement).value)"
           placeholder="Trouver le magasin le plus proche"
-        />
+          @input="updateContent('driveButtonText', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Couleur du bouton</label>
@@ -914,13 +990,13 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             class="color-picker"
             :value="widget.content.driveButtonColor || '#14b8a6'"
             @input="updateContent('driveButtonColor', ($event.target as HTMLInputElement).value)"
-          />
+          >
           <input
             type="text"
             class="option-input color-text"
             :value="widget.content.driveButtonColor || '#14b8a6'"
             @input="updateContent('driveButtonColor', ($event.target as HTMLInputElement).value)"
-          />
+          >
         </div>
       </div>
       <div class="option-group">
@@ -930,15 +1006,15 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="text"
             class="option-input"
             :value="widget.content.driveBtnGoLabel"
-            @input="updateContent('driveBtnGoLabel', ($event.target as HTMLInputElement).value)"
             placeholder="S'y rendre"
-          />
+            @input="updateContent('driveBtnGoLabel', ($event.target as HTMLInputElement).value)"
+          >
           <input
             type="color"
             class="color-picker small"
             :value="widget.content.driveBtnGoColor || '#14b8a6'"
             @input="updateContent('driveBtnGoColor', ($event.target as HTMLInputElement).value)"
-          />
+          >
         </div>
       </div>
       <div class="option-group">
@@ -948,15 +1024,15 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="text"
             class="option-input"
             :value="widget.content.driveBtnCallLabel"
-            @input="updateContent('driveBtnCallLabel', ($event.target as HTMLInputElement).value)"
             placeholder="Appeler"
-          />
+            @input="updateContent('driveBtnCallLabel', ($event.target as HTMLInputElement).value)"
+          >
           <input
             type="color"
             class="color-picker small"
             :value="widget.content.driveBtnCallColor || '#6366f1'"
             @input="updateContent('driveBtnCallColor', ($event.target as HTMLInputElement).value)"
-          />
+          >
         </div>
       </div>
       <div class="option-group">
@@ -968,19 +1044,23 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             class="store-edit-item"
           >
             <div class="store-edit-header">
-              <span class="store-edit-name">{{ store.name || 'Magasin ' + (index + 1) }}</span>
-              <button type="button" class="store-remove-btn" @click="removeDriveStore(index)">✕</button>
+              <span class="store-edit-name">{{ store.name || `Magasin ${index + 1}` }}</span>
+              <button type="button" class="store-remove-btn" @click="removeDriveStore(index)">
+                ✕
+              </button>
             </div>
-            <input type="text" class="option-input" :value="store.name" @input="updateDriveStore(index, 'name', ($event.target as HTMLInputElement).value)" placeholder="Nom *" />
-            <input type="text" class="option-input" :value="store.address" @input="updateDriveStore(index, 'address', ($event.target as HTMLInputElement).value)" placeholder="Adresse *" />
+            <input type="text" class="option-input" :value="store.name" placeholder="Nom *" @input="updateDriveStore(index, 'name', ($event.target as HTMLInputElement).value)">
+            <input type="text" class="option-input" :value="store.address" placeholder="Adresse *" @input="updateDriveStore(index, 'address', ($event.target as HTMLInputElement).value)">
             <div class="store-coords">
-              <input type="number" step="any" class="option-input" :value="store.latitude" @input="updateDriveStore(index, 'latitude', parseFloat(($event.target as HTMLInputElement).value))" placeholder="Lat *" />
-              <input type="number" step="any" class="option-input" :value="store.longitude" @input="updateDriveStore(index, 'longitude', parseFloat(($event.target as HTMLInputElement).value))" placeholder="Lng *" />
+              <input type="number" step="any" class="option-input" :value="store.latitude" placeholder="Lat *" @input="updateDriveStore(index, 'latitude', parseFloat(($event.target as HTMLInputElement).value))">
+              <input type="number" step="any" class="option-input" :value="store.longitude" placeholder="Lng *" @input="updateDriveStore(index, 'longitude', parseFloat(($event.target as HTMLInputElement).value))">
             </div>
-            <input type="tel" class="option-input" :value="store.phone" @input="updateDriveStore(index, 'phone', ($event.target as HTMLInputElement).value)" placeholder="Téléphone" />
-            <input type="text" class="option-input" :value="store.openingHours" @input="updateDriveStore(index, 'openingHours', ($event.target as HTMLInputElement).value)" placeholder="Horaires" />
+            <input type="tel" class="option-input" :value="store.phone" placeholder="Téléphone" @input="updateDriveStore(index, 'phone', ($event.target as HTMLInputElement).value)">
+            <input type="text" class="option-input" :value="store.openingHours" placeholder="Horaires" @input="updateDriveStore(index, 'openingHours', ($event.target as HTMLInputElement).value)">
           </div>
-          <button type="button" class="add-store-btn" @click="addDriveStore">+ Ajouter un magasin</button>
+          <button type="button" class="add-store-btn" @click="addDriveStore">
+            + Ajouter un magasin
+          </button>
         </div>
       </div>
     </template>
@@ -993,9 +1073,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.scratchImageFg"
-          @input="updateContent('scratchImageFg', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('scratchImageFg', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Image du dessous (révélée) *</label>
@@ -1003,9 +1083,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.scratchImageBg"
-          @input="updateContent('scratchImageBg', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('scratchImageBg', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Taille de la pièce (px)</label>
@@ -1015,7 +1095,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           max="100"
           :value="widget.content.scratchSize || 30"
           @input="updateContent('scratchSize', parseInt(($event.target as HTMLInputElement).value))"
-        />
+        >
         <span class="option-value">{{ widget.content.scratchSize || 30 }}px</span>
       </div>
       <div class="option-group">
@@ -1026,7 +1106,7 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           max="100"
           :value="widget.content.scratchPercent || 80"
           @input="updateContent('scratchPercent', parseInt(($event.target as HTMLInputElement).value))"
-        />
+        >
         <span class="option-value">{{ widget.content.scratchPercent || 80 }}%</span>
       </div>
       <div class="option-group">
@@ -1035,9 +1115,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.scratchLink"
-          @input="updateContent('scratchLink', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('scratchLink', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -1049,9 +1129,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.flipcardImageFront"
-          @input="updateContent('flipcardImageFront', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('flipcardImageFront', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Image verso (après) *</label>
@@ -1059,9 +1139,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.flipcardImageBack"
-          @input="updateContent('flipcardImageBack', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('flipcardImageBack', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Lien de destination</label>
@@ -1069,9 +1149,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.flipcardLink"
-          @input="updateContent('flipcardLink', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('flipcardLink', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -1083,9 +1163,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.galleryButtonText"
-          @input="updateContent('galleryButtonText', ($event.target as HTMLInputElement).value)"
           placeholder="Voir la galerie"
-        />
+          @input="updateContent('galleryButtonText', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Images ({{ (widget.content.galleryImages || []).length }})</label>
@@ -1097,12 +1177,16 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           >
             <div class="image-edit-header">
               <span class="image-edit-name">Image {{ index + 1 }}</span>
-              <button type="button" class="store-remove-btn" @click="removeGalleryImage(index)">✕</button>
+              <button type="button" class="store-remove-btn" @click="removeGalleryImage(index)">
+                ✕
+              </button>
             </div>
-            <input type="url" class="option-input" :value="image.src" @input="updateGalleryImage(index, 'src', ($event.target as HTMLInputElement).value)" placeholder="URL de l'image *" />
-            <input type="text" class="option-input" :value="image.alt" @input="updateGalleryImage(index, 'alt', ($event.target as HTMLInputElement).value)" placeholder="Texte alt" />
+            <input type="url" class="option-input" :value="image.src" placeholder="URL de l'image *" @input="updateGalleryImage(index, 'src', ($event.target as HTMLInputElement).value)">
+            <input type="text" class="option-input" :value="image.alt" placeholder="Texte alt" @input="updateGalleryImage(index, 'alt', ($event.target as HTMLInputElement).value)">
           </div>
-          <button type="button" class="add-store-btn" @click="addGalleryImage">+ Ajouter une image</button>
+          <button type="button" class="add-store-btn" @click="addGalleryImage">
+            + Ajouter une image
+          </button>
         </div>
       </div>
     </template>
@@ -1115,22 +1199,22 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="number"
           class="option-input"
           :value="widget.content.sliderInterval"
-          @input="updateContent('sliderInterval', parseInt(($event.target as HTMLInputElement).value))"
           placeholder="3000"
           min="1000"
           step="500"
-        />
+          @input="updateContent('sliderInterval', parseInt(($event.target as HTMLInputElement).value))"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Couleur des chevrons</label>
         <div class="color-input-row">
-          <input type="color" class="color-picker" :value="widget.content.sliderChevronColor || '#ffffff'" @input="updateContent('sliderChevronColor', ($event.target as HTMLInputElement).value)" />
-          <input type="text" class="option-input color-text" :value="widget.content.sliderChevronColor || '#ffffff'" @input="updateContent('sliderChevronColor', ($event.target as HTMLInputElement).value)" />
+          <input type="color" class="color-picker" :value="widget.content.sliderChevronColor || '#ffffff'" @input="updateContent('sliderChevronColor', ($event.target as HTMLInputElement).value)">
+          <input type="text" class="option-input color-text" :value="widget.content.sliderChevronColor || '#ffffff'" @input="updateContent('sliderChevronColor', ($event.target as HTMLInputElement).value)">
         </div>
       </div>
       <div class="option-group">
         <label class="option-label checkbox-label">
-          <input type="checkbox" :checked="widget.content.sliderAutoplay !== false" @change="updateContent('sliderAutoplay', ($event.target as HTMLInputElement).checked)" />
+          <input type="checkbox" :checked="widget.content.sliderAutoplay !== false" @change="updateContent('sliderAutoplay', ($event.target as HTMLInputElement).checked)">
           Lecture automatique
         </label>
       </div>
@@ -1144,12 +1228,16 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           >
             <div class="image-edit-header">
               <span class="image-edit-name">Slide {{ index + 1 }}</span>
-              <button type="button" class="store-remove-btn" @click="removeSliderImage(index)">✕</button>
+              <button type="button" class="store-remove-btn" @click="removeSliderImage(index)">
+                ✕
+              </button>
             </div>
-            <input type="url" class="option-input" :value="image.src" @input="updateSliderImage(index, 'src', ($event.target as HTMLInputElement).value)" placeholder="URL de l'image *" />
-            <input type="text" class="option-input" :value="image.alt" @input="updateSliderImage(index, 'alt', ($event.target as HTMLInputElement).value)" placeholder="Texte alt" />
+            <input type="url" class="option-input" :value="image.src" placeholder="URL de l'image *" @input="updateSliderImage(index, 'src', ($event.target as HTMLInputElement).value)">
+            <input type="text" class="option-input" :value="image.alt" placeholder="Texte alt" @input="updateSliderImage(index, 'alt', ($event.target as HTMLInputElement).value)">
           </div>
-          <button type="button" class="add-store-btn" @click="addSliderImage">+ Ajouter une slide</button>
+          <button type="button" class="add-store-btn" @click="addSliderImage">
+            + Ajouter une slide
+          </button>
         </div>
       </div>
     </template>
@@ -1162,9 +1250,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.linkImageSrc"
-          @input="updateContent('linkImageSrc', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('linkImageSrc', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Texte alternatif</label>
@@ -1172,9 +1260,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="text"
           class="option-input"
           :value="widget.content.linkImageAlt"
-          @input="updateContent('linkImageAlt', ($event.target as HTMLInputElement).value)"
           placeholder="Description de l'image"
-        />
+          @input="updateContent('linkImageAlt', ($event.target as HTMLInputElement).value)"
+        >
       </div>
       <div class="option-group">
         <label class="option-label">Lien de destination</label>
@@ -1182,9 +1270,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           type="url"
           class="option-input"
           :value="widget.content.linkImageHref"
-          @input="updateContent('linkImageHref', ($event.target as HTMLInputElement).value)"
           placeholder="https://..."
-        />
+          @input="updateContent('linkImageHref', ($event.target as HTMLInputElement).value)"
+        >
       </div>
     </template>
 
@@ -1197,9 +1285,9 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
             type="text"
             class="option-input icon-input"
             :value="widget.content.effectImage"
-            @input="updateContent('effectImage', ($event.target as HTMLInputElement).value)"
             placeholder="❄️"
-          />
+            @input="updateContent('effectImage', ($event.target as HTMLInputElement).value)"
+          >
           <div class="icon-suggestions">
             <button
               v-for="emoji in effectEmojis"
@@ -1215,17 +1303,17 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
       </div>
       <div class="option-group">
         <label class="option-label">Taille (px)</label>
-        <input type="range" min="10" max="60" :value="widget.content.effectSize || 20" @input="updateContent('effectSize', parseInt(($event.target as HTMLInputElement).value))" />
+        <input type="range" min="10" max="60" :value="widget.content.effectSize || 20" @input="updateContent('effectSize', parseInt(($event.target as HTMLInputElement).value))">
         <span class="option-value">{{ widget.content.effectSize || 20 }}px</span>
       </div>
       <div class="option-group">
         <label class="option-label">Nombre de particules</label>
-        <input type="range" min="10" max="100" :value="widget.content.effectNbItems || 50" @input="updateContent('effectNbItems', parseInt(($event.target as HTMLInputElement).value))" />
+        <input type="range" min="10" max="100" :value="widget.content.effectNbItems || 50" @input="updateContent('effectNbItems', parseInt(($event.target as HTMLInputElement).value))">
         <span class="option-value">{{ widget.content.effectNbItems || 50 }}</span>
       </div>
       <div class="option-group">
         <label class="option-label">Vitesse (%)</label>
-        <input type="range" min="10" max="100" :value="widget.content.effectSpeed || 50" @input="updateContent('effectSpeed', parseInt(($event.target as HTMLInputElement).value))" />
+        <input type="range" min="10" max="100" :value="widget.content.effectSpeed || 50" @input="updateContent('effectSpeed', parseInt(($event.target as HTMLInputElement).value))">
         <span class="option-value">{{ widget.content.effectSpeed || 50 }}%</span>
       </div>
       <div class="option-group">
@@ -1235,13 +1323,19 @@ const effectEmojis = ['❄️', '🎉', '✨', '🌟', '💫', '🍂', '🌸', '
           :value="widget.content.effectDirection || 'down'"
           @change="updateContent('effectDirection', ($event.target as HTMLSelectElement).value as 'down' | 'up')"
         >
-          <option value="down">Vers le bas</option>
-          <option value="up">Vers le haut</option>
+          <option value="down">
+            Vers le bas
+          </option>
+          <option value="up">
+            Vers le haut
+          </option>
         </select>
       </div>
     </template>
 
-    <p class="required-hint">* champs obligatoires</p>
+    <p class="required-hint">
+      * champs obligatoires
+    </p>
   </div>
 </template>
 

@@ -1,15 +1,15 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
 import type { DesignDocument, GlobalStyles } from '@/types/widget'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 const defaultDesign: DesignDocument = {
   version: '1.0',
   globalStyles: {
     palette: 'turquoise',
     backgroundColor: '#ffffff',
-    textColor: '#1e293b'
+    textColor: '#1e293b',
   },
-  widgets: []
+  widgets: [],
 }
 
 export const useEditorStore = defineStore('editor', () => {
@@ -38,7 +38,7 @@ export const useEditorStore = defineStore('editor', () => {
   function updateGlobalStyles(styles: Partial<GlobalStyles>) {
     design.value.globalStyles = {
       ...design.value.globalStyles,
-      ...styles
+      ...styles,
     }
     isDirty.value = true
   }
@@ -85,6 +85,6 @@ export const useEditorStore = defineStore('editor', () => {
     markAsSaved,
     setLoading,
     setError,
-    reset
+    reset,
   }
 })

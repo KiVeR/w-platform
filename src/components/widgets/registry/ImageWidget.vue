@@ -14,7 +14,7 @@ defineProps<{
       :src="widget.content.src"
       :alt="widget.content.alt || 'Image'"
       class="widget-image"
-    />
+    >
     <div v-else class="image-placeholder">
       <span class="placeholder-icon">🖼</span>
       <span class="placeholder-text">Image</span>

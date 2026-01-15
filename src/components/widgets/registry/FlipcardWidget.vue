@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -29,7 +29,7 @@ function toggleFlip() {
     :style="{
       padding: widget.styles.padding,
       margin: widget.styles.margin,
-      textAlign: widget.styles.textAlign
+      textAlign: widget.styles.textAlign,
     }"
   >
     <div v-if="hasImages" class="flipcard-container">
@@ -48,13 +48,17 @@ function toggleFlip() {
         <div class="flipcard-inner">
           <!-- Face avant (recto) -->
           <div class="flipcard-face front">
-            <img :src="imageFront" alt="Recto" />
-            <div class="face-label">Recto</div>
+            <img :src="imageFront" alt="Recto">
+            <div class="face-label">
+              Recto
+            </div>
           </div>
           <!-- Face arrière (verso) -->
           <div class="flipcard-face back">
-            <img :src="imageBack" alt="Verso" />
-            <div class="face-label">Verso</div>
+            <img :src="imageBack" alt="Verso">
+            <div class="face-label">
+              Verso
+            </div>
           </div>
         </div>
       </div>
@@ -68,9 +72,15 @@ function toggleFlip() {
 
     <!-- État vide -->
     <div v-else class="flipcard-empty">
-      <div class="empty-icon">🔄</div>
-      <p class="empty-text">Carte retournable</p>
-      <p class="empty-hint">Configurez les images recto/verso dans les options</p>
+      <div class="empty-icon">
+        🔄
+      </div>
+      <p class="empty-text">
+        Carte retournable
+      </p>
+      <p class="empty-hint">
+        Configurez les images recto/verso dans les options
+      </p>
     </div>
   </div>
 </template>

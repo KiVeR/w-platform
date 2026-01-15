@@ -1,4 +1,4 @@
-import type { WidgetConfig, WidgetCategory, WidgetType } from '@/types/widget'
+import type { WidgetCategory, WidgetConfig, WidgetType } from '@/types/widget'
 
 export const widgetConfigs: WidgetConfig[] = [
   // ==================== BASE ====================
@@ -14,8 +14,8 @@ export const widgetConfigs: WidgetConfig[] = [
       color: '#1e293b',
       textAlign: 'center',
       padding: '16px',
-      margin: '0'
-    }
+      margin: '0',
+    },
   },
   {
     type: 'text',
@@ -28,8 +28,8 @@ export const widgetConfigs: WidgetConfig[] = [
       color: '#475569',
       textAlign: 'left',
       padding: '12px 16px',
-      margin: '0'
-    }
+      margin: '0',
+    },
   },
   {
     type: 'image',
@@ -38,14 +38,14 @@ export const widgetConfigs: WidgetConfig[] = [
     category: 'base',
     defaultContent: {
       src: 'https://via.placeholder.com/300x200',
-      alt: 'Image'
+      alt: 'Image',
     },
     defaultStyles: {
       width: '100%',
       borderRadius: '8px',
       padding: '8px',
-      margin: '0'
-    }
+      margin: '0',
+    },
   },
   {
     type: 'button',
@@ -55,7 +55,7 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultContent: {
       text: 'Cliquez ici',
       action: 'link',
-      href: '#'
+      href: '#',
     },
     defaultStyles: {
       backgroundColor: '#14b8a6',
@@ -65,8 +65,8 @@ export const widgetConfigs: WidgetConfig[] = [
       textAlign: 'center',
       padding: '12px 24px',
       margin: '8px 16px',
-      borderRadius: '8px'
-    }
+      borderRadius: '8px',
+    },
   },
   {
     type: 'separator',
@@ -79,8 +79,8 @@ export const widgetConfigs: WidgetConfig[] = [
       borderColor: '#e2e8f0',
       borderWidth: '1px',
       margin: '16px',
-      padding: '0'
-    }
+      padding: '0',
+    },
   },
   {
     type: 'spacer',
@@ -91,8 +91,8 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultStyles: {
       height: '32px',
       margin: '0',
-      padding: '0'
-    }
+      padding: '0',
+    },
   },
   {
     type: 'click-to-call',
@@ -102,7 +102,7 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultContent: {
       text: 'Appeler',
       phone: '+33123456789',
-      action: 'tel'
+      action: 'tel',
     },
     defaultStyles: {
       backgroundColor: '#14b8a6',
@@ -112,8 +112,8 @@ export const widgetConfigs: WidgetConfig[] = [
       textAlign: 'center',
       padding: '12px 24px',
       margin: '8px 16px',
-      borderRadius: '8px'
-    }
+      borderRadius: '8px',
+    },
   },
 
   // ==================== STRUCTURE ====================
@@ -127,7 +127,7 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultContent: {
       gap: '16px',
       align: 'stretch',
-      wrap: true
+      wrap: true,
     },
     defaultStyles: {
       display: 'flex',
@@ -135,8 +135,8 @@ export const widgetConfigs: WidgetConfig[] = [
       gap: '16px',
       flexWrap: 'wrap',
       padding: '8px',
-      margin: '0'
-    }
+      margin: '0',
+    },
   },
   {
     type: 'column',
@@ -146,13 +146,13 @@ export const widgetConfigs: WidgetConfig[] = [
     canHaveChildren: true,
     disallowedChildren: ['row', 'column'], // Évite la récursion infinie de grids
     defaultContent: {
-      columnWidth: '50%'
+      columnWidth: '50%',
     },
     defaultStyles: {
       flex: '1',
       minWidth: '0',
-      padding: '8px'
-    }
+      padding: '8px',
+    },
   },
 
   // ==================== FORMULAIRES ====================
@@ -168,14 +168,14 @@ export const widgetConfigs: WidgetConfig[] = [
       successMessage: 'Merci ! Votre message a bien été envoyé.',
       emailNotify: false,
       emailSubject: 'Nouveau message',
-      emailTo: ''
+      emailTo: '',
     },
     defaultStyles: {
       padding: '16px',
       margin: '0',
       backgroundColor: '#f8fafc',
-      borderRadius: '8px'
-    }
+      borderRadius: '8px',
+    },
   },
   {
     type: 'form-field',
@@ -187,12 +187,12 @@ export const widgetConfigs: WidgetConfig[] = [
       label: 'Votre nom',
       placeholder: '',
       required: false,
-      name: ''
+      name: '',
     },
     defaultStyles: {
       margin: '0 0 16px 0',
-      padding: '0'
-    }
+      padding: '0',
+    },
   },
 
   // ==================== MÉDIA ====================
@@ -207,13 +207,13 @@ export const widgetConfigs: WidgetConfig[] = [
       autoplay: false,
       muted: false,
       loop: false,
-      controls: true
+      controls: true,
     },
     defaultStyles: {
       margin: '0',
       padding: '8px',
-      borderRadius: '8px'
-    }
+      borderRadius: '8px',
+    },
   },
   {
     type: 'map',
@@ -223,13 +223,13 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultContent: {
       address: '',
       zoom: 15,
-      mapStyle: 'roadmap'
+      mapStyle: 'roadmap',
     },
     defaultStyles: {
       margin: '0',
       padding: '8px',
-      borderRadius: '8px'
-    }
+      borderRadius: '8px',
+    },
   },
   {
     type: 'social',
@@ -243,16 +243,16 @@ export const widgetConfigs: WidgetConfig[] = [
         { platform: 'twitter', url: '', enabled: false },
         { platform: 'linkedin', url: '', enabled: false },
         { platform: 'youtube', url: '', enabled: false },
-        { platform: 'whatsapp', url: '', enabled: false }
+        { platform: 'whatsapp', url: '', enabled: false },
       ],
       socialStyle: 'icons',
-      socialSize: 'medium'
+      socialSize: 'medium',
     },
     defaultStyles: {
       margin: '16px 0',
       padding: '8px',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'icon',
@@ -263,13 +263,13 @@ export const widgetConfigs: WidgetConfig[] = [
       iconName: '⭐',
       iconSize: '48px',
       iconColor: '',
-      href: ''
+      href: '',
     },
     defaultStyles: {
       margin: '8px 0',
       padding: '8px',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
 
   // ==================== WELLPACK ====================
@@ -282,13 +282,13 @@ export const widgetConfigs: WidgetConfig[] = [
       barcodeCode: '0000000000000',
       barcodeType: 'ean13',
       barcodeColor: '#000000',
-      barcodeVariable: ''
+      barcodeVariable: '',
     },
     defaultStyles: {
       margin: '16px auto',
       padding: '8px',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'store-locator',
@@ -299,13 +299,13 @@ export const widgetConfigs: WidgetConfig[] = [
       storeLocatorLabel: 'Nos magasins',
       storeLocatorButtonText: 'Voir tous les lieux',
       storeLocatorButtonColor: '#14b8a6',
-      storeLocatorStores: []
+      storeLocatorStores: [],
     },
     defaultStyles: {
       margin: '16px 0',
       padding: '16px',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'drive',
@@ -316,16 +316,16 @@ export const widgetConfigs: WidgetConfig[] = [
       driveButtonText: 'Trouver le magasin le plus proche',
       driveButtonColor: '#14b8a6',
       driveStores: [],
-      driveBtnGoLabel: "S'y rendre",
+      driveBtnGoLabel: 'S\'y rendre',
       driveBtnCallLabel: 'Appeler',
       driveBtnGoColor: '#14b8a6',
-      driveBtnCallColor: '#6366f1'
+      driveBtnCallColor: '#6366f1',
     },
     defaultStyles: {
       margin: '16px 0',
       padding: '16px',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'scratch',
@@ -337,13 +337,13 @@ export const widgetConfigs: WidgetConfig[] = [
       scratchImageBg: 'https://via.placeholder.com/300x200/22c55e/ffffff?text=Gagn%C3%A9+!',
       scratchSize: 30,
       scratchPercent: 80,
-      scratchLink: ''
+      scratchLink: '',
     },
     defaultStyles: {
       margin: '16px auto',
       padding: '0',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'flipcard',
@@ -353,13 +353,13 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultContent: {
       flipcardImageFront: 'https://via.placeholder.com/300x200/3b82f6/ffffff?text=Recto',
       flipcardImageBack: 'https://via.placeholder.com/300x200/22c55e/ffffff?text=Verso',
-      flipcardLink: ''
+      flipcardLink: '',
     },
     defaultStyles: {
       margin: '16px auto',
       padding: '0',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
 
   // ==================== AVANCÉ ====================
@@ -370,13 +370,13 @@ export const widgetConfigs: WidgetConfig[] = [
     category: 'media',
     defaultContent: {
       galleryImages: [],
-      galleryButtonText: 'Voir la galerie'
+      galleryButtonText: 'Voir la galerie',
     },
     defaultStyles: {
       margin: '16px 0',
       padding: '8px',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'slider',
@@ -387,13 +387,13 @@ export const widgetConfigs: WidgetConfig[] = [
       sliderImages: [],
       sliderInterval: 3000,
       sliderChevronColor: '#ffffff',
-      sliderAutoplay: true
+      sliderAutoplay: true,
     },
     defaultStyles: {
       margin: '16px 0',
       padding: '0',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'link-image',
@@ -403,13 +403,13 @@ export const widgetConfigs: WidgetConfig[] = [
     defaultContent: {
       linkImageSrc: 'https://via.placeholder.com/300x200',
       linkImageAlt: 'Image',
-      linkImageHref: ''
+      linkImageHref: '',
     },
     defaultStyles: {
       margin: '8px 0',
       padding: '0',
-      textAlign: 'center'
-    }
+      textAlign: 'center',
+    },
   },
   {
     type: 'effect',
@@ -423,31 +423,31 @@ export const widgetConfigs: WidgetConfig[] = [
       effectScale: 50,
       effectNbItems: 50,
       effectSpeed: 50,
-      effectDirection: 'down'
+      effectDirection: 'down',
     },
     defaultStyles: {
       margin: '0',
       padding: '0',
-      height: '100px'
-    }
-  }
+      height: '100px',
+    },
+  },
 ]
 
 // Catégories pour l'affichage dans la palette
-export const widgetCategories: { id: WidgetCategory; label: string }[] = [
+export const widgetCategories: { id: WidgetCategory, label: string }[] = [
   { id: 'base', label: 'Base' },
   { id: 'structure', label: 'Structure' },
   { id: 'form', label: 'Formulaire' },
   { id: 'media', label: 'Média' },
   { id: 'wellpack', label: 'Wellpack' },
-  { id: 'action', label: 'Actions' }
+  { id: 'action', label: 'Actions' },
 ]
 
-export const getWidgetConfig = (type: string): WidgetConfig | undefined => {
+export function getWidgetConfig(type: string): WidgetConfig | undefined {
   return widgetConfigs.find(config => config.type === type)
 }
 
-export const getWidgetsByCategory = (category: WidgetCategory): WidgetConfig[] => {
+export function getWidgetsByCategory(category: WidgetCategory): WidgetConfig[] {
   return widgetConfigs.filter(config => config.category === category)
 }
 
@@ -458,7 +458,7 @@ export const getWidgetsByCategory = (category: WidgetCategory): WidgetConfig[] =
  * 2. Si allowedChildren est défini, l'enfant doit être dans la liste
  * 3. Si disallowedChildren est défini, l'enfant ne doit pas être dans la liste
  */
-export const canAcceptChild = (parentType: WidgetType, childType: WidgetType): boolean => {
+export function canAcceptChild(parentType: WidgetType, childType: WidgetType): boolean {
   const parentConfig = getWidgetConfig(parentType)
 
   if (!parentConfig?.canHaveChildren) {
@@ -482,7 +482,7 @@ export const canAcceptChild = (parentType: WidgetType, childType: WidgetType): b
 /**
  * Retourne la liste des widgets autorisés pour un parent donné
  */
-export const getAllowedChildrenFor = (parentType: WidgetType): WidgetType[] => {
+export function getAllowedChildrenFor(parentType: WidgetType): WidgetType[] {
   const parentConfig = getWidgetConfig(parentType)
 
   if (!parentConfig?.canHaveChildren) {
@@ -511,7 +511,7 @@ export const columnPresets = [
   { label: '2 colonnes (66/33)', columns: ['66%', '33%'] },
   { label: '3 colonnes (33/33/33)', columns: ['33%', '33%', '33%'] },
   { label: '3 colonnes (25/50/25)', columns: ['25%', '50%', '25%'] },
-  { label: '4 colonnes', columns: ['25%', '25%', '25%', '25%'] }
+  { label: '4 colonnes', columns: ['25%', '25%', '25%', '25%'] },
 ]
 
 // Presets de formulaires
@@ -521,14 +521,14 @@ export const formPresets = [
     fields: [
       { fieldType: 'text', label: 'Votre nom', required: true },
       { fieldType: 'email', label: 'Votre email', required: true },
-      { fieldType: 'textarea', label: 'Votre message', required: true }
-    ]
+      { fieldType: 'textarea', label: 'Votre message', required: true },
+    ],
   },
   {
     label: 'Newsletter',
     fields: [
-      { fieldType: 'email', label: 'Votre email', placeholder: 'Inscrivez-vous...', required: true }
-    ]
+      { fieldType: 'email', label: 'Votre email', placeholder: 'Inscrivez-vous...', required: true },
+    ],
   },
   {
     label: 'Inscription',
@@ -536,7 +536,7 @@ export const formPresets = [
       { fieldType: 'text', label: 'Nom', required: true },
       { fieldType: 'text', label: 'Prénom', required: true },
       { fieldType: 'email', label: 'Email', required: true },
-      { fieldType: 'tel', label: 'Téléphone', required: false }
-    ]
-  }
+      { fieldType: 'tel', label: 'Téléphone', required: false },
+    ],
+  },
 ]

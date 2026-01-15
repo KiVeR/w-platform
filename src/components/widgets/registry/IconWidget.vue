@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
 
 const props = defineProps<{
   widget: Widget
@@ -14,7 +14,7 @@ const emojiLibrary = {
   tech: ['📱', '💻', '🖥️', '⚙️', '🔒', '🌐', '📡', '💾', '🔋', '📸'],
   social: ['❤️', '👍', '🎉', '🔥', '✨', '💪', '🙌', '👏', '🤝', '💯'],
   nature: ['🌟', '☀️', '🌙', '⚡', '🌊', '🔥', '💧', '🌱', '🍀', '🌈'],
-  arrows: ['➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '🔄', '↩️']
+  arrows: ['➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '🔄', '↩️'],
 }
 
 const iconName = computed(() => props.widget.content.iconName || '⭐')
@@ -26,7 +26,7 @@ const wrapperStyle = computed(() => ({
   color: props.widget.content.iconColor || 'inherit',
   textAlign: props.widget.styles.textAlign || 'center',
   padding: props.widget.styles.padding,
-  margin: props.widget.styles.margin
+  margin: props.widget.styles.margin,
 }))
 </script>
 

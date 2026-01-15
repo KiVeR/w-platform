@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import draggable from 'vuedraggable'
-import { useWidgetsStore } from '@/stores/widgets'
-import { useSelectionStore } from '@/stores/selection'
-import { useEditorStore } from '@/stores/editor'
-import WidgetRenderer from './WidgetRenderer.vue'
 import type { WidgetType } from '@/types/widget'
+import { computed, ref } from 'vue'
+import draggable from 'vuedraggable'
+import { useEditorStore } from '@/stores/editor'
+import { useSelectionStore } from '@/stores/selection'
+import { useWidgetsStore } from '@/stores/widgets'
+import WidgetRenderer from './WidgetRenderer.vue'
 
 const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
@@ -18,7 +18,7 @@ const widgets = computed({
   set: (value) => {
     widgetsStore.setWidgets(value)
     editorStore.markAsDirty()
-  }
+  },
 })
 
 function handleDragOver(event: DragEvent) {
@@ -58,7 +58,7 @@ function handleCanvasClick(event: MouseEvent) {
     :class="{ 'drag-over': isDragOver }"
     :style="{
       backgroundColor: editorStore.globalStyles.backgroundColor,
-      color: editorStore.globalStyles.textColor
+      color: editorStore.globalStyles.textColor,
     }"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
@@ -88,9 +88,15 @@ function handleCanvasClick(event: MouseEvent) {
     </draggable>
 
     <div v-if="widgets.length === 0" class="empty-state">
-      <div class="empty-icon">📱</div>
-      <p class="empty-text">Glissez des widgets ici</p>
-      <p class="empty-hint">ou cliquez sur un widget dans le panneau gauche</p>
+      <div class="empty-icon">
+        📱
+      </div>
+      <p class="empty-text">
+        Glissez des widgets ici
+      </p>
+      <p class="empty-hint">
+        ou cliquez sur un widget dans le panneau gauche
+      </p>
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
+import type { Widget, WidgetContent, WidgetStyles, WidgetType } from '@/types/widget'
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import type { Widget, WidgetType, WidgetContent, WidgetStyles } from '@/types/widget'
+import { computed, ref } from 'vue'
 import { getWidgetConfig } from '@/config/widgets'
 import { useEditorStore } from './editor'
 
@@ -35,7 +35,7 @@ export const useWidgetsStore = defineStore('widgets', () => {
       type,
       order: items.value.length,
       content: { ...config.defaultContent },
-      styles: { ...config.defaultStyles }
+      styles: { ...config.defaultStyles },
     }
 
     // Initialiser children pour les containers
@@ -53,14 +53,15 @@ export const useWidgetsStore = defineStore('widgets', () => {
     if (type === 'row') {
       widget.children = [
         createWidget('column'),
-        createWidget('column')
+        createWidget('column'),
       ]
     }
 
     if (index !== undefined) {
       items.value.splice(index, 0, widget)
       reorderWidgets()
-    } else {
+    }
+    else {
       widget.order = items.value.length
       items.value.push(widget)
     }
@@ -109,7 +110,8 @@ export const useWidgetsStore = defineStore('widgets', () => {
 
   function addChildWidget(parentId: string, type: WidgetType): Widget | null {
     const parent = findWidgetById(parentId)
-    if (!parent) return null
+    if (!parent)
+      return null
 
     const child = createWidget(type)
     child.order = parent.children?.length || 0
@@ -125,7 +127,8 @@ export const useWidgetsStore = defineStore('widgets', () => {
 
   function removeChildWidget(parentId: string, childId: string) {
     const parent = findWidgetById(parentId)
-    if (!parent || !parent.children) return
+    if (!parent || !parent.children)
+      return
 
     const index = parent.children.findIndex(c => c.id === childId)
     if (index !== -1) {
@@ -136,7 +139,8 @@ export const useWidgetsStore = defineStore('widgets', () => {
 
   function moveWidget(fromIndex: number, toIndex: number) {
     const widget = items.value[fromIndex]
-    if (!widget) return
+    if (!widget)
+      return
 
     items.value.splice(fromIndex, 1)
     items.value.splice(toIndex, 0, widget)
@@ -152,7 +156,8 @@ export const useWidgetsStore = defineStore('widgets', () => {
 
   function duplicateWidget(id: string) {
     const widget = items.value.find(w => w.id === id)
-    if (!widget) return
+    if (!widget)
+      return
 
     const index = items.value.findIndex(w => w.id === id)
     const duplicate = deepCloneWidget(widget)
@@ -168,7 +173,7 @@ export const useWidgetsStore = defineStore('widgets', () => {
       ...widget,
       id: uuidv4(),
       content: { ...widget.content },
-      styles: { ...widget.styles }
+      styles: { ...widget.styles },
     }
 
     if (widget.children) {
@@ -181,10 +186,12 @@ export const useWidgetsStore = defineStore('widgets', () => {
   // Recherche récursive d'un widget par ID (y compris dans les enfants)
   function findWidgetById(id: string, widgetList: Widget[] = items.value): Widget | undefined {
     for (const widget of widgetList) {
-      if (widget.id === id) return widget
+      if (widget.id === id)
+        return widget
       if (widget.children) {
         const found = findWidgetById(id, widget.children)
-        if (found) return found
+        if (found)
+          return found
       }
     }
     return undefined
@@ -228,6 +235,6 @@ export const useWidgetsStore = defineStore('widgets', () => {
     findWidgetById,
     setDraggedWidgetType,
     clear,
-    getWidget
+    getWidget,
   }
 })

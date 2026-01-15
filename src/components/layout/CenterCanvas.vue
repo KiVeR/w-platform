@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useUIStore } from '@/stores/ui'
 import DesignerMode from '@/components/modes/DesignerMode.vue'
-import PreviewMode from '@/components/modes/PreviewMode.vue'
 import ExpertMode from '@/components/modes/ExpertMode.vue'
+import PreviewMode from '@/components/modes/PreviewMode.vue'
+import { useUIStore } from '@/stores/ui'
 
 const uiStore = useUIStore()
 </script>

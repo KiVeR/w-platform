@@ -34,8 +34,12 @@ function handleClick() {
     @dragend="handleDragEnd"
     @click="handleClick"
   >
-    <div class="widget-icon">{{ config.icon }}</div>
-    <div class="widget-label">{{ config.label }}</div>
+    <div class="widget-icon">
+      {{ config.icon }}
+    </div>
+    <div class="widget-label">
+      {{ config.label }}
+    </div>
   </div>
 </template>
 

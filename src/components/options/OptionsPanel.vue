@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useUIStore } from '@/stores/ui'
 import { useSelectionStore } from '@/stores/selection'
+import { useUIStore } from '@/stores/ui'
 import ContentOptions from './ContentOptions.vue'
 import StyleOptions from './StyleOptions.vue'
 

@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { useUIStore, type OptionsTab } from '@/stores/ui'
-import { useSelectionStore } from '@/stores/selection'
-import OptionsPanel from '@/components/options/OptionsPanel.vue'
+import type { OptionsTab } from '@/stores/ui'
 import GlobalOptions from '@/components/options/GlobalOptions.vue'
+import OptionsPanel from '@/components/options/OptionsPanel.vue'
+import { useSelectionStore } from '@/stores/selection'
+import { useUIStore } from '@/stores/ui'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
 
-const tabs: { value: OptionsTab; label: string }[] = [
+const tabs: { value: OptionsTab, label: string }[] = [
   { value: 'content', label: 'Contenu' },
-  { value: 'style', label: 'Style' }
+  { value: 'style', label: 'Style' },
 ]
 </script>
 
@@ -20,8 +21,8 @@ const tabs: { value: OptionsTab; label: string }[] = [
         <button
           class="breadcrumb-item home"
           :class="{ active: uiStore.activeTab === 'global' }"
-          @click="uiStore.setActiveTab('global')"
           title="Options globales"
+          @click="uiStore.setActiveTab('global')"
         >
           🏠
         </button>
