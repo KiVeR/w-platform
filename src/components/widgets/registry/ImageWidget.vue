@@ -1,0 +1,60 @@
+<script setup lang="ts">
+import type { Widget } from '@/types/widget'
+
+defineProps<{
+  widget: Widget
+  editable?: boolean
+}>()
+</script>
+
+<template>
+  <div class="image-widget" :style="widget.styles">
+    <img
+      v-if="widget.content.src"
+      :src="widget.content.src"
+      :alt="widget.content.alt || 'Image'"
+      class="widget-image"
+    />
+    <div v-else class="image-placeholder">
+      <span class="placeholder-icon">🖼</span>
+      <span class="placeholder-text">Image</span>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.image-widget {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.widget-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: inherit;
+}
+
+.image-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-color: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.placeholder-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.placeholder-text {
+  font-size: 14px;
+}
+</style>

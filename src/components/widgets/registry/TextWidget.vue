@@ -1,0 +1,93 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import type { Widget } from '@/types/widget'
+import { useWidgetsStore } from '@/stores/widgets'
+
+const props = defineProps<{
+  widget: Widget
+  editable?: boolean
+}>()
+
+const widgetsStore = useWidgetsStore()
+const isEditing = ref(false)
+const editText = ref(props.widget.content.text || '')
+
+watch(() => props.widget.content.text, (newText) => {
+  editText.value = newText || ''
+})
+
+function startEditing() {
+  if (props.editable) {
+    isEditing.value = true
+  }
+}
+
+function stopEditing() {
+  isEditing.value = false
+  if (editText.value !== props.widget.content.text) {
+    widgetsStore.updateWidgetContent(props.widget.id, { text: editText.value })
+  }
+}
+
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    editText.value = props.widget.content.text || ''
+    isEditing.value = false
+  }
+}
+</script>
+
+<template>
+  <div class="text-widget" :style="widget.styles">
+    <textarea
+      v-if="isEditing"
+      v-model="editText"
+      class="text-input"
+      :style="{
+        fontSize: widget.styles.fontSize,
+        color: widget.styles.color,
+        textAlign: widget.styles.textAlign
+      }"
+      @blur="stopEditing"
+      @keydown="handleKeydown"
+      rows="4"
+      autofocus
+    />
+    <p
+      v-else
+      class="text-content"
+      @dblclick="startEditing"
+    >
+      {{ widget.content.text || 'Texte...' }}
+    </p>
+  </div>
+</template>
+
+<style scoped>
+.text-widget {
+  width: 100%;
+}
+
+.text-content {
+  margin: 0;
+  font-size: inherit;
+  color: inherit;
+  text-align: inherit;
+  line-height: 1.6;
+  cursor: text;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.text-input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: white;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.6;
+  padding: 8px;
+  resize: vertical;
+}
+</style>
