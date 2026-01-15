@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { EditorMode } from '@/stores/ui'
-import { Menu, Redo2, Save, Settings, Undo2 } from 'lucide-vue-next'
+import { Menu, Redo2, Settings, Undo2 } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import SaveButton from '@/components/ui/SaveButton.vue'
 import { useEditorStore } from '@/stores/editor'
 import { useHistoryStore } from '@/stores/history'
 import { useUIStore } from '@/stores/ui'
@@ -15,10 +17,34 @@ const modes: { value: EditorMode, label: string }[] = [
   { value: 'expert', label: 'Mode expert' },
 ]
 
-function handleSave() {
-  // TODO: Implement save via API
-  console.log('Saving...', editorStore.design)
-  editorStore.markAsSaved()
+const saveStatus = ref<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+const currentSaveStatus = computed(() => {
+  if (saveStatus.value !== 'idle')
+    return saveStatus.value
+  return editorStore.isDirty ? 'idle' : 'saved'
+})
+
+async function handleSave() {
+  if (!editorStore.isDirty)
+    return
+
+  saveStatus.value = 'saving'
+  try {
+    // Simulate API save
+    await new Promise(resolve => setTimeout(resolve, 800))
+    editorStore.markAsSaved()
+    saveStatus.value = 'saved'
+    setTimeout(() => {
+      saveStatus.value = 'idle'
+    }, 2000)
+  }
+  catch {
+    saveStatus.value = 'error'
+    setTimeout(() => {
+      saveStatus.value = 'idle'
+    }, 3000)
+  }
 }
 
 function handleUndo() {
@@ -92,15 +118,11 @@ function handleRedo() {
         <Redo2 :size="18" :stroke-width="2" />
       </button>
 
-      <button
-        class="toolbar-btn save-btn"
-        :disabled="!editorStore.isDirty"
-        aria-label="Sauvegarder"
+      <SaveButton
+        :status="currentSaveStatus"
+        :disabled="!editorStore.isDirty && saveStatus === 'idle'"
         @click="handleSave"
-      >
-        <Save :size="18" :stroke-width="2" />
-        <span class="btn-text">Sauvegarder</span>
-      </button>
+      />
 
       <button
         class="toolbar-btn"
@@ -213,17 +235,8 @@ function handleRedo() {
   flex-shrink: 0;
 }
 
-.save-btn {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
-}
-
-.save-btn:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
-}
-
-.btn-text {
-  font-weight: 500;
+.toolbar-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 </style>
