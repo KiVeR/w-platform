@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 # Yarn 4 (without Zero-Installs)
+package-lock.json
 .pnp.*
 .yarn/*
 !.yarn/patches
