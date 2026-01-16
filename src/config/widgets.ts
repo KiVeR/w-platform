@@ -510,8 +510,8 @@ export const widgetConfigs: WidgetConfig[] = [
     icon: '🎰',
     category: 'wellpack',
     defaultContent: {
-      scratchImageFg: 'https://via.placeholder.com/300x200/cccccc/666666?text=Grattez+ici',
-      scratchImageBg: 'https://via.placeholder.com/300x200/22c55e/ffffff?text=Gagn%C3%A9+!',
+      scratchImageFg: 'https://picsum.photos/seed/scratch-fg/300/200',
+      scratchImageBg: 'https://picsum.photos/seed/scratch-bg/300/200',
       scratchSize: 30,
       scratchPercent: 80,
       scratchLink: '',
@@ -528,8 +528,8 @@ export const widgetConfigs: WidgetConfig[] = [
     icon: '🔄',
     category: 'wellpack',
     defaultContent: {
-      flipcardImageFront: 'https://via.placeholder.com/300x200/3b82f6/ffffff?text=Recto',
-      flipcardImageBack: 'https://via.placeholder.com/300x200/22c55e/ffffff?text=Verso',
+      flipcardImageFront: 'https://picsum.photos/seed/flipcard-front/300/200',
+      flipcardImageBack: 'https://picsum.photos/seed/flipcard-back/300/200',
       flipcardLink: '',
     },
     defaultStyles: {
@@ -578,7 +578,7 @@ export const widgetConfigs: WidgetConfig[] = [
     icon: '🔗',
     category: 'base',
     defaultContent: {
-      linkImageSrc: 'https://via.placeholder.com/300x200',
+      linkImageSrc: 'https://picsum.photos/seed/link-image/300/200',
       linkImageAlt: 'Image',
       linkImageHref: '',
     },
