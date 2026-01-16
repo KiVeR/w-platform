@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormFieldType, SelectOption, Widget } from '@/types/widget'
 import { computed } from 'vue'
+import { generateFieldName } from '@/utils/form'
 import OptionCheckbox from '../shared/OptionCheckbox.vue'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionInput from '../shared/OptionInput.vue'
@@ -10,6 +11,10 @@ import { useWidgetContent } from '../shared/useWidgetContent'
 
 const props = defineProps<{ widget: Widget }>()
 const { updateContent } = useWidgetContent(props.widget)
+
+const generatedName = computed(() => {
+  return generateFieldName(props.widget.content.label || '')
+})
 
 const fieldTypes = [
   { value: 'text', label: 'Texte' },
@@ -70,6 +75,17 @@ const showOptions = computed(() => {
       />
     </OptionGroup>
 
+    <OptionGroup label="Nom du champ" hint="Identifiant technique pour la soumission">
+      <OptionInput
+        :model-value="widget.content.name"
+        :placeholder="generatedName || 'nom_du_champ'"
+        @update:model-value="updateContent('name', $event)"
+      />
+      <small v-if="!widget.content.name && generatedName" class="auto-hint">
+        Auto-généré : {{ generatedName }}
+      </small>
+    </OptionGroup>
+
     <OptionGroup v-if="showPlaceholder" label="Placeholder">
       <OptionInput
         :model-value="widget.content.placeholder"
@@ -100,5 +116,12 @@ const showOptions = computed(() => {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+.auto-hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
 }
 </style>

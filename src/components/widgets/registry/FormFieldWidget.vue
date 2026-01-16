@@ -2,6 +2,7 @@
 import type { FormFieldType, Widget } from '@/types/widget'
 import { computed } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
+import { generateFieldName } from '@/utils/form'
 
 const props = defineProps<{
   widget: Widget
@@ -14,6 +15,12 @@ const props = defineProps<{
 const widgetsStore = useWidgetsStore()
 
 const fieldType = computed(() => props.widget.content.fieldType || 'text')
+
+const fieldName = computed(() => {
+  if (props.widget.content.name)
+    return props.widget.content.name
+  return generateFieldName(props.widget.content.label || '') || `field_${props.widget.id.slice(0, 8)}`
+})
 const label = computed(() => props.widget.content.label || 'Label')
 const placeholder = computed(() => {
   if (props.widget.content.placeholder)
@@ -63,6 +70,7 @@ function handleRemove() {
       <input
         v-if="['text', 'email', 'tel', 'number', 'date'].includes(fieldType)"
         :type="fieldType"
+        :name="fieldName"
         class="field-input"
         :placeholder="placeholder"
         disabled
@@ -71,6 +79,7 @@ function handleRemove() {
       <!-- Textarea -->
       <textarea
         v-else-if="fieldType === 'textarea'"
+        :name="fieldName"
         class="field-textarea"
         :placeholder="placeholder"
         rows="3"
@@ -80,6 +89,7 @@ function handleRemove() {
       <!-- Select -->
       <select
         v-else-if="fieldType === 'select'"
+        :name="fieldName"
         class="field-select"
         disabled
       >
@@ -93,14 +103,14 @@ function handleRemove() {
 
       <!-- Checkbox -->
       <div v-else-if="fieldType === 'checkbox'" class="field-checkbox">
-        <input type="checkbox" disabled>
+        <input type="checkbox" :name="fieldName" disabled>
         <span>{{ label }}</span>
       </div>
 
       <!-- Radio -->
       <div v-else-if="fieldType === 'radio'" class="field-radio-group">
         <div v-for="opt in options" :key="opt.value" class="field-radio">
-          <input type="radio" :name="widget.id" disabled>
+          <input type="radio" :name="fieldName" disabled>
           <span>{{ opt.label }}</span>
         </div>
       </div>
