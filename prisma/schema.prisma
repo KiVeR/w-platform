@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Permission {
+  VIEW
+  EDIT
+  MANAGE
+}
+
+enum AuditAction {
+  // Auth
+  LOGIN
+  LOGOUT
+  LOGIN_FAILED
+  PASSWORD_CHANGED
+  // Landing Pages
+  PAGE_CREATED
+  PAGE_UPDATED
+  PAGE_DELETED
+  PAGE_PUBLISHED
+  PAGE_ARCHIVED
+  // Design
+  DESIGN_SAVED
+  DESIGN_VERSION_CREATED
+  // Assets
+  ASSET_UPLOADED
+  ASSET_DELETED
+  // Users
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  // Permissions
+  PERMISSION_GRANTED
+  PERMISSION_REVOKED
+}
+
+enum EntityType {
+  USER
+  LANDING_PAGE
+  ASSET
+  PERMISSION
+}
+
+// ==================== MODELS ====================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  firstName String?
+  lastName  String?
+  role      Role     @default(VIEWER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  landingPages    LandingPage[]
+  permissions     UserPermission[]
+  auditLogs       AuditLog[]
+  refreshTokens   RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revokedAt DateTime?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+model LandingPage {
+  id          Int        @id @default(autoincrement())
+  title       String
+  slug        String     @unique
+  status      PageStatus @default(DRAFT)
+  ownerId     Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  publishedAt DateTime?
+
+  // Relations
+  owner           User             @relation(fields: [ownerId], references: [id])
+  designVersions  DesignVersion[]
+  assets          Asset[]
+  permissions     UserPermission[]
+
+  @@index([ownerId])
+  @@index([status])
+  @@map("landing_pages")
+}
+
+model DesignVersion {
+  id            Int      @id @default(autoincrement())
+  landingPageId Int
+  version       String   // "1.0", "1.1", etc.
+  design        Json     // Full DesignDocument
+  widgetCount   Int
+  createdAt     DateTime @default(now())
+
+  // Relations
+  landingPage LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId])
+  @@map("design_versions")
+}
+
+model Asset {
+  id            Int      @id @default(autoincrement())
+  landingPageId Int
+  filename      String
+  mimeType      String
+  size          Int      // bytes
+  url           String
+  storageKey    String   // Azure Blob path
+  uploadedAt    DateTime @default(now())
+
+  // Relations
+  landingPage LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId])
+  @@map("assets")
+}
+
+model UserPermission {
+  id            Int        @id @default(autoincrement())
+  userId        Int
+  landingPageId Int
+  permission    Permission @default(VIEW)
+  createdAt     DateTime   @default(now())
+
+  // Relations
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  landingPage LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, landingPageId])
+  @@map("user_permissions")
+}
+
+model AuditLog {
+  id         Int         @id @default(autoincrement())
+  userId     Int?
+  action     AuditAction
+  entityType EntityType
+  entityId   Int?
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime    @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
