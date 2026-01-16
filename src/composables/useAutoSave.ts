@@ -1,3 +1,4 @@
+import type { ComputedRef, Ref } from 'vue'
 import type { DesignDocument } from '@/types/widget'
 import { useDebounceFn } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
@@ -14,7 +15,18 @@ export interface AutoSaveOptions {
   enabled?: boolean
 }
 
-export function useAutoSave(options: AutoSaveOptions = {}) {
+export interface AutoSaveReturn {
+  saveStatus: Ref<SaveStatus>
+  lastError: Ref<string | null>
+  lastSyncedAt: Ref<Date | null>
+  saveNow: () => Promise<boolean>
+  saveToApi: () => void
+  saveToLocal: () => void
+  needsFirstSave: ComputedRef<boolean>
+  createAndSave: (title: string) => Promise<{ success: boolean, id?: number }>
+}
+
+export function useAutoSave(options: AutoSaveOptions = {}): AutoSaveReturn {
   const {
     debounceMs = 3000,
     localSaveMs = 1000,
@@ -122,6 +134,38 @@ export function useAutoSave(options: AutoSaveOptions = {}) {
     }
   }
 
+  const needsFirstSave = computed(() => editorStore.landingPageId === null)
+
+  async function createAndSave(title: string): Promise<{ success: boolean, id?: number }> {
+    saveStatus.value = 'saving'
+    lastError.value = null
+
+    try {
+      const created = await api.createLandingPage({ title })
+      if (!created) {
+        throw new Error('Echec de la création')
+      }
+
+      editorStore.setLandingPageId(created.id)
+
+      const result = await api.saveDesign(created.id, currentDocument.value)
+      if (!result) {
+        throw new Error('Echec de la sauvegarde du design')
+      }
+
+      editorStore.markAsSaved()
+      lastSyncedAt.value = new Date()
+      saveStatus.value = 'saved'
+
+      return { success: true, id: created.id }
+    }
+    catch (error) {
+      lastError.value = error instanceof Error ? error.message : 'Erreur inconnue'
+      saveStatus.value = 'error'
+      return { success: false }
+    }
+  }
+
   return {
     saveStatus,
     lastError,
@@ -129,5 +173,7 @@ export function useAutoSave(options: AutoSaveOptions = {}) {
     saveNow,
     saveToApi,
     saveToLocal,
+    needsFirstSave,
+    createAndSave,
   }
 }

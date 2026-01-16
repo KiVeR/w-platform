@@ -96,6 +96,13 @@ export function usePersistence() {
     })
   }
 
+  function initializeNewPage(): void {
+    editorStore.setLandingPageId(null)
+    const emptyDesign = createDefaultDesign()
+    editorStore.setDesign(emptyDesign)
+    widgetsStore.setWidgets([])
+  }
+
   return {
     isLoading,
     loadError,
@@ -104,6 +111,8 @@ export function usePersistence() {
     lastError: autoSave.lastError,
     lastSyncedAt: autoSave.lastSyncedAt,
     saveNow: autoSave.saveNow,
+    needsFirstSave: autoSave.needsFirstSave,
+    createAndSave: autoSave.createAndSave,
 
     showRecoveryModal: recovery.showRecoveryModal,
     recoveryData: recovery.recoveryData,
@@ -111,6 +120,7 @@ export function usePersistence() {
     discardBackup: recovery.discardBackup,
 
     loadDesign,
+    initializeNewPage,
     setupBeforeUnloadGuard,
   }
 }
