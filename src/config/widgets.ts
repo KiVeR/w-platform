@@ -7,6 +7,23 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Titre',
     icon: 'T',
     category: 'base',
+    description: 'Heading text for sections. Use for main titles, section headers, or important announcements. Supports various font sizes and alignments.',
+    usageHints: [
+      'Use for page headers and section titles',
+      'Keep titles concise and impactful',
+      'Consider text hierarchy: larger for main title, smaller for subsections',
+    ],
+    requiredContent: ['text'],
+    examples: [
+      {
+        description: 'Main page title',
+        widget: {
+          type: 'title',
+          content: { text: 'Bienvenue sur notre site' },
+          styles: { fontSize: '32px', textAlign: 'center' },
+        },
+      },
+    ],
     defaultContent: { text: 'Mon titre' },
     defaultStyles: {
       fontSize: '24px',
@@ -22,6 +39,13 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Texte',
     icon: '¶',
     category: 'base',
+    description: 'Paragraph text for descriptions, explanations, and body content. Supports rich formatting through styles.',
+    usageHints: [
+      'Use for descriptive content and explanations',
+      'Keep paragraphs readable (3-5 sentences)',
+      'Place after titles to provide context',
+    ],
+    requiredContent: ['text'],
     defaultContent: { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
     defaultStyles: {
       fontSize: '16px',
@@ -36,8 +60,25 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Image',
     icon: '🖼',
     category: 'base',
+    description: 'Display an image. Use for product photos, illustrations, banners, or decorative visuals. Always provide alt text for accessibility.',
+    usageHints: [
+      'Always provide descriptive alt text for accessibility',
+      'Use appropriate image dimensions for the context',
+      'Optimize images for web to ensure fast loading',
+    ],
+    requiredContent: ['src'],
+    examples: [
+      {
+        description: 'Product image',
+        widget: {
+          type: 'image',
+          content: { src: 'https://example.com/product.jpg', alt: 'Product name' },
+          styles: { width: '100%', borderRadius: '8px' },
+        },
+      },
+    ],
     defaultContent: {
-      src: 'https://via.placeholder.com/300x200',
+      src: 'https://picsum.photos/seed/default/300/200',
       alt: 'Image',
     },
     defaultStyles: {
@@ -52,10 +93,36 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Bouton',
     icon: '▢',
     category: 'action',
+    description: 'Interactive button with customizable action. Supports navigation links (href), phone calls (tel:), and email (mailto:). Use for CTAs, form submission, and user actions.',
+    usageHints: [
+      'Always provide descriptive button text (not just "Click here")',
+      'Use action="link" for navigation, action="tel" for phone calls',
+      'Ensure href/phone property matches the action type',
+      'Place buttons after explanatory content, not before',
+    ],
+    requiredContent: ['text', 'action'],
+    examples: [
+      {
+        description: 'CTA button with external link',
+        widget: {
+          type: 'button',
+          content: { text: 'Découvrir nos offres', action: 'link', href: 'https://example.com/offers' },
+          styles: { backgroundColor: '#3b82f6', color: '#ffffff' },
+        },
+      },
+      {
+        description: 'Phone call button',
+        widget: {
+          type: 'button',
+          content: { text: 'Appelez-nous', action: 'tel', phone: '+33123456789' },
+          styles: { backgroundColor: '#22c55e', color: '#ffffff' },
+        },
+      },
+    ],
     defaultContent: {
       text: 'Cliquez ici',
       action: 'link',
-      href: '#',
+      href: '',
     },
     defaultStyles: {
       backgroundColor: '#14b8a6',
@@ -122,8 +189,28 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Colonnes',
     icon: '▥',
     category: 'structure',
+    description: 'Horizontal layout container. Creates a row that can only contain column widgets. Use for multi-column layouts, side-by-side content, or grid structures.',
+    usageHints: [
+      'Row can ONLY contain column widgets as direct children',
+      'Use 2-4 columns for most layouts',
+      'On mobile, columns will stack vertically (responsive)',
+      'Add widgets inside columns, not directly in rows',
+    ],
     canHaveChildren: true,
     allowedChildren: ['column'],
+    examples: [
+      {
+        description: 'Two-column layout',
+        widget: {
+          type: 'row',
+          content: { gap: '16px' },
+          children: [
+            { type: 'column', content: { columnWidth: '50%' } },
+            { type: 'column', content: { columnWidth: '50%' } },
+          ],
+        },
+      },
+    ],
     defaultContent: {
       gap: '16px',
       align: 'stretch',
@@ -143,8 +230,15 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Colonne',
     icon: '▯',
     category: 'structure',
+    description: 'Vertical container inside a row. Holds any widget type except row/column. Set columnWidth to control proportions (e.g., "50%", "33%").',
+    usageHints: [
+      'Columns must be placed inside a row widget',
+      'Cannot contain row or column (prevents infinite nesting)',
+      'Use columnWidth to set relative width (e.g., "33%", "50%", "66%")',
+      'Place any other widget type inside columns',
+    ],
     canHaveChildren: true,
-    disallowedChildren: ['row', 'column'], // Évite la récursion infinie de grids
+    disallowedChildren: ['row', 'column'],
     defaultContent: {
       columnWidth: '50%',
     },
@@ -161,8 +255,28 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Formulaire',
     icon: '📋',
     category: 'form',
+    description: 'Form container for collecting user input. Contains form-field widgets and a submit button. Supports email notifications and redirect after submission.',
+    usageHints: [
+      'Place form-field widgets inside the form container',
+      'Cannot contain nested forms',
+      'Set successMessage for user feedback after submission',
+      'Use emailNotify to receive submissions by email',
+    ],
     canHaveChildren: true,
-    disallowedChildren: ['form'], // Un form ne peut pas contenir un autre form
+    disallowedChildren: ['form'],
+    examples: [
+      {
+        description: 'Contact form',
+        widget: {
+          type: 'form',
+          content: {
+            successMessage: 'Merci pour votre message !',
+            emailNotify: true,
+            emailTo: 'contact@example.com',
+          },
+        },
+      },
+    ],
     defaultContent: {
       redirectUrl: '',
       successMessage: 'Merci ! Votre message a bien été envoyé.',
@@ -182,6 +296,29 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Champ',
     icon: '⎕',
     category: 'form',
+    description: 'Input field for forms. Supports text, email, phone, textarea, select, checkbox, radio, date, and number types. Must be placed inside a form widget.',
+    usageHints: [
+      'Always set a descriptive label for accessibility',
+      'Use appropriate fieldType (email, tel, textarea, etc.)',
+      'Mark important fields as required',
+      'Provide placeholder text to guide users',
+      'Field name is auto-generated from label if not provided',
+    ],
+    requiredContent: ['fieldType', 'label'],
+    examples: [
+      {
+        description: 'Email input field',
+        widget: {
+          type: 'form-field',
+          content: {
+            fieldType: 'email',
+            label: 'Votre email',
+            placeholder: 'exemple@email.com',
+            required: true,
+          },
+        },
+      },
+    ],
     defaultContent: {
       fieldType: 'text',
       label: 'Votre nom',
@@ -201,6 +338,26 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Vidéo',
     icon: '🎬',
     category: 'media',
+    description: 'Embedded video player. Supports YouTube, Vimeo, and custom video URLs. Configure autoplay, mute, loop, and controls options.',
+    usageHints: [
+      'Paste a YouTube or Vimeo URL in videoUrl',
+      'Use muted: true if enabling autoplay (browser requirement)',
+      'Keep controls: true for user accessibility',
+    ],
+    requiredContent: ['videoUrl'],
+    examples: [
+      {
+        description: 'YouTube video embed',
+        widget: {
+          type: 'video',
+          content: {
+            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            videoProvider: 'youtube',
+            controls: true,
+          },
+        },
+      },
+    ],
     defaultContent: {
       videoUrl: '',
       videoProvider: 'youtube',
@@ -220,6 +377,26 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Carte',
     icon: '📍',
     category: 'media',
+    description: 'Interactive map display. Enter an address to show a location. Supports different map styles and zoom levels.',
+    usageHints: [
+      'Enter a full address for best accuracy',
+      'Adjust zoom level based on context (15 for street level, 12 for neighborhood)',
+      'Choose mapStyle based on content (roadmap for directions, satellite for aerial view)',
+    ],
+    requiredContent: ['address'],
+    examples: [
+      {
+        description: 'Store location map',
+        widget: {
+          type: 'map',
+          content: {
+            address: '1 Place du Trocadéro, 75116 Paris',
+            zoom: 15,
+            mapStyle: 'roadmap',
+          },
+        },
+      },
+    ],
     defaultContent: {
       address: '',
       zoom: 15,
