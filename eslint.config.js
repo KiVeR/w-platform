@@ -7,6 +7,9 @@ export default antfu({
     indent: 2,
     quotes: 'single',
   },
+  ignores: [
+    'plans/**',
+  ],
   rules: {
     'no-console': 'warn',
   },
