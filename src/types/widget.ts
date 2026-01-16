@@ -242,6 +242,16 @@ export interface DesignDocument {
 
 export type WidgetCategory = 'base' | 'structure' | 'form' | 'media' | 'wellpack' | 'action'
 
+/**
+ * Example configuration for a widget, used for documentation and LLM guidance
+ */
+export interface WidgetExample {
+  /** Description of this example use case */
+  description: string
+  /** Partial widget configuration showing the example */
+  widget: Partial<Widget>
+}
+
 export interface WidgetConfig {
   type: WidgetType
   label: string
@@ -252,4 +262,14 @@ export interface WidgetConfig {
   canHaveChildren?: boolean
   allowedChildren?: WidgetType[] // Si défini, seuls ces types sont autorisés
   disallowedChildren?: WidgetType[] // Types explicitement interdits
+
+  // Documentation for LLM and UI
+  /** Semantic description of the widget purpose and use cases (in English for LLM) */
+  description?: string
+  /** Usage hints and best practices for the LLM */
+  usageHints?: string[]
+  /** Required content properties that must be provided */
+  requiredContent?: (keyof WidgetContent)[]
+  /** Example configurations showing proper usage */
+  examples?: WidgetExample[]
 }
