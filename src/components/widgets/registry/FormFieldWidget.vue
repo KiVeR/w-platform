@@ -8,6 +8,7 @@ const props = defineProps<{
   parentId: string
   editable?: boolean
   isSelected?: boolean
+  readonly?: boolean
 }>()
 
 const widgetsStore = useWidgetsStore()
@@ -43,9 +44,12 @@ function handleRemove() {
 <template>
   <div
     class="form-field-widget"
-    :class="{ 'is-selected': isSelected }"
+    :class="{
+      'is-selected': isSelected && !readonly,
+      'form-field-widget--readonly': readonly,
+    }"
   >
-    <div class="field-handle" title="Glisser pour réordonner">
+    <div v-if="!readonly" class="field-handle" title="Glisser pour réordonner">
       ⋮⋮
     </div>
 
@@ -103,7 +107,7 @@ function handleRemove() {
     </div>
 
     <button
-      v-if="editable"
+      v-if="editable && !readonly"
       class="field-remove"
       title="Supprimer ce champ"
       @click.stop="handleRemove"
@@ -132,6 +136,16 @@ function handleRemove() {
 .form-field-widget.is-selected {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2);
+}
+
+.form-field-widget--readonly {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.form-field-widget--readonly:hover {
+  border-color: transparent;
 }
 
 .field-handle {

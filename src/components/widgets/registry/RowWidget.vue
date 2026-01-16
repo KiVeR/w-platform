@@ -4,11 +4,13 @@ import { computed } from 'vue'
 import draggable from 'vuedraggable'
 import { useSelectionStore } from '@/stores/selection'
 import { useWidgetsStore } from '@/stores/widgets'
+import { hasConfiguredChildren } from '@/utils/widgetConfig'
 import ColumnWidget from './ColumnWidget.vue'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
+  readonly?: boolean
 }>()
 
 const widgetsStore = useWidgetsStore()
@@ -29,8 +31,13 @@ const rowStyle = computed(() => ({
   alignItems: props.widget.content.align || 'stretch',
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
-  minHeight: '60px',
+  minHeight: props.readonly ? 'auto' : '60px',
 }))
+
+// En mode preview, filtrer les colonnes vides (sans enfants configures)
+const columnsWithContent = computed(() =>
+  children.value.filter(hasConfiguredChildren),
+)
 
 function addColumn() {
   widgetsStore.addChildWidget(props.widget.id, 'column')
@@ -38,8 +45,10 @@ function addColumn() {
 </script>
 
 <template>
-  <div class="row-widget" :style="rowStyle">
+  <div class="row-widget" :class="{ 'row-widget--readonly': readonly }" :style="rowStyle">
+    <!-- Mode édition : draggable -->
     <draggable
+      v-if="!readonly"
       v-model="children"
       item-key="id"
       group="columns"
@@ -57,8 +66,18 @@ function addColumn() {
       </template>
     </draggable>
 
+    <!-- Mode preview : simple itération (colonnes avec contenu uniquement) -->
+    <template v-else>
+      <ColumnWidget
+        v-for="element in columnsWithContent"
+        :key="element.id"
+        :widget="element"
+        :readonly="true"
+      />
+    </template>
+
     <button
-      v-if="editable && children.length < 4"
+      v-if="!readonly && editable && children.length < 4"
       class="add-column-btn"
       title="Ajouter une colonne"
       @click.stop="addColumn"
@@ -66,7 +85,7 @@ function addColumn() {
       <span>+</span>
     </button>
 
-    <div v-if="children.length === 0" class="empty-row">
+    <div v-if="!readonly && children.length === 0" class="empty-row">
       <p>Cliquez sur + pour ajouter des colonnes</p>
     </div>
   </div>
@@ -79,6 +98,11 @@ function addColumn() {
   background: rgba(20, 184, 166, 0.05);
   border: 1px dashed rgba(20, 184, 166, 0.3);
   border-radius: 4px;
+}
+
+.row-widget--readonly {
+  background: transparent;
+  border: none;
 }
 
 .row-content {

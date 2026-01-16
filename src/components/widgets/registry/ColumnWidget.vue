@@ -2,15 +2,18 @@
 import type { Widget, WidgetType } from '@/types/widget'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'
+import PreviewRenderer from '@/components/canvas/PreviewRenderer.vue'
 import WidgetRendererInner from '@/components/canvas/WidgetRendererInner.vue'
 import { canAcceptChild } from '@/config/widgets'
 import { useSelectionStore } from '@/stores/selection'
 import { useWidgetsStore } from '@/stores/widgets'
+import { isWidgetConfigured } from '@/utils/widgetConfig'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
   isSelected?: boolean
+  readonly?: boolean
 }>()
 
 const widgetsStore = useWidgetsStore()
@@ -34,6 +37,11 @@ const columnStyle = computed(() => {
   }
 })
 
+// En mode preview, filtrer les enfants non configures
+const configuredChildren = computed(() =>
+  children.value.filter(isWidgetConfigured),
+)
+
 function handleDrop(event: DragEvent): void {
   event.preventDefault()
   event.stopPropagation()
@@ -53,12 +61,17 @@ function handleDragOver(event: DragEvent): void {
 <template>
   <div
     class="column-widget"
-    :class="{ 'is-selected': isSelected }"
+    :class="{
+      'is-selected': isSelected && !readonly,
+      'column-widget--readonly': readonly,
+    }"
     :style="columnStyle"
-    @dragover="handleDragOver"
-    @drop="handleDrop"
+    @dragover="!readonly && handleDragOver($event)"
+    @drop="!readonly && handleDrop($event)"
   >
+    <!-- Mode édition : draggable -->
     <draggable
+      v-if="!readonly"
       v-model="children"
       item-key="id"
       group="widgets"
@@ -77,7 +90,16 @@ function handleDragOver(event: DragEvent): void {
       </template>
     </draggable>
 
-    <div v-if="children.length === 0" class="empty-column">
+    <!-- Mode preview : simple itération avec PreviewRenderer (enfants configures uniquement) -->
+    <div v-else class="column-content">
+      <PreviewRenderer
+        v-for="element in configuredChildren"
+        :key="element.id"
+        :widget="element"
+      />
+    </div>
+
+    <div v-if="!readonly && children.length === 0" class="empty-column">
       <p>Glissez un widget ici</p>
     </div>
   </div>
@@ -100,6 +122,16 @@ function handleDragOver(event: DragEvent): void {
   border-color: var(--color-primary);
   border-style: solid;
   box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2);
+}
+
+.column-widget--readonly {
+  background: transparent;
+  border: none;
+  min-height: auto;
+}
+
+.column-widget--readonly:hover {
+  border-color: transparent;
 }
 
 .column-content {

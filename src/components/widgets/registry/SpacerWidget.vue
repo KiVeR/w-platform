@@ -4,19 +4,22 @@ import type { Widget } from '@/types/widget'
 defineProps<{
   widget: Widget
   editable?: boolean
+  readonly?: boolean
 }>()
 </script>
 
 <template>
   <div
     class="spacer-widget"
+    :class="{ 'spacer-widget--readonly': readonly }"
     :style="{
       height: widget.styles.height || '32px',
       margin: widget.styles.margin,
       padding: widget.styles.padding,
     }"
   >
-    <div class="spacer-indicator">
+    <!-- Indicateur visible seulement en mode édition -->
+    <div v-if="!readonly" class="spacer-indicator">
       <span class="spacer-label">{{ widget.styles.height || '32px' }}</span>
     </div>
   </div>
@@ -33,6 +36,10 @@ defineProps<{
     rgba(20, 184, 166, 0.05) 5px,
     rgba(20, 184, 166, 0.05) 10px
   );
+}
+
+.spacer-widget--readonly {
+  background: transparent;
 }
 
 .spacer-indicator {

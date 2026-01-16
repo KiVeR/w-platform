@@ -2,15 +2,18 @@
 import type { Widget, WidgetType } from '@/types/widget'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'
+import PreviewRenderer from '@/components/canvas/PreviewRenderer.vue'
 import WidgetRendererInner from '@/components/canvas/WidgetRendererInner.vue'
 import { canAcceptChild } from '@/config/widgets'
 import { useSelectionStore } from '@/stores/selection'
 import { useWidgetsStore } from '@/stores/widgets'
+import { isWidgetConfigured } from '@/utils/widgetConfig'
 import FormFieldWidget from './FormFieldWidget.vue'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
+  readonly?: boolean
 }>()
 
 const widgetsStore = useWidgetsStore()
@@ -29,6 +32,11 @@ const formStyle = computed(() => ({
   backgroundColor: props.widget.styles.backgroundColor,
   borderRadius: props.widget.styles.borderRadius,
 }))
+
+// En mode preview, filtrer les enfants non configures
+const configuredChildren = computed(() =>
+  children.value.filter(isWidgetConfigured),
+)
 
 function addField() {
   widgetsStore.addChildWidget(props.widget.id, 'form-field')
@@ -61,16 +69,20 @@ function isFormField(widget: Widget): boolean {
 <template>
   <form
     class="form-widget"
+    :class="{ 'form-widget--readonly': readonly }"
     :style="formStyle"
     @submit="handleSubmit"
-    @dragover="handleDragOver"
-    @drop="handleDrop"
+    @dragover="!readonly && handleDragOver($event)"
+    @drop="!readonly && handleDrop($event)"
   >
-    <div class="form-header">
+    <!-- Header badge - seulement en mode édition -->
+    <div v-if="!readonly" class="form-header">
       <span class="form-badge">📋 Formulaire</span>
     </div>
 
+    <!-- Mode édition : draggable -->
     <draggable
+      v-if="!readonly"
       v-model="children"
       item-key="id"
       group="widgets"
@@ -102,24 +114,49 @@ function isFormField(widget: Widget): boolean {
       </template>
     </draggable>
 
-    <div v-if="children.length === 0" class="empty-form">
+    <!-- Mode preview : simple itération (enfants configures uniquement) -->
+    <div v-else class="form-fields">
+      <template v-for="element in configuredChildren" :key="element.id">
+        <FormFieldWidget
+          v-if="isFormField(element)"
+          :widget="element"
+          :parent-id="widget.id"
+          :readonly="true"
+        />
+        <PreviewRenderer
+          v-else
+          :widget="element"
+        />
+      </template>
+    </div>
+
+    <!-- Empty state et boutons d'ajout - seulement en mode édition -->
+    <div v-if="!readonly && children.length === 0" class="empty-form">
       <p>Glissez des champs ou widgets ici</p>
       <button type="button" class="add-field-btn" @click.stop="addField">
         + Ajouter un champ
       </button>
     </div>
 
-    <div v-else class="form-actions">
+    <div v-else-if="!readonly" class="form-actions">
       <button type="button" class="add-field-btn small" @click.stop="addField">
         + Ajouter un champ
       </button>
     </div>
 
-    <div class="submit-preview">
+    <!-- Mode édition : submit preview disabled -->
+    <div v-if="!readonly" class="submit-preview">
       <button type="submit" class="submit-btn" disabled>
-        Envoyer
+        {{ widget.content.submitText || 'Envoyer' }}
       </button>
       <span class="submit-hint">Aperçu du bouton</span>
+    </div>
+
+    <!-- Mode preview : vrai bouton submit actif -->
+    <div v-else class="submit-section">
+      <button type="submit" class="submit-btn submit-btn--active">
+        {{ widget.content.submitText || 'Envoyer' }}
+      </button>
     </div>
   </form>
 </template>
@@ -129,6 +166,10 @@ function isFormField(widget: Widget): boolean {
   width: 100%;
   border: 2px dashed #94a3b8;
   position: relative;
+}
+
+.form-widget--readonly {
+  border: none;
 }
 
 .form-header {
@@ -213,6 +254,16 @@ function isFormField(widget: Widget): boolean {
   margin-top: 6px;
   font-size: 11px;
   color: var(--color-text-muted);
+}
+
+.submit-section {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.submit-btn--active {
+  cursor: pointer;
+  opacity: 1;
 }
 
 .field-ghost {
