@@ -13,6 +13,18 @@ dist-ssr
 *.local
 *.local.json
 
+# Nuxt
+.nuxt/
+.output/
+.data/
+.nitro/
+.cache/
+
+# Environment
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -33,3 +45,8 @@ package-lock.json
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Testing
+coverage/
+playwright-report/
+test-results/
