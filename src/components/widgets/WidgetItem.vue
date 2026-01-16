@@ -90,7 +90,9 @@ function handleClick() {
     draggable="true"
     role="button"
     tabindex="0"
+    :title="config.description"
     :aria-label="`Ajouter widget ${config.label}`"
+    :aria-describedby="config.description ? `${config.type}-tooltip` : undefined"
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
     @click="handleClick"
@@ -103,6 +105,9 @@ function handleClick() {
     <div class="widget-label">
       {{ config.label }}
     </div>
+    <span v-if="config.description" :id="`${config.type}-tooltip`" class="sr-only">
+      {{ config.description }}
+    </span>
   </div>
 </template>
 
@@ -169,5 +174,18 @@ function handleClick() {
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.2;
+}
+
+/* Screen reader only - for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>
