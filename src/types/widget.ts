@@ -92,6 +92,7 @@ export interface WidgetContent {
   emailNotify?: boolean
   emailSubject?: string
   emailTo?: string
+  submitText?: string
 
   // Form field
   fieldType?: FormFieldType

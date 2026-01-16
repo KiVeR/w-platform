@@ -20,6 +20,7 @@
     "tailwindcss": "^4.1.18",
     "uuid": "^13.0.0",
     "vue": "^3.5.24",
+    "vue-router": "^4.6.4",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
-import EditorLayout from '@/components/layout/EditorLayout.vue'
 import { useEditorStore } from '@/stores/editor'
 import { useHistoryStore } from '@/stores/history'
 import { useSelectionStore } from '@/stores/selection'
@@ -78,5 +77,5 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <EditorLayout />
+  <RouterView />
 </template>

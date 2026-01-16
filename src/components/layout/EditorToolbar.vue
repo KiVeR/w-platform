@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { EditorMode } from '@/stores/ui'
 import { Menu, Redo2, Settings, Undo2 } from 'lucide-vue-next'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import AutoSaveIndicator from '@/components/ui/AutoSaveIndicator.vue'
 import SaveButton from '@/components/ui/SaveButton.vue'
+import { useAutoSave } from '@/composables/useAutoSave'
 import { useEditorStore } from '@/stores/editor'
 import { useHistoryStore } from '@/stores/history'
 import { useUIStore } from '@/stores/ui'
@@ -11,40 +13,28 @@ const uiStore = useUIStore()
 const editorStore = useEditorStore()
 const historyStore = useHistoryStore()
 
+const { saveStatus, lastSyncedAt, saveNow } = useAutoSave()
+
 const modes: { value: EditorMode, label: string }[] = [
   { value: 'designer', label: 'Mode designer' },
   { value: 'preview', label: 'Mode aperçu' },
   { value: 'expert', label: 'Mode expert' },
 ]
 
-const saveStatus = ref<'idle' | 'saving' | 'saved' | 'error'>('idle')
-
 const currentSaveStatus = computed(() => {
-  if (saveStatus.value !== 'idle')
-    return saveStatus.value
+  const status = saveStatus.value
+  // Map 'pending' to 'idle' for SaveButton compatibility
+  if (status === 'pending')
+    return 'idle'
+  if (status !== 'idle')
+    return status
   return editorStore.isDirty ? 'idle' : 'saved'
 })
 
 async function handleSave() {
   if (!editorStore.isDirty)
     return
-
-  saveStatus.value = 'saving'
-  try {
-    // Simulate API save
-    await new Promise(resolve => setTimeout(resolve, 800))
-    editorStore.markAsSaved()
-    saveStatus.value = 'saved'
-    setTimeout(() => {
-      saveStatus.value = 'idle'
-    }, 2000)
-  }
-  catch {
-    saveStatus.value = 'error'
-    setTimeout(() => {
-      saveStatus.value = 'idle'
-    }, 3000)
-  }
+  await saveNow()
 }
 
 function handleUndo() {
@@ -122,6 +112,11 @@ function handleRedo() {
         :status="currentSaveStatus"
         :disabled="!editorStore.isDirty && saveStatus === 'idle'"
         @click="handleSave"
+      />
+
+      <AutoSaveIndicator
+        :status="saveStatus"
+        :last-synced-at="lastSyncedAt"
       />
 
       <button
