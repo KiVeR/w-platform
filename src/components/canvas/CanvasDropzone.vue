@@ -3,6 +3,7 @@ import type { WidgetType } from '@/types/widget'
 import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 import { useEditorStore } from '@/stores/editor'
+import { usePresetsStore } from '@/stores/presets'
 import { useSelectionStore } from '@/stores/selection'
 import { useWidgetsStore } from '@/stores/widgets'
 import WidgetRenderer from './WidgetRenderer.vue'
@@ -10,6 +11,7 @@ import WidgetRenderer from './WidgetRenderer.vue'
 const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
 const editorStore = useEditorStore()
+const presetsStore = usePresetsStore()
 
 const isDragOver = ref(false)
 
@@ -34,9 +36,20 @@ function handleDrop(event: DragEvent) {
   event.preventDefault()
   isDragOver.value = false
 
+  // Check for widget type (from WidgetPalette)
   const widgetType = event.dataTransfer?.getData('widget-type') as WidgetType
   if (widgetType) {
     widgetsStore.addWidget(widgetType)
+    return
+  }
+
+  // Check for section preset (from SectionPalette)
+  const sectionId = event.dataTransfer?.getData('section-preset')
+  if (sectionId) {
+    const section = presetsStore.getSectionById(sectionId)
+    if (section) {
+      presetsStore.addSection(section)
+    }
   }
 }
 
