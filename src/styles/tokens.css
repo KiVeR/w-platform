@@ -142,4 +142,10 @@
   --transition-base: 200ms ease;
   --transition-slow: 300ms ease;
   --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ==================== LAYOUT ==================== */
+  --header-height: 52px;
+  --sidebar-width: 280px;
+  --sidebar-rail-width: 48px;
+  --sidebar-right-width: 320px;
 }
