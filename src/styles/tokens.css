@@ -148,4 +148,9 @@
   --sidebar-width: 304px;
   --sidebar-rail-width: 48px;
   --sidebar-right-width: 304px;
+
+  /* ==================== WIDGET ALIGNMENT ==================== */
+  --align-left: flex-start;
+  --align-center: center;
+  --align-right: flex-end;
 }
