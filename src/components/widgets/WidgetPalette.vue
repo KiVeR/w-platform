@@ -1,42 +1,51 @@
 <script setup lang="ts">
-import { Search, X } from 'lucide-vue-next'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import type { WidgetCategory } from '@/types/widget'
+import { Search, Sparkles, X } from 'lucide-vue-next'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { getWidgetsByCategory, widgetCategories, widgetConfigs } from '@/config/widgets'
 import WidgetItem from './WidgetItem.vue'
 
 const searchQuery = ref('')
 const searchInputRef = ref<HTMLInputElement>()
+const activeFilter = ref<WidgetCategory | 'all'>('all')
 
-// Filtrer les widgets par recherche
+// Filtrer les widgets par recherche ET par filtre de catégorie
 const filteredWidgets = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return null
-  }
-  const query = searchQuery.value.toLowerCase()
-  return widgetConfigs.filter(w =>
-    w.label.toLowerCase().includes(query)
-    || w.type.toLowerCase().includes(query),
-  )
-})
+  let widgets = widgetConfigs
 
-// Filtrer les catégories (pour n'afficher que celles qui ont des widgets correspondants)
-const filteredCategories = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return widgetCategories
+  // Filtrer par catégorie si un filtre est actif
+  if (activeFilter.value !== 'all') {
+    widgets = widgets.filter(w => w.category === activeFilter.value)
   }
-  const query = searchQuery.value.toLowerCase()
-  return widgetCategories.filter((category) => {
-    const widgets = getWidgetsByCategory(category.id)
-    return widgets.some(w =>
+
+  // Filtrer par recherche si une requête est présente
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    widgets = widgets.filter(w =>
       w.label.toLowerCase().includes(query)
       || w.type.toLowerCase().includes(query),
     )
+  }
+
+  return widgets
+})
+
+// Compter les widgets par catégorie
+const categoryCounts = computed(() => {
+  const counts: Record<string, number> = { all: widgetConfigs.length }
+  widgetCategories.forEach((cat) => {
+    counts[cat.id] = getWidgetsByCategory(cat.id).length
   })
+  return counts
 })
 
 function clearSearch() {
   searchQuery.value = ''
   searchInputRef.value?.focus()
+}
+
+function setFilter(category: WidgetCategory | 'all') {
+  activeFilter.value = category
 }
 
 // Raccourci "/" pour focus sur la recherche
@@ -46,6 +55,13 @@ function handleGlobalKeydown(e: KeyboardEvent) {
     searchInputRef.value?.focus()
   }
 }
+
+// Reset filter quand on recherche
+watch(searchQuery, (query) => {
+  if (query.trim()) {
+    activeFilter.value = 'all'
+  }
+})
 
 onMounted(() => {
   window.addEventListener('keydown', handleGlobalKeydown)
@@ -80,42 +96,53 @@ onUnmounted(() => {
       <kbd v-else class="search-shortcut">/</kbd>
     </div>
 
-    <!-- Résultats de recherche -->
-    <template v-if="filteredWidgets">
-      <div class="search-results">
-        <p class="results-count">
-          {{ filteredWidgets.length }} widget{{ filteredWidgets.length > 1 ? 's' : '' }} trouvé{{ filteredWidgets.length > 1 ? 's' : '' }}
-        </p>
-        <div class="widget-grid">
-          <WidgetItem
-            v-for="config in filteredWidgets"
-            :key="config.type"
-            :config="config"
-          />
-        </div>
-      </div>
-    </template>
-
-    <!-- Vue par catégories -->
-    <template v-else>
-      <div
-        v-for="category in filteredCategories"
-        :key="category.id"
-        class="widget-category"
+    <!-- Filtres par catégorie (tags horizontaux) -->
+    <div class="category-filters">
+      <button
+        class="filter-tag"
+        :class="{ active: activeFilter === 'all' }"
+        @click="setFilter('all')"
       >
-        <h3 class="category-title">
-          {{ category.label }}
-          <span class="category-count">{{ getWidgetsByCategory(category.id).length }}</span>
-        </h3>
-        <div class="widget-grid">
-          <WidgetItem
-            v-for="config in getWidgetsByCategory(category.id)"
-            :key="config.type"
-            :config="config"
-          />
-        </div>
+        Tous
+        <span class="filter-count">{{ categoryCounts.all }}</span>
+      </button>
+      <button
+        v-for="category in widgetCategories"
+        :key="category.id"
+        class="filter-tag"
+        :class="{ active: activeFilter === category.id }"
+        @click="setFilter(category.id)"
+      >
+        {{ category.label }}
+        <span class="filter-count">{{ categoryCounts[category.id] }}</span>
+      </button>
+    </div>
+
+    <!-- Grille de widgets filtrés -->
+    <div class="widgets-section">
+      <p v-if="searchQuery" class="results-count">
+        {{ filteredWidgets.length }} widget{{ filteredWidgets.length > 1 ? 's' : '' }} trouvé{{ filteredWidgets.length > 1 ? 's' : '' }}
+      </p>
+
+      <div v-if="filteredWidgets.length === 0" class="empty-state">
+        <Search :size="32" class="empty-icon" />
+        <p>Aucun widget trouvé</p>
       </div>
-    </template>
+
+      <div v-else class="widget-grid">
+        <WidgetItem
+          v-for="config in filteredWidgets"
+          :key="config.type"
+          :config="config"
+        />
+      </div>
+    </div>
+
+    <!-- Bouton IA (placeholder) -->
+    <button class="ai-assistant-btn" disabled title="Bientôt disponible">
+      <Sparkles :size="16" />
+      <span>Aide-moi à créer...</span>
+    </button>
   </div>
 </template>
 
@@ -124,13 +151,14 @@ onUnmounted(() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
+  height: 100%;
 }
 
 /* Search */
 .palette-search {
   position: relative;
-  margin-bottom: var(--space-2);
+  flex-shrink: 0;
 }
 
 .search-input {
@@ -201,51 +229,108 @@ onUnmounted(() => {
   color: var(--color-text-muted);
 }
 
-/* Results */
+/* Category Filters */
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.filter-tag:hover {
+  border-color: var(--color-primary-300);
+  background: var(--color-primary-50);
+}
+
+.filter-tag.active {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-500);
+  color: white;
+}
+
+.filter-tag.active .filter-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.filter-count {
+  font-size: 10px;
+  padding: 1px 5px;
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+}
+
+/* Widgets Section */
+.widgets-section {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
 .results-count {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   margin: 0 0 var(--space-2) 0;
 }
 
-.search-results {
+.empty-state {
   display: flex;
   flex-direction: column;
-}
-
-/* Categories */
-.widget-category {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.category-title {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  justify-content: center;
+  padding: var(--space-8);
   color: var(--color-text-muted);
-  margin: 0;
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--color-border);
+  text-align: center;
 }
 
-.category-count {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  background: var(--color-neutral-100);
-  padding: 2px 6px;
-  border-radius: var(--radius-full);
+.empty-icon {
+  opacity: 0.3;
+  margin-bottom: var(--space-2);
 }
 
 .widget-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: var(--space-2);
+}
+
+/* AI Assistant Button */
+.ai-assistant-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  transition: all var(--transition-fast);
+}
+
+.ai-assistant-btn:not(:disabled):hover {
+  border-color: var(--color-primary-300);
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+  cursor: pointer;
 }
 </style>
