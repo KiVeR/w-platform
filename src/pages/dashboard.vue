@@ -2,6 +2,7 @@
 /* eslint-disable no-alert */
 import type { LandingPageListItem } from '@/services/api/types'
 import { Loader2, Plus, RefreshCw, Trash2 } from 'lucide-vue-next'
+import KreoLogo from '@/components/icons/KreoLogo.vue'
 import { landingPageApi } from '@/services/api/landingPageApi'
 import { useAuthStore } from '@/stores/auth'
 
@@ -95,9 +96,12 @@ onMounted(() => {
 <template>
   <div class="dashboard">
     <header class="dashboard-header">
-      <h1 class="dashboard-title">
-        Mes Landing Pages
-      </h1>
+      <div class="dashboard-brand">
+        <KreoLogo :size="32" />
+        <h1 class="dashboard-title">
+          Mes Landing Pages
+        </h1>
+      </div>
       <div class="dashboard-actions">
         <NuxtLink to="/editor/new" class="btn-create">
           <Plus :size="18" />
@@ -185,6 +189,12 @@ onMounted(() => {
   padding: var(--space-4) var(--space-6);
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .dashboard-title {

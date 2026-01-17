@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { AlertTriangle, Loader2, X } from 'lucide-vue-next'
+import { AlertTriangle, X } from 'lucide-vue-next'
+import KreoLogo from '@/components/icons/KreoLogo.vue'
 import EditorLayout from '@/components/layout/EditorLayout.vue'
 import RecoveryModal from '@/components/ui/RecoveryModal.vue'
 import { usePersistence } from '@/composables/usePersistence'
@@ -52,8 +53,8 @@ onMounted(() => {
 <template>
   <div class="editor-view">
     <div v-if="persistence.isLoading.value" class="loading-overlay">
-      <Loader2 :size="48" class="animate-spin text-primary" />
-      <p class="mt-4 text-slate-600">
+      <KreoLogo :size="56" class="loading-logo" />
+      <p class="loading-text">
         Chargement du design...
       </p>
     </div>
@@ -94,6 +95,27 @@ onMounted(() => {
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.95);
   z-index: 100;
+}
+
+.loading-logo {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-text {
+  margin-top: 16px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
 }
 
 .toast {
