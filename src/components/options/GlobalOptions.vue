@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UserPalette } from '#shared/schemas/palette.schema'
 import type { Palette } from '@/config/palettes'
-import { ChevronDown, Copy, Moon, Pencil, Plus, RotateCcw, Save, Sun, Trash2 } from 'lucide-vue-next'
+import { ChevronDown, RotateCcw, Save } from 'lucide-vue-next'
 import { ref } from 'vue'
 import ConfirmPaletteChangeModal from '@/components/ui/ConfirmPaletteChangeModal.vue'
 import SavePaletteModal from '@/components/ui/SavePaletteModal.vue'
@@ -13,6 +13,7 @@ import OptionInput from './shared/OptionInput.vue'
 import OptionSelect from './shared/OptionSelect.vue'
 import OptionSlider from './shared/OptionSlider.vue'
 import OptionTextarea from './shared/OptionTextarea.vue'
+import PaletteDropdown from './shared/PaletteDropdown.vue'
 
 const editorStore = useEditorStore()
 
@@ -33,13 +34,11 @@ const {
   closeSaveModal,
   saveAsNewPalette,
   updateCurrentPalette,
-  duplicatePalette,
   renamePalette,
   deleteUserPalette,
 } = usePalettes()
 
 const expandedSections = ref({
-  palette: true,
   colors: true,
   typography: false,
   layout: false,
@@ -57,10 +56,6 @@ const fontOptions = [
   { value: 'Playfair Display, serif', label: 'Playfair Display' },
 ]
 
-// Rename state
-const renamingPaletteId = ref<string | null>(null)
-const renameInput = ref('')
-
 function toggleSection(section: keyof typeof expandedSections.value) {
   expandedSections.value[section] = !expandedSections.value[section]
 }
@@ -71,35 +66,16 @@ function parsePixelValue(value: string | undefined, fallback: number): number {
   return Number.parseInt(value.replace('px', ''), 10) || fallback
 }
 
-function handlePaletteClick(palette: Palette | UserPalette) {
+function handlePaletteSelect(palette: Palette | UserPalette) {
   selectPalette(palette)
 }
 
-function handleDuplicate(palette: Palette | UserPalette) {
-  duplicatePalette(palette)
+function handlePaletteRename(id: string, newLabel: string) {
+  renamePalette(id, newLabel)
 }
 
-function startRename(palette: UserPalette) {
-  renamingPaletteId.value = palette.id
-  renameInput.value = palette.label
-}
-
-function confirmRename(palette: UserPalette) {
-  if (renameInput.value.trim()) {
-    renamePalette(palette.id, renameInput.value.trim())
-  }
-  renamingPaletteId.value = null
-}
-
-function cancelRename() {
-  renamingPaletteId.value = null
-}
-
-function handleDelete(palette: UserPalette) {
-  // eslint-disable-next-line no-alert -- Confirmation before destructive action
-  if (confirm(`Supprimer la palette "${palette.label}" ?`)) {
-    deleteUserPalette(palette.id)
-  }
+function handlePaletteDelete(id: string) {
+  deleteUserPalette(id)
 }
 
 function handleSaveModalConfirm(label: string) {
@@ -110,215 +86,11 @@ function handleConfirmModalSaveFirst() {
   showConfirmModal.value = false
   openSaveModal()
 }
-
-function isSelected(palette: Palette | UserPalette): boolean {
-  return editorStore.globalStyles.palette === palette.name
-}
 </script>
 
 <template>
   <div class="global-options">
-    <!-- Section: Palette -->
-    <section class="options-section">
-      <button
-        class="section-header"
-        :aria-expanded="expandedSections.palette"
-        @click="toggleSection('palette')"
-      >
-        <span>Palette de couleurs</span>
-        <ChevronDown :size="16" :class="{ rotated: !expandedSections.palette }" />
-      </button>
-      <div v-show="expandedSections.palette" class="section-content">
-        <!-- Current Palette State -->
-        <div class="current-palette">
-          <div class="current-palette-header">
-            <span class="current-palette-name">
-              {{ selectedPalette?.label || 'Aucune palette' }}
-            </span>
-            <span v-if="isPaletteModified" class="modified-indicator">
-              ◉ (non enregistrée)
-            </span>
-          </div>
-
-          <!-- Color Preview -->
-          <div class="current-palette-preview">
-            <div
-              class="preview-swatch"
-              :style="{ backgroundColor: currentColors.backgroundColor }"
-              title="Fond"
-            />
-            <div
-              class="preview-swatch"
-              :style="{ backgroundColor: currentColors.textColor }"
-              title="Texte"
-            />
-            <div
-              class="preview-swatch"
-              :style="{ backgroundColor: currentColors.primaryColor }"
-              title="Primaire"
-            />
-            <div
-              class="preview-swatch"
-              :style="{ backgroundColor: currentColors.secondaryColor }"
-              title="Secondaire"
-            />
-          </div>
-
-          <!-- Actions -->
-          <div class="current-palette-actions">
-            <template v-if="isPaletteModified">
-              <button class="action-btn" title="Réinitialiser" @click="resetToOriginal">
-                <RotateCcw :size="14" />
-                <span>Réinitialiser</span>
-              </button>
-              <button
-                v-if="isUserPalette"
-                class="action-btn action-btn-primary"
-                title="Enregistrer"
-                @click="updateCurrentPalette"
-              >
-                <Save :size="14" />
-                <span>Enregistrer</span>
-              </button>
-              <button class="action-btn" title="Enregistrer sous..." @click="openSaveModal">
-                <Save :size="14" />
-                <span>{{ isUserPalette ? 'Enregistrer sous...' : 'Enregistrer...' }}</span>
-              </button>
-            </template>
-            <span v-else class="status-synced">Palette synchronisée</span>
-          </div>
-        </div>
-
-        <!-- User Palettes Section -->
-        <div v-if="userPalettes.length > 0" class="palettes-section">
-          <div class="palettes-section-header">
-            <h4>Mes palettes</h4>
-            <button class="add-palette-btn" title="Nouvelle palette" @click="openSaveModal">
-              <Plus :size="14" />
-            </button>
-          </div>
-          <div class="palette-grid">
-            <div
-              v-for="palette in userPalettes"
-              :key="palette.id"
-              class="palette-item"
-              :class="{
-                active: isSelected(palette),
-                dark: palette.isDark,
-              }"
-            >
-              <button
-                class="palette-button"
-                :aria-label="`Sélectionner la palette ${palette.label}`"
-                :aria-pressed="isSelected(palette)"
-                @click="handlePaletteClick(palette)"
-              >
-                <div class="palette-preview" :style="{ backgroundColor: palette.background }">
-                  <div class="palette-color" :style="{ backgroundColor: palette.primary }" />
-                  <div class="palette-color" :style="{ backgroundColor: palette.primaryDark }" />
-                </div>
-                <div class="palette-info">
-                  <template v-if="renamingPaletteId === palette.id">
-                    <input
-                      v-model="renameInput"
-                      class="rename-input"
-                      type="text"
-                      maxlength="100"
-                      @click.stop
-                      @keyup.enter="confirmRename(palette)"
-                      @keyup.escape="cancelRename"
-                      @blur="confirmRename(palette)"
-                    >
-                  </template>
-                  <template v-else>
-                    <span class="palette-label">{{ palette.label }}</span>
-                    <Moon v-if="palette.isDark" :size="12" class="palette-icon" />
-                    <Sun v-else :size="12" class="palette-icon" />
-                  </template>
-                </div>
-              </button>
-              <div class="palette-actions">
-                <button
-                  class="palette-action-btn"
-                  title="Renommer"
-                  @click.stop="startRename(palette)"
-                >
-                  <Pencil :size="12" />
-                </button>
-                <button
-                  class="palette-action-btn"
-                  title="Dupliquer"
-                  @click.stop="handleDuplicate(palette)"
-                >
-                  <Copy :size="12" />
-                </button>
-                <button
-                  class="palette-action-btn palette-action-btn-danger"
-                  title="Supprimer"
-                  @click.stop="handleDelete(palette)"
-                >
-                  <Trash2 :size="12" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Preset Palettes Section -->
-        <div class="palettes-section">
-          <div class="palettes-section-header">
-            <h4>Prédéfinies</h4>
-            <button
-              v-if="userPalettes.length === 0"
-              class="add-palette-btn"
-              title="Nouvelle palette"
-              @click="openSaveModal"
-            >
-              <Plus :size="14" />
-            </button>
-          </div>
-          <div class="palette-grid">
-            <div
-              v-for="palette in presetPalettes"
-              :key="palette.name"
-              class="palette-item"
-              :class="{
-                active: isSelected(palette),
-                dark: palette.isDark,
-              }"
-            >
-              <button
-                class="palette-button"
-                :aria-label="`Sélectionner la palette ${palette.label}`"
-                :aria-pressed="isSelected(palette)"
-                @click="handlePaletteClick(palette)"
-              >
-                <div class="palette-preview" :style="{ backgroundColor: palette.background }">
-                  <div class="palette-color" :style="{ backgroundColor: palette.primary }" />
-                  <div class="palette-color" :style="{ backgroundColor: palette.primaryDark }" />
-                </div>
-                <div class="palette-info">
-                  <span class="palette-label">{{ palette.label }}</span>
-                  <Moon v-if="palette.isDark" :size="12" class="palette-icon" />
-                  <Sun v-else :size="12" class="palette-icon" />
-                </div>
-              </button>
-              <div class="palette-actions">
-                <button
-                  class="palette-action-btn"
-                  title="Dupliquer"
-                  @click.stop="handleDuplicate(palette)"
-                >
-                  <Copy :size="12" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section: Colors -->
+    <!-- Section: Couleurs (unifiée) -->
     <section class="options-section">
       <button
         class="section-header"
@@ -329,6 +101,47 @@ function isSelected(palette: Palette | UserPalette): boolean {
         <ChevronDown :size="16" :class="{ rotated: !expandedSections.colors }" />
       </button>
       <div v-show="expandedSections.colors" class="section-content">
+        <!-- Zone 1: Palette Selector -->
+        <OptionGroup label="Palette">
+          <PaletteDropdown
+            :selected-palette="selectedPalette"
+            :user-palettes="userPalettes"
+            :preset-palettes="presetPalettes"
+            @select="handlePaletteSelect"
+            @rename="handlePaletteRename"
+            @delete="handlePaletteDelete"
+            @create="openSaveModal"
+          />
+        </OptionGroup>
+
+        <!-- Zone 2: Modified Banner (conditional) -->
+        <div v-if="isPaletteModified" class="modified-banner">
+          <span class="modified-indicator">◉ Modifiée</span>
+          <div class="modified-actions">
+            <button class="action-btn" title="Réinitialiser" @click="resetToOriginal">
+              <RotateCcw :size="14" />
+              <span>Réinitialiser</span>
+            </button>
+            <button
+              v-if="isUserPalette"
+              class="action-btn action-btn-primary"
+              title="Enregistrer"
+              @click="updateCurrentPalette"
+            >
+              <Save :size="14" />
+              <span>Enregistrer</span>
+            </button>
+            <button class="action-btn" title="Enregistrer sous..." @click="openSaveModal">
+              <Save :size="14" />
+              <span>{{ isUserPalette ? 'Enregistrer sous...' : 'Enregistrer...' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Separator -->
+        <div class="section-separator" />
+
+        <!-- Zone 3: Color Pickers -->
         <OptionGroup label="Couleur de fond">
           <OptionColorPicker
             :model-value="editorStore.globalStyles.backgroundColor"
@@ -539,52 +352,46 @@ function isSelected(palette: Palette | UserPalette): boolean {
   border-top: 1px solid var(--color-border);
 }
 
-/* Current Palette */
-.current-palette {
-  padding: var(--space-3);
-  background: var(--color-surface-elevated);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+/* Section Separator */
+.section-separator {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-1) 0;
 }
 
-.current-palette-header {
+/* Modified Banner */
+.modified-banner {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--space-2);
-  margin-bottom: var(--space-2);
+  padding: var(--space-3);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.04) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-md);
+  animation: fade-in 0.2s ease-out;
 }
 
-.current-palette-name {
-  font-weight: var(--font-semibold);
-  font-size: var(--text-sm);
-  color: var(--color-text);
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modified-indicator {
-  font-size: var(--text-xs);
-  color: #f59e0b;
-  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: #d97706;
 }
 
-.current-palette-preview {
-  display: flex;
-  gap: var(--space-1);
-  margin-bottom: var(--space-2);
-}
-
-.preview-swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-}
-
-.current-palette-actions {
+.modified-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
-  min-height: 32px;
-  align-items: center;
 }
 
 .action-btn {
@@ -615,175 +422,7 @@ function isSelected(palette: Palette | UserPalette): boolean {
 
 .action-btn-primary:hover {
   background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
   color: white;
-}
-
-.status-synced {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-}
-
-/* Palettes Section */
-.palettes-section {
-  margin-top: var(--space-2);
-}
-
-.palettes-section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-2);
-}
-
-.palettes-section-header h4 {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0;
-}
-
-.add-palette-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.add-palette-btn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: rgba(20, 184, 166, 0.05);
-}
-
-.palette-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-1);
-}
-
-.palette-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  transition: all var(--transition-fast);
-}
-
-.palette-item:hover {
-  border-color: var(--color-primary);
-}
-
-.palette-item:hover .palette-actions {
-  opacity: 1;
-}
-
-.palette-item.active {
-  border-color: var(--color-primary);
-  background: var(--color-primary-50);
-}
-
-.palette-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--space-2);
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  width: 100%;
-}
-
-.palette-button:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.palette-preview {
-  display: flex;
-  gap: var(--space-1);
-  margin-bottom: var(--space-1);
-  padding: var(--space-1);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-}
-
-.palette-color {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-sm);
-}
-
-.palette-info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.palette-label {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--color-text);
-}
-
-.palette-icon {
-  color: var(--color-text-muted);
-}
-
-.palette-item.dark .palette-label {
-  color: var(--color-text-secondary);
-}
-
-.palette-actions {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  display: flex;
-  gap: 2px;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.palette-action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-elevated);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.palette-action-btn:hover {
-  background: var(--color-neutral-100);
-  color: var(--color-primary);
-}
-
-.palette-action-btn-danger:hover {
-  background: #fef2f2;
-  color: #ef4444;
-}
-
-.rename-input {
-  width: 80px;
-  padding: 2px 4px;
-  font-size: var(--text-xs);
-  border: 1px solid var(--color-primary);
-  border-radius: var(--radius-sm);
-  outline: none;
 }
 </style>
