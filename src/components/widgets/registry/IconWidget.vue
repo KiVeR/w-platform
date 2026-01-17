@@ -1,21 +1,14 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
 
-// Bibliothèque d'emojis populaires par catégorie
-const emojiLibrary = {
-  actions: ['📞', '✉️', '💬', '📍', '🔗', '⬇️', '➡️', '✅', '❌', '⚡'],
-  business: ['💼', '📊', '💰', '🏢', '📈', '🎯', '🏆', '⭐', '💡', '🔑'],
-  tech: ['📱', '💻', '🖥️', '⚙️', '🔒', '🌐', '📡', '💾', '🔋', '📸'],
-  social: ['❤️', '👍', '🎉', '🔥', '✨', '💪', '🙌', '👏', '🤝', '💯'],
-  nature: ['🌟', '☀️', '🌙', '⚡', '🌊', '🔥', '💧', '🌱', '🍀', '🌈'],
-  arrows: ['➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '🔄', '↩️'],
-}
+const { primaryColor } = useGlobalStyles()
 
 const iconName = computed(() => props.widget.content.iconName || '⭐')
 const iconSize = computed(() => props.widget.content.iconSize || '48px')
@@ -23,7 +16,7 @@ const hasLink = computed(() => !!props.widget.content.href)
 
 const wrapperStyle = computed(() => ({
   fontSize: iconSize.value,
-  color: props.widget.content.iconColor || 'inherit',
+  color: props.widget.content.iconColor || primaryColor.value,
   textAlign: props.widget.styles.textAlign || 'center',
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
@@ -45,19 +38,12 @@ const wrapperStyle = computed(() => ({
 
     <!-- Sans lien -->
     <span v-else class="icon-display">{{ iconName }}</span>
-
-    <!-- Placeholder en mode édition si pas d'icône -->
-    <div v-if="editable && !iconName" class="icon-picker-hint">
-      <p>Choisissez une icône</p>
-      <div class="icon-samples">
-        <span v-for="emoji in emojiLibrary.actions.slice(0, 6)" :key="emoji">{{ emoji }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
 .icon-widget {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,7 +53,7 @@ const wrapperStyle = computed(() => ({
 
 .icon-display {
   display: inline-block;
-  transition: transform 0.2s;
+  transition: transform 0.2s, color 0.2s ease;
 }
 
 .icon-link {
@@ -77,22 +63,5 @@ const wrapperStyle = computed(() => ({
 
 .icon-link:hover .icon-display {
   transform: scale(1.15);
-}
-
-.icon-picker-hint {
-  margin-top: 8px;
-  text-align: center;
-}
-
-.icon-picker-hint p {
-  font-size: 12px;
-  color: var(--color-text-muted);
-  margin: 0 0 8px 0;
-}
-
-.icon-samples {
-  display: flex;
-  gap: 4px;
-  font-size: 20px;
 }
 </style>

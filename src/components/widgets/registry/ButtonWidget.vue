@@ -1,36 +1,43 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
-defineProps<{
+const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
 
-function getHref(widget: Widget): string {
-  switch (widget.content.action) {
+const { primaryColor, borderRadius } = useGlobalStyles()
+
+const buttonStyles = computed(() => ({
+  backgroundColor: props.widget.styles.backgroundColor || primaryColor.value,
+  color: props.widget.styles.color || '#ffffff',
+  fontSize: props.widget.styles.fontSize,
+  fontWeight: props.widget.styles.fontWeight,
+  borderRadius: props.widget.styles.borderRadius || borderRadius.value,
+  textAlign: props.widget.styles.textAlign,
+}))
+
+const href = computed(() => {
+  const { action, phone, href } = props.widget.content
+  switch (action) {
     case 'tel':
-      return `tel:${widget.content.phone || ''}`
+      return `tel:${phone || ''}`
     case 'email':
-      return `mailto:${widget.content.href || ''}`
+      return `mailto:${href || ''}`
     default:
-      return widget.content.href || '#'
+      return href || '#'
   }
-}
+})
 </script>
 
 <template>
   <div class="button-widget" :style="{ padding: widget.styles.padding, margin: widget.styles.margin }">
     <a
-      :href="getHref(widget)"
+      :href="href"
       class="widget-button"
-      :style="{
-        backgroundColor: widget.styles.backgroundColor,
-        color: widget.styles.color,
-        fontSize: widget.styles.fontSize,
-        fontWeight: widget.styles.fontWeight,
-        borderRadius: widget.styles.borderRadius,
-        textAlign: widget.styles.textAlign,
-      }"
+      :style="buttonStyles"
       @click.prevent
     >
       {{ widget.content.text || 'Bouton' }}
@@ -40,6 +47,7 @@ function getHref(widget: Widget): string {
 
 <style scoped>
 .button-widget {
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;

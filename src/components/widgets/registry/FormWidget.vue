@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import draggable from 'vuedraggable'
 import PreviewRenderer from '@/components/canvas/PreviewRenderer.vue'
 import WidgetRendererInner from '@/components/canvas/WidgetRendererInner.vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 import { canAcceptChild } from '@/config/widgets'
 import { useSelectionStore } from '@/stores/selection'
 import { useWidgetsStore } from '@/stores/widgets'
@@ -18,6 +19,7 @@ const props = defineProps<{
 
 const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
+const { primaryColor, borderRadius } = useGlobalStyles()
 
 const children = computed({
   get: () => props.widget.children || [],
@@ -31,6 +33,11 @@ const formStyle = computed(() => ({
   margin: props.widget.styles.margin,
   backgroundColor: props.widget.styles.backgroundColor,
   borderRadius: props.widget.styles.borderRadius,
+}))
+
+const submitButtonStyle = computed(() => ({
+  backgroundColor: primaryColor.value,
+  borderRadius: borderRadius.value,
 }))
 
 // En mode preview, filtrer les enfants non configures
@@ -146,7 +153,7 @@ function isFormField(widget: Widget): boolean {
 
     <!-- Mode édition : submit preview disabled -->
     <div v-if="!readonly" class="submit-preview">
-      <button type="submit" class="submit-btn" disabled>
+      <button type="submit" class="submit-btn" :style="submitButtonStyle" disabled>
         {{ widget.content.submitText || 'Envoyer' }}
       </button>
       <span class="submit-hint">Aperçu du bouton</span>
@@ -154,7 +161,7 @@ function isFormField(widget: Widget): boolean {
 
     <!-- Mode preview : vrai bouton submit actif -->
     <div v-else class="submit-section">
-      <button type="submit" class="submit-btn submit-btn--active">
+      <button type="submit" class="submit-btn submit-btn--active" :style="submitButtonStyle">
         {{ widget.content.submitText || 'Envoyer' }}
       </button>
     </div>
@@ -247,6 +254,7 @@ function isFormField(widget: Widget): boolean {
   font-weight: 600;
   cursor: not-allowed;
   opacity: 0.7;
+  transition: background-color 0.2s ease, border-radius 0.2s ease;
 }
 
 .submit-hint {

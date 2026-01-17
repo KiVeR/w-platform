@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
@@ -9,6 +10,12 @@ const props = defineProps<{
 }>()
 
 const widgetsStore = useWidgetsStore()
+const { headingFontFamily } = useGlobalStyles()
+
+const titleStyles = computed(() => ({
+  ...props.widget.styles,
+  fontFamily: props.widget.styles.fontFamily || headingFontFamily.value,
+}))
 const isEditing = ref(false)
 const editText = ref(props.widget.content.text || '')
 
@@ -42,7 +49,7 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="title-widget" :style="widget.styles">
+  <div class="title-widget" :style="titleStyles">
     <input
       v-if="isEditing"
       v-model="editText"

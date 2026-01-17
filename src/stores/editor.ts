@@ -5,9 +5,25 @@ import { computed, ref } from 'vue'
 const defaultDesign: DesignDocument = {
   version: '1.0',
   globalStyles: {
+    // Theme
     palette: 'turquoise',
     backgroundColor: '#ffffff',
     textColor: '#1e293b',
+    // Brand colors (from turquoise palette)
+    primaryColor: '#14b8a6',
+    secondaryColor: '#0d9488',
+    // Typography
+    fontFamily: 'Inter, system-ui, sans-serif',
+    headingFontFamily: 'Inter, system-ui, sans-serif',
+    baseFontSize: '16px',
+    lineHeight: '1.6',
+    // Layout
+    contentPadding: '16px',
+    widgetGap: '12px',
+    borderRadius: '8px',
+    // SEO
+    pageTitle: '',
+    metaDescription: '',
   },
   widgets: [],
 }

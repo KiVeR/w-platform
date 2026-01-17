@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { OptionsTab } from '@/stores/ui'
+import { computed, ref, watch } from 'vue'
+import GlobalOptions from '@/components/options/GlobalOptions.vue'
 import OptionsPanel from '@/components/options/OptionsPanel.vue'
 import { useSelectionStore } from '@/stores/selection'
 import { useUIStore } from '@/stores/ui'
@@ -7,22 +9,68 @@ import { useUIStore } from '@/stores/ui'
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
 
+type ContextMode = 'page' | 'widget'
+const activeContext = ref<ContextMode>('page')
+
+const hasSelectedWidget = computed(() => !!selectionStore.selectedWidget)
+
+// Auto-switch to widget mode when a widget is selected
+watch(() => selectionStore.selectedWidget, (widget) => {
+  activeContext.value = widget ? 'widget' : 'page'
+})
+
 const tabs: { value: OptionsTab, label: string }[] = [
   { value: 'content', label: 'Contenu' },
   { value: 'style', label: 'Style' },
 ]
+
+function setContext(mode: ContextMode) {
+  if (mode === 'widget' && !hasSelectedWidget.value)
+    return
+  activeContext.value = mode
+}
 </script>
 
 <template>
   <aside class="right-sidebar">
-    <div class="sidebar-header">
-      <span v-if="selectionStore.selectedWidget" class="widget-name">
-        {{ selectionStore.selectedWidget.type }}
-      </span>
-      <span v-else class="header-title">Propriétés</span>
+    <!-- Segmented Control -->
+    <div class="segmented-control">
+      <button
+        class="segment"
+        :class="{ active: activeContext === 'page' }"
+        @click="setContext('page')"
+      >
+        Page
+      </button>
+      <button
+        class="segment"
+        :class="{
+          active: activeContext === 'widget',
+          disabled: !hasSelectedWidget,
+        }"
+        :disabled="!hasSelectedWidget"
+        @click="setContext('widget')"
+      >
+        Widget
+      </button>
     </div>
 
-    <template v-if="selectionStore.selectedWidget">
+    <!-- Page Mode -->
+    <template v-if="activeContext === 'page'">
+      <div class="sidebar-header">
+        <span class="header-title">Options de la page</span>
+      </div>
+      <div class="sidebar-content">
+        <GlobalOptions />
+      </div>
+    </template>
+
+    <!-- Widget Mode -->
+    <template v-else-if="activeContext === 'widget' && hasSelectedWidget">
+      <div class="sidebar-header">
+        <span class="widget-name">{{ selectionStore.selectedWidget?.type }}</span>
+      </div>
+
       <div class="sidebar-tabs">
         <button
           v-for="tab in tabs"
@@ -39,14 +87,6 @@ const tabs: { value: OptionsTab, label: string }[] = [
         <OptionsPanel />
       </div>
     </template>
-
-    <template v-else>
-      <div class="sidebar-empty">
-        <p class="empty-text">
-          Sélectionnez un widget pour modifier ses propriétés
-        </p>
-      </div>
-    </template>
   </aside>
 </template>
 
@@ -59,6 +99,43 @@ const tabs: { value: OptionsTab, label: string }[] = [
   flex-direction: column;
   flex-shrink: 0;
   height: 100%;
+}
+
+/* Segmented Control */
+.segmented-control {
+  display: flex;
+  padding: 8px;
+  gap: 4px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.segment {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.segment:hover:not(.disabled) {
+  background-color: var(--color-surface-active);
+  color: var(--color-text);
+}
+
+.segment.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.segment.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .sidebar-header {
@@ -112,20 +189,5 @@ const tabs: { value: OptionsTab, label: string }[] = [
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-}
-
-.sidebar-empty {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.empty-text {
-  font-size: 14px;
-  color: var(--color-text-muted);
-  text-align: center;
-  line-height: 1.5;
 }
 </style>

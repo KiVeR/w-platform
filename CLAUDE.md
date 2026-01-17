@@ -47,10 +47,42 @@ Renderer implementations in `src/components/widgets/registry/`.
 
 ### Adding a New Widget
 
-1. Add config in `src/config/widgets.ts`
-2. Add type in `src/types/widget.ts` (`WidgetType` union)
-3. Create renderer in `src/components/widgets/registry/`
-4. Import it in `WidgetRenderer.vue`
+**Step 1: Define the widget type (Single Source of Truth)**
+- Add the type to `WIDGET_TYPES` array in `shared/widgets/definitions.ts`
+- This automatically updates TypeScript types and Zod schemas
+
+**Step 2: Add widget configuration in `src/config/widgets.ts`**
+Required properties:
+```
+type: 'my-widget'
+label: 'Mon Widget'              // French label for UI
+icon: '🔧'
+category: 'base'                 // base | structure | form | media | wellpack | action
+description: 'English description for LLM...'
+usageHints: ['Hint 1', 'Hint 2'] // Tips for LLM and users
+requiredContent: ['prop1']       // Required content properties
+examples: [{ description, widget }]  // JSON examples for LLM
+defaultContent: { prop1: 'value' }
+defaultStyles: { margin: '8px' }
+// For containers only:
+canHaveChildren: true
+allowedChildren: ['type1'] OR disallowedChildren: ['type2']
+```
+
+**Step 3: Create Zod schema in `shared/schemas/widgets/`**
+- Add content validation schema in the appropriate category file (base, structure, form, media, wellpack)
+- Export from `shared/schemas/widgets/index.ts`
+
+**Step 4: Create renderer component**
+- Create `src/components/widgets/registry/MyWidgetWidget.vue`
+- Import and register in `WidgetRenderer.vue`
+
+**Step 5: Create options panel (if needed)**
+- Add `src/components/options/content/MyWidgetOptions.vue`
+- Import in `ContentOptions.vue`
+
+**Step 6: Write tests**
+- Add tests for the new widget in `tests/unit/`
 
 ### Component Organization
 

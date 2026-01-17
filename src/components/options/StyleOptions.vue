@@ -2,6 +2,7 @@
 import type { Widget } from '@/types/widget'
 import { useWidgetsStore } from '@/stores/widgets'
 import ColorPicker from './inputs/ColorPicker.vue'
+import ColorPickerWithTheme from './inputs/ColorPickerWithTheme.vue'
 
 const props = defineProps<{
   widget: Widget
@@ -9,7 +10,7 @@ const props = defineProps<{
 
 const widgetsStore = useWidgetsStore()
 
-function updateStyle(key: string, value: string) {
+function updateStyle(key: string, value: string | undefined) {
   widgetsStore.updateWidgetStyles(props.widget.id, { [key]: value })
 }
 
@@ -32,11 +33,12 @@ const textAligns = [
       />
     </div>
 
-    <!-- Background Color (for button, click-to-call) -->
+    <!-- Background Color (for button, click-to-call) - with theme toggle -->
     <div v-if="['button', 'click-to-call'].includes(widget.type)" class="option-group">
       <label class="option-label">Couleur de fond</label>
-      <ColorPicker
-        :value="widget.styles.backgroundColor || '#14b8a6'"
+      <ColorPickerWithTheme
+        :value="widget.styles.backgroundColor"
+        theme-color-type="primary"
         @update:value="updateStyle('backgroundColor', $event)"
       />
     </div>
@@ -87,11 +89,12 @@ const textAligns = [
       </div>
     </div>
 
-    <!-- Border Color (for separator) -->
+    <!-- Border Color (for separator) - with theme toggle -->
     <div v-if="widget.type === 'separator'" class="option-group">
       <label class="option-label">Couleur de la ligne</label>
-      <ColorPicker
-        :value="widget.styles.borderColor || '#e2e8f0'"
+      <ColorPickerWithTheme
+        :value="widget.styles.borderColor"
+        theme-color-type="secondary"
         @update:value="updateStyle('borderColor', $event)"
       />
     </div>

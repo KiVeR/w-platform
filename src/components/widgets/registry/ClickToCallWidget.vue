@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { computed } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
-defineProps<{
+const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
+
+const { primaryColor, borderRadius } = useGlobalStyles()
+
+const buttonStyles = computed(() => ({
+  backgroundColor: props.widget.styles.backgroundColor || primaryColor.value,
+  color: props.widget.styles.color || '#ffffff',
+  fontSize: props.widget.styles.fontSize,
+  fontWeight: props.widget.styles.fontWeight,
+  borderRadius: props.widget.styles.borderRadius || borderRadius.value,
+}))
 </script>
 
 <template>
@@ -12,13 +24,7 @@ defineProps<{
     <a
       :href="`tel:${widget.content.phone || ''}`"
       class="widget-button"
-      :style="{
-        backgroundColor: widget.styles.backgroundColor,
-        color: widget.styles.color,
-        fontSize: widget.styles.fontSize,
-        fontWeight: widget.styles.fontWeight,
-        borderRadius: widget.styles.borderRadius,
-      }"
+      :style="buttonStyles"
       @click.prevent
     >
       <span class="phone-icon">📞</span>
@@ -32,6 +38,7 @@ defineProps<{
 
 <style scoped>
 .click-to-call-widget {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;

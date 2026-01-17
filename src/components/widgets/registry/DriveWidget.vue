@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
 
+const { primaryColor, secondaryColor } = useGlobalStyles()
+
 const stores = computed(() => props.widget.content.driveStores || [])
 const hasStores = computed(() => stores.value.length > 0)
 
 const buttonText = computed(() => props.widget.content.driveButtonText || 'Trouver le magasin le plus proche')
-const buttonColor = computed(() => props.widget.content.driveButtonColor || '#14b8a6')
+const buttonColor = computed(() => props.widget.content.driveButtonColor || primaryColor.value)
 const btnGoLabel = computed(() => props.widget.content.driveBtnGoLabel || 'S\'y rendre')
 const btnCallLabel = computed(() => props.widget.content.driveBtnCallLabel || 'Appeler')
-const btnGoColor = computed(() => props.widget.content.driveBtnGoColor || '#14b8a6')
-const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || '#6366f1')
+const btnGoColor = computed(() => props.widget.content.driveBtnGoColor || primaryColor.value)
+const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || secondaryColor.value)
 </script>
 
 <template>
@@ -92,6 +95,7 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || '#
 
 <style scoped>
 .drive-widget {
+  position: relative;
   width: 100%;
 }
 

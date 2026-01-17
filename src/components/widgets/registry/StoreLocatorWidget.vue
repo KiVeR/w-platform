@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
 
+const { primaryColor } = useGlobalStyles()
+
 const stores = computed(() => props.widget.content.storeLocatorStores || [])
 const hasStores = computed(() => stores.value.length > 0)
 
 const buttonText = computed(() => props.widget.content.storeLocatorButtonText || 'Voir tous les lieux')
-const buttonColor = computed(() => props.widget.content.storeLocatorButtonColor || '#14b8a6')
+const buttonColor = computed(() => props.widget.content.storeLocatorButtonColor || primaryColor.value)
 const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos magasins')
 </script>
 
@@ -80,6 +83,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 
 <style scoped>
 .store-locator-widget {
+  position: relative;
   width: 100%;
 }
 

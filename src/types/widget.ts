@@ -199,10 +199,29 @@ export interface Widget {
 }
 
 export interface GlobalStyles {
+  // Theme
   palette: string
   backgroundColor: string
   textColor: string
+
+  // Brand colors
+  primaryColor?: string
+  secondaryColor?: string
+
+  // Typography
   fontFamily?: string
+  headingFontFamily?: string
+  baseFontSize?: string
+  lineHeight?: string
+
+  // Layout
+  contentPadding?: string
+  widgetGap?: string
+  borderRadius?: string
+
+  // SEO
+  pageTitle?: string
+  metaDescription?: string
 }
 
 export interface DesignDocument {

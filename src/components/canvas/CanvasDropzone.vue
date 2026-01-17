@@ -2,6 +2,7 @@
 import type { WidgetType } from '@/types/widget'
 import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
 import { useEditorStore } from '@/stores/editor'
 import { usePresetsStore } from '@/stores/presets'
 import { useSelectionStore } from '@/stores/selection'
@@ -12,6 +13,7 @@ const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
 const editorStore = useEditorStore()
 const presetsStore = usePresetsStore()
+const { widgetGap, fontFamily, baseFontSize } = useGlobalStyles()
 
 const isDragOver = ref(false)
 
@@ -72,6 +74,8 @@ function handleCanvasClick(event: MouseEvent) {
     :style="{
       backgroundColor: editorStore.globalStyles.backgroundColor,
       color: editorStore.globalStyles.textColor,
+      fontFamily,
+      fontSize: baseFontSize,
     }"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
@@ -87,6 +91,7 @@ function handleCanvasClick(event: MouseEvent) {
       drag-class="widget-drag"
       animation="200"
       class="widgets-list"
+      :style="{ gap: widgetGap }"
     >
       <template #item="{ element }">
         <WidgetRenderer
@@ -128,6 +133,8 @@ function handleCanvasClick(event: MouseEvent) {
 }
 
 .widgets-list {
+  display: flex;
+  flex-direction: column;
   min-height: 100%;
   padding-bottom: 100px;
 }

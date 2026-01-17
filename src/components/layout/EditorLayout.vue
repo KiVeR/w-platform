@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useSelectionStore } from '@/stores/selection'
 import { useUIStore } from '@/stores/ui'
 import CenterCanvas from './CenterCanvas.vue'
 import EditorToolbar from './EditorToolbar.vue'
@@ -6,10 +7,37 @@ import LeftSidebar from './LeftSidebar.vue'
 import RightSidebar from './RightSidebar.vue'
 
 const uiStore = useUIStore()
+const selectionStore = useSelectionStore()
+
+function handleShellClick(event: MouseEvent) {
+  // Only in designer mode
+  if (uiStore.mode !== 'designer')
+    return
+
+  // Only if there's a selection
+  if (!selectionStore.hasSelection)
+    return
+
+  const target = event.target as HTMLElement
+
+  // Don't deselect if clicking inside the canvas
+  if (target.closest('.designer-mode'))
+    return
+
+  // Don't deselect if clicking inside right sidebar (widget options)
+  if (target.closest('.right-sidebar'))
+    return
+
+  // Don't deselect if clicking on modals or dropdowns
+  if (target.closest('[role="dialog"], [role="listbox"], [role="menu"]'))
+    return
+
+  selectionStore.deselect()
+}
 </script>
 
 <template>
-  <div class="app-shell">
+  <div class="app-shell" @click="handleShellClick">
     <div class="shell-left">
       <transition name="slide-left">
         <LeftSidebar v-if="uiStore.leftSidebarOpen" />
@@ -36,7 +64,7 @@ const uiStore = useUIStore()
   display: flex;
   height: 100vh;
   width: 100vw;
-  background-color: var(--color-background-subtle); /* Neutral/Darker background */
+  background-color: var(--color-background-subtle);
   overflow: hidden;
 }
 
@@ -45,7 +73,6 @@ const uiStore = useUIStore()
   display: flex;
   flex-direction: column;
   z-index: 20;
-  /* Fixed width is handled by the components themselves, but we wrap them to control flow */
   flex-shrink: 0;
 }
 
@@ -54,12 +81,12 @@ const uiStore = useUIStore()
   display: flex;
   flex-direction: column;
   position: relative;
-  min-width: 0; /* Prevent flex overflow */
+  min-width: 0;
 }
 
 .canvas-wrapper {
   flex: 1;
-  padding: 16px; /* The "frame" margin */
+  padding: 16px;
   background-color: transparent;
   display: flex;
   overflow: hidden;

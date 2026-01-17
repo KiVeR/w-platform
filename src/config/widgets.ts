@@ -125,7 +125,6 @@ export const widgetConfigs: WidgetConfig[] = [
       href: '',
     },
     defaultStyles: {
-      backgroundColor: '#14b8a6',
       color: '#ffffff',
       fontSize: '16px',
       fontWeight: '600',
@@ -140,10 +139,24 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Séparateur',
     icon: '─',
     category: 'base',
+    description: 'Horizontal line divider. Use to visually separate sections of content. Supports customizable style, color, and thickness.',
+    usageHints: [
+      'Use between distinct content sections',
+      'Keep styling subtle to avoid visual clutter',
+      'Consider using spacer instead if you just need vertical space',
+    ],
+    examples: [
+      {
+        description: 'Subtle section divider',
+        widget: {
+          type: 'separator',
+          styles: { borderColor: '#e2e8f0', borderWidth: '1px', margin: '24px 16px' },
+        },
+      },
+    ],
     defaultContent: {},
     defaultStyles: {
       borderStyle: 'solid',
-      borderColor: '#e2e8f0',
       borderWidth: '1px',
       margin: '16px',
       padding: '0',
@@ -154,6 +167,21 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Espace',
     icon: '↕',
     category: 'base',
+    description: 'Invisible vertical spacing element. Use to add breathing room between widgets without a visible line. Height is fully customizable.',
+    usageHints: [
+      'Use for adding vertical space between content blocks',
+      'Prefer margin/padding on widgets when possible',
+      'Useful for fine-tuning layout without affecting other styles',
+    ],
+    examples: [
+      {
+        description: 'Large spacer between sections',
+        widget: {
+          type: 'spacer',
+          styles: { height: '48px' },
+        },
+      },
+    ],
     defaultContent: {},
     defaultStyles: {
       height: '32px',
@@ -166,13 +194,30 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Click to Call',
     icon: '📞',
     category: 'action',
+    description: 'Phone call button optimized for mobile. Tapping opens the phone dialer with the configured number. Use for customer support, sales hotlines, or direct contact.',
+    usageHints: [
+      'Use international format for phone numbers (+33...)',
+      'Provide clear button text indicating the action',
+      'Place prominently for easy mobile access',
+      'Consider using button widget with action="tel" for more styling options',
+    ],
+    requiredContent: ['phone'],
+    examples: [
+      {
+        description: 'Customer support hotline',
+        widget: {
+          type: 'click-to-call',
+          content: { text: 'Service client', phone: '+33800123456', action: 'tel' },
+          styles: { backgroundColor: '#22c55e', color: '#ffffff' },
+        },
+      },
+    ],
     defaultContent: {
       text: 'Appeler',
       phone: '+33123456789',
       action: 'tel',
     },
     defaultStyles: {
-      backgroundColor: '#14b8a6',
       color: '#ffffff',
       fontSize: '16px',
       fontWeight: '600',
@@ -413,6 +458,29 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Réseaux',
     icon: '🔗',
     category: 'media',
+    description: 'Social media links bar. Displays icons linking to your social profiles. Supports Facebook, Instagram, Twitter/X, LinkedIn, YouTube, WhatsApp, and more.',
+    usageHints: [
+      'Enable only platforms where you have active profiles',
+      'Use full URLs including https://',
+      'Place in footer or contact sections',
+      'Choose icon size based on visual hierarchy',
+    ],
+    examples: [
+      {
+        description: 'Social links bar',
+        widget: {
+          type: 'social',
+          content: {
+            socialLinks: [
+              { platform: 'facebook', url: 'https://facebook.com/mypage', enabled: true },
+              { platform: 'instagram', url: 'https://instagram.com/myprofile', enabled: true },
+            ],
+            socialStyle: 'icons',
+            socialSize: 'medium',
+          },
+        },
+      },
+    ],
     defaultContent: {
       socialLinks: [
         { platform: 'facebook', url: '', enabled: true },
@@ -436,6 +504,22 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Icône',
     icon: '⭐',
     category: 'media',
+    description: 'Single decorative or functional icon. Use emojis or icon characters. Can be linked to make it clickable. Great for visual accents in feature lists.',
+    usageHints: [
+      'Use emoji characters for universal compatibility',
+      'Set iconColor to match your color scheme',
+      'Add href to make the icon clickable',
+      'Use in row/column layouts for feature grids',
+    ],
+    examples: [
+      {
+        description: 'Feature icon with link',
+        widget: {
+          type: 'icon',
+          content: { iconName: '📧', iconSize: '48px', iconColor: '#3b82f6', href: 'mailto:contact@example.com' },
+        },
+      },
+    ],
     defaultContent: {
       iconName: '⭐',
       iconSize: '48px',
@@ -455,6 +539,23 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Code barre',
     icon: '📊',
     category: 'wellpack',
+    description: 'Barcode generator for coupons and loyalty programs. Supports EAN-13, Code128, QR codes, and more. Can use dynamic variables for personalized codes.',
+    usageHints: [
+      'Use EAN-13 for retail product codes (13 digits)',
+      'Use Code128 for alphanumeric codes',
+      'Use barcodeVariable for dynamic personalized codes',
+      'Ensure sufficient contrast with barcodeColor',
+    ],
+    requiredContent: ['barcodeCode', 'barcodeType'],
+    examples: [
+      {
+        description: 'EAN-13 coupon code',
+        widget: {
+          type: 'barcode',
+          content: { barcodeCode: '5901234123457', barcodeType: 'ean13', barcodeColor: '#000000' },
+        },
+      },
+    ],
     defaultContent: {
       barcodeCode: '0000000000000',
       barcodeType: 'ean13',
@@ -472,10 +573,29 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Store Locator',
     icon: '📍',
     category: 'wellpack',
+    description: 'Interactive store finder. Displays a list of locations users can browse. Links to external map or dedicated store locator page.',
+    usageHints: [
+      'Add store addresses in storeLocatorStores array',
+      'Customize button text and color to match brand',
+      'Use for retail, restaurants, or service locations',
+      'Consider drive widget for geolocation-based nearest store',
+    ],
+    examples: [
+      {
+        description: 'Retail store locator',
+        widget: {
+          type: 'store-locator',
+          content: {
+            storeLocatorLabel: 'Trouvez un magasin',
+            storeLocatorButtonText: 'Voir la carte',
+            storeLocatorButtonColor: '#3b82f6',
+          },
+        },
+      },
+    ],
     defaultContent: {
       storeLocatorLabel: 'Nos magasins',
       storeLocatorButtonText: 'Voir tous les lieux',
-      storeLocatorButtonColor: '#14b8a6',
       storeLocatorStores: [],
     },
     defaultStyles: {
@@ -489,14 +609,32 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Drive to Store',
     icon: '🚗',
     category: 'wellpack',
+    description: 'Geolocation-based nearest store finder. Uses user location to find and display the closest store with directions and call options. Ideal for drive-to-store campaigns.',
+    usageHints: [
+      'Configure driveStores with store addresses and coordinates',
+      'Customize button labels for navigation and call actions',
+      'Requires user permission for geolocation',
+      'Provide fallback store-locator for users who deny location access',
+    ],
+    examples: [
+      {
+        description: 'Drive-to-store CTA',
+        widget: {
+          type: 'drive',
+          content: {
+            driveButtonText: 'Magasin le plus proche',
+            driveButtonColor: '#22c55e',
+            driveBtnGoLabel: 'Itinéraire',
+            driveBtnCallLabel: 'Appeler',
+          },
+        },
+      },
+    ],
     defaultContent: {
       driveButtonText: 'Trouver le magasin le plus proche',
-      driveButtonColor: '#14b8a6',
       driveStores: [],
       driveBtnGoLabel: 'S\'y rendre',
       driveBtnCallLabel: 'Appeler',
-      driveBtnGoColor: '#14b8a6',
-      driveBtnCallColor: '#6366f1',
     },
     defaultStyles: {
       margin: '16px 0',
@@ -509,6 +647,28 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Carte à gratter',
     icon: '🎰',
     category: 'wellpack',
+    description: 'Interactive scratch card for gamification. Users scratch the foreground to reveal a hidden image or prize beneath. Great for promotions, contests, and engagement campaigns.',
+    usageHints: [
+      'Use scratchImageFg for the scratchable overlay',
+      'Use scratchImageBg for the revealed content (prize, code, message)',
+      'Set scratchPercent to control how much must be scratched to reveal',
+      'Add scratchLink to redirect after reveal',
+    ],
+    requiredContent: ['scratchImageFg', 'scratchImageBg'],
+    examples: [
+      {
+        description: 'Promotional scratch card',
+        widget: {
+          type: 'scratch',
+          content: {
+            scratchImageFg: 'https://example.com/scratch-overlay.png',
+            scratchImageBg: 'https://example.com/prize-reveal.png',
+            scratchPercent: 70,
+            scratchLink: 'https://example.com/claim-prize',
+          },
+        },
+      },
+    ],
     defaultContent: {
       scratchImageFg: 'https://picsum.photos/seed/scratch-fg/300/200',
       scratchImageBg: 'https://picsum.photos/seed/scratch-bg/300/200',
@@ -527,6 +687,27 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Carte retournable',
     icon: '🔄',
     category: 'wellpack',
+    description: 'Interactive flip card with front and back faces. Users tap or click to flip and reveal the back side. Ideal for before/after, product info, or teaser reveals.',
+    usageHints: [
+      'Use flipcardImageFront for the initial visible side',
+      'Use flipcardImageBack for the hidden side revealed on flip',
+      'Add flipcardLink to make the card clickable after flip',
+      'Keep both images the same dimensions for smooth animation',
+    ],
+    requiredContent: ['flipcardImageFront', 'flipcardImageBack'],
+    examples: [
+      {
+        description: 'Product reveal flip card',
+        widget: {
+          type: 'flipcard',
+          content: {
+            flipcardImageFront: 'https://example.com/teaser.png',
+            flipcardImageBack: 'https://example.com/product-reveal.png',
+            flipcardLink: 'https://example.com/product',
+          },
+        },
+      },
+    ],
     defaultContent: {
       flipcardImageFront: 'https://picsum.photos/seed/flipcard-front/300/200',
       flipcardImageBack: 'https://picsum.photos/seed/flipcard-back/300/200',
@@ -545,6 +726,28 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Galerie',
     icon: '🖼️',
     category: 'media',
+    description: 'Image gallery with lightbox viewer. Displays multiple images in a grid that opens in fullscreen when clicked. Ideal for product photos, portfolios, or event galleries.',
+    usageHints: [
+      'Add images to galleryImages array with src and alt',
+      'Use consistent image dimensions for a clean grid',
+      'Customize galleryButtonText for the CTA',
+      'Consider slider widget for automatic image rotation',
+    ],
+    examples: [
+      {
+        description: 'Product gallery',
+        widget: {
+          type: 'gallery',
+          content: {
+            galleryImages: [
+              { src: 'https://example.com/img1.jpg', alt: 'Product view 1' },
+              { src: 'https://example.com/img2.jpg', alt: 'Product view 2' },
+            ],
+            galleryButtonText: 'Voir les photos',
+          },
+        },
+      },
+    ],
     defaultContent: {
       galleryImages: [],
       galleryButtonText: 'Voir la galerie',
@@ -560,6 +763,29 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Carrousel',
     icon: '🎠',
     category: 'media',
+    description: 'Automatic image carousel/slideshow. Displays images in sequence with configurable timing and navigation arrows. Use for hero banners, product showcases, or promotional content.',
+    usageHints: [
+      'Add images to sliderImages array with src, alt, and optional link',
+      'Set sliderInterval in milliseconds (3000 = 3 seconds)',
+      'Enable sliderAutoplay for automatic rotation',
+      'Customize sliderChevronColor to match your design',
+    ],
+    examples: [
+      {
+        description: 'Hero banner carousel',
+        widget: {
+          type: 'slider',
+          content: {
+            sliderImages: [
+              { src: 'https://example.com/banner1.jpg', alt: 'Promo 1' },
+              { src: 'https://example.com/banner2.jpg', alt: 'Promo 2' },
+            ],
+            sliderInterval: 4000,
+            sliderAutoplay: true,
+          },
+        },
+      },
+    ],
     defaultContent: {
       sliderImages: [],
       sliderInterval: 3000,
@@ -577,6 +803,27 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Image lien',
     icon: '🔗',
     category: 'base',
+    description: 'Clickable image that links to a URL. Combines image display with navigation. Use for promotional banners, sponsor logos, or any image that should be a link.',
+    usageHints: [
+      'Always provide linkImageAlt for accessibility',
+      'Use linkImageHref for the destination URL',
+      'Consider using for banner ads or promotional images',
+      'Prefer standard image widget if no link is needed',
+    ],
+    requiredContent: ['linkImageSrc', 'linkImageHref'],
+    examples: [
+      {
+        description: 'Promotional banner link',
+        widget: {
+          type: 'link-image',
+          content: {
+            linkImageSrc: 'https://example.com/promo-banner.jpg',
+            linkImageAlt: 'Summer Sale - 50% off',
+            linkImageHref: 'https://example.com/summer-sale',
+          },
+        },
+      },
+    ],
     defaultContent: {
       linkImageSrc: 'https://picsum.photos/seed/link-image/300/200',
       linkImageAlt: 'Image',
@@ -593,6 +840,40 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Effet',
     icon: '❄️',
     category: 'media',
+    description: 'Animated particle effect overlay. Creates falling/floating elements (snow, confetti, hearts, etc.) for festive or celebratory pages. Use sparingly for visual impact.',
+    usageHints: [
+      'Use emoji or small image for effectImage',
+      'Control density with effectNbItems (lower = subtler)',
+      'Set effectDirection: "down" for falling, "up" for rising',
+      'Use sparingly - too many effects can distract users',
+    ],
+    examples: [
+      {
+        description: 'Snowfall effect for winter campaign',
+        widget: {
+          type: 'effect',
+          content: {
+            effectImage: '❄️',
+            effectNbItems: 30,
+            effectSpeed: 40,
+            effectDirection: 'down',
+          },
+          styles: { height: '150px' },
+        },
+      },
+      {
+        description: 'Confetti celebration effect',
+        widget: {
+          type: 'effect',
+          content: {
+            effectImage: '🎉',
+            effectNbItems: 20,
+            effectSpeed: 60,
+            effectDirection: 'down',
+          },
+        },
+      },
+    ],
     defaultContent: {
       effectImage: '❄️',
       effectSize: 20,
