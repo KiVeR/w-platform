@@ -29,9 +29,12 @@ import {
 import { ref } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   config: WidgetConfig
-}>()
+  compact?: boolean
+}>(), {
+  compact: false,
+})
 
 const widgetsStore = useWidgetsStore()
 const isDragging = ref(false)
@@ -86,7 +89,7 @@ function handleClick() {
 <template>
   <div
     class="widget-item"
-    :class="{ dragging: isDragging }"
+    :class="{ dragging: isDragging, compact }"
     draggable="true"
     role="button"
     tabindex="0"
@@ -174,6 +177,29 @@ function handleClick() {
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.2;
+}
+
+/* Compact mode for suggestions */
+.widget-item.compact {
+  padding: var(--space-1);
+  aspect-ratio: auto;
+  min-width: 56px;
+}
+
+.widget-item.compact .widget-icon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 2px;
+}
+
+.widget-item.compact .widget-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.widget-item.compact .widget-label {
+  font-size: 10px;
+  -webkit-line-clamp: 1;
 }
 
 /* Screen reader only - for accessibility */
