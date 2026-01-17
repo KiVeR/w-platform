@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { FileStack, LayoutGrid, Rows3, Sparkles } from 'lucide-vue-next'
+import { FileStack, LayoutGrid, Rows3, Settings, Sparkles } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'
+import GlobalOptions from '@/components/options/GlobalOptions.vue'
 import SectionPalette from '@/components/templates/SectionPalette.vue'
 import TemplatePalette from '@/components/templates/TemplatePalette.vue'
 import WidgetPalette from '@/components/widgets/WidgetPalette.vue'
 
-type Tab = 'widgets' | 'templates' | 'sections' | 'effects'
+type Tab = 'widgets' | 'templates' | 'sections' | 'effects' | 'settings'
 
 interface NavItem {
   id: Tab
@@ -18,34 +19,38 @@ interface NavItem {
 
 const activeTab = ref<Tab>('widgets')
 
-const navItems: NavItem[] = [
+const mainNavItems: NavItem[] = [
   { id: 'widgets', label: 'Widgets', icon: LayoutGrid, shortcut: '1' },
   { id: 'templates', label: 'Modèles', icon: FileStack, shortcut: '2' },
   { id: 'sections', label: 'Sections', icon: Rows3, shortcut: '3' },
   { id: 'effects', label: 'Effets', icon: Sparkles, shortcut: '4' },
 ]
 
+const settingsItem: NavItem = { id: 'settings', label: 'Page', icon: Settings, shortcut: '5' }
+
+const allNavItems = [...mainNavItems, settingsItem]
+
 const currentNavItem = computed(() =>
-  navItems.find(item => item.id === activeTab.value),
+  allNavItems.find(item => item.id === activeTab.value),
 )
 
 function handleNavKeydown(e: KeyboardEvent, index: number) {
   switch (e.key) {
     case 'ArrowDown':
       e.preventDefault()
-      activeTab.value = navItems[(index + 1) % navItems.length].id
+      activeTab.value = allNavItems[(index + 1) % allNavItems.length].id
       break
     case 'ArrowUp':
       e.preventDefault()
-      activeTab.value = navItems[(index - 1 + navItems.length) % navItems.length].id
+      activeTab.value = allNavItems[(index - 1 + allNavItems.length) % allNavItems.length].id
       break
     case 'Home':
       e.preventDefault()
-      activeTab.value = navItems[0].id
+      activeTab.value = allNavItems[0].id
       break
     case 'End':
       e.preventDefault()
-      activeTab.value = navItems[navItems.length - 1].id
+      activeTab.value = allNavItems[allNavItems.length - 1].id
       break
   }
 }
@@ -53,9 +58,9 @@ function handleNavKeydown(e: KeyboardEvent, index: number) {
 function handleGlobalKeydown(e: KeyboardEvent) {
   if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey) {
     const num = Number.parseInt(e.key)
-    if (num >= 1 && num <= navItems.length) {
+    if (num >= 1 && num <= allNavItems.length) {
       e.preventDefault()
-      activeTab.value = navItems[num - 1].id
+      activeTab.value = allNavItems[num - 1].id
     }
   }
 }
@@ -81,21 +86,42 @@ onUnmounted(() => {
         <KreoLogo :size="28" />
       </NuxtLink>
       <div class="rail-separator" />
-      <button
-        v-for="(item, index) in navItems"
-        :key="item.id"
-        class="rail-btn"
-        role="tab"
-        :class="{ active: activeTab === item.id }"
-        :aria-selected="activeTab === item.id"
-        :aria-label="`${item.label} (⌘${item.shortcut})`"
-        :tabindex="activeTab === item.id ? 0 : -1"
-        @click="activeTab = item.id"
-        @keydown="(e) => handleNavKeydown(e, index)"
-      >
-        <component :is="item.icon" :size="20" />
-        <span class="rail-tooltip">{{ item.label }}</span>
-      </button>
+
+      <!-- Main navigation tabs -->
+      <div class="rail-main">
+        <button
+          v-for="(item, index) in mainNavItems"
+          :key="item.id"
+          class="rail-btn"
+          role="tab"
+          :class="{ active: activeTab === item.id }"
+          :aria-selected="activeTab === item.id"
+          :aria-label="`${item.label} (⌘${item.shortcut})`"
+          :tabindex="activeTab === item.id ? 0 : -1"
+          @click="activeTab = item.id"
+          @keydown="(e) => handleNavKeydown(e, index)"
+        >
+          <component :is="item.icon" :size="20" />
+          <span class="rail-tooltip">{{ item.label }}</span>
+        </button>
+      </div>
+
+      <!-- Settings (bottom) -->
+      <div class="rail-bottom">
+        <button
+          class="rail-btn"
+          role="tab"
+          :class="{ active: activeTab === 'settings' }"
+          :aria-selected="activeTab === 'settings'"
+          :aria-label="`${settingsItem.label} (⌘${settingsItem.shortcut})`"
+          :tabindex="activeTab === 'settings' ? 0 : -1"
+          @click="activeTab = 'settings'"
+          @keydown="(e) => handleNavKeydown(e, mainNavItems.length)"
+        >
+          <Settings :size="20" />
+          <span class="rail-tooltip">{{ settingsItem.label }}</span>
+        </button>
+      </div>
     </nav>
 
     <div class="sidebar-panel">
@@ -109,6 +135,7 @@ onUnmounted(() => {
         <WidgetPalette v-if="activeTab === 'widgets'" />
         <TemplatePalette v-else-if="activeTab === 'templates'" />
         <SectionPalette v-else-if="activeTab === 'sections'" />
+        <GlobalOptions v-else-if="activeTab === 'settings'" />
         <div v-else class="effects-placeholder">
           <p class="placeholder-text">
             Effets à venir...
@@ -154,6 +181,17 @@ onUnmounted(() => {
   height: 1px;
   margin: 4px 12px 8px;
   background-color: var(--color-border);
+}
+
+.rail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rail-bottom {
+  margin-top: auto;
+  padding: 12px 0 16px 0;
 }
 
 .rail-btn {
@@ -241,7 +279,7 @@ onUnmounted(() => {
 
 /* Content Panel */
 .sidebar-panel {
-  width: calc(var(--sidebar-width) - var(--sidebar-rail-width));
+  width: var(--sidebar-width);
   background-color: var(--color-surface);
   border-right: 1px solid var(--color-border);
   display: flex;

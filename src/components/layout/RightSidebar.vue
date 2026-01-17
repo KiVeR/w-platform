@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type { OptionsTab } from '@/stores/ui'
-import { Home } from 'lucide-vue-next'
-import GlobalOptions from '@/components/options/GlobalOptions.vue'
 import OptionsPanel from '@/components/options/OptionsPanel.vue'
 import { useSelectionStore } from '@/stores/selection'
 import { useUIStore } from '@/stores/ui'
@@ -18,24 +16,13 @@ const tabs: { value: OptionsTab, label: string }[] = [
 <template>
   <aside class="right-sidebar">
     <div class="sidebar-header">
-      <div class="breadcrumb">
-        <button
-          class="breadcrumb-item home"
-          :class="{ active: uiStore.activeTab === 'global' }"
-          title="Options globales"
-          aria-label="Options globales de la page"
-          @click="uiStore.setActiveTab('global')"
-        >
-          <Home :size="16" />
-        </button>
-        <span v-if="selectionStore.selectedWidget" class="breadcrumb-separator">›</span>
-        <span v-if="selectionStore.selectedWidget" class="breadcrumb-item widget-name">
-          {{ selectionStore.selectedWidget.type }}
-        </span>
-      </div>
+      <span v-if="selectionStore.selectedWidget" class="widget-name">
+        {{ selectionStore.selectedWidget.type }}
+      </span>
+      <span v-else class="header-title">Propriétés</span>
     </div>
 
-    <template v-if="selectionStore.selectedWidget && uiStore.activeTab !== 'global'">
+    <template v-if="selectionStore.selectedWidget">
       <div class="sidebar-tabs">
         <button
           v-for="tab in tabs"
@@ -54,8 +41,10 @@ const tabs: { value: OptionsTab, label: string }[] = [
     </template>
 
     <template v-else>
-      <div class="sidebar-content">
-        <GlobalOptions />
+      <div class="sidebar-empty">
+        <p class="empty-text">
+          Sélectionnez un widget pour modifier ses propriétés
+        </p>
       </div>
     </template>
   </aside>
@@ -80,38 +69,15 @@ const tabs: { value: OptionsTab, label: string }[] = [
   border-bottom: 1px solid var(--color-border);
 }
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.breadcrumb-item {
+.header-title {
   font-size: 14px;
-  color: var(--color-text-muted);
-}
-
-.breadcrumb-item.home {
-  padding: 6px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.breadcrumb-item.home:hover,
-.breadcrumb-item.home.active {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.breadcrumb-separator {
-  color: var(--color-text-muted);
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .widget-name {
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-text);
   text-transform: capitalize;
 }
@@ -146,5 +112,20 @@ const tabs: { value: OptionsTab, label: string }[] = [
   flex: 1;
   overflow-y: auto;
   padding: 16px;
+}
+
+.sidebar-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.5;
 }
 </style>

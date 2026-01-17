@@ -75,14 +75,14 @@ function selectPalette(palette: Palette) {
 .global-options {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 .section-title {
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   color: var(--color-text);
-  margin: 0 0 var(--space-1) 0;
+  margin: 0;
 }
 
 .option-group {
@@ -100,16 +100,16 @@ function selectPalette(palette: Palette) {
 .palette-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .palette-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-3) var(--space-2);
+  padding: var(--space-2);
   border: 2px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   background: var(--color-surface);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -134,15 +134,15 @@ function selectPalette(palette: Palette) {
 .palette-preview {
   display: flex;
   gap: var(--space-1);
-  margin-bottom: var(--space-2);
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
+  margin-bottom: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
 }
 
 .palette-color {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: var(--radius-sm);
 }
 

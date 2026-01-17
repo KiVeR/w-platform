@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 export type EditorMode = 'designer' | 'preview' | 'expert'
 export type PreviewDevice = 'mobile' | 'tablet' | 'desktop'
-export type OptionsTab = 'content' | 'style' | 'global'
+export type OptionsTab = 'content' | 'style'
 
 export const useUIStore = defineStore('ui', () => {
   // State
