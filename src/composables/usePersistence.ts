@@ -14,6 +14,8 @@ function createDefaultDesign(): DesignDocument {
       palette: 'turquoise',
       backgroundColor: '#ffffff',
       textColor: '#1e293b',
+      primaryColor: '#14b8a6',
+      secondaryColor: '#0d9488',
     },
     widgets: [],
   }
