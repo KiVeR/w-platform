@@ -1,12 +1,12 @@
 import type { WidgetCategory, WidgetConfig, WidgetType } from '@/types/widget'
 
 export const widgetConfigs: WidgetConfig[] = [
-  // ==================== BASE ====================
+  // ==================== CONTENU ====================
   {
     type: 'title',
     label: 'Titre',
     icon: 'T',
-    category: 'base',
+    category: 'content',
     description: 'Heading text for sections. Use for main titles, section headers, or important announcements. Supports various font sizes and alignments.',
     usageHints: [
       'Use for page headers and section titles',
@@ -38,7 +38,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'text',
     label: 'Texte',
     icon: '¶',
-    category: 'base',
+    category: 'content',
     description: 'Paragraph text for descriptions, explanations, and body content. Supports rich formatting through styles.',
     usageHints: [
       'Use for descriptive content and explanations',
@@ -59,7 +59,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'image',
     label: 'Image',
     icon: '🖼',
-    category: 'base',
+    category: 'content',
     description: 'Display an image. Use for product photos, illustrations, banners, or decorative visuals. Always provide alt text for accessibility.',
     usageHints: [
       'Always provide descriptive alt text for accessibility',
@@ -92,7 +92,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'button',
     label: 'Bouton',
     icon: '▢',
-    category: 'action',
+    category: 'actions',
     description: 'Interactive button with customizable action. Supports navigation links (href), phone calls (tel:), and email (mailto:). Use for CTAs, form submission, and user actions.',
     usageHints: [
       'Always provide descriptive button text (not just "Click here")',
@@ -138,7 +138,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'separator',
     label: 'Séparateur',
     icon: '─',
-    category: 'base',
+    category: 'content',
     description: 'Horizontal line divider. Use to visually separate sections of content. Supports customizable style, color, and thickness.',
     usageHints: [
       'Use between distinct content sections',
@@ -166,7 +166,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'spacer',
     label: 'Espace',
     icon: '↕',
-    category: 'base',
+    category: 'content',
     description: 'Invisible vertical spacing element. Use to add breathing room between widgets without a visible line. Height is fully customizable.',
     usageHints: [
       'Use for adding vertical space between content blocks',
@@ -193,7 +193,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'click-to-call',
     label: 'Click to Call',
     icon: '📞',
-    category: 'action',
+    category: 'actions',
     description: 'Phone call button optimized for mobile. Tapping opens the phone dialer with the configured number. Use for customer support, sales hotlines, or direct contact.',
     usageHints: [
       'Use international format for phone numbers (+33...)',
@@ -228,12 +228,12 @@ export const widgetConfigs: WidgetConfig[] = [
     },
   },
 
-  // ==================== STRUCTURE ====================
+  // ==================== MISE EN PAGE ====================
   {
     type: 'row',
     label: 'Colonnes',
     icon: '▥',
-    category: 'structure',
+    category: 'layout',
     description: 'Horizontal layout container. Creates a row that can only contain column widgets. Use for multi-column layouts, side-by-side content, or grid structures.',
     usageHints: [
       'Row can ONLY contain column widgets as direct children',
@@ -274,7 +274,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'column',
     label: 'Colonne',
     icon: '▯',
-    category: 'structure',
+    category: 'layout',
     description: 'Vertical container inside a row. Holds any widget type except row/column. Set columnWidth to control proportions (e.g., "50%", "33%").',
     usageHints: [
       'Columns must be placed inside a row widget',
@@ -299,7 +299,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'form',
     label: 'Formulaire',
     icon: '📋',
-    category: 'form',
+    category: 'layout',
     description: 'Form container for collecting user input. Contains form-field widgets and a submit button. Supports email notifications and redirect after submission.',
     usageHints: [
       'Place form-field widgets inside the form container',
@@ -340,7 +340,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'form-field',
     label: 'Champ',
     icon: '⎕',
-    category: 'form',
+    category: 'layout',
     description: 'Input field for forms. Supports text, email, phone, textarea, select, checkbox, radio, date, and number types. Must be placed inside a form widget.',
     usageHints: [
       'Always set a descriptive label for accessibility',
@@ -503,7 +503,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'icon',
     label: 'Icône',
     icon: '⭐',
-    category: 'media',
+    category: 'content',
     description: 'Single decorative or functional icon. Use emojis or icon characters. Can be linked to make it clickable. Great for visual accents in feature lists.',
     usageHints: [
       'Use emoji characters for universal compatibility',
@@ -533,12 +533,12 @@ export const widgetConfigs: WidgetConfig[] = [
     },
   },
 
-  // ==================== WELLPACK ====================
+  // ==================== INTERACTIF ====================
   {
     type: 'barcode',
     label: 'Code barre',
     icon: '📊',
-    category: 'wellpack',
+    category: 'interactive',
     description: 'Barcode generator for coupons and loyalty programs. Supports EAN-13, Code128, QR codes, and more. Can use dynamic variables for personalized codes.',
     usageHints: [
       'Use EAN-13 for retail product codes (13 digits)',
@@ -572,7 +572,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'store-locator',
     label: 'Store Locator',
     icon: '📍',
-    category: 'wellpack',
+    category: 'interactive',
     description: 'Interactive store finder. Displays a list of locations users can browse. Links to external map or dedicated store locator page.',
     usageHints: [
       'Add store addresses in storeLocatorStores array',
@@ -608,7 +608,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'drive',
     label: 'Drive to Store',
     icon: '🚗',
-    category: 'wellpack',
+    category: 'interactive',
     description: 'Geolocation-based nearest store finder. Uses user location to find and display the closest store with directions and call options. Ideal for drive-to-store campaigns.',
     usageHints: [
       'Configure driveStores with store addresses and coordinates',
@@ -646,7 +646,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'scratch',
     label: 'Carte à gratter',
     icon: '🎰',
-    category: 'wellpack',
+    category: 'interactive',
     description: 'Interactive scratch card for gamification. Users scratch the foreground to reveal a hidden image or prize beneath. Great for promotions, contests, and engagement campaigns.',
     usageHints: [
       'Use scratchImageFg for the scratchable overlay',
@@ -686,7 +686,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'flipcard',
     label: 'Carte retournable',
     icon: '🔄',
-    category: 'wellpack',
+    category: 'interactive',
     description: 'Interactive flip card with front and back faces. Users tap or click to flip and reveal the back side. Ideal for before/after, product info, or teaser reveals.',
     usageHints: [
       'Use flipcardImageFront for the initial visible side',
@@ -802,7 +802,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'link-image',
     label: 'Image lien',
     icon: '🔗',
-    category: 'base',
+    category: 'actions',
     description: 'Clickable image that links to a URL. Combines image display with navigation. Use for promotional banners, sponsor logos, or any image that should be a link.',
     usageHints: [
       'Always provide linkImageAlt for accessibility',
@@ -839,7 +839,7 @@ export const widgetConfigs: WidgetConfig[] = [
     type: 'effect',
     label: 'Effet',
     icon: '❄️',
-    category: 'media',
+    category: 'interactive',
     description: 'Animated particle effect overlay. Creates falling/floating elements (snow, confetti, hearts, etc.) for festive or celebratory pages. Use sparingly for visual impact.',
     usageHints: [
       'Use emoji or small image for effectImage',
@@ -893,12 +893,11 @@ export const widgetConfigs: WidgetConfig[] = [
 
 // Catégories pour l'affichage dans la palette
 export const widgetCategories: { id: WidgetCategory, label: string }[] = [
-  { id: 'base', label: 'Base' },
-  { id: 'structure', label: 'Structure' },
-  { id: 'form', label: 'Formulaire' },
-  { id: 'media', label: 'Média' },
-  { id: 'wellpack', label: 'Wellpack' },
-  { id: 'action', label: 'Actions' },
+  { id: 'content', label: 'Contenu' },
+  { id: 'actions', label: 'Actions' },
+  { id: 'layout', label: 'Mise en page' },
+  { id: 'media', label: 'Médias' },
+  { id: 'interactive', label: 'Interactif' },
 ]
 
 export function getWidgetConfig(type: string): WidgetConfig | undefined {

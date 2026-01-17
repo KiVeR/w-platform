@@ -63,12 +63,11 @@ export type WidgetType = z.infer<typeof widgetTypeSchema>
  * Widget categories for organization in the UI palette
  */
 export const WIDGET_CATEGORIES = [
-  'base',
-  'structure',
-  'form',
+  'content',
+  'actions',
+  'layout',
   'media',
-  'wellpack',
-  'action',
+  'interactive',
 ] as const
 
 export const widgetCategorySchema = z.enum(WIDGET_CATEGORIES)
