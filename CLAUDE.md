@@ -76,3 +76,11 @@ components/
 - Default labels and UI text in French
 - Commits, code comments and technical documentation in English
 - Every API feature must have corresponding tests
+
+## Git Commits
+
+- Always create detailed and incremental commits for better readability
+- Each commit should represent a single logical change
+- Use conventional commit format: `type(scope): description`
+- Split large changes into multiple focused commits
+- Commit message should explain the "why", not just the "what"
