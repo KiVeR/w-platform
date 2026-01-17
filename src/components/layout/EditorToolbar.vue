@@ -162,7 +162,7 @@ function handleCreateCancel() {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: 52px;
+  height: var(--header-height);
   padding: 0 12px;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -201,7 +201,7 @@ function handleCreateCancel() {
   padding: 8px 12px;
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -241,7 +241,7 @@ function handleCreateCancel() {
   min-width: 140px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   padding: 4px;
   z-index: 100;
@@ -253,7 +253,7 @@ function handleCreateCancel() {
   padding: 8px 12px;
   border: none;
   background: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 14px;
   color: var(--color-text);
@@ -293,7 +293,7 @@ function handleCreateCancel() {
   padding: 0;
   border: none;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.15s ease;

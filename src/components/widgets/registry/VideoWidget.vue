@@ -124,7 +124,7 @@ const providerName = computed(() => {
   width: 100%;
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
   background: #000;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -136,7 +136,7 @@ const providerName = computed(() => {
   background: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 500;
 }
@@ -156,7 +156,7 @@ const providerName = computed(() => {
   justify-content: center;
   padding: 32px 16px;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   min-height: 180px;
   text-align: center;
 }
@@ -187,7 +187,7 @@ const providerName = computed(() => {
 
 .example-badge {
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   font-size: 11px;
   font-weight: 500;
 }

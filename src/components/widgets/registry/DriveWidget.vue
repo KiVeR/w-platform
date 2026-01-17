@@ -103,7 +103,7 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || '#
   border: 2px solid;
   background: var(--btn-color);
   color: white;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -136,7 +136,7 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || '#
 .store-card {
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -175,7 +175,7 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || '#
   padding: 8px 12px;
   border: 2px solid;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -198,7 +198,7 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || '#
   padding: 24px 16px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border: 2px dashed #cbd5e1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
 
 .empty-text {

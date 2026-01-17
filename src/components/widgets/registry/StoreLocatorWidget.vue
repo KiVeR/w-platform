@@ -97,7 +97,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
   padding: 12px 24px;
   border: 2px solid;
   background: transparent;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -116,7 +116,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
   margin-top: 16px;
   padding: 12px;
   background: #f8fafc;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   text-align: left;
 }
 
@@ -137,7 +137,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 .store-item {
   padding: 8px;
   background: white;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   border: 1px solid #e2e8f0;
 }
 
@@ -166,7 +166,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
   padding: 24px 16px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border: 2px dashed #cbd5e1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
 
 .empty-text {

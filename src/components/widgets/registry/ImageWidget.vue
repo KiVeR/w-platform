@@ -41,7 +41,7 @@ defineProps<{
   aspect-ratio: 16/9;
   background-color: #f1f5f9;
   border: 2px dashed #cbd5e1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;

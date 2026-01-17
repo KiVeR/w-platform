@@ -163,7 +163,7 @@ function handleClick() {
   max-width: 160px;
   padding: 0 12px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 500;
   cursor: default;

@@ -63,7 +63,7 @@ const tabs: { value: OptionsTab, label: string }[] = [
 
 <style scoped>
 .right-sidebar {
-  width: 320px;
+  width: var(--sidebar-right-width);
   background-color: var(--color-surface);
   border-left: 1px solid var(--color-border);
   display: flex;
@@ -73,8 +73,8 @@ const tabs: { value: OptionsTab, label: string }[] = [
 }
 
 .sidebar-header {
-  padding: 0 16px; /* Removed vertical padding, handled by flex alignment */
-  height: 56px; /* Explicit alignment height */
+  padding: 0 16px;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--color-border);
@@ -94,7 +94,7 @@ const tabs: { value: OptionsTab, label: string }[] = [
 .breadcrumb-item.home {
   padding: 6px 10px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--color-surface);
   cursor: pointer;
   transition: all 0.2s;

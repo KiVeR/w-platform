@@ -71,7 +71,7 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
   border: 2px solid #6366f1;
   background: transparent;
   color: #6366f1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -102,7 +102,7 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
 .gallery-thumb {
   position: relative;
   aspect-ratio: 1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -135,7 +135,7 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
   padding: 20px;
   background: #f8fafc;
   border: 2px dashed #e2e8f0;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
 
 .empty-text {

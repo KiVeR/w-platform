@@ -99,7 +99,7 @@ const mapStyleLabel = computed(() => {
   width: 100%;
   height: 250px;
   background: #e5e7eb;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -111,7 +111,7 @@ const mapStyleLabel = computed(() => {
   background: white;
   color: #1f2937;
   padding: 4px 10px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 500;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -145,7 +145,7 @@ const mapStyleLabel = computed(() => {
   justify-content: center;
   padding: 32px 16px;
   background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   min-height: 200px;
   text-align: center;
 }
@@ -176,7 +176,7 @@ const mapStyleLabel = computed(() => {
 .style-chip {
   padding: 4px 8px;
   background: white;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   font-size: 10px;
   color: #666;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);

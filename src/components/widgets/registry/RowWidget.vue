@@ -97,7 +97,7 @@ function addColumn() {
   position: relative;
   background: rgba(20, 184, 166, 0.05);
   border: 1px dashed rgba(20, 184, 166, 0.3);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .row-widget--readonly {
@@ -114,7 +114,7 @@ function addColumn() {
   height: 32px;
   border: 2px dashed var(--color-primary);
   background: transparent;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   color: var(--color-primary);
   font-size: 20px;
   cursor: pointer;

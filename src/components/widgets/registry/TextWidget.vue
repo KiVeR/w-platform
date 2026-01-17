@@ -82,7 +82,7 @@ function handleKeydown(event: KeyboardEvent) {
 .text-input {
   width: 100%;
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: white;
   outline: none;
   font-family: inherit;

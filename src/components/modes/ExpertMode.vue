@@ -179,7 +179,7 @@ function copyToClipboard(text: string) {
   max-width: 900px;
   height: 100%;
   background: #1e293b;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -200,7 +200,7 @@ function copyToClipboard(text: string) {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   transition: all 0.2s;
 }
 
@@ -221,7 +221,7 @@ function copyToClipboard(text: string) {
   color: #94a3b8;
   font-size: 14px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   transition: all 0.2s;
 }
 

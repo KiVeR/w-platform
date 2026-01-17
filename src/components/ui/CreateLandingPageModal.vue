@@ -90,7 +90,7 @@ function handleCancel() {
 .modal-content {
   position: relative;
   background-color: white;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 420px;
   width: 90%;
@@ -111,7 +111,7 @@ function handleCancel() {
   background: transparent;
   color: #94a3b8;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   transition: all 0.15s;
 }
 
@@ -146,7 +146,7 @@ h2 {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   color: #1e293b;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -171,7 +171,7 @@ h2 {
 
 .btn-secondary {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -192,7 +192,7 @@ h2 {
 
 .btn-primary {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

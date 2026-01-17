@@ -110,7 +110,7 @@ function handleDragOver(event: DragEvent): void {
   min-height: 60px;
   background: rgba(255, 255, 255, 0.5);
   border: 1px dashed #e2e8f0;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s;
 }
 

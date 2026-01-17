@@ -182,7 +182,7 @@ function isFormField(widget: Widget): boolean {
   color: #64748b;
   background: white;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   border: 1px solid #e2e8f0;
 }
 
@@ -208,7 +208,7 @@ function isFormField(widget: Widget): boolean {
   border: 2px dashed var(--color-primary);
   background: transparent;
   color: var(--color-primary);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -242,7 +242,7 @@ function isFormField(widget: Widget): boolean {
   background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 16px;
   font-weight: 600;
   cursor: not-allowed;

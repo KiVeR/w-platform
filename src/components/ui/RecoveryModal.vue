@@ -71,7 +71,7 @@ function formatDate(isoString: string): string {
 
 .modal-content {
   background-color: white;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 420px;
   width: 90%;
@@ -103,7 +103,7 @@ h2 {
 
 .recovery-info {
   background-color: #f8fafc;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   padding: 16px;
   margin-bottom: 24px;
 }
@@ -128,7 +128,7 @@ h2 {
 
 .btn-secondary {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -144,7 +144,7 @@ h2 {
 
 .btn-primary {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

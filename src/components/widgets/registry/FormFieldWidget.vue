@@ -135,7 +135,7 @@ function handleRemove() {
   padding: 8px;
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   transition: all 0.2s;
 }
 
@@ -194,7 +194,7 @@ function handleRemove() {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   background: #f8fafc;
   color: #64748b;
@@ -226,7 +226,7 @@ function handleRemove() {
   border: none;
   background: #fee2e2;
   color: #ef4444;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 16px;
   line-height: 1;

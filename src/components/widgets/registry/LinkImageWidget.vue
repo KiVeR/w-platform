@@ -85,7 +85,7 @@ const hasLink = computed(() => !!href.value)
   background: #22c55e;
   color: white;
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   font-size: 11px;
   font-weight: 500;
 }
@@ -97,7 +97,7 @@ const hasLink = computed(() => !!href.value)
 .image-link {
   display: block;
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all 0.2s;
 }
@@ -139,7 +139,7 @@ const hasLink = computed(() => !!href.value)
   margin-top: 8px;
   padding: 6px 12px;
   background: #f1f5f9;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   color: #64748b;
 }
@@ -157,7 +157,7 @@ const hasLink = computed(() => !!href.value)
   padding: 32px 16px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border: 2px dashed #cbd5e1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   text-align: center;
 }
 

@@ -223,7 +223,7 @@ const barcodeTypeLabel = computed(() => {
   display: inline-block;
   background: white;
   padding: 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -234,7 +234,7 @@ const barcodeTypeLabel = computed(() => {
   background: #14b8a6;
   color: white;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 10px;
   font-weight: 600;
 }
@@ -255,7 +255,7 @@ const barcodeTypeLabel = computed(() => {
   padding: 24px 16px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border: 2px dashed #cbd5e1;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   min-height: 120px;
   text-align: center;
 }
@@ -286,7 +286,7 @@ const barcodeTypeLabel = computed(() => {
   font-family: monospace;
   background: #e2e8f0;
   padding: 4px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   margin: 8px 0;
 }
 

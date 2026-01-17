@@ -152,7 +152,7 @@ const textAligns = [
 .option-select {
   padding: 10px 12px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   background-color: var(--color-surface);
   cursor: pointer;
@@ -191,7 +191,7 @@ const textAligns = [
   padding: 8px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;

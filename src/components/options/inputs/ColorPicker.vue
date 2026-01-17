@@ -69,7 +69,7 @@ function handleTextInput(event: Event) {
   height: 40px;
   padding: 2px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   background: var(--color-surface);
 }
@@ -80,14 +80,14 @@ function handleTextInput(event: Event) {
 
 .color-input::-webkit-color-swatch {
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .color-text {
   flex: 1;
   padding: 10px 12px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-family: monospace;
   text-transform: uppercase;
