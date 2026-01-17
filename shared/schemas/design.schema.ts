@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import { widgetTypeSchema } from '../widgets/definitions'
+
+// Re-export for convenience
+export { widgetTypeSchema }
+export type { WidgetType } from '../widgets/definitions'
 
 // =============================================================================
 // VALIDATION HELPERS
@@ -97,40 +102,6 @@ function validateUniqueIds(widgets: WidgetNode[]): { valid: boolean, error?: str
 // SCHEMAS
 // =============================================================================
 
-// Widget types enum
-export const widgetTypeSchema = z.enum([
-  // Base
-  'title',
-  'text',
-  'image',
-  'button',
-  'separator',
-  'spacer',
-  'click-to-call',
-  // Structure
-  'row',
-  'column',
-  // Forms
-  'form',
-  'form-field',
-  // Media
-  'video',
-  'map',
-  'social',
-  'icon',
-  // Wellpack
-  'barcode',
-  'store-locator',
-  'drive',
-  'scratch',
-  'flipcard',
-  // Advanced
-  'gallery',
-  'slider',
-  'link-image',
-  'effect',
-])
-
 // Widget content - flexible object to allow all widget-specific properties
 export const widgetContentSchema = z.record(z.unknown()).optional()
 
@@ -201,8 +172,7 @@ export const saveDesignSchema = z.object({
   createVersion: z.boolean().default(true), // Whether to create a new version or update latest
 })
 
-// Infer types
-export type WidgetType = z.infer<typeof widgetTypeSchema>
+// Infer types (WidgetType is re-exported from definitions.ts)
 export type WidgetSchema = z.infer<typeof widgetSchema>
 export type GlobalStylesSchema = z.infer<typeof globalStylesSchema>
 export type DesignDocumentSchema = z.infer<typeof designDocumentSchema>

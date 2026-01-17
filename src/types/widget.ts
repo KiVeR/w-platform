@@ -1,34 +1,5 @@
-export type WidgetType
-  // Base
-  = | 'title'
-    | 'text'
-    | 'image'
-    | 'button'
-    | 'separator'
-    | 'spacer'
-    | 'click-to-call'
-  // Structure
-    | 'row'
-    | 'column'
-  // Forms
-    | 'form'
-    | 'form-field'
-  // Media
-    | 'video'
-    | 'map'
-    | 'social'
-    | 'icon'
-  // Wellpack
-    | 'barcode'
-    | 'store-locator'
-    | 'drive'
-    | 'scratch'
-    | 'flipcard'
-  // Advanced
-    | 'gallery'
-    | 'slider'
-    | 'link-image'
-    | 'effect'
+// Re-export WidgetType from the single source of truth
+export type { WidgetCategory, WidgetType } from '../../shared/widgets/definitions'
 
 export type FormFieldType
   = | 'text'
@@ -240,7 +211,7 @@ export interface DesignDocument {
   widgets: Widget[]
 }
 
-export type WidgetCategory = 'base' | 'structure' | 'form' | 'media' | 'wellpack' | 'action'
+// WidgetCategory is re-exported from definitions.ts at the top of this file
 
 /**
  * Example configuration for a widget, used for documentation and LLM guidance
