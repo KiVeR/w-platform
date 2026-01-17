@@ -10,6 +10,14 @@ const props = defineProps<{
 
 const { primaryColor, borderRadius } = useGlobalStyles()
 
+const isFullWidth = computed(() => props.widget.styles.widthMode !== 'auto')
+
+const wrapperStyles = computed(() => ({
+  padding: props.widget.styles.padding,
+  margin: props.widget.styles.margin,
+  textAlign: props.widget.styles.textAlign || 'center',
+}))
+
 const buttonStyles = computed(() => ({
   backgroundColor: props.widget.styles.backgroundColor || primaryColor.value,
   color: props.widget.styles.color || '#ffffff',
@@ -20,10 +28,11 @@ const buttonStyles = computed(() => ({
 </script>
 
 <template>
-  <div class="click-to-call-widget" :style="{ padding: widget.styles.padding, margin: widget.styles.margin }">
+  <div class="click-to-call-widget" :style="wrapperStyles">
     <a
       :href="`tel:${widget.content.phone || ''}`"
       class="widget-button"
+      :class="{ 'is-full-width': isFullWidth }"
       :style="buttonStyles"
       @click.prevent
     >
@@ -38,11 +47,6 @@ const buttonStyles = computed(() => ({
 
 <style scoped>
 .click-to-call-widget {
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .widget-button {
@@ -54,7 +58,10 @@ const buttonStyles = computed(() => ({
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  width: 100%;
+}
+
+.widget-button.is-full-width {
+  display: flex;
 }
 
 .widget-button:hover {

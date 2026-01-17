@@ -10,13 +10,20 @@ const props = defineProps<{
 
 const { primaryColor, borderRadius } = useGlobalStyles()
 
+const isFullWidth = computed(() => props.widget.styles.widthMode !== 'auto')
+
+const wrapperStyles = computed(() => ({
+  padding: props.widget.styles.padding,
+  margin: props.widget.styles.margin,
+  textAlign: props.widget.styles.textAlign || 'center',
+}))
+
 const buttonStyles = computed(() => ({
   backgroundColor: props.widget.styles.backgroundColor || primaryColor.value,
   color: props.widget.styles.color || '#ffffff',
   fontSize: props.widget.styles.fontSize,
   fontWeight: props.widget.styles.fontWeight,
   borderRadius: props.widget.styles.borderRadius || borderRadius.value,
-  textAlign: props.widget.styles.textAlign,
 }))
 
 const href = computed(() => {
@@ -33,10 +40,11 @@ const href = computed(() => {
 </script>
 
 <template>
-  <div class="button-widget" :style="{ padding: widget.styles.padding, margin: widget.styles.margin }">
+  <div class="button-widget" :style="wrapperStyles">
     <a
       :href="href"
       class="widget-button"
+      :class="{ 'is-full-width': isFullWidth }"
       :style="buttonStyles"
       @click.prevent
     >
@@ -47,10 +55,6 @@ const href = computed(() => {
 
 <style scoped>
 .button-widget {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: center;
 }
 
 .widget-button {
@@ -60,7 +64,10 @@ const href = computed(() => {
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
-  width: 100%;
+}
+
+.widget-button.is-full-width {
+  display: block;
 }
 
 .widget-button:hover {
