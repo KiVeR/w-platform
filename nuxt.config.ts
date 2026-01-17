@@ -7,6 +7,16 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2024-11-01',
 
+  // App configuration
+  app: {
+    head: {
+      title: 'Kreo',
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+      ],
+    },
+  },
+
   // Source directory (existing Vue components)
   srcDir: 'src/',
 
