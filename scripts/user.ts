@@ -451,7 +451,7 @@ const main = defineCommand({
   meta: {
     name: 'user',
     version: '1.0.0',
-    description: 'User management CLI for Landing Page Editor',
+    description: 'User management CLI for Kreo',
   },
   subCommands: {
     create,

@@ -2,7 +2,7 @@
 // Redirect to editor for now
 // Will be replaced by dashboard after auth implementation
 definePageMeta({
-  title: 'Landing Page Editor',
+  title: 'Kreo',
 })
 
 navigateTo('/editor/1')

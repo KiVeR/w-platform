@@ -59,7 +59,7 @@ function togglePassword() {
     <div class="login-container">
       <div class="login-header">
         <h1 class="login-title">
-          Landing Page Editor
+          Kreo
         </h1>
         <p class="login-subtitle">
           Connectez-vous pour accéder à l'éditeur

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Visual landing page editor in Vue 3 with drag-and-drop interface. Allows creating responsive pages from preconfigured widgets.
+Kreo - Visual content editor in Vue 3 with drag-and-drop interface. Create landing pages, RCS campaigns, and AI-powered marketing content.
 
 ## Commands
 

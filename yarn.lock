@@ -6881,9 +6881,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"landing-page-editor@workspace:.":
+"kreo@workspace:.":
   version: 0.0.0-use.local
-  resolution: "landing-page-editor@workspace:."
+  resolution: "kreo@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^7.0.0"
     "@nuxt/devtools": "npm:^2.0.0"

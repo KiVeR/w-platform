@@ -8,7 +8,7 @@ import { z } from 'zod'
 // =============================================================================
 
 /**
- * All available widget types in the landing page editor.
+ * All available widget types in Kreo.
  * This is the SINGLE SOURCE OF TRUTH for widget types.
  *
  * To add a new widget:
