@@ -16,6 +16,10 @@ function createDefaultDesign(): DesignDocument {
       textColor: '#1e293b',
       primaryColor: '#14b8a6',
       secondaryColor: '#0d9488',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      headingFontFamily: 'Inter, system-ui, sans-serif',
+      baseFontSize: '16px',
+      lineHeight: '1.6',
     },
     widgets: [],
   }
