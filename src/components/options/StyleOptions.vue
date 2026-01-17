@@ -20,6 +20,10 @@ const textAligns = [
   { value: 'center', label: '↔ Centre' },
   { value: 'right', label: '➡ Droite' },
 ]
+const widthModes = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'full', label: 'Pleine largeur' },
+]
 </script>
 
 <template>
@@ -57,15 +61,35 @@ const textAligns = [
       </select>
     </div>
 
-    <!-- Text Align (for title, text) -->
-    <div v-if="['title', 'text'].includes(widget.type)" class="option-group">
+    <!-- Width Mode (for button, click-to-call) -->
+    <div v-if="['button', 'click-to-call'].includes(widget.type)" class="option-group">
+      <label class="option-label">Largeur</label>
+      <div class="align-buttons">
+        <button
+          v-for="mode in widthModes"
+          :key="mode.value"
+          class="align-btn"
+          :class="{ active: (widget.styles.widthMode || 'full') === mode.value }"
+          @click="updateStyle('widthMode', mode.value)"
+        >
+          {{ mode.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Text Align (for title, text, and button/click-to-call when not full width) -->
+    <div
+      v-if="['title', 'text'].includes(widget.type)
+        || (['button', 'click-to-call'].includes(widget.type) && widget.styles.widthMode === 'auto')"
+      class="option-group"
+    >
       <label class="option-label">Alignement</label>
       <div class="align-buttons">
         <button
           v-for="align in textAligns"
           :key="align.value"
           class="align-btn"
-          :class="{ active: widget.styles.textAlign === align.value }"
+          :class="{ active: (widget.styles.textAlign || 'center') === align.value }"
           @click="updateStyle('textAlign', align.value)"
         >
           {{ align.label }}
