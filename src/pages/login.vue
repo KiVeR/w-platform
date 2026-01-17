@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
+import KreoLogoFull from '@/components/icons/KreoLogoFull.vue'
 import { useAuthStore } from '@/stores/auth'
 
 definePageMeta({
@@ -56,11 +57,13 @@ function togglePassword() {
 
 <template>
   <div class="login-page">
+    <div class="login-background" />
+
     <div class="login-container">
       <div class="login-header">
-        <h1 class="login-title">
-          Kreo
-        </h1>
+        <div class="logo-wrapper">
+          <KreoLogoFull :size="56" />
+        </div>
         <p class="login-subtitle">
           Connectez-vous pour accéder à l'éditeur
         </p>
@@ -135,34 +138,70 @@ function togglePassword() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-background);
+  background: linear-gradient(180deg, #f1f5f9 0%, #ffffff 100%);
   padding: var(--space-4);
+  position: relative;
+}
+
+.login-background {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, #cbd5e1 1px, transparent 0);
+  background-size: 32px 32px;
+  opacity: 0.5;
 }
 
 .login-container {
+  position: relative;
   width: 100%;
-  max-width: 400px;
-  background-color: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  box-shadow: var(--shadow-lg);
+  max-width: 420px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 48px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-6);
 }
 
-.login-title {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-bold);
-  color: var(--color-text-primary);
-  margin: 0 0 var(--space-2) 0;
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+  animation: logoAppear 0.6s ease-out 0.1s both;
+}
+
+@keyframes logoAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .login-subtitle {
   font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+  color: #64748b;
   margin: 0;
 }
 
@@ -176,42 +215,61 @@ function togglePassword() {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  animation: fieldAppear 0.4s ease-out both;
+}
+
+.form-field:nth-child(1) { animation-delay: 0.2s; }
+.form-field:nth-child(2) { animation-delay: 0.3s; }
+
+@keyframes fieldAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .form-label {
   font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-text);
+  font-weight: 500;
+  color: #374151;
 }
 
 .form-input {
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-base);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: all 0.2s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
 }
 
 .form-input--error {
-  border-color: var(--color-error);
+  border-color: #ef4444;
 }
 
 .form-input--error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
 .form-error {
-  font-size: var(--text-xs);
-  color: var(--color-error);
+  font-size: 13px;
+  color: #ef4444;
 }
 
 .password-wrapper {
@@ -219,38 +277,39 @@ function togglePassword() {
 }
 
 .password-wrapper .form-input {
-  padding-right: 44px;
+  padding-right: 48px;
 }
 
 .password-toggle {
   position: absolute;
-  right: var(--space-3);
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: none;
   background: transparent;
-  color: var(--color-text-muted);
+  color: #94a3b8;
   cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast);
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .password-toggle:hover {
-  color: var(--color-text);
+  color: #64748b;
+  background: #f1f5f9;
 }
 
 .form-alert {
-  padding: var(--space-3) var(--space-4);
-  background-color: var(--color-error-50);
-  border: 1px solid var(--color-error-200);
-  border-radius: var(--radius-md);
-  color: var(--color-error-700);
-  font-size: var(--text-sm);
+  padding: 12px 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #dc2626;
+  font-size: 14px;
 }
 
 .submit-button {
@@ -259,19 +318,36 @@ function togglePassword() {
   justify-content: center;
   gap: var(--space-2);
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
-  color: var(--color-text-inverse);
-  background-color: var(--color-primary);
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all 0.2s ease;
+  animation: buttonAppear 0.4s ease-out 0.4s both;
+}
+
+@keyframes buttonAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .submit-button:disabled {
@@ -283,16 +359,25 @@ function togglePassword() {
   margin-top: var(--space-6);
   text-align: center;
   font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+  color: #64748b;
 }
 
 .login-link {
-  color: var(--color-primary);
+  color: #14b8a6;
   text-decoration: none;
-  font-weight: var(--font-medium);
+  font-weight: 600;
 }
 
 .login-link:hover {
   text-decoration: underline;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>
