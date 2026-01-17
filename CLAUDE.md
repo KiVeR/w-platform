@@ -116,3 +116,20 @@ components/
 - Use conventional commit format: `type(scope): description`
 - Split large changes into multiple focused commits
 - Commit message should explain the "why", not just the "what"
+
+## REST API Design
+
+Follow best practices for RESTful web API design:
+
+1. **Accept and respond with JSON** - Use `application/json` content type
+2. **Use nouns in endpoint paths** - `GET /articles` not `GET /getArticles`
+3. **Use plural nouns for collections** - `/users`, `/articles`, `/comments`
+4. **Nest resources for hierarchy** - `GET /articles/:id/comments` (limit to 2-3 levels)
+5. **Use standard HTTP status codes**:
+   - `200` OK, `201` Created, `204` No Content
+   - `400` Bad Request, `401` Unauthorized, `403` Forbidden, `404` Not Found
+   - `500` Internal Server Error
+6. **Support filtering, sorting, pagination** - Use query parameters
+7. **Maintain security** - SSL/TLS, least privilege, role-based access
+8. **Cache data** - Use `Cache-Control` headers appropriately
+9. **Version your APIs** - Use path versioning: `/v1/`, `/v2/`
