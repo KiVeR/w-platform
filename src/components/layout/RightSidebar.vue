@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { OptionsTab } from '@/stores/ui'
 import { computed, ref, watch } from 'vue'
+import VersionHistorySidebar from '@/components/history/VersionHistorySidebar.vue'
 import GlobalOptions from '@/components/options/GlobalOptions.vue'
 import OptionsPanel from '@/components/options/OptionsPanel.vue'
 import { useSelectionStore } from '@/stores/selection'
@@ -32,7 +33,11 @@ function setContext(mode: ContextMode) {
 </script>
 
 <template>
-  <aside class="right-sidebar">
+  <!-- History Mode: show version history sidebar -->
+  <VersionHistorySidebar v-if="uiStore.isHistoryMode" />
+
+  <!-- Normal Mode: show options sidebar -->
+  <aside v-else class="right-sidebar">
     <!-- Segmented Control -->
     <div class="segmented-control">
       <button

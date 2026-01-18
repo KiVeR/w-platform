@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { EditorMode } from '@/stores/ui'
-import { ArrowLeft, ChevronDown, PanelLeft, PanelRight } from 'lucide-vue-next'
+import { ArrowLeft, ChevronDown, History, PanelLeft, PanelRight, X } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import CreateLandingPageModal from '@/components/ui/CreateLandingPageModal.vue'
 import SaveStatus from '@/components/ui/SaveStatus.vue'
 import { useAutoSave } from '@/composables/useAutoSave'
+import { useVersionHistory } from '@/composables/useVersionHistory'
 import { useEditorStore } from '@/stores/editor'
 import { useUIStore } from '@/stores/ui'
 
@@ -13,6 +14,7 @@ const uiStore = useUIStore()
 const editorStore = useEditorStore()
 
 const { saveStatus, lastSyncedAt, lastError, saveNow, needsFirstSave, createAndSave } = useAutoSave()
+const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
 
 const showCreateModal = ref(false)
 const modeDropdownOpen = ref(false)
@@ -25,6 +27,8 @@ const modes: { value: EditorMode, label: string }[] = [
 ]
 
 const currentModeLabel = computed(() => {
+  if (uiStore.mode === 'history')
+    return 'Historique'
   return modes.find(m => m.value === uiStore.mode)?.label ?? 'Designer'
 })
 
@@ -75,11 +79,28 @@ function handleCreateCancel() {
 <template>
   <header class="toolbar">
     <div class="toolbar-left">
-      <NuxtLink to="/dashboard" class="toolbar-btn-ghost" title="Retour au dashboard">
+      <!-- Mode Historique : bouton fermer / Mode Normal : lien dashboard -->
+      <button
+        v-if="isHistoryActive"
+        class="toolbar-btn-ghost"
+        title="Quitter l'historique (Échap)"
+        aria-label="Quitter l'historique des versions"
+        @click="navigateToEditor"
+      >
+        <X :size="18" :stroke-width="2" />
+      </button>
+      <NuxtLink
+        v-else
+        to="/dashboard"
+        class="toolbar-btn-ghost"
+        title="Retour au dashboard"
+      >
         <ArrowLeft :size="18" :stroke-width="2" />
       </NuxtLink>
 
+      <!-- Toggle sidebar gauche (masqué en mode historique) -->
       <button
+        v-if="!isHistoryActive"
         class="toolbar-btn-ghost"
         :class="{ 'is-active': uiStore.leftSidebarOpen }"
         :title="uiStore.leftSidebarOpen ? 'Masquer widgets' : 'Afficher widgets'"
@@ -92,7 +113,8 @@ function handleCreateCancel() {
     </div>
 
     <div class="toolbar-center">
-      <div ref="modeDropdownRef" class="mode-dropdown">
+      <!-- Mode Normal : dropdown de sélection (masqué en mode historique) -->
+      <div v-if="!isHistoryActive" ref="modeDropdownRef" class="mode-dropdown">
         <button
           class="mode-dropdown-trigger"
           :aria-expanded="modeDropdownOpen"
@@ -126,7 +148,19 @@ function handleCreateCancel() {
     </div>
 
     <div class="toolbar-right">
+      <button
+        v-if="editorStore.landingPageId && !isHistoryActive"
+        class="toolbar-btn-ghost"
+        title="Historique des versions (Ctrl+H)"
+        aria-label="Ouvrir l'historique des versions"
+        @click="navigateToHistory"
+      >
+        <History :size="18" :stroke-width="2" />
+      </button>
+
+      <!-- SaveStatus : masqué en mode historique -->
       <SaveStatus
+        v-if="!isHistoryActive"
         :status="saveStatus"
         :is-dirty="editorStore.isDirty"
         :needs-first-save="needsFirstSave"
@@ -137,7 +171,9 @@ function handleCreateCancel() {
         @create="showCreateModal = true"
       />
 
+      <!-- Toggle sidebar droite : masqué en mode historique (forcée ouverte) -->
       <button
+        v-if="!isHistoryActive"
         class="toolbar-btn-ghost"
         :class="{ 'is-active': uiStore.rightSidebarOpen }"
         :title="uiStore.rightSidebarOpen ? 'Masquer options' : 'Afficher options'"

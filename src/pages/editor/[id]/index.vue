@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { AlertTriangle, X } from 'lucide-vue-next'
+import { nextTick } from 'vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'
 import EditorLayout from '@/components/layout/EditorLayout.vue'
 import RecoveryModal from '@/components/ui/RecoveryModal.vue'
 import { usePersistence } from '@/composables/usePersistence'
+import { useVersionHistory } from '@/composables/useVersionHistory'
 
 definePageMeta({
   title: 'Editeur Landing Page',
@@ -11,6 +13,7 @@ definePageMeta({
 
 const route = useRoute()
 const persistence = usePersistence()
+const { exitHistoryMode, isActive: isHistoryActive } = useVersionHistory()
 
 const showToast = ref(false)
 const toastMessage = ref('')
@@ -45,8 +48,15 @@ function dismissToast() {
   showToast.value = false
 }
 
-onMounted(() => {
+onMounted(async () => {
   persistence.setupBeforeUnloadGuard()
+
+  // Si on vient du mode historique, sortir après le premier rendu
+  // pour permettre à la transition slide-left-enter de s'exécuter
+  if (isHistoryActive.value) {
+    await nextTick()
+    exitHistoryMode()
+  }
 })
 </script>
 
@@ -80,97 +90,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-.editor-view {
-  width: 100%;
-  height: 100vh;
-}
-
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.95);
-  z-index: 100;
-}
-
-.loading-logo {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.loading-text {
-  margin-top: 16px;
-  color: #64748b;
-  font-size: 14px;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(0.95);
-  }
-}
-
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background-color: #1e293b;
-  color: #f8fafc;
-  border-radius: 8px;
-  font-size: 13px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-}
-
-.toast-icon {
-  color: #fbbf24;
-  flex-shrink: 0;
-}
-
-.toast-message {
-  flex: 1;
-}
-
-.toast-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: none;
-  background: transparent;
-  color: #94a3b8;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.15s;
-}
-
-.toast-close:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-}
-
-.toast-enter-active,
-.toast-leave-active {
-  transition: all 0.3s ease;
-}
-
-.toast-enter-from,
-.toast-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(20px);
-}
-</style>
+<style src="@/styles/editor-page.css"></style>

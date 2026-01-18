@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted } from 'vue'
+import { useVersionHistory } from '@/composables/useVersionHistory'
+import { useEditorStore } from '@/stores/editor'
 import { useSelectionStore } from '@/stores/selection'
 import { useUIStore } from '@/stores/ui'
 import CenterCanvas from './CenterCanvas.vue'
@@ -8,6 +11,36 @@ import RightSidebar from './RightSidebar.vue'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
+const editorStore = useEditorStore()
+const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
+
+function handleKeydown(event: KeyboardEvent): void {
+  // Ctrl+H / Cmd+H to toggle version history
+  if ((event.ctrlKey || event.metaKey) && event.key === 'h') {
+    event.preventDefault()
+    if (editorStore.landingPageId) {
+      if (isHistoryActive.value) {
+        navigateToEditor()
+      }
+      else {
+        navigateToHistory()
+      }
+    }
+  }
+
+  // Escape to exit history mode
+  if (event.key === 'Escape' && isHistoryActive.value) {
+    navigateToEditor()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleKeydown)
+})
 
 function handleShellClick(event: MouseEvent) {
   // Only in designer mode
@@ -40,7 +73,7 @@ function handleShellClick(event: MouseEvent) {
   <div class="app-shell" @click="handleShellClick">
     <div class="shell-left">
       <transition name="slide-left">
-        <LeftSidebar v-if="uiStore.leftSidebarOpen" />
+        <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
       </transition>
     </div>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DesignerMode from '@/components/modes/DesignerMode.vue'
 import ExpertMode from '@/components/modes/ExpertMode.vue'
+import HistoryMode from '@/components/modes/HistoryMode.vue'
 import PreviewMode from '@/components/modes/PreviewMode.vue'
 import { useUIStore } from '@/stores/ui'
 
@@ -12,6 +13,7 @@ const uiStore = useUIStore()
     <DesignerMode v-if="uiStore.mode === 'designer'" />
     <PreviewMode v-else-if="uiStore.mode === 'preview'" />
     <ExpertMode v-else-if="uiStore.mode === 'expert'" />
+    <HistoryMode v-else-if="uiStore.mode === 'history'" />
   </main>
 </template>
 
