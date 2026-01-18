@@ -2,24 +2,7 @@ import { saveDesignSchema } from '../../../../../shared/schemas/design.schema'
 import { createAuditLog } from '../../../../utils/audit'
 import { requireAuth, requireLandingPage, requirePermission } from '../../../../utils/permissions'
 import prisma from '../../../../utils/prisma'
-
-function countWidgets(widgets: unknown[]): number {
-  let count = 0
-  for (const widget of widgets) {
-    count++
-    const w = widget as { children?: unknown[] }
-    if (w.children && Array.isArray(w.children)) {
-      count += countWidgets(w.children)
-    }
-  }
-  return count
-}
-
-function incrementVersion(version: string): string {
-  const parts = version.split('.')
-  const minor = Number.parseInt(parts[1] || '0', 10) + 1
-  return `${parts[0]}.${minor}`
-}
+import { countWidgets, incrementVersion, purgeOldVersions } from '../../../../utils/version'
 
 export default defineEventHandler(async (event) => {
   // Require authentication
@@ -97,7 +80,13 @@ export default defineEventHandler(async (event) => {
     data: { updatedAt: new Date() },
   })
 
-  // Audit log
+  // Purge old versions if a new version was created
+  let purgedCount = 0
+  if (createVersion || !latestVersion) {
+    purgedCount = await purgeOldVersions(id)
+  }
+
+  // Audit log for save
   await createAuditLog(event, {
     userId: user.id,
     action: 'DESIGN_SAVED',
@@ -110,6 +99,20 @@ export default defineEventHandler(async (event) => {
       createVersion,
     },
   })
+
+  // Audit log for purge if any
+  if (purgedCount > 0) {
+    await createAuditLog(event, {
+      userId: user.id,
+      action: 'DESIGN_VERSION_PURGED',
+      entityType: 'LANDING_PAGE',
+      entityId: id,
+      details: {
+        purgedCount,
+        reason: 'auto_purge_on_save',
+      },
+    })
+  }
 
   return {
     id: designVersion.id,
