@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
+import CenterCanvas from '@/components/layout/CenterCanvas.vue'
+import EditorToolbar from '@/components/layout/EditorToolbar.vue'
+import LeftSidebar from '@/components/layout/LeftSidebar.vue'
+import RightSidebar from '@/components/layout/RightSidebar.vue'
 import { useVersionHistory } from '@/composables/useVersionHistory'
 import { useEditorStore } from '@/stores/editor'
 import { useSelectionStore } from '@/stores/selection'
 import { useUIStore } from '@/stores/ui'
-import CenterCanvas from './CenterCanvas.vue'
-import EditorToolbar from './EditorToolbar.vue'
-import LeftSidebar from './LeftSidebar.vue'
-import RightSidebar from './RightSidebar.vue'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
@@ -72,9 +72,7 @@ function handleShellClick(event: MouseEvent) {
 <template>
   <div class="app-shell" @click="handleShellClick">
     <div class="shell-left">
-      <transition name="slide-left">
-        <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
-      </transition>
+      <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
     </div>
 
     <div class="shell-main">
@@ -89,6 +87,9 @@ function handleShellClick(event: MouseEvent) {
         <RightSidebar v-if="uiStore.rightSidebarOpen" />
       </transition>
     </div>
+
+    <!-- Page-specific content (loading overlays, toasts, modals) -->
+    <slot />
   </div>
 </template>
 
@@ -126,17 +127,9 @@ function handleShellClick(event: MouseEvent) {
 }
 
 /* Transitions */
-.slide-left-enter-active,
-.slide-left-leave-active,
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: all 0.3s ease;
-}
-
-.slide-left-enter-from,
-.slide-left-leave-to {
-  transform: translateX(-100%);
-  opacity: 0;
 }
 
 .slide-right-enter-from,

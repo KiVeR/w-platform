@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import EditorLayout from '@/components/layout/EditorLayout.vue'
 import { usePersistence } from '@/composables/usePersistence'
 
 definePageMeta({
   title: 'Nouvelle Landing Page',
+  layout: 'editor',
 })
 
 const persistence = usePersistence()
@@ -15,14 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="editor-view">
-    <EditorLayout />
+  <div>
+    <!-- No page-specific overlays for new page -->
   </div>
 </template>
-
-<style scoped>
-.editor-view {
-  width: 100%;
-  height: 100vh;
-}
-</style>
