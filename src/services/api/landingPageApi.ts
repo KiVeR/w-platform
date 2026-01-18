@@ -1,4 +1,4 @@
-import type { CreateLandingPageRequest, CreateLandingPageResponse, LandingPagesListParams, LandingPagesListResponse, LoadDesignResponse, SaveDesignResponse, UploadAssetResponse } from './types'
+import type { CreateLandingPageRequest, CreateLandingPageResponse, LandingPagesListParams, LandingPagesListResponse, LoadDesignResponse, RestoreVersionResponse, SaveDesignResponse, UploadAssetResponse, VersionDetail, VersionListParams, VersionListResponse } from './types'
 import type { DesignDocument } from '@/types/widget'
 import { apiClient } from './client'
 import { tokenRefreshManager } from './tokenRefreshManager'
@@ -10,6 +10,10 @@ export interface LandingPageApi {
   loadDesign: (id: number) => Promise<LoadDesignResponse | null>
   saveDesign: (id: number, design: DesignDocument) => Promise<SaveDesignResponse | null>
   uploadAsset: (id: number, file: File) => Promise<UploadAssetResponse | null>
+  // Version history
+  getVersions: (id: number, params?: VersionListParams) => Promise<VersionListResponse | null>
+  getVersion: (id: number, versionId: number) => Promise<VersionDetail | null>
+  restoreVersion: (id: number, fromVersionId: number, comment?: string) => Promise<RestoreVersionResponse | null>
 }
 
 export const landingPageApi: LandingPageApi = {
@@ -101,5 +105,38 @@ export const landingPageApi: LandingPageApi = {
     }
 
     return doUpload()
+  },
+
+  async getVersions(id: number, params?: VersionListParams): Promise<VersionListResponse | null> {
+    const searchParams = new URLSearchParams()
+    if (params?.page)
+      searchParams.set('page', String(params.page))
+    if (params?.limit)
+      searchParams.set('limit', String(params.limit))
+    if (params?.sortOrder)
+      searchParams.set('sortOrder', params.sortOrder)
+
+    const query = searchParams.toString()
+    const endpoint = query
+      ? `/landing-pages/${id}/versions?${query}`
+      : `/landing-pages/${id}/versions`
+
+    const response = await apiClient.get<VersionListResponse>(endpoint)
+    return response.success ? response.data ?? null : null
+  },
+
+  async getVersion(id: number, versionId: number): Promise<VersionDetail | null> {
+    const response = await apiClient.get<VersionDetail>(
+      `/landing-pages/${id}/versions/${versionId}`,
+    )
+    return response.success ? response.data ?? null : null
+  },
+
+  async restoreVersion(id: number, fromVersionId: number, comment?: string): Promise<RestoreVersionResponse | null> {
+    const response = await apiClient.post<RestoreVersionResponse>(
+      `/landing-pages/${id}/versions`,
+      { fromVersionId, comment },
+    )
+    return response.success ? response.data ?? null : null
   },
 }

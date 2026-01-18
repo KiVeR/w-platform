@@ -77,3 +77,42 @@ export interface LandingPagesListParams {
   sortBy?: 'title' | 'createdAt' | 'updatedAt'
   sortOrder?: 'asc' | 'desc'
 }
+
+// Version history
+export interface VersionSummary {
+  id: number
+  version: string
+  widgetCount: number
+  createdAt: string
+  isLatest: boolean
+}
+
+export interface VersionDetail extends VersionSummary {
+  design: DesignDocument
+}
+
+export interface VersionListResponse {
+  data: VersionSummary[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface VersionListParams {
+  page?: number
+  limit?: number
+  sortOrder?: 'asc' | 'desc'
+}
+
+export interface RestoreVersionResponse {
+  id: number
+  version: string
+  widgetCount: number
+  createdAt: string
+  restoredFrom: {
+    id: number
+    version: string
+  }
+  purgedVersions: number
+}
