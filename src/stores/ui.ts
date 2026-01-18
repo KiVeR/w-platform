@@ -1,17 +1,22 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
-export type EditorMode = 'designer' | 'preview' | 'expert'
+export type EditorMode = 'designer' | 'preview' | 'expert' | 'history'
 export type PreviewDevice = 'mobile' | 'tablet' | 'desktop'
 export type OptionsTab = 'content' | 'style'
 
 export const useUIStore = defineStore('ui', () => {
   // State
   const mode = ref<EditorMode>('designer')
+  const previousMode = ref<EditorMode>('designer')
   const previewDevice = ref<PreviewDevice>('mobile')
   const leftSidebarOpen = ref(true)
   const rightSidebarOpen = ref(true)
   const activeTab = ref<OptionsTab>('content')
+
+  // Computed
+  const isReadOnly = computed(() => mode.value === 'history' || mode.value === 'preview')
+  const isHistoryMode = computed(() => mode.value === 'history')
 
   // Actions
   function setMode(newMode: EditorMode) {
@@ -50,13 +55,30 @@ export const useUIStore = defineStore('ui', () => {
     rightSidebarOpen.value = false
   }
 
+  function enterHistoryMode() {
+    if (mode.value !== 'history') {
+      previousMode.value = mode.value
+      mode.value = 'history'
+      // Force right sidebar open for version list
+      rightSidebarOpen.value = true
+    }
+  }
+
+  function exitHistoryMode() {
+    mode.value = previousMode.value
+  }
+
   return {
     // State
     mode,
+    previousMode,
     previewDevice,
     leftSidebarOpen,
     rightSidebarOpen,
     activeTab,
+    // Computed
+    isReadOnly,
+    isHistoryMode,
     // Actions
     setMode,
     setPreviewDevice,
@@ -67,5 +89,7 @@ export const useUIStore = defineStore('ui', () => {
     closeLeftSidebar,
     openRightSidebar,
     closeRightSidebar,
+    enterHistoryMode,
+    exitHistoryMode,
   }
 })
