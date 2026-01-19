@@ -87,7 +87,7 @@ describe('getWidgetConfig', () => {
     const config = getWidgetConfig('button')
     expect(config).toBeDefined()
     expect(config?.type).toBe('button')
-    expect(config?.category).toBe('action')
+    expect(config?.category).toBe('actions')
   })
 
   it('returns undefined for invalid widget type', () => {

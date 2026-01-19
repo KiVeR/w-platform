@@ -70,12 +70,12 @@ describe('widget definitions - single source of truth', () => {
   })
 
   describe('widget categories array', () => {
-    it('contains all 6 expected categories', () => {
-      expect(WIDGET_CATEGORIES).toHaveLength(6)
+    it('contains all 5 expected categories', () => {
+      expect(WIDGET_CATEGORIES).toHaveLength(5)
     })
 
     it('contains all category values', () => {
-      const expectedCategories = ['base', 'structure', 'form', 'media', 'wellpack', 'action']
+      const expectedCategories = ['content', 'actions', 'layout', 'media', 'interactive']
       for (const category of expectedCategories) {
         expect(WIDGET_CATEGORIES).toContain(category)
       }
