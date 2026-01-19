@@ -17,7 +17,7 @@ export const useHistoryStore = defineStore('history', () => {
   // Actions
   function pushState(design: DesignDocument) {
     // Clone the design to avoid reference issues
-    const snapshot = JSON.parse(JSON.stringify(design))
+    const snapshot = structuredClone(design)
     past.value.push(snapshot)
 
     // Limit history size
@@ -52,7 +52,7 @@ export const useHistoryStore = defineStore('history', () => {
   }
 
   function pushToFuture(design: DesignDocument) {
-    const snapshot = JSON.parse(JSON.stringify(design))
+    const snapshot = structuredClone(design)
     future.value.push(snapshot)
   }
 

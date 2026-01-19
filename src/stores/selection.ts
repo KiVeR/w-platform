@@ -13,7 +13,7 @@ export const useSelectionStore = defineStore('selection', () => {
   const selectedWidget = computed(() => {
     if (!selectedId.value)
       return null
-    return widgetsStore.getWidget(selectedId.value)
+    return widgetsStore.findWidgetById(selectedId.value)
   })
 
   const hasSelection = computed(() => selectedId.value !== null)

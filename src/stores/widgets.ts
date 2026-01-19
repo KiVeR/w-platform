@@ -19,6 +19,23 @@ export const useWidgetsStore = defineStore('widgets', () => {
 
   const count = computed(() => items.value.length)
 
+  // Widget index for O(1) lookups (includes nested children)
+  const widgetIndex = computed(() => {
+    const index = new Map<string, Widget>()
+
+    function indexWidgets(widgets: Widget[]) {
+      for (const widget of widgets) {
+        index.set(widget.id, widget)
+        if (widget.children) {
+          indexWidgets(widget.children)
+        }
+      }
+    }
+
+    indexWidgets(items.value)
+    return index
+  })
+
   // Actions
   function setWidgets(widgets: Widget[]) {
     items.value = widgets
@@ -183,18 +200,9 @@ export const useWidgetsStore = defineStore('widgets', () => {
     return clone
   }
 
-  // Recherche récursive d'un widget par ID (y compris dans les enfants)
-  function findWidgetById(id: string, widgetList: Widget[] = items.value): Widget | undefined {
-    for (const widget of widgetList) {
-      if (widget.id === id)
-        return widget
-      if (widget.children) {
-        const found = findWidgetById(id, widget.children)
-        if (found)
-          return found
-      }
-    }
-    return undefined
+  // O(1) lookup using computed index
+  function findWidgetById(id: string): Widget | undefined {
+    return widgetIndex.value.get(id)
   }
 
   function setDraggedWidgetType(type: WidgetType | null) {
@@ -204,10 +212,6 @@ export const useWidgetsStore = defineStore('widgets', () => {
   function clear() {
     items.value = []
     editorStore.markAsDirty()
-  }
-
-  function getWidget(id: string): Widget | undefined {
-    return findWidgetById(id)
   }
 
   return {
@@ -235,6 +239,5 @@ export const useWidgetsStore = defineStore('widgets', () => {
     findWidgetById,
     setDraggedWidgetType,
     clear,
-    getWidget,
   }
 })
