@@ -1,7 +1,8 @@
-import type { VersionDetail, VersionSummary } from '@/services/api/types'
+import type { RateLimitInfo, VersionDetail, VersionSummary } from '@/services/api/contentVersionApi'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { api } from '@/services/api'
+import { contentVersionApi } from '@/services/api/contentVersionApi'
+import { useContentStore } from '@/stores/content'
 import { useEditorStore } from '@/stores/editor'
 import { useUIStore } from '@/stores/ui'
 import { useWidgetsStore } from '@/stores/widgets'
@@ -13,6 +14,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   const editorStore = useEditorStore()
   const widgetsStore = useWidgetsStore()
   const uiStore = useUIStore()
+  const contentStore = useContentStore()
 
   const versions = ref<VersionSummary[]>([])
   const selectedVersion = ref<VersionDetail | null>(null)
@@ -22,13 +24,27 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   const hasMore = ref(true)
   const currentPage = ref(1)
   const total = ref(0)
+  const rateLimit = ref<RateLimitInfo | null>(null)
 
   const versionCache = new Map<number, VersionDetail>()
 
   const isActive = computed(() => uiStore.isHistoryMode)
 
-  async function loadVersions(landingPageId: number): Promise<void> {
-    if (!landingPageId)
+  // Get current context from content store
+  function getContext(): { campaignId: number, contentId: number } | null {
+    const campaignId = contentStore.campaignId
+    const contentId = contentStore.id
+
+    if (!campaignId || !contentId) {
+      return null
+    }
+
+    return { campaignId, contentId }
+  }
+
+  async function loadVersions(): Promise<void> {
+    const context = getContext()
+    if (!context)
       return
 
     isLoading.value = true
@@ -36,16 +52,17 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     versions.value = []
 
     try {
-      const response = await api.getVersions(landingPageId, {
-        page: 1,
-        limit: PAGE_SIZE,
-        sortOrder: 'desc',
-      })
+      const response = await contentVersionApi.getVersions(
+        context.campaignId,
+        context.contentId,
+        { page: 1, pageSize: PAGE_SIZE },
+      )
 
       if (response) {
-        versions.value = response.data
-        total.value = response.total
-        hasMore.value = response.page < response.totalPages
+        versions.value = response.versions
+        total.value = response.pagination.total
+        hasMore.value = response.pagination.page < response.pagination.totalPages
+        rateLimit.value = response.rateLimit
       }
     }
     finally {
@@ -54,23 +71,24 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function loadMore(): Promise<void> {
-    const landingPageId = editorStore.landingPageId
-    if (!landingPageId || isLoading.value || !hasMore.value)
+    const context = getContext()
+    if (!context || isLoading.value || !hasMore.value)
       return
 
     isLoading.value = true
     currentPage.value++
 
     try {
-      const response = await api.getVersions(landingPageId, {
-        page: currentPage.value,
-        limit: PAGE_SIZE,
-        sortOrder: 'desc',
-      })
+      const response = await contentVersionApi.getVersions(
+        context.campaignId,
+        context.contentId,
+        { page: currentPage.value, pageSize: PAGE_SIZE },
+      )
 
       if (response) {
-        versions.value = [...versions.value, ...response.data]
-        hasMore.value = response.page < response.totalPages
+        versions.value = [...versions.value, ...response.versions]
+        hasMore.value = response.pagination.page < response.pagination.totalPages
+        rateLimit.value = response.rateLimit
       }
     }
     finally {
@@ -79,8 +97,8 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function selectVersion(versionId: number): Promise<void> {
-    const landingPageId = editorStore.landingPageId
-    if (!landingPageId)
+    const context = getContext()
+    if (!context)
       return
 
     if (versionCache.has(versionId)) {
@@ -91,7 +109,12 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     isLoadingVersion.value = true
 
     try {
-      const response = await api.getVersion(landingPageId, versionId)
+      const response = await contentVersionApi.getVersion(
+        context.campaignId,
+        context.contentId,
+        versionId,
+      )
+
       if (response) {
         if (versionCache.size >= CACHE_MAX_SIZE) {
           const firstKey = versionCache.keys().next().value
@@ -109,20 +132,25 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function restoreVersion(versionId: number): Promise<boolean> {
-    const landingPageId = editorStore.landingPageId
-    if (!landingPageId)
+    const context = getContext()
+    if (!context)
       return false
 
     isRestoring.value = true
 
     try {
-      const response = await api.restoreVersion(landingPageId, versionId)
+      const response = await contentVersionApi.restoreVersion(
+        context.campaignId,
+        context.contentId,
+        versionId,
+      )
 
       if (response && selectedVersion.value) {
         editorStore.setDesign(selectedVersion.value.design)
         widgetsStore.setWidgets(selectedVersion.value.design.widgets)
         editorStore.markAsSaved()
-        loadVersions(landingPageId)
+        rateLimit.value = response.rateLimit
+        loadVersions()
         return true
       }
 
@@ -138,12 +166,9 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
   async function enterHistoryMode(): Promise<void> {
     uiStore.enterHistoryMode()
-    const landingPageId = editorStore.landingPageId
-    if (landingPageId) {
-      await loadVersions(landingPageId)
-      if (versions.value.length > 0) {
-        await selectVersion(versions.value[0].id)
-      }
+    await loadVersions()
+    if (versions.value.length > 0) {
+      await selectVersion(versions.value[0].id)
     }
   }
 
@@ -165,6 +190,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     isActive,
     hasMore,
     total,
+    rateLimit,
 
     loadVersions,
     loadMore,

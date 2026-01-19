@@ -6,12 +6,14 @@ import CreateLandingPageModal from '@/components/ui/CreateLandingPageModal.vue'
 import SaveStatus from '@/components/ui/SaveStatus.vue'
 import { useAutoSave } from '@/composables/useAutoSave'
 import { useVersionHistory } from '@/composables/useVersionHistory'
+import { useContentStore } from '@/stores/content'
 import { useEditorStore } from '@/stores/editor'
 import { useUIStore } from '@/stores/ui'
 
 const router = useRouter()
 const uiStore = useUIStore()
 const editorStore = useEditorStore()
+const contentStore = useContentStore()
 
 const { saveStatus, lastSyncedAt, lastError, saveNow, needsFirstSave, createAndSave } = useAutoSave()
 const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
@@ -66,8 +68,8 @@ async function handleCreateConfirm(title: string) {
   const result = await createAndSave(title)
   showCreateModal.value = false
 
-  if (result.success && result.id) {
-    await router.replace(`/editor/${result.id}`)
+  if (result.success && result.id && uiStore.currentCampaignId) {
+    await router.replace(`/campaigns/${uiStore.currentCampaignId}/lp/${result.id}`)
   }
 }
 
@@ -149,7 +151,7 @@ function handleCreateCancel() {
 
     <div class="toolbar-right">
       <button
-        v-if="editorStore.landingPageId && !isHistoryActive"
+        v-if="contentStore.id && !isHistoryActive"
         class="toolbar-btn-ghost"
         title="Historique des versions (Ctrl+H)"
         aria-label="Ouvrir l'historique des versions"

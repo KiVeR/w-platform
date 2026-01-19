@@ -1,3 +1,4 @@
+import type { ContentType } from '../../shared/types/content'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -14,9 +15,17 @@ export const useUIStore = defineStore('ui', () => {
   const rightSidebarOpen = ref(true)
   const activeTab = ref<OptionsTab>('content')
 
+  // Campaign context
+  const currentCampaignId = ref<number | null>(null)
+  const currentContentType = ref<ContentType | null>(null)
+
   // Computed
   const isReadOnly = computed(() => mode.value === 'history' || mode.value === 'preview')
   const isHistoryMode = computed(() => mode.value === 'history')
+  const isInCampaignContext = computed(() => currentCampaignId.value !== null)
+  const isLandingPageEditor = computed(() => currentContentType.value === 'landing-page')
+  const isRCSEditor = computed(() => currentContentType.value === 'rcs')
+  const isSMSEditor = computed(() => currentContentType.value === 'sms')
 
   // Actions
   function setMode(newMode: EditorMode) {
@@ -68,6 +77,16 @@ export const useUIStore = defineStore('ui', () => {
     mode.value = previousMode.value
   }
 
+  function setCampaignContext(campaignId: number, contentType: ContentType) {
+    currentCampaignId.value = campaignId
+    currentContentType.value = contentType
+  }
+
+  function clearCampaignContext() {
+    currentCampaignId.value = null
+    currentContentType.value = null
+  }
+
   return {
     // State
     mode,
@@ -76,9 +95,15 @@ export const useUIStore = defineStore('ui', () => {
     leftSidebarOpen,
     rightSidebarOpen,
     activeTab,
+    currentCampaignId,
+    currentContentType,
     // Computed
     isReadOnly,
     isHistoryMode,
+    isInCampaignContext,
+    isLandingPageEditor,
+    isRCSEditor,
+    isSMSEditor,
     // Actions
     setMode,
     setPreviewDevice,
@@ -91,5 +116,7 @@ export const useUIStore = defineStore('ui', () => {
     closeRightSidebar,
     enterHistoryMode,
     exitHistoryMode,
+    setCampaignContext,
+    clearCampaignContext,
   }
 })

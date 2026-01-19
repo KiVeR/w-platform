@@ -1,38 +1,38 @@
 <script setup lang="ts">
 /* eslint-disable no-alert */
-import type { LandingPageListItem } from '@/services/api/types'
-import { Loader2, Plus, RefreshCw, Trash2 } from 'lucide-vue-next'
+import type { CampaignListItem } from '../../shared/types/campaign'
+import { Loader2, Plus, RefreshCw } from 'lucide-vue-next'
+import CampaignCard from '@/components/campaigns/CampaignCard.vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'
-import { landingPageApi } from '@/services/api/landingPageApi'
 import { useAuthStore } from '@/stores/auth'
+import { useCampaignsStore } from '@/stores/campaigns'
 
 definePageMeta({
   title: 'Dashboard',
 })
 
 const authStore = useAuthStore()
+const campaignsStore = useCampaignsStore()
 
-const pages = ref<LandingPageListItem[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 const deletingId = ref<number | null>(null)
 
-async function loadPages() {
+async function loadCampaigns() {
   isLoading.value = true
   error.value = null
 
   try {
-    const response = await landingPageApi.getLandingPages({
-      sortBy: 'updatedAt',
-      sortOrder: 'desc',
+    const response = await $fetch<{ data: CampaignListItem[] }>('/api/v1/campaigns', {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+      query: {
+        sortBy: 'updatedAt',
+        sortOrder: 'desc',
+      },
     })
-
-    if (response) {
-      pages.value = response.data
-    }
-    else {
-      error.value = 'Impossible de charger les landing pages'
-    }
+    campaignsStore.setItems(response.data)
   }
   catch {
     error.value = 'Erreur de connexion au serveur'
@@ -42,38 +42,25 @@ async function loadPages() {
   }
 }
 
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+function handleCampaignClick(campaign: CampaignListItem) {
+  navigateTo(`/campaigns/${campaign.id}`)
 }
 
-function getStatusLabel(status: string): string {
-  const labels: Record<string, string> = {
-    DRAFT: 'Brouillon',
-    PUBLISHED: 'Publié',
-    ARCHIVED: 'Archivé',
-  }
-  return labels[status] || status
-}
-
-async function handleDelete(page: LandingPageListItem) {
-  const confirmed = window.confirm(`Supprimer "${page.title}" ? Cette action est irréversible.`)
+async function handleDelete(campaign: CampaignListItem) {
+  const confirmed = window.confirm(`Supprimer "${campaign.title}" ? Cette action est irréversible.`)
   if (!confirmed)
     return
 
-  deletingId.value = page.id
+  deletingId.value = campaign.id
 
   try {
-    const success = await landingPageApi.deleteLandingPage(page.id, true)
-    if (success) {
-      pages.value = pages.value.filter(p => p.id !== page.id)
-    }
-    else {
-      alert('Erreur lors de la suppression')
-    }
+    await $fetch(`/api/v1/campaigns/${campaign.id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    })
+    campaignsStore.removeItem(campaign.id)
   }
   catch {
     alert('Erreur lors de la suppression')
@@ -89,7 +76,7 @@ async function handleLogout() {
 }
 
 onMounted(() => {
-  loadPages()
+  loadCampaigns()
 })
 </script>
 
@@ -99,13 +86,13 @@ onMounted(() => {
       <div class="dashboard-brand">
         <KreoLogo :size="32" />
         <h1 class="dashboard-title">
-          Mes Landing Pages
+          Mes Campagnes
         </h1>
       </div>
       <div class="dashboard-actions">
-        <NuxtLink to="/editor/new" class="btn-create">
+        <NuxtLink to="/campaigns/new" class="btn-create">
           <Plus :size="18" />
-          Nouvelle page
+          Nouvelle campagne
         </NuxtLink>
         <span class="user-info">{{ authStore.fullName }}</span>
         <button class="btn-logout" @click="handleLogout">
@@ -118,7 +105,7 @@ onMounted(() => {
       <!-- Loading state -->
       <div v-if="isLoading" class="loading-state">
         <Loader2 :size="32" class="animate-spin" />
-        <p>Chargement des pages...</p>
+        <p>Chargement des campagnes...</p>
       </div>
 
       <!-- Error state -->
@@ -126,51 +113,32 @@ onMounted(() => {
         <p class="error-text">
           {{ error }}
         </p>
-        <button class="btn-retry" @click="loadPages">
+        <button class="btn-retry" @click="loadCampaigns">
           <RefreshCw :size="16" />
           Réessayer
         </button>
       </div>
 
       <!-- Empty state -->
-      <div v-else-if="pages.length === 0" class="empty-state">
+      <div v-else-if="campaignsStore.items.length === 0" class="empty-state">
         <p class="empty-text">
-          Vous n'avez pas encore de landing page.
+          Vous n'avez pas encore de campagne.
         </p>
-        <NuxtLink to="/editor/new" class="btn-create-large">
+        <NuxtLink to="/campaigns/new" class="btn-create-large">
           <Plus :size="18" />
-          Créer ma première page
+          Créer ma première campagne
         </NuxtLink>
       </div>
 
-      <!-- Pages grid -->
-      <div v-else class="pages-grid">
-        <div v-for="page in pages" :key="page.id" class="page-card">
-          <div class="page-card-header">
-            <h3 class="page-title">
-              {{ page.title }}
-            </h3>
-            <span class="page-status" :class="`status-${page.status.toLowerCase()}`">
-              {{ getStatusLabel(page.status) }}
-            </span>
-          </div>
-          <p class="page-date">
-            Modifié le {{ formatDate(page.updatedAt) }}
-          </p>
-          <div class="page-actions">
-            <NuxtLink :to="`/editor/${page.id}`" class="btn-edit">
-              Éditer
-            </NuxtLink>
-            <button
-              class="btn-delete"
-              :disabled="deletingId === page.id"
-              title="Supprimer"
-              @click="handleDelete(page)"
-            >
-              <Trash2 :size="16" />
-            </button>
-          </div>
-        </div>
+      <!-- Campaigns grid -->
+      <div v-else class="campaigns-grid">
+        <CampaignCard
+          v-for="campaign in campaignsStore.items"
+          :key="campaign.id"
+          :campaign="campaign"
+          @click="handleCampaignClick"
+          @delete="handleDelete"
+        />
       </div>
     </main>
   </div>
@@ -328,119 +296,10 @@ onMounted(() => {
   background-color: var(--color-primary-dark);
 }
 
-/* Pages grid */
-.pages-grid {
+/* Campaigns grid */
+.campaigns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-6);
-}
-
-.page-card {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.page-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-md);
-}
-
-.page-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-3);
-  margin-bottom: var(--space-2);
-}
-
-.page-title {
-  font-size: var(--text-lg);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-primary);
-  margin: 0;
-  flex: 1;
-}
-
-.page-status {
-  display: inline-block;
-  padding: var(--space-1) var(--space-2);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-}
-
-.status-draft {
-  background-color: var(--color-warning-100);
-  color: var(--color-warning-700);
-}
-
-.status-published {
-  background-color: var(--color-success-100);
-  color: var(--color-success-700);
-}
-
-.status-archived {
-  background-color: var(--color-neutral-200);
-  color: var(--color-neutral-600);
-}
-
-.page-date {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin: var(--space-3) 0;
-}
-
-.page-actions {
-  display: flex;
-  gap: var(--space-2);
-}
-
-.btn-edit {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-primary);
-  background-color: transparent;
-  border: 1px solid var(--color-primary);
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.btn-edit:hover {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
-}
-
-.btn-delete {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  background-color: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.btn-delete:hover:not(:disabled) {
-  background-color: var(--color-error);
-  border-color: var(--color-error);
-  color: white;
-}
-
-.btn-delete:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>

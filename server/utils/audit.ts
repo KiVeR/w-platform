@@ -31,3 +31,6 @@ export async function createAuditLog(
     },
   })
 }
+
+// Alias for convenience
+export const logAudit = createAuditLog

@@ -30,7 +30,6 @@ const defaultDesign: DesignDocument = {
 
 export const useEditorStore = defineStore('editor', () => {
   // State
-  const landingPageId = ref<number | null>(null)
   const design = ref<DesignDocument>({ ...defaultDesign })
   const isDirty = ref(false)
   const isLoading = ref(false)
@@ -42,10 +41,6 @@ export const useEditorStore = defineStore('editor', () => {
   const hasUnsavedChanges = computed(() => isDirty.value)
 
   // Actions
-  function setLandingPageId(id: number | null) {
-    landingPageId.value = id
-  }
-
   function setDesign(newDesign: DesignDocument) {
     design.value = newDesign
     isDirty.value = false
@@ -84,7 +79,6 @@ export const useEditorStore = defineStore('editor', () => {
 
   return {
     // State
-    landingPageId,
     design,
     isDirty,
     isLoading,
@@ -94,7 +88,6 @@ export const useEditorStore = defineStore('editor', () => {
     globalStyles,
     hasUnsavedChanges,
     // Actions
-    setLandingPageId,
     setDesign,
     updateGlobalStyles,
     markAsDirty,

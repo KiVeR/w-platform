@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { VersionSummary } from '@/services/api/types'
+import type { VersionSummary } from '@/services/api/contentVersionApi'
 import { Clock, Layers } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { formatRelativeTime } from '@/utils/formatters'
@@ -19,14 +19,14 @@ const relativeTime = computed(() => formatRelativeTime(props.version.createdAt))
 <template>
   <button
     class="version-item"
-    :class="{ selected, 'is-latest': version.isLatest }"
+    :class="{ selected, 'is-latest': version.isCurrent }"
     role="option"
     :aria-selected="selected"
     @click="$emit('select', version.id)"
   >
     <div class="version-header">
       <span class="version-number">v{{ version.version }}</span>
-      <span v-if="version.isLatest" class="badge-latest">Actuelle</span>
+      <span v-if="version.isCurrent" class="badge-latest">Actuelle</span>
     </div>
 
     <div class="version-meta">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DesignDocument } from '@/services/api/types'
+import type { DesignDocument } from '@/types/widget'
 import { computed } from 'vue'
 import { useEditorStore } from '@/stores/editor'
 import { useWidgetsStore } from '@/stores/widgets'

@@ -1,6 +1,7 @@
 import type { DesignDocument } from '@/types/widget'
 import { ref } from 'vue'
 import { localStorageService } from '@/services/persistence/localStorage'
+import { useContentStore } from '@/stores/content'
 import { useEditorStore } from '@/stores/editor'
 import { useWidgetsStore } from '@/stores/widgets'
 
@@ -13,17 +14,18 @@ export interface RecoveryData {
 export function useRecovery() {
   const editorStore = useEditorStore()
   const widgetsStore = useWidgetsStore()
+  const contentStore = useContentStore()
 
   const showRecoveryModal = ref(false)
   const recoveryData = ref<RecoveryData | null>(null)
 
-  function checkForRecovery(landingPageId: number, serverLastModified: string | null): boolean {
-    const backup = localStorageService.loadBackup(landingPageId)
+  function checkForRecovery(contentId: number, serverLastModified: string | null): boolean {
+    const backup = localStorageService.loadBackup(contentId)
 
     if (!backup)
       return false
 
-    if (localStorageService.hasNewerBackup(landingPageId, serverLastModified)) {
+    if (localStorageService.hasNewerBackup(contentId, serverLastModified)) {
       recoveryData.value = {
         design: backup.design,
         savedAt: backup.meta.savedAt,
@@ -33,7 +35,7 @@ export function useRecovery() {
       return true
     }
 
-    localStorageService.clearBackup(landingPageId)
+    localStorageService.clearBackup(contentId)
     return false
   }
 
@@ -50,7 +52,7 @@ export function useRecovery() {
   }
 
   function discardBackup(): void {
-    const id = editorStore.landingPageId
+    const id = contentStore.id
     if (id) {
       localStorageService.clearBackup(id)
     }

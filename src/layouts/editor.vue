@@ -5,20 +5,20 @@ import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
 import RightSidebar from '@/components/layout/RightSidebar.vue'
 import { useVersionHistory } from '@/composables/useVersionHistory'
-import { useEditorStore } from '@/stores/editor'
+import { useContentStore } from '@/stores/content'
 import { useSelectionStore } from '@/stores/selection'
 import { useUIStore } from '@/stores/ui'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
-const editorStore = useEditorStore()
+const contentStore = useContentStore()
 const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
 
 function handleKeydown(event: KeyboardEvent): void {
   // Ctrl+H / Cmd+H to toggle version history
   if ((event.ctrlKey || event.metaKey) && event.key === 'h') {
     event.preventDefault()
-    if (editorStore.landingPageId) {
+    if (contentStore.id) {
       if (isHistoryActive.value) {
         navigateToEditor()
       }
