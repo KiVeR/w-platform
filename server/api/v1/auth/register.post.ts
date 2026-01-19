@@ -1,6 +1,7 @@
 import type { LoginResponse } from '../../../../shared/types/api'
 import { registerSchema } from '../../../../shared/schemas/auth.schema'
 import { createAuditLog } from '../../../utils/audit'
+import { setRefreshTokenCookie } from '../../../utils/auth-cookie'
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -8,8 +9,12 @@ import {
 } from '../../../utils/jwt'
 import { hashPassword } from '../../../utils/password'
 import prisma from '../../../utils/prisma'
+import { enforceRateLimitByIp, RATE_LIMITS } from '../../../utils/rate-limit'
 
 export default defineEventHandler(async (event): Promise<LoginResponse> => {
+  // Rate limit: 3 registrations per hour per IP
+  enforceRateLimitByIp(event, RATE_LIMITS.AUTH_REGISTER)
+
   // Parse and validate body
   const body = await readBody(event)
   const result = registerSchema.safeParse(body)
@@ -80,9 +85,11 @@ export default defineEventHandler(async (event): Promise<LoginResponse> => {
     entityId: user.id,
   })
 
+  // Set refresh token as HttpOnly cookie (XSS protection)
+  setRefreshTokenCookie(event, refreshToken)
+
   return {
     accessToken,
-    refreshToken,
     user: userPayload,
   }
 })

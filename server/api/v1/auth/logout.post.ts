@@ -1,5 +1,8 @@
-import { refreshTokenSchema } from '../../../../shared/schemas/auth.schema'
 import { createAuditLog } from '../../../utils/audit'
+import {
+  clearRefreshTokenCookie,
+  getRefreshTokenCookie,
+} from '../../../utils/auth-cookie'
 import { extractTokenFromHeader, verifyAccessToken } from '../../../utils/jwt'
 import prisma from '../../../utils/prisma'
 
@@ -8,13 +11,10 @@ export default defineEventHandler(async (event): Promise<{ success: boolean }> =
   const accessToken = extractTokenFromHeader(event)
   const user = accessToken ? verifyAccessToken(accessToken) : null
 
-  // Parse body for refresh token
-  const body = await readBody(event)
-  const result = refreshTokenSchema.safeParse(body)
+  // Get refresh token from HttpOnly cookie
+  const refreshToken = getRefreshTokenCookie(event)
 
-  if (result.success) {
-    const { refreshToken } = result.data
-
+  if (refreshToken) {
     // Revoke the refresh token
     await prisma.refreshToken.updateMany({
       where: {
@@ -26,6 +26,9 @@ export default defineEventHandler(async (event): Promise<{ success: boolean }> =
       },
     })
   }
+
+  // Clear the refresh token cookie
+  clearRefreshTokenCookie(event)
 
   // Log logout
   if (user) {
