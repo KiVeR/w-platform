@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
-import { getWidgetCount } from '../../shared/schemas/design.schema'
+import { getWidgetCount } from '#shared/schemas/design.schema'
 import prisma from './prisma'
 
 // =============================================================================

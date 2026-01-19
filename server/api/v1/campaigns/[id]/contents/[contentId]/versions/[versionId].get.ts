@@ -1,7 +1,3 @@
-import { requireLandingPageWithAccess } from '../../../../../../../utils/content-access'
-import { requireAuth } from '../../../../../../../utils/permissions'
-import prisma from '../../../../../../../utils/prisma'
-
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
 

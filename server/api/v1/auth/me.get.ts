@@ -1,6 +1,4 @@
-import type { UserPublic } from '../../../../shared/types/user'
-import { extractTokenFromHeader, verifyAccessToken } from '../../../utils/jwt'
-import prisma from '../../../utils/prisma'
+import type { UserPublic } from '#shared/types/user'
 
 export default defineEventHandler(async (event): Promise<UserPublic> => {
   // Extract token

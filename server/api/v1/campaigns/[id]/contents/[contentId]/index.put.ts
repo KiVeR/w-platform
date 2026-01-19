@@ -1,8 +1,4 @@
 import { z } from 'zod'
-import { logAudit } from '../../../../../../utils/audit'
-import { requireContentWithCampaignAccess } from '../../../../../../utils/content-access'
-import { requireAuth } from '../../../../../../utils/permissions'
-import prisma from '../../../../../../utils/prisma'
 
 const updateContentSchema = z.object({
   title: z.string().min(1).max(200).optional(),

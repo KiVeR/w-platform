@@ -1,11 +1,3 @@
-import { createAuditLog } from '../../../utils/audit'
-import {
-  clearRefreshTokenCookie,
-  getRefreshTokenCookie,
-} from '../../../utils/auth-cookie'
-import { extractTokenFromHeader, verifyAccessToken } from '../../../utils/jwt'
-import prisma from '../../../utils/prisma'
-
 export default defineEventHandler(async (event): Promise<{ success: boolean }> => {
   // Get user from access token (optional, for audit)
   const accessToken = extractTokenFromHeader(event)

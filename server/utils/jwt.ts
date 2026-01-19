@@ -1,5 +1,5 @@
+import type { AuthUser } from '#shared/types/user'
 import type { H3Event } from 'h3'
-import type { AuthUser } from '../../shared/types/user'
 import jwt from 'jsonwebtoken'
 
 export interface JwtPayload extends AuthUser {

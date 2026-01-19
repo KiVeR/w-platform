@@ -1,4 +1,4 @@
-import type { ContentType } from '../../shared/types/content'
+import type { ContentType } from '#shared/types/content'
 
 export type PrismaContentType = 'LANDING_PAGE' | 'RCS' | 'SMS'
 

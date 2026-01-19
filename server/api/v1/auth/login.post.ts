@@ -1,15 +1,5 @@
-import type { LoginResponse } from '../../../../shared/types/api'
-import { loginSchema } from '../../../../shared/schemas/auth.schema'
-import { createAuditLog } from '../../../utils/audit'
-import { setRefreshTokenCookie } from '../../../utils/auth-cookie'
-import {
-  generateAccessToken,
-  generateRefreshToken,
-  getRefreshTokenExpiration,
-} from '../../../utils/jwt'
-import { verifyPassword } from '../../../utils/password'
-import prisma from '../../../utils/prisma'
-import { enforceRateLimitByIp, RATE_LIMITS } from '../../../utils/rate-limit'
+import type { LoginResponse } from '#shared/types/api'
+import { loginSchema } from '#shared/schemas/auth.schema'
 
 export default defineEventHandler(async (event): Promise<LoginResponse> => {
   // Rate limit: 5 attempts per 15 minutes per IP

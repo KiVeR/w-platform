@@ -1,9 +1,4 @@
-import { MAX_PAYLOAD_SIZE, saveDesignSchema, validatePayloadSize } from '../../../../../../../../shared/schemas/design.schema'
-import { requireLandingPageWithAccess } from '../../../../../../../utils/content-access'
-import { createDesignVersion, purgeOldContentVersions } from '../../../../../../../utils/content-version'
-import { requireAuth } from '../../../../../../../utils/permissions'
-import prisma from '../../../../../../../utils/prisma'
-import { enforceRateLimit, formatRateLimitForResponse, RATE_LIMITS } from '../../../../../../../utils/rate-limit'
+import { MAX_PAYLOAD_SIZE, saveDesignSchema, validatePayloadSize } from '#shared/schemas/design.schema'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)

@@ -1,9 +1,4 @@
 import { z } from 'zod'
-import { requireLandingPageWithAccess } from '../../../../../../../utils/content-access'
-import { DEFAULT_PAGE_SIZE } from '../../../../../../../utils/content-version'
-import { requireAuth } from '../../../../../../../utils/permissions'
-import prisma from '../../../../../../../utils/prisma'
-import { formatRateLimitForResponse, getRateLimitStatus, RATE_LIMITS } from '../../../../../../../utils/rate-limit'
 
 const querySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),

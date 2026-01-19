@@ -1,8 +1,4 @@
-import { updateCampaignSchema } from '../../../../../shared/schemas/campaign.schema'
-import { requireCampaignWithAccess } from '../../../../utils/content-access'
-import { toApiContentType, toPrismaContentType } from '../../../../utils/content-type-mapper'
-import { requireAuth } from '../../../../utils/permissions'
-import prisma from '../../../../utils/prisma'
+import { updateCampaignSchema } from '#shared/schemas/campaign.schema'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)

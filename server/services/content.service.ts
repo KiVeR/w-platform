@@ -1,4 +1,4 @@
-import type { ContentType } from '../../shared/types/content'
+import type { ContentType } from '#shared/types/content'
 
 /**
  * Labels for auto-generated content titles (distinct from UI labels in shared/types/content.ts)

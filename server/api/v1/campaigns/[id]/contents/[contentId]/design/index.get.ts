@@ -1,6 +1,3 @@
-import { requireLandingPageWithAccess } from '../../../../../../../utils/content-access'
-import { requireAuth } from '../../../../../../../utils/permissions'
-
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
 

@@ -1,8 +1,5 @@
-import type { ContentType } from '../../../../shared/types/content'
-import { campaignPaginationSchema } from '../../../../shared/schemas/campaign.schema'
-import { toApiContentType } from '../../../utils/content-type-mapper'
-import { requireAuth } from '../../../utils/permissions'
-import prisma from '../../../utils/prisma'
+import type { ContentType } from '#shared/types/content'
+import { campaignPaginationSchema } from '#shared/schemas/campaign.schema'
 
 interface CampaignListItem {
   id: number

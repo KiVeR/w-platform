@@ -1,8 +1,3 @@
-import { requireCampaignWithAccess } from '../../../../utils/content-access'
-import { toApiContentType } from '../../../../utils/content-type-mapper'
-import { requireAuth } from '../../../../utils/permissions'
-import prisma from '../../../../utils/prisma'
-
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const id = Number(getRouterParam(event, 'id'))

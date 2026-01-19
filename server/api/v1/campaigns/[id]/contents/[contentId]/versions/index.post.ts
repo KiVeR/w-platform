@@ -1,10 +1,4 @@
 import { z } from 'zod'
-import { logAudit } from '../../../../../../../utils/audit'
-import { requireLandingPageWithAccess } from '../../../../../../../utils/content-access'
-import { createDesignVersion, purgeOldContentVersions } from '../../../../../../../utils/content-version'
-import { requireAuth } from '../../../../../../../utils/permissions'
-import prisma from '../../../../../../../utils/prisma'
-import { enforceRateLimit, formatRateLimitForResponse, RATE_LIMITS } from '../../../../../../../utils/rate-limit'
 
 const restoreVersionSchema = z.object({
   versionId: z.number().int().positive(),

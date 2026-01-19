@@ -1,16 +1,4 @@
-import type { RefreshResponse } from '../../../../shared/types/api'
-import {
-  clearRefreshTokenCookie,
-  getRefreshTokenCookie,
-  setRefreshTokenCookie,
-} from '../../../utils/auth-cookie'
-import {
-  generateAccessToken,
-  generateRefreshToken,
-  getRefreshTokenExpiration,
-  verifyRefreshToken,
-} from '../../../utils/jwt'
-import prisma from '../../../utils/prisma'
+import type { RefreshResponse } from '#shared/types/api'
 
 export default defineEventHandler(async (event): Promise<RefreshResponse> => {
   // Get refresh token from HttpOnly cookie

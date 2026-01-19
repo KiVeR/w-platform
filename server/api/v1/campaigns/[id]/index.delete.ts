@@ -1,8 +1,3 @@
-import { logAudit } from '../../../../utils/audit'
-import { requireCampaignWithAccess } from '../../../../utils/content-access'
-import { requireAuth } from '../../../../utils/permissions'
-import prisma from '../../../../utils/prisma'
-
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const id = Number(getRouterParam(event, 'id'))

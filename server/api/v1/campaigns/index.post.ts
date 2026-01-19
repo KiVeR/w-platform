@@ -1,8 +1,5 @@
-import { createCampaignSchema } from '../../../../shared/schemas/campaign.schema'
+import { createCampaignSchema } from '#shared/schemas/campaign.schema'
 import { findPrimaryContentId, generateContentTitle, getDefaultLandingPageDesign } from '../../../services/content.service'
-import { toApiContentType, toApiContentTypes, toPrismaContentType, toPrismaContentTypes } from '../../../utils/content-type-mapper'
-import { requireAuth } from '../../../utils/permissions'
-import prisma from '../../../utils/prisma'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
