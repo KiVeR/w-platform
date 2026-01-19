@@ -1,15 +1,16 @@
 import type { UserPublic } from './user'
 
 // Auth responses
+// Note: refreshToken is now sent as HttpOnly cookie, not in response body
 export interface LoginResponse {
   accessToken: string
-  refreshToken: string
+  refreshToken?: string // Deprecated: now in HttpOnly cookie
   user: UserPublic
 }
 
 export interface RefreshResponse {
   accessToken: string
-  refreshToken: string
+  refreshToken?: string // Deprecated: now in HttpOnly cookie
 }
 
 // Generic API responses
