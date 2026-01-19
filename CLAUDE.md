@@ -99,12 +99,72 @@ components/
 
 - Use `agents-design-experience:ui-ux-designer` agent for UI/UX advice and design decisions
 
+## Imports & Path Aliases
+
+### Available Aliases
+
+| Alias | Target | Usage |
+|-------|--------|-------|
+| `@/` or `~/` | `src/` | Frontend code |
+| `#shared/` | `shared/` | Shared types, schemas, constants |
+
+### Import Rules
+
+**Frontend (`src/`)**
+- Use `@/` for imports from `src/`
+- Use `#shared/` for imports from `shared/`
+- Never use relative paths like `../../shared/` - always use `#shared/`
+
+```typescript
+// ✅ Good
+import type { ContentType } from '#shared/types/content'
+import { STATUS_COLORS } from '#shared/constants/status'
+import { useAuthStore } from '@/stores/auth'
+
+// ❌ Bad - never use relative paths for shared/
+import type { ContentType } from '../../shared/types/content'
+```
+
+**Server (`server/api/`, `server/utils/`)**
+- All exports from `server/utils/*.ts` are **auto-imported by Nitro** - no import needed!
+- Use `#shared/` for imports from `shared/`
+
+```typescript
+// ✅ Good - server/api/v1/auth/login.post.ts
+import type { LoginResponse } from '#shared/types/api'
+import { loginSchema } from '#shared/schemas/auth.schema'
+
+// No import needed for prisma, createAuditLog, verifyPassword, etc.
+// They are auto-imported from server/utils/
+
+export default defineEventHandler(async (event) => {
+  const user = await prisma.user.findUnique({ ... })  // ✅ Auto-imported
+  await createAuditLog(event, { ... })                // ✅ Auto-imported
+})
+
+// ❌ Bad - redundant imports
+import prisma from '../../../utils/prisma'
+import { createAuditLog } from '../../../utils/audit'
+```
+
+### Nitro Auto-Imports (Server)
+
+All exports from `server/utils/` are globally available in server code:
+- `prisma` - Prisma client
+- `createAuditLog`, `logAudit` - Audit logging
+- `requireAuth`, `requireCampaignWithAccess` - Permission checks
+- `generateAccessToken`, `verifyAccessToken` - JWT utilities
+- `enforceRateLimit`, `RATE_LIMITS` - Rate limiting
+- `toPrismaContentType`, `toApiContentType` - Type mappers
+- And more... (see `server/utils/` for full list)
+
 ## Conventions
 
 - ESLint @antfu/eslint-config: single quotes, 2 spaces, no semicolons
 - Vue 3 `<script setup>` with Composition API
 - Pinia stores in composition style (not Options API)
 - `@/` alias for `src/`
+- `#shared/` alias for `shared/`
 - Default labels and UI text in French
 - Commits, code comments and technical documentation in English
 - Every API feature must have corresponding tests
