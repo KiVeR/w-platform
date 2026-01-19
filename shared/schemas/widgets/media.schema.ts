@@ -10,7 +10,7 @@ export const videoContentSchema = z.object({
   muted: z.boolean().optional(),
   loop: z.boolean().optional(),
   controls: z.boolean().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== MAP ====================
 export const mapStyleSchema = z.enum(['roadmap', 'satellite', 'terrain', 'hybrid'])
@@ -21,7 +21,7 @@ export const mapContentSchema = z.object({
   mapStyle: mapStyleSchema.optional(),
   lat: z.number().optional(),
   lng: z.number().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== SOCIAL ====================
 export const socialPlatformSchema = z.enum([
@@ -48,7 +48,7 @@ export const socialContentSchema = z.object({
   socialLinks: z.array(socialLinkSchema).optional(),
   socialStyle: socialStyleSchema.optional(),
   socialSize: socialSizeSchema.optional(),
-}).passthrough()
+}).strict()
 
 // ==================== ICON ====================
 export const iconContentSchema = z.object({
@@ -56,7 +56,7 @@ export const iconContentSchema = z.object({
   iconSize: z.string().optional(),
   iconColor: z.string().optional(),
   href: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== GALLERY ====================
 export const galleryImageSchema = z.object({
@@ -68,7 +68,7 @@ export const galleryImageSchema = z.object({
 export const galleryContentSchema = z.object({
   galleryImages: z.array(galleryImageSchema).optional(),
   galleryButtonText: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== SLIDER ====================
 export const sliderImageSchema = z.object({
@@ -82,7 +82,7 @@ export const sliderContentSchema = z.object({
   sliderInterval: z.number().min(500).optional(),
   sliderChevronColor: z.string().optional(),
   sliderAutoplay: z.boolean().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== EFFECT ====================
 export const effectDirectionSchema = z.enum(['up', 'down', 'left', 'right'])
@@ -95,7 +95,7 @@ export const effectContentSchema = z.object({
   effectNbItems: z.number().min(1).max(200).optional(),
   effectSpeed: z.number().min(1).optional(),
   effectDirection: effectDirectionSchema.optional(),
-}).passthrough()
+}).strict()
 
 // Map of widget type to content schema
 export const mediaWidgetContentSchemas = {

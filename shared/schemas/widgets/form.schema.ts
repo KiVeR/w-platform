@@ -7,7 +7,7 @@ export const formContentSchema = z.object({
   emailNotify: z.boolean().optional(),
   emailSubject: z.string().optional(),
   emailTo: z.string().email().optional().or(z.literal('')),
-}).passthrough()
+}).strict()
 
 // ==================== FORM-FIELD ====================
 export const formFieldTypeSchema = z.enum([
@@ -33,7 +33,7 @@ export const formFieldContentSchema = z.object({
   accept: z.string().optional(), // For file input
   min: z.union([z.string(), z.number()]).optional(),
   max: z.union([z.string(), z.number()]).optional(),
-}).passthrough()
+}).strict()
 
 // Map of widget type to content schema
 export const formWidgetContentSchemas = {

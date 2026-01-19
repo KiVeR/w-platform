@@ -15,7 +15,7 @@ export const barcodeContentSchema = z.object({
   barcodeType: barcodeTypeSchema.optional(),
   barcodeColor: z.string().optional(),
   barcodeVariable: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== STORE-LOCATOR ====================
 export const storeSchema = z.object({
@@ -33,7 +33,7 @@ export const storeLocatorContentSchema = z.object({
   storeLocatorButtonText: z.string().optional(),
   storeLocatorButtonColor: z.string().optional(),
   storeLocatorStores: z.array(storeSchema).optional(),
-}).passthrough()
+}).strict()
 
 // ==================== DRIVE ====================
 export const driveStoreSchema = z.object({
@@ -54,7 +54,7 @@ export const driveContentSchema = z.object({
   driveBtnCallLabel: z.string().optional(),
   driveBtnGoColor: z.string().optional(),
   driveBtnCallColor: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== SCRATCH ====================
 export const scratchContentSchema = z.object({
@@ -63,14 +63,14 @@ export const scratchContentSchema = z.object({
   scratchSize: z.number().min(1).max(100).optional(),
   scratchPercent: z.number().min(1).max(100).optional(),
   scratchLink: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== FLIPCARD ====================
 export const flipcardContentSchema = z.object({
   flipcardImageFront: z.string().optional(),
   flipcardImageBack: z.string().optional(),
   flipcardLink: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // Map of widget type to content schema
 export const wellpackWidgetContentSchemas = {

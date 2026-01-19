@@ -3,18 +3,18 @@ import { z } from 'zod'
 // ==================== TITLE ====================
 export const titleContentSchema = z.object({
   text: z.string().min(1, 'Title text is required'),
-}).passthrough()
+}).strict()
 
 // ==================== TEXT ====================
 export const textContentSchema = z.object({
   text: z.string(),
-}).passthrough()
+}).strict()
 
 // ==================== IMAGE ====================
 export const imageContentSchema = z.object({
   src: z.string().min(1, 'Image source is required'),
   alt: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // ==================== BUTTON ====================
 export const buttonActionSchema = z.enum(['link', 'tel', 'email'])
@@ -52,24 +52,24 @@ export const buttonContentSchema = z.object({
 )
 
 // ==================== SEPARATOR ====================
-export const separatorContentSchema = z.object({}).passthrough()
+export const separatorContentSchema = z.object({}).strict()
 
 // ==================== SPACER ====================
-export const spacerContentSchema = z.object({}).passthrough()
+export const spacerContentSchema = z.object({}).strict()
 
 // ==================== CLICK-TO-CALL ====================
 export const clickToCallContentSchema = z.object({
   text: z.string().min(1, 'Button text is required'),
   phone: z.string().min(1, 'Phone number is required'),
   action: z.literal('tel').optional(),
-}).passthrough()
+}).strict()
 
 // ==================== LINK-IMAGE ====================
 export const linkImageContentSchema = z.object({
   linkImageSrc: z.string().min(1, 'Image source is required'),
   linkImageAlt: z.string().optional(),
   linkImageHref: z.string().optional(),
-}).passthrough()
+}).strict()
 
 // Map of widget type to content schema
 export const baseWidgetContentSchemas = {
