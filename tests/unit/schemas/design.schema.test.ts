@@ -152,19 +152,32 @@ describe('globalStylesSchema', () => {
       palette: 'turquoise',
       backgroundColor: '#f0f0f0',
       textColor: '#333333',
+      primaryColor: '#14b8a6',
+      secondaryColor: '#0d9488',
       fontFamily: 'Arial, sans-serif',
+      headingFontFamily: 'Georgia, serif',
+      baseFontSize: '16px',
+      lineHeight: '1.6',
       maxWidth: 600,
+      contentPadding: '16px',
+      widgetGap: '12px',
+      borderRadius: '8px',
+      pageTitle: 'Ma page',
+      metaDescription: 'Description de la page',
+      linkColor: '#0066cc',
+      buttonStyle: 'rounded',
     }
-    expect(() => globalStylesSchema.parse(styles)).not.toThrow()
+
+    const result = globalStylesSchema.parse(styles)
+    expect(result).toEqual(styles)
   })
 
-  it('allows additional properties via passthrough', () => {
+  it('rejects unrecognized properties with strict schema', () => {
     const styles = {
       backgroundColor: '#ffffff',
       customProperty: 'custom-value',
     }
-    const result = globalStylesSchema.parse(styles)
-    expect(result.customProperty).toBe('custom-value')
+    expect(() => globalStylesSchema.parse(styles)).toThrow('Unrecognized key')
   })
 })
 
