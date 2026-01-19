@@ -1,5 +1,5 @@
 // Re-export WidgetType from the single source of truth
-export type { WidgetCategory, WidgetType } from '../../shared/widgets/definitions'
+export type { WidgetCategory, WidgetType } from '#shared/widgets/definitions'
 
 export type FormFieldType
   = | 'text'

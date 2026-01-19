@@ -1,4 +1,4 @@
-import type { RefreshResponse } from '../../../shared/types/api'
+import type { RefreshResponse } from '#shared/types/api'
 
 type RefreshFailureHandler = () => void
 

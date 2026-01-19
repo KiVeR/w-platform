@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /* eslint-disable no-alert */
-import type { CampaignWithContents } from '../../../../shared/types/campaign'
-import type { ContentType } from '../../../../shared/types/content'
+import type { CampaignWithContents } from '#shared/types/campaign'
+import type { ContentType } from '#shared/types/content'
+import { STATUS_COLORS, STATUS_LABELS } from '#shared/constants/status'
+import { CONTENT_TYPE_EMOJI, CONTENT_TYPE_LABELS, isEditorAvailable } from '#shared/types/content'
 import { ArrowLeft, Loader2, Plus, Settings, Trash2 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { useCampaignStore } from '@/stores/campaign'
-import { STATUS_COLORS, STATUS_LABELS } from '../../../../shared/constants/status'
-import { CONTENT_TYPE_EMOJI, CONTENT_TYPE_LABELS, isEditorAvailable } from '../../../../shared/types/content'
 
 definePageMeta({
   title: 'Campagne',

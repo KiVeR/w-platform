@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ContentType } from '../../../shared/types/content'
+import type { ContentType } from '#shared/types/content'
+import { CONTENT_TYPE_LABELS, CONTENT_TYPES } from '#shared/types/content'
 import { ArrowLeft, Loader2 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
-import { CONTENT_TYPE_LABELS, CONTENT_TYPES } from '../../../shared/types/content'
 
 // Response type from the API including primaryContentId
 interface CampaignCreateResponse {

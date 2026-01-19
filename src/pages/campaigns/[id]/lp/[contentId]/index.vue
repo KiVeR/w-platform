@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PageStatusType } from '../../../../../../shared/constants/status'
+import type { PageStatusType } from '#shared/constants/status'
 import type { DesignDocument } from '@/types/widget'
 import { useAuthStore } from '@/stores/auth'
 import { useContentStore } from '@/stores/content'

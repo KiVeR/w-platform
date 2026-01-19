@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /* eslint-disable no-alert */
-import type { CampaignListItem } from '../../shared/types/campaign'
+import type { CampaignListItem } from '#shared/types/campaign'
 import { Loader2, Plus, RefreshCw } from 'lucide-vue-next'
 import CampaignCard from '@/components/campaigns/CampaignCard.vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'

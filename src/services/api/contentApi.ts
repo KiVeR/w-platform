@@ -1,4 +1,4 @@
-import type { ContentType } from '../../../shared/types/content'
+import type { ContentType } from '#shared/types/content'
 import type { DesignDocument } from '@/types/widget'
 import { apiClient } from './client'
 

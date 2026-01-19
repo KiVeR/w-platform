@@ -1,5 +1,5 @@
-import type { CampaignStatusType, CampaignWithContents } from '../../shared/types/campaign'
-import type { ContentType } from '../../shared/types/content'
+import type { CampaignStatusType, CampaignWithContents } from '#shared/types/campaign'
+import type { ContentType } from '#shared/types/content'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

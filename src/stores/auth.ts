@@ -1,5 +1,5 @@
-import type { LoginResponse, RefreshResponse } from '../../shared/types/api'
-import type { UserPublic } from '../../shared/types/user'
+import type { LoginResponse, RefreshResponse } from '#shared/types/api'
+import type { UserPublic } from '#shared/types/user'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

@@ -1,4 +1,4 @@
-import type { ContentType } from '../../shared/types/content'
+import type { ContentType } from '#shared/types/content'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

@@ -1,4 +1,4 @@
-import type { CampaignListItem, CampaignStatusType } from '../../shared/types/campaign'
+import type { CampaignListItem, CampaignStatusType } from '#shared/types/campaign'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

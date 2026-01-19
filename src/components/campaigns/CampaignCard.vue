@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { CampaignListItem } from '../../../shared/types/campaign'
-import type { ContentType } from '../../../shared/types/content'
+import type { CampaignListItem } from '#shared/types/campaign'
+import type { ContentType } from '#shared/types/content'
+import { STATUS_COLORS, STATUS_LABELS } from '#shared/constants/status'
+import { CONTENT_TYPE_EMOJI, CONTENT_TYPE_LABELS } from '#shared/types/content'
 import { formatRelativeTime } from '@/utils/formatters'
-import { STATUS_COLORS, STATUS_LABELS } from '../../../shared/constants/status'
-import { CONTENT_TYPE_EMOJI, CONTENT_TYPE_LABELS } from '../../../shared/types/content'
 
 const props = defineProps<{
   campaign: CampaignListItem
