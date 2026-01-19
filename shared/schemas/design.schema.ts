@@ -216,14 +216,32 @@ export const widgetSchema: z.ZodType<{
   }),
 )
 
+// Reusable base schemas for global styles
+const colorValueSchema = z.string().max(50).optional()
+const cssValueSchema = z.string().max(50).optional()
+const fontFamilySchema = z.string().max(200).optional()
+
 // Global styles with secure limits
+// NOTE: Using strict() to prevent unknown properties. Add new properties explicitly.
 export const globalStylesSchema = z.object({
   palette: z.string().max(100).optional(),
   backgroundColor: z.string().max(50).default('#ffffff'),
-  textColor: z.string().max(50).optional(),
-  fontFamily: z.string().max(200).optional(),
+  textColor: colorValueSchema,
+  primaryColor: colorValueSchema,
+  secondaryColor: colorValueSchema,
+  fontFamily: fontFamilySchema,
+  headingFontFamily: fontFamilySchema,
+  baseFontSize: z.string().max(20).optional(),
+  lineHeight: z.string().max(20).optional(),
   maxWidth: z.number().min(0).max(10000).optional(),
-}).passthrough() // Allow additional properties for extensibility
+  contentPadding: cssValueSchema,
+  widgetGap: cssValueSchema,
+  borderRadius: cssValueSchema,
+  pageTitle: z.string().max(200).optional(),
+  metaDescription: z.string().max(500).optional(),
+  linkColor: colorValueSchema,
+  buttonStyle: cssValueSchema,
+}).strict()
 
 // Base design document schema (without validation refinements)
 const baseDesignDocumentSchema = z.object({
