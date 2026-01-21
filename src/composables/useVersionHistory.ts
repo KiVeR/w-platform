@@ -1,4 +1,5 @@
 import { navigateTo } from '#app'
+import { getContentTypeSlug } from '#shared/utils/content'
 import { storeToRefs } from 'pinia'
 import { useContentStore } from '@/stores/content'
 import { useEditorStore } from '@/stores/editor'
@@ -22,40 +23,29 @@ export function useVersionHistory() {
   } = storeToRefs(store)
 
   /**
-   * Get the content type slug for URLs
-   */
-  function getTypeSlug(): string {
-    if (contentStore.type === 'landing-page')
-      return 'lp'
-    return contentStore.type ?? 'lp'
-  }
-
-  /**
    * Navigate to history page
    */
   async function navigateToHistory(): Promise<void> {
-    const campaignId = contentStore.campaignId
     const contentId = contentStore.id
+    const type = contentStore.type
 
-    if (!campaignId || !contentId)
+    if (!contentId || !type)
       return
 
-    const typeSlug = getTypeSlug()
-    navigateTo(`/campaigns/${campaignId}/${typeSlug}/${contentId}/history`)
+    navigateTo(`/${getContentTypeSlug(type)}/${contentId}/history`)
   }
 
   /**
    * Navigate back to editor
    */
   function navigateToEditor(): void {
-    const campaignId = contentStore.campaignId
     const contentId = contentStore.id
+    const type = contentStore.type
 
-    if (!campaignId || !contentId)
+    if (!contentId || !type)
       return
 
-    const typeSlug = getTypeSlug()
-    navigateTo(`/campaigns/${campaignId}/${typeSlug}/${contentId}`)
+    navigateTo(`/${getContentTypeSlug(type)}/${contentId}`)
   }
 
   /**
