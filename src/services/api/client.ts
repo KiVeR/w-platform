@@ -37,6 +37,7 @@ async function request<T>(
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       ...fetchOptions,
+      credentials: 'include',
       signal: controller.signal,
       headers: {
         ...headers,
