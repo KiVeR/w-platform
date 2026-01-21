@@ -30,21 +30,14 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
   const isActive = computed(() => uiStore.isHistoryMode)
 
-  // Get current context from content store
-  function getContext(): { campaignId: number, contentId: number } | null {
-    const campaignId = contentStore.campaignId
-    const contentId = contentStore.id
-
-    if (!campaignId || !contentId) {
-      return null
-    }
-
-    return { campaignId, contentId }
+  // Get current content ID from content store
+  function getContentId(): number | null {
+    return contentStore.id
   }
 
   async function loadVersions(): Promise<void> {
-    const context = getContext()
-    if (!context)
+    const contentId = getContentId()
+    if (!contentId)
       return
 
     isLoading.value = true
@@ -53,8 +46,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
     try {
       const response = await contentVersionApi.getVersions(
-        context.campaignId,
-        context.contentId,
+        contentId,
         { page: 1, pageSize: PAGE_SIZE },
       )
 
@@ -71,8 +63,8 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function loadMore(): Promise<void> {
-    const context = getContext()
-    if (!context || isLoading.value || !hasMore.value)
+    const contentId = getContentId()
+    if (!contentId || isLoading.value || !hasMore.value)
       return
 
     isLoading.value = true
@@ -80,8 +72,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
     try {
       const response = await contentVersionApi.getVersions(
-        context.campaignId,
-        context.contentId,
+        contentId,
         { page: currentPage.value, pageSize: PAGE_SIZE },
       )
 
@@ -97,8 +88,8 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function selectVersion(versionId: number): Promise<void> {
-    const context = getContext()
-    if (!context)
+    const contentId = getContentId()
+    if (!contentId)
       return
 
     if (versionCache.has(versionId)) {
@@ -110,8 +101,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
     try {
       const response = await contentVersionApi.getVersion(
-        context.campaignId,
-        context.contentId,
+        contentId,
         versionId,
       )
 
@@ -132,16 +122,15 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function restoreVersion(versionId: number): Promise<boolean> {
-    const context = getContext()
-    if (!context)
+    const contentId = getContentId()
+    if (!contentId)
       return false
 
     isRestoring.value = true
 
     try {
       const response = await contentVersionApi.restoreVersion(
-        context.campaignId,
-        context.contentId,
+        contentId,
         versionId,
       )
 

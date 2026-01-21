@@ -8,7 +8,6 @@ export const useContentStore = defineStore('content', () => {
   // State
   const id = ref<number | null>(null)
   const type = ref<ContentType | null>(null)
-  const campaignId = ref<number | null>(null)
   const title = ref('')
   const status = ref<PageStatusType>('DRAFT')
   const isLoading = ref(false)
@@ -28,7 +27,6 @@ export const useContentStore = defineStore('content', () => {
   function setContent(content: Content) {
     id.value = content.id
     type.value = content.type
-    campaignId.value = content.campaignId
     title.value = content.title
     status.value = content.status
     createdAt.value = new Date(content.createdAt)
@@ -39,7 +37,6 @@ export const useContentStore = defineStore('content', () => {
   function setMetadata(data: {
     id?: number
     type?: ContentType
-    campaignId?: number
     title?: string
     status?: PageStatusType
   }) {
@@ -47,8 +44,6 @@ export const useContentStore = defineStore('content', () => {
       id.value = data.id
     if (data.type !== undefined)
       type.value = data.type
-    if (data.campaignId !== undefined)
-      campaignId.value = data.campaignId
     if (data.title !== undefined)
       title.value = data.title
     if (data.status !== undefined)
@@ -74,7 +69,6 @@ export const useContentStore = defineStore('content', () => {
   function reset() {
     id.value = null
     type.value = null
-    campaignId.value = null
     title.value = ''
     status.value = 'DRAFT'
     isLoading.value = false
@@ -87,7 +81,6 @@ export const useContentStore = defineStore('content', () => {
     // State
     id,
     type,
-    campaignId,
     title,
     status,
     isLoading,
