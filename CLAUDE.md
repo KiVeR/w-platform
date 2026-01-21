@@ -118,11 +118,11 @@ components/
 ```typescript
 // ✅ Good
 import type { ContentType } from '#shared/types/content'
-import { STATUS_COLORS } from '#shared/constants/status'
-import { useAuthStore } from '@/stores/auth'
-
 // ❌ Bad - never use relative paths for shared/
 import type { ContentType } from '../../shared/types/content'
+import { STATUS_COLORS } from '#shared/constants/status'
+
+import { useAuthStore } from '@/stores/auth'
 ```
 
 **Server (`server/api/`, `server/utils/`)**
@@ -168,6 +168,50 @@ All exports from `server/utils/` are globally available in server code:
 - Default labels and UI text in French
 - Commits, code comments and technical documentation in English
 - Every API feature must have corresponding tests
+
+## API Calls (Frontend)
+
+**Always use `useApi()` for authenticated API calls.** Never use `$fetch` directly with Authorization headers.
+
+```typescript
+// ✅ Correct - automatic 401 handling, token refresh, redirect to /login
+const api = useApi()
+const data = await api.get<MyType>('/api/v1/resource')
+const created = await api.post<MyType>('/api/v1/resource', { name: 'value' })
+await api.delete('/api/v1/resource/123')
+
+// ❌ Wrong - no 401 handling, user gets stuck on error
+const data = await $fetch<MyType>('/api/v1/resource', {
+  headers: { Authorization: `Bearer ${authStore.accessToken}` }
+})
+```
+
+### Why useApi()?
+
+The `useApi()` composable (`src/composables/useApi.ts`) provides:
+- **Automatic Authorization header** from auth store
+- **401 error handling**: attempts token refresh via HttpOnly cookie
+- **Automatic retry** after successful refresh
+- **Redirect to `/login`** if refresh fails
+- **Cleanup** of localStorage (accessToken, user) on auth failure
+
+### Available methods
+
+```typescript
+const api = useApi()
+
+api.get<T>(url, options?)      // GET request
+api.post<T>(url, body, options?)  // POST request
+api.put<T>(url, body, options?)   // PUT request
+api.delete<T>(url, options?)   // DELETE request
+```
+
+### When to use $fetch directly
+
+Only for **public endpoints** that don't require authentication:
+- `/api/v1/auth/login`
+- `/api/v1/auth/register`
+- Public health checks
 
 ## Git Commits
 
