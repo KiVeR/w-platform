@@ -1,39 +1,8 @@
 <script setup lang="ts">
-import type { ToastType } from './ToastNotification.vue'
-import { ref } from 'vue'
+import { useToast } from '@/composables/useToast'
 import ToastNotification from './ToastNotification.vue'
 
-interface Toast {
-  id: number
-  type: ToastType
-  message: string
-  duration?: number
-}
-
-const toasts = ref<Toast[]>([])
-let nextId = 0
-
-function addToast(type: ToastType, message: string, duration = 4000) {
-  const id = nextId++
-  toasts.value.push({ id, type, message, duration })
-  return id
-}
-
-function removeToast(id: number) {
-  const index = toasts.value.findIndex(t => t.id === id)
-  if (index > -1) {
-    toasts.value.splice(index, 1)
-  }
-}
-
-// Expose methods for parent components
-defineExpose({
-  success: (message: string, duration?: number) => addToast('success', message, duration),
-  error: (message: string, duration?: number) => addToast('error', message, duration),
-  warning: (message: string, duration?: number) => addToast('warning', message, duration),
-  info: (message: string, duration?: number) => addToast('info', message, duration),
-  remove: removeToast,
-})
+const { toasts, remove } = useToast()
 </script>
 
 <template>
@@ -44,9 +13,12 @@ defineExpose({
           v-for="toast in toasts"
           :key="toast.id"
           :type="toast.type"
+          :title="toast.title"
           :message="toast.message"
           :duration="toast.duration"
-          @close="removeToast(toast.id)"
+          :actions="toast.actions"
+          :icon="toast.icon"
+          @close="remove(toast.id)"
         />
       </TransitionGroup>
     </div>
@@ -56,11 +28,11 @@ defineExpose({
 <style scoped>
 .toast-container {
   position: fixed;
-  top: var(--space-4);
+  bottom: var(--space-4);
   right: var(--space-4);
   z-index: 9999;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: var(--space-2);
   pointer-events: none;
 }
