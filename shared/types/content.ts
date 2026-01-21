@@ -27,9 +27,9 @@ export const CONTENT_TYPE_EMOJI: Record<ContentType, string> = {
 export interface BaseContent {
   id: number
   type: ContentType
-  campaignId: number
   title: string
   status: PageStatusType
+  isFavorite: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -83,8 +83,24 @@ export interface ContentListItem {
   type: ContentType
   title: string
   status: PageStatusType
+  isFavorite: boolean
   createdAt: Date
   updatedAt: Date
+}
+
+// Dashboard contents response
+export interface ContentsListResponse {
+  data: ContentListItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+// Recent contents response
+export interface RecentContentsResponse {
+  recent: ContentListItem[]
+  favorites: ContentListItem[]
 }
 
 // Helper to check if editor is available for a content type

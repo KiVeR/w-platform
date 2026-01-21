@@ -1,7 +1,5 @@
 export * from './auth.schema'
-export * from './campaign.schema'
 export * from './content.schema'
 export * from './design.schema'
-export * from './landing-page.schema'
 export * from './palette.schema'
 export * from './version.schema'

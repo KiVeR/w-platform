@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { contentTypeEnum } from './campaign.schema'
+
+export const contentTypeEnum = z.enum(['landing-page', 'rcs', 'sms'])
 
 export const pageStatusEnum = z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED'])
 
@@ -30,7 +31,13 @@ export const contentPaginationSchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 })
 
+// Shared params schema for contentId
+export const contentIdParamsSchema = z.object({
+  contentId: z.coerce.number().int().positive(),
+})
+
 // Infer types
 export type CreateContentInput = z.infer<typeof createContentSchema>
 export type UpdateContentInput = z.infer<typeof updateContentSchema>
 export type ContentPaginationInput = z.infer<typeof contentPaginationSchema>
+export type ContentIdParams = z.infer<typeof contentIdParamsSchema>
