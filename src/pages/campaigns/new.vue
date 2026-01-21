@@ -2,7 +2,7 @@
 import type { ContentType } from '#shared/types/content'
 import { CONTENT_TYPE_LABELS, CONTENT_TYPES } from '#shared/types/content'
 import { ArrowLeft, Loader2 } from 'lucide-vue-next'
-import { useAuthStore } from '@/stores/auth'
+import { useApi } from '@/composables/useApi'
 
 // Response type from the API including primaryContentId
 interface CampaignCreateResponse {
@@ -21,7 +21,7 @@ definePageMeta({
 })
 
 const router = useRouter()
-const authStore = useAuthStore()
+const api = useApi()
 
 const title = ref('')
 const description = ref('')
@@ -80,16 +80,10 @@ async function handleSubmit() {
   error.value = null
 
   try {
-    const campaign = await $fetch<CampaignCreateResponse>('/api/v1/campaigns', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-      body: {
-        title: title.value,
-        description: description.value || undefined,
-        enabledContentTypes: selectedTypes.value,
-      },
+    const campaign = await api.post<CampaignCreateResponse>('/api/v1/campaigns', {
+      title: title.value,
+      description: description.value || undefined,
+      enabledContentTypes: selectedTypes.value,
     })
 
     // Redirect to LP editor if available, otherwise to campaign page

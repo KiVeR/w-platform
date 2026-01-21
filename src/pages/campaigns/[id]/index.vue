@@ -5,7 +5,7 @@ import type { ContentType } from '#shared/types/content'
 import { STATUS_COLORS, STATUS_LABELS } from '#shared/constants/status'
 import { CONTENT_TYPE_EMOJI, CONTENT_TYPE_LABELS, isEditorAvailable } from '#shared/types/content'
 import { ArrowLeft, Loader2, Plus, Settings, Trash2 } from 'lucide-vue-next'
-import { useAuthStore } from '@/stores/auth'
+import { useApi } from '@/composables/useApi'
 import { useCampaignStore } from '@/stores/campaign'
 
 definePageMeta({
@@ -14,7 +14,7 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
+const api = useApi()
 const campaignStore = useCampaignStore()
 
 const campaignId = computed(() => Number(route.params.id))
@@ -28,11 +28,7 @@ async function loadCampaign() {
   error.value = null
 
   try {
-    const campaign = await $fetch<CampaignWithContents>(`/api/v1/campaigns/${campaignId.value}`, {
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-    })
+    const campaign = await api.get<CampaignWithContents>(`/api/v1/campaigns/${campaignId.value}`)
     campaignStore.setCampaign(campaign)
   }
   catch {
@@ -69,12 +65,7 @@ async function handleDeleteContent(content: CampaignWithContents['contents'][0])
   deletingContentId.value = content.id
 
   try {
-    await $fetch(`/api/v1/campaigns/${campaignId.value}/contents/${content.id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-    })
+    await api.delete(`/api/v1/campaigns/${campaignId.value}/contents/${content.id}`)
     campaignStore.removeContent(content.id)
   }
   catch {

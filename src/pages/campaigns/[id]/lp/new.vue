@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
+import { useApi } from '@/composables/useApi'
 
 definePageMeta({
   title: 'Nouvelle Landing Page',
@@ -8,7 +8,7 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const campaignId = computed(() => Number(route.params.id))
-const authStore = useAuthStore()
+const api = useApi()
 
 const isCreating = ref(true)
 const createError = ref<string | null>(null)
@@ -19,15 +19,9 @@ async function createContent() {
 
   try {
     // Create new landing page content via API
-    const content = await $fetch(`/api/v1/campaigns/${campaignId.value}/contents`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-      body: {
-        type: 'landing-page',
-        title: 'Nouvelle page',
-      },
+    const content = await api.post<{ id: number }>(`/api/v1/campaigns/${campaignId.value}/contents`, {
+      type: 'landing-page',
+      title: 'Nouvelle page',
     })
 
     // Redirect to the editor with the new content ID

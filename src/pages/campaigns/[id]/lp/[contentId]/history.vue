@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PageStatusType } from '#shared/constants/status'
 import type { DesignDocument } from '@/types/widget'
+import { useApi } from '@/composables/useApi'
 import { useVersionHistory } from '@/composables/useVersionHistory'
-import { useAuthStore } from '@/stores/auth'
 import { useContentStore } from '@/stores/content'
 import { useEditorStore } from '@/stores/editor'
 import { useUIStore } from '@/stores/ui'
@@ -29,7 +29,7 @@ const uiStore = useUIStore()
 const editorStore = useEditorStore()
 const contentStore = useContentStore()
 const widgetsStore = useWidgetsStore()
-const authStore = useAuthStore()
+const api = useApi()
 
 const {
   enterHistoryMode,
@@ -44,11 +44,7 @@ async function loadContent() {
   loadError.value = null
 
   try {
-    const data = await $fetch<ContentDesignResponse>(`/api/v1/campaigns/${campaignId.value}/contents/${contentId.value}/design`, {
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-    })
+    const data = await api.get<ContentDesignResponse>(`/api/v1/campaigns/${campaignId.value}/contents/${contentId.value}/design`)
 
     // Update stores with loaded data
     editorStore.setDesign(data.design)

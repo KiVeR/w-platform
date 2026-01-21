@@ -4,6 +4,7 @@ import type { CampaignListItem } from '#shared/types/campaign'
 import { Loader2, Plus, RefreshCw } from 'lucide-vue-next'
 import CampaignCard from '@/components/campaigns/CampaignCard.vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'
+import { useApi } from '@/composables/useApi'
 import { useAuthStore } from '@/stores/auth'
 import { useCampaignsStore } from '@/stores/campaigns'
 
@@ -11,6 +12,7 @@ definePageMeta({
   title: 'Dashboard',
 })
 
+const api = useApi()
 const authStore = useAuthStore()
 const campaignsStore = useCampaignsStore()
 
@@ -23,10 +25,7 @@ async function loadCampaigns() {
   error.value = null
 
   try {
-    const response = await $fetch<{ data: CampaignListItem[] }>('/api/v1/campaigns', {
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
+    const response = await api.get<{ data: CampaignListItem[] }>('/api/v1/campaigns', {
       query: {
         sortBy: 'updatedAt',
         sortOrder: 'desc',
@@ -54,12 +53,7 @@ async function handleDelete(campaign: CampaignListItem) {
   deletingId.value = campaign.id
 
   try {
-    await $fetch(`/api/v1/campaigns/${campaign.id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-    })
+    await api.delete(`/api/v1/campaigns/${campaign.id}`)
     campaignsStore.removeItem(campaign.id)
   }
   catch {
