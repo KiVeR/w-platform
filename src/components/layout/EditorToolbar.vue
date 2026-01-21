@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { EditorMode } from '@/stores/ui'
-import { ArrowLeft, ChevronDown, History, PanelLeft, PanelRight, X } from 'lucide-vue-next'
+import { ChevronDown, History, PanelLeft, PanelRight, X } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import BreadcrumbNav from '@/components/layout/BreadcrumbNav.vue'
 import CreateLandingPageModal from '@/components/ui/CreateLandingPageModal.vue'
 import SaveStatus from '@/components/ui/SaveStatus.vue'
 import { useAutoSave } from '@/composables/useAutoSave'
 import { useVersionHistory } from '@/composables/useVersionHistory'
+import { contentApi } from '@/services/api/contentApi'
 import { useContentStore } from '@/stores/content'
 import { useEditorStore } from '@/stores/editor'
 import { useUIStore } from '@/stores/ui'
@@ -15,12 +17,18 @@ const uiStore = useUIStore()
 const editorStore = useEditorStore()
 const contentStore = useContentStore()
 
-const { saveStatus, lastSyncedAt, lastError, saveNow, needsFirstSave, createAndSave } = useAutoSave()
-const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
-
 const showCreateModal = ref(false)
 const modeDropdownOpen = ref(false)
 const modeDropdownRef = ref<HTMLElement | null>(null)
+const breadcrumbRef = ref<InstanceType<typeof BreadcrumbNav> | null>(null)
+
+// Pass callback to useAutoSave to focus title when toast "Renommer" is clicked
+const { saveStatus, lastSyncedAt, lastError, saveNow, needsFirstSave, createAndSave } = useAutoSave({
+  onFirstSaveComplete: () => {
+    breadcrumbRef.value?.focusTitle()
+  },
+})
+const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
 
 const modes: { value: EditorMode, label: string }[] = [
   { value: 'designer', label: 'Designer' },
@@ -33,6 +41,9 @@ const currentModeLabel = computed(() => {
     return 'Historique'
   return modes.find(m => m.value === uiStore.mode)?.label ?? 'Designer'
 })
+
+// Only editable if we have a content ID (already saved)
+const isTitleEditable = computed(() => contentStore.id !== null)
 
 function selectMode(mode: EditorMode) {
   uiStore.setMode(mode)
@@ -68,20 +79,39 @@ async function handleCreateConfirm(title: string) {
   const result = await createAndSave(title)
   showCreateModal.value = false
 
-  if (result.success && result.id && uiStore.currentCampaignId) {
-    await router.replace(`/campaigns/${uiStore.currentCampaignId}/lp/${result.id}`)
+  if (result.success && result.id) {
+    await router.replace(`/lp/${result.id}`)
   }
 }
 
 function handleCreateCancel() {
   showCreateModal.value = false
 }
+
+async function handleSaveTitle(newTitle: string) {
+  if (!contentStore.id)
+    return
+
+  // Update local state immediately for responsiveness
+  contentStore.updateTitle(newTitle)
+
+  // Save to API
+  await contentApi.updateContent(contentStore.id, { title: newTitle })
+}
+
+// Expose method for external focus (from toast action)
+function focusTitle() {
+  breadcrumbRef.value?.focusTitle()
+}
+
+defineExpose({
+  focusTitle,
+})
 </script>
 
 <template>
   <header class="toolbar">
     <div class="toolbar-left">
-      <!-- Mode Historique : bouton fermer / Mode Normal : lien dashboard -->
       <button
         v-if="isHistoryActive"
         class="toolbar-btn-ghost"
@@ -91,19 +121,18 @@ function handleCreateCancel() {
       >
         <X :size="18" :stroke-width="2" />
       </button>
-      <NuxtLink
-        v-else
-        to="/dashboard"
-        class="toolbar-btn-ghost"
-        title="Retour au dashboard"
-      >
-        <ArrowLeft :size="18" :stroke-width="2" />
-      </NuxtLink>
 
-      <!-- Toggle sidebar gauche (masqué en mode historique) -->
+      <BreadcrumbNav
+        v-if="!isHistoryActive"
+        ref="breadcrumbRef"
+        :content-title="contentStore.title"
+        :editable="isTitleEditable"
+        @save-title="handleSaveTitle"
+      />
+
       <button
         v-if="!isHistoryActive"
-        class="toolbar-btn-ghost"
+        class="toolbar-btn-ghost toolbar-btn-sidebar"
         :class="{ 'is-active': uiStore.leftSidebarOpen }"
         :title="uiStore.leftSidebarOpen ? 'Masquer widgets' : 'Afficher widgets'"
         :aria-label="uiStore.leftSidebarOpen ? 'Masquer la palette de widgets' : 'Afficher la palette de widgets'"
@@ -115,7 +144,6 @@ function handleCreateCancel() {
     </div>
 
     <div class="toolbar-center">
-      <!-- Mode Normal : dropdown de sélection (masqué en mode historique) -->
       <div v-if="!isHistoryActive" ref="modeDropdownRef" class="mode-dropdown">
         <button
           class="mode-dropdown-trigger"
@@ -160,7 +188,6 @@ function handleCreateCancel() {
         <History :size="18" :stroke-width="2" />
       </button>
 
-      <!-- SaveStatus : masqué en mode historique -->
       <SaveStatus
         v-if="!isHistoryActive"
         :status="saveStatus"
@@ -173,7 +200,6 @@ function handleCreateCancel() {
         @create="showCreateModal = true"
       />
 
-      <!-- Toggle sidebar droite : masqué en mode historique (forcée ouverte) -->
       <button
         v-if="!isHistoryActive"
         class="toolbar-btn-ghost"
@@ -211,8 +237,12 @@ function handleCreateCancel() {
 .toolbar-left {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   justify-content: flex-start;
+}
+
+.toolbar-btn-sidebar {
+  margin-left: var(--space-2);
 }
 
 .toolbar-right {
@@ -309,7 +339,6 @@ function handleCreateCancel() {
   font-weight: 500;
 }
 
-/* Dropdown transition */
 .dropdown-enter-active,
 .dropdown-leave-active {
   transition: all 0.15s ease;
@@ -321,7 +350,6 @@ function handleCreateCancel() {
   transform: translateX(-50%) translateY(-4px);
 }
 
-/* Ghost buttons */
 .toolbar-btn-ghost {
   display: flex;
   align-items: center;
@@ -356,7 +384,6 @@ function handleCreateCancel() {
   background-color: var(--color-primary-100, #dbeafe);
 }
 
-/* Responsive */
 @media (max-width: 480px) {
   .toolbar {
     padding: 0 8px;

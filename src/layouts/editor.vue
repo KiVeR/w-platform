@@ -4,6 +4,7 @@ import CenterCanvas from '@/components/layout/CenterCanvas.vue'
 import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
 import RightSidebar from '@/components/layout/RightSidebar.vue'
+import ToastContainer from '@/components/ui/ToastContainer.vue'
 import { useVersionHistory } from '@/composables/useVersionHistory'
 import { useContentStore } from '@/stores/content'
 import { useSelectionStore } from '@/stores/selection'
@@ -88,8 +89,11 @@ function handleShellClick(event: MouseEvent) {
       </transition>
     </div>
 
-    <!-- Page-specific content (loading overlays, toasts, modals) -->
+    <!-- Page-specific content (loading overlays, modals) -->
     <slot />
+
+    <!-- Global toast notifications -->
+    <ToastContainer />
   </div>
 </template>
 
