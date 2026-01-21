@@ -77,8 +77,12 @@ function put<T>(endpoint: string, body: unknown): Promise<ApiResponse<T>> {
   return request<T>(endpoint, { method: 'PUT', body: JSON.stringify(body) })
 }
 
+function patch<T>(endpoint: string, body: unknown): Promise<ApiResponse<T>> {
+  return request<T>(endpoint, { method: 'PATCH', body: JSON.stringify(body) })
+}
+
 function del<T>(endpoint: string): Promise<ApiResponse<T>> {
   return request<T>(endpoint, { method: 'DELETE' })
 }
 
-export const apiClient = { get, post, put, delete: del }
+export const apiClient = { get, post, put, patch, delete: del }

@@ -10,7 +10,6 @@ export interface CreateContentRequest {
 export interface CreateContentResponse {
   id: number
   type: ContentType
-  campaignId: number
   title: string
   status: string
   createdAt: string
@@ -31,41 +30,44 @@ export interface SaveContentDesignResponse {
   updatedAt: string
 }
 
+export interface UpdateContentResponse {
+  id: number
+  title: string
+  status: string
+  updatedAt: string
+}
+
 export interface ContentApi {
-  createContent: (campaignId: number, data: CreateContentRequest) => Promise<CreateContentResponse | null>
-  loadDesign: (campaignId: number, contentId: number) => Promise<LoadContentDesignResponse | null>
-  saveDesign: (campaignId: number, contentId: number, design: DesignDocument) => Promise<SaveContentDesignResponse | null>
-  deleteContent: (campaignId: number, contentId: number) => Promise<boolean>
+  createContent: (data: CreateContentRequest) => Promise<CreateContentResponse | null>
+  loadDesign: (contentId: number) => Promise<LoadContentDesignResponse | null>
+  saveDesign: (contentId: number, design: DesignDocument) => Promise<SaveContentDesignResponse | null>
+  updateContent: (contentId: number, data: { title?: string, status?: string }) => Promise<UpdateContentResponse | null>
+  deleteContent: (contentId: number) => Promise<boolean>
 }
 
 export const contentApi: ContentApi = {
-  async createContent(campaignId: number, data: CreateContentRequest): Promise<CreateContentResponse | null> {
-    const response = await apiClient.post<CreateContentResponse>(
-      `/campaigns/${campaignId}/contents`,
-      data,
-    )
+  async createContent(data: CreateContentRequest): Promise<CreateContentResponse | null> {
+    const response = await apiClient.post<CreateContentResponse>('/contents', data)
     return response.success ? response.data ?? null : null
   },
 
-  async loadDesign(campaignId: number, contentId: number): Promise<LoadContentDesignResponse | null> {
-    const response = await apiClient.get<LoadContentDesignResponse>(
-      `/campaigns/${campaignId}/contents/${contentId}/design`,
-    )
+  async loadDesign(contentId: number): Promise<LoadContentDesignResponse | null> {
+    const response = await apiClient.get<LoadContentDesignResponse>(`/contents/${contentId}/design`)
     return response.success ? response.data ?? null : null
   },
 
-  async saveDesign(campaignId: number, contentId: number, design: DesignDocument): Promise<SaveContentDesignResponse | null> {
-    const response = await apiClient.put<SaveContentDesignResponse>(
-      `/campaigns/${campaignId}/contents/${contentId}/design`,
-      { design },
-    )
+  async saveDesign(contentId: number, design: DesignDocument): Promise<SaveContentDesignResponse | null> {
+    const response = await apiClient.put<SaveContentDesignResponse>(`/contents/${contentId}/design`, { design })
     return response.success ? response.data ?? null : null
   },
 
-  async deleteContent(campaignId: number, contentId: number): Promise<boolean> {
-    const response = await apiClient.delete<{ success: boolean }>(
-      `/campaigns/${campaignId}/contents/${contentId}`,
-    )
+  async updateContent(contentId: number, data: { title?: string, status?: string }): Promise<UpdateContentResponse | null> {
+    const response = await apiClient.patch<UpdateContentResponse>(`/contents/${contentId}`, data)
+    return response.success ? response.data ?? null : null
+  },
+
+  async deleteContent(contentId: number): Promise<boolean> {
+    const response = await apiClient.delete<{ success: boolean }>(`/contents/${contentId}`)
     return response.success
   },
 }

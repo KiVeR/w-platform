@@ -57,14 +57,13 @@ export interface GetVersionsParams {
 // =============================================================================
 
 export interface ContentVersionApi {
-  getVersions: (campaignId: number, contentId: number, params?: GetVersionsParams) => Promise<VersionsResponse | null>
-  getVersion: (campaignId: number, contentId: number, versionId: number) => Promise<VersionDetail | null>
-  restoreVersion: (campaignId: number, contentId: number, versionId: number) => Promise<RestoreVersionResponse | null>
+  getVersions: (contentId: number, params?: GetVersionsParams) => Promise<VersionsResponse | null>
+  getVersion: (contentId: number, versionId: number) => Promise<VersionDetail | null>
+  restoreVersion: (contentId: number, versionId: number) => Promise<RestoreVersionResponse | null>
 }
 
 export const contentVersionApi: ContentVersionApi = {
   async getVersions(
-    campaignId: number,
     contentId: number,
     params?: GetVersionsParams,
   ): Promise<VersionsResponse | null> {
@@ -75,30 +74,28 @@ export const contentVersionApi: ContentVersionApi = {
       queryParams.set('pageSize', String(params.pageSize))
 
     const queryString = queryParams.toString()
-    const url = `/campaigns/${campaignId}/contents/${contentId}/versions${queryString ? `?${queryString}` : ''}`
+    const url = `/contents/${contentId}/versions${queryString ? `?${queryString}` : ''}`
 
     const response = await apiClient.get<VersionsResponse>(url)
     return response.success ? response.data ?? null : null
   },
 
   async getVersion(
-    campaignId: number,
     contentId: number,
     versionId: number,
   ): Promise<VersionDetail | null> {
     const response = await apiClient.get<VersionDetail>(
-      `/campaigns/${campaignId}/contents/${contentId}/versions/${versionId}`,
+      `/contents/${contentId}/versions/${versionId}`,
     )
     return response.success ? response.data ?? null : null
   },
 
   async restoreVersion(
-    campaignId: number,
     contentId: number,
     versionId: number,
   ): Promise<RestoreVersionResponse | null> {
     const response = await apiClient.post<RestoreVersionResponse>(
-      `/campaigns/${campaignId}/contents/${contentId}/versions`,
+      `/contents/${contentId}/versions`,
       { versionId },
     )
     return response.success ? response.data ?? null : null
