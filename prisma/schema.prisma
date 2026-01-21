@@ -18,17 +18,10 @@ enum Role {
   VIEWER
 }
 
-enum PageStatus {
+enum ContentStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
-}
-
-enum CampaignStatus {
-  DRAFT
-  ACTIVE
-  PAUSED
-  COMPLETED
 }
 
 enum ContentType {
@@ -43,10 +36,6 @@ enum AuditAction {
   LOGOUT
   LOGIN_FAILED
   PASSWORD_CHANGED
-  // Campaigns
-  CAMPAIGN_CREATED
-  CAMPAIGN_UPDATED
-  CAMPAIGN_DELETED
   // Contents
   CONTENT_CREATED
   CONTENT_UPDATED
@@ -69,7 +58,6 @@ enum AuditAction {
 
 enum EntityType {
   USER
-  CAMPAIGN
   CONTENT
   ASSET
 }
@@ -88,7 +76,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  campaigns     Campaign[]
+  contents      Content[]
   auditLogs     AuditLog[]
   refreshTokens RefreshToken[]
 
@@ -132,49 +120,31 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-// ==================== CAMPAIGN SYSTEM ====================
-
-model Campaign {
-  id                  Int              @id @default(autoincrement())
-  title               String
-  description         String?
-  status              CampaignStatus   @default(DRAFT)
-  enabledContentTypes ContentType[]    @default([])
-  ownerId             Int
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
-  deletedAt           DateTime?        // Soft delete
-
-  // Relations
-  owner    User      @relation(fields: [ownerId], references: [id])
-  contents Content[]
-
-  @@index([ownerId])
-  @@index([status])
-  @@index([deletedAt])
-  @@map("campaigns")
-}
+// ==================== CONTENT SYSTEM ====================
 
 model Content {
-  id         Int         @id @default(autoincrement())
+  id         Int           @id @default(autoincrement())
   type       ContentType
-  campaignId Int
+  ownerId    Int
   title      String
-  status     PageStatus  @default(DRAFT)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  deletedAt  DateTime?   // Soft delete
+  status     ContentStatus @default(DRAFT)
+  isFavorite Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  deletedAt  DateTime?     // Soft delete
 
   // Relations
-  campaign        Campaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  owner           User             @relation(fields: [ownerId], references: [id])
   landingPageData LandingPageData?
   rcsData         RCSData?
   smsData         SMSData?
 
-  @@index([campaignId])
+  @@index([ownerId])
   @@index([type])
   @@index([status])
+  @@index([isFavorite])
   @@index([deletedAt])
+  @@index([updatedAt])
   @@map("contents")
 }
 
