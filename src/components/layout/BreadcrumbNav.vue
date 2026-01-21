@@ -36,10 +36,11 @@ defineExpose({
       <li class="breadcrumb-item">
         <NuxtLink
           to="/dashboard"
-          class="breadcrumb-link"
+          class="breadcrumb-home"
+          title="Retour au dashboard"
+          aria-label="Retour au dashboard"
         >
-          <Home :size="14" class="breadcrumb-icon" aria-hidden="true" />
-          <span class="breadcrumb-text">Dashboard</span>
+          <Home :size="16" aria-hidden="true" />
         </NuxtLink>
         <ChevronRight
           :size="14"
@@ -85,44 +86,33 @@ defineExpose({
   gap: var(--space-1);
 }
 
-.breadcrumb-link {
+.breadcrumb-home {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   color: var(--color-text-muted);
   text-decoration: none;
-  font-size: var(--text-sm);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   transition: all var(--transition-fast);
 }
 
-.breadcrumb-link:hover {
+.breadcrumb-home:hover {
   color: var(--color-text);
   background-color: var(--color-background);
 }
 
-.breadcrumb-link:focus-visible {
+.breadcrumb-home:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-}
-
-.breadcrumb-icon {
-  flex-shrink: 0;
-}
-
-.breadcrumb-text {
-  max-width: 120px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .breadcrumb-current {
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--color-text-primary);
-  max-width: 200px;
+  max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

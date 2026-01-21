@@ -114,7 +114,7 @@ defineExpose({
   display: inline-flex;
   align-items: center;
   min-width: 0;
-  max-width: 200px;
+  max-width: 300px;
 }
 
 .editable-title__display {
@@ -176,7 +176,7 @@ defineExpose({
 .editable-title__input {
   width: 100%;
   min-width: 120px;
-  max-width: 200px;
+  max-width: 300px;
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);

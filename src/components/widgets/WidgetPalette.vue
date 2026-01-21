@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { WidgetCategory } from '@/types/widget'
-import { Search, Sparkles, X } from 'lucide-vue-next'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { Sparkles } from 'lucide-vue-next'
+import { computed, ref, watch } from 'vue'
 import { getWidgetsByCategory, widgetCategories, widgetConfigs } from '@/config/widgets'
 import WidgetItem from './WidgetItem.vue'
 
-const searchQuery = ref('')
-const searchInputRef = ref<HTMLInputElement>()
+const props = defineProps<{
+  searchQuery?: string
+}>()
+
 const activeFilter = ref<WidgetCategory | 'all'>('all')
 
 // Filtrer les widgets par recherche ET par filtre de catégorie
@@ -19,8 +21,8 @@ const filteredWidgets = computed(() => {
   }
 
   // Filtrer par recherche si une requête est présente
-  if (searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase()
+  const query = props.searchQuery?.trim().toLowerCase()
+  if (query) {
     widgets = widgets.filter(w =>
       w.label.toLowerCase().includes(query)
       || w.type.toLowerCase().includes(query),
@@ -39,63 +41,20 @@ const categoryCounts = computed(() => {
   return counts
 })
 
-function clearSearch() {
-  searchQuery.value = ''
-  searchInputRef.value?.focus()
-}
-
 function setFilter(category: WidgetCategory | 'all') {
   activeFilter.value = category
 }
 
-// Raccourci "/" pour focus sur la recherche
-function handleGlobalKeydown(e: KeyboardEvent) {
-  if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
-    e.preventDefault()
-    searchInputRef.value?.focus()
-  }
-}
-
 // Reset filter quand on recherche
-watch(searchQuery, (query) => {
-  if (query.trim()) {
+watch(() => props.searchQuery, (query) => {
+  if (query?.trim()) {
     activeFilter.value = 'all'
   }
-})
-
-onMounted(() => {
-  window.addEventListener('keydown', handleGlobalKeydown)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleGlobalKeydown)
 })
 </script>
 
 <template>
   <div class="widget-palette">
-    <!-- Barre de recherche -->
-    <div class="palette-search">
-      <Search :size="16" class="search-icon" />
-      <input
-        ref="searchInputRef"
-        v-model="searchQuery"
-        type="search"
-        class="search-input"
-        placeholder="Rechercher..."
-        aria-label="Rechercher un widget"
-      >
-      <button
-        v-if="searchQuery"
-        class="search-clear"
-        aria-label="Effacer la recherche"
-        @click="clearSearch"
-      >
-        <X :size="14" />
-      </button>
-      <kbd v-else class="search-shortcut">/</kbd>
-    </div>
-
     <!-- Filtres par catégorie (tags horizontaux) -->
     <div class="category-filters">
       <button
@@ -153,80 +112,6 @@ onUnmounted(() => {
   flex-direction: column;
   gap: var(--space-3);
   height: 100%;
-}
-
-/* Search */
-.palette-search {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.search-input {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  padding-left: 36px;
-  padding-right: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  font-size: var(--text-sm);
-  background: var(--color-surface);
-  transition: all var(--transition-fast);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--color-primary-500);
-  box-shadow: var(--focus-ring);
-}
-
-.search-input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.search-clear {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: var(--color-neutral-100);
-  border-radius: var(--radius-full);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.search-clear:hover {
-  background: var(--color-neutral-200);
-  color: var(--color-text-primary);
-}
-
-.search-shortcut {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2px 6px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--color-text-muted);
 }
 
 /* Category Filters */

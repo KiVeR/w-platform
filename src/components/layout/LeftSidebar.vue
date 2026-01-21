@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { FileStack, LayoutGrid, Rows3, Sparkles } from 'lucide-vue-next'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { FileStack, LayoutGrid, Rows3, Search, Sparkles, X } from 'lucide-vue-next'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'
 import TemplatePalette from '@/components/templates/TemplatePalette.vue'
 import SectionPalette from '@/components/widgets/SectionPalette.vue'
@@ -14,20 +14,39 @@ interface NavItem {
   label: string
   icon: Component
   shortcut: string
+  hasSearch: boolean
 }
 
 const activeTab = ref<Tab>('widgets')
+const searchQuery = ref('')
+const searchInputRef = ref<HTMLInputElement | null>(null)
 
 const mainNavItems: NavItem[] = [
-  { id: 'widgets', label: 'Widgets', icon: LayoutGrid, shortcut: '1' },
-  { id: 'templates', label: 'Modèles', icon: FileStack, shortcut: '2' },
-  { id: 'sections', label: 'Sections', icon: Rows3, shortcut: '3' },
-  { id: 'effects', label: 'Effets', icon: Sparkles, shortcut: '4' },
+  { id: 'widgets', label: 'Widgets', icon: LayoutGrid, shortcut: '1', hasSearch: true },
+  { id: 'templates', label: 'Modèles', icon: FileStack, shortcut: '2', hasSearch: true },
+  { id: 'sections', label: 'Sections', icon: Rows3, shortcut: '3', hasSearch: false },
+  { id: 'effects', label: 'Effets', icon: Sparkles, shortcut: '4', hasSearch: false },
 ]
 
 const currentNavItem = computed(() =>
   mainNavItems.find(item => item.id === activeTab.value),
 )
+
+const currentTabHasSearch = computed(() => currentNavItem.value?.hasSearch ?? false)
+
+// Clear search when changing tabs
+watch(activeTab, () => {
+  searchQuery.value = ''
+})
+
+function clearSearch() {
+  searchQuery.value = ''
+  searchInputRef.value?.focus()
+}
+
+function focusSearch() {
+  searchInputRef.value?.focus()
+}
 
 function handleNavKeydown(e: KeyboardEvent, index: number) {
   switch (e.key) {
@@ -51,12 +70,19 @@ function handleNavKeydown(e: KeyboardEvent, index: number) {
 }
 
 function handleGlobalKeydown(e: KeyboardEvent) {
+  // Cmd+1/2/3/4 for tab switching
   if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey) {
     const num = Number.parseInt(e.key)
     if (num >= 1 && num <= mainNavItems.length) {
       e.preventDefault()
       activeTab.value = mainNavItems[num - 1].id
     }
+  }
+
+  // "/" for search focus (only if current tab has search)
+  if (e.key === '/' && currentTabHasSearch.value && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+    e.preventDefault()
+    focusSearch()
   }
 }
 
@@ -104,14 +130,34 @@ onUnmounted(() => {
 
     <div class="sidebar-panel">
       <header class="panel-header">
-        <h2 class="panel-title">
+        <div v-if="currentTabHasSearch" class="panel-search">
+          <Search :size="14" class="search-icon" />
+          <input
+            ref="searchInputRef"
+            v-model="searchQuery"
+            type="search"
+            class="search-input"
+            placeholder="Rechercher..."
+            :aria-label="`Rechercher dans ${currentNavItem?.label}`"
+          >
+          <button
+            v-if="searchQuery"
+            class="search-clear"
+            aria-label="Effacer la recherche"
+            @click="clearSearch"
+          >
+            <X :size="12" />
+          </button>
+          <kbd v-else class="search-shortcut">/</kbd>
+        </div>
+        <h2 v-else class="panel-title">
           {{ currentNavItem?.label }}
         </h2>
       </header>
 
       <div class="panel-content">
-        <WidgetPalette v-if="activeTab === 'widgets'" />
-        <TemplatePalette v-else-if="activeTab === 'templates'" />
+        <WidgetPalette v-if="activeTab === 'widgets'" :search-query="searchQuery" />
+        <TemplatePalette v-else-if="activeTab === 'templates'" :search-query="searchQuery" />
         <SectionPalette v-else-if="activeTab === 'sections'" />
         <div v-else class="effects-placeholder">
           <p class="placeholder-text">
@@ -271,6 +317,76 @@ onUnmounted(() => {
   font-weight: 600;
   color: var(--color-text);
   margin: 0;
+}
+
+/* Panel Search */
+.panel-search {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.panel-search .search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.panel-search .search-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 32px 0 30px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+
+.panel-search .search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.panel-search .search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.panel-search .search-clear {
+  position: absolute;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.panel-search .search-clear:hover {
+  background: var(--color-neutral-200);
+  color: var(--color-text);
+}
+
+.panel-search .search-shortcut {
+  position: absolute;
+  right: 8px;
+  padding: 2px 6px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
 }
 
 .panel-content {

@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import type { TemplateCategory, TemplatePreset } from '@/types/preset'
-import { Search, X } from 'lucide-vue-next'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { usePresetsStore } from '@/stores/presets'
 import ApplyTemplateModal from './ApplyTemplateModal.vue'
 import TemplateCard from './TemplateCard.vue'
 
-const presetsStore = usePresetsStore()
+const props = defineProps<{
+  searchQuery?: string
+}>()
 
-// Search state
-const searchQuery = ref('')
-const searchInputRef = ref<HTMLInputElement>()
+const presetsStore = usePresetsStore()
 
 // Category filter state
 const selectedCategory = ref<TemplateCategory | ''>('')
@@ -18,9 +17,16 @@ const selectedCategory = ref<TemplateCategory | ''>('')
 // Computed filtered templates
 const filteredTemplates = computed(() => {
   return presetsStore.filterTemplates(
-    searchQuery.value,
+    props.searchQuery || '',
     selectedCategory.value || undefined,
   )
+})
+
+// Reset filter when searching
+watch(() => props.searchQuery, (query) => {
+  if (query?.trim()) {
+    selectedCategory.value = ''
+  }
 })
 
 // Results count text
@@ -33,60 +39,14 @@ const resultsText = computed(() => {
   return `${count} templates`
 })
 
-// Clear search
-function clearSearch() {
-  searchQuery.value = ''
-  searchInputRef.value?.focus()
-}
-
 // Handle apply template
 function handleApplyTemplate(template: TemplatePreset) {
   presetsStore.openApplyModal(template)
 }
-
-// Keyboard shortcut for search focus
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === '/' && document.activeElement?.tagName !== 'INPUT') {
-    event.preventDefault()
-    searchInputRef.value?.focus()
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('keydown', handleKeydown)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown)
-})
 </script>
 
 <template>
   <div class="template-palette">
-    <!-- Search bar -->
-    <div class="palette-search">
-      <div class="search-input-wrapper">
-        <Search class="search-icon" :size="16" />
-        <input
-          ref="searchInputRef"
-          v-model="searchQuery"
-          type="text"
-          placeholder="Rechercher un template..."
-          class="search-input"
-          aria-label="Rechercher un template"
-        >
-        <button
-          v-if="searchQuery"
-          class="clear-button"
-          aria-label="Effacer la recherche"
-          @click="clearSearch"
-        >
-          <X :size="14" />
-        </button>
-        <span v-else class="search-shortcut" aria-hidden="true">/</span>
-      </div>
-    </div>
-
     <!-- Category filter -->
     <div class="category-filter">
       <button
@@ -143,81 +103,6 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-}
-
-/* Search */
-.palette-search {
-  position: relative;
-}
-
-.search-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: var(--space-3);
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  padding-left: 36px;
-  padding-right: 32px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  transition: border-color var(--transition-fast);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring);
-}
-
-.search-input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.clear-button {
-  position: absolute;
-  right: var(--space-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: none;
-  background: none;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-}
-
-.clear-button:hover {
-  background-color: var(--color-neutral-100);
-  color: var(--color-text);
-}
-
-.search-shortcut {
-  position: absolute;
-  right: var(--space-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  background-color: var(--color-neutral-100);
-  border-radius: var(--radius-sm);
 }
 
 /* Category filter */
