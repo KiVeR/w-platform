@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ContentType } from '#shared/types/content'
-import { CONTENT_TYPE_LABELS, CONTENT_TYPES } from '#shared/types/content'
+import { CONTENT_TYPE_LABELS, CONTENT_TYPES, isEditorAvailable } from '#shared/types/content'
 import { ArrowLeft, Loader2 } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
 
@@ -41,16 +41,9 @@ const contentTypeDescriptions: Record<ContentType, string> = {
   'sms': 'Message texte simple',
 }
 
-// Check if a content type has an available editor
-function isEditorAvailable(type: ContentType): boolean {
-  return type === 'landing-page'
-}
-
-function toggleContentType(type: ContentType) {
-  // Only allow toggling for landing-page (others are coming soon)
-  if (!isEditorAvailable(type)) {
+function toggleContentType(type: ContentType): void {
+  if (!isEditorAvailable(type))
     return
-  }
 
   const index = selectedTypes.value.indexOf(type)
   if (index === -1) {
@@ -65,7 +58,7 @@ function isTypeSelected(type: ContentType): boolean {
   return selectedTypes.value.includes(type)
 }
 
-async function handleSubmit() {
+async function handleSubmit(): Promise<void> {
   if (!title.value.trim()) {
     error.value = 'Le titre est requis'
     return
@@ -86,13 +79,10 @@ async function handleSubmit() {
       enabledContentTypes: selectedTypes.value,
     })
 
-    // Redirect to LP editor if available, otherwise to campaign page
-    if (campaign.primaryContentId && selectedTypes.value.includes('landing-page')) {
-      router.push(`/campaigns/${campaign.id}/lp/${campaign.primaryContentId}`)
-    }
-    else {
-      router.push(`/campaigns/${campaign.id}`)
-    }
+    const redirectUrl = campaign.primaryContentId && selectedTypes.value.includes('landing-page')
+      ? `/campaigns/${campaign.id}/lp/${campaign.primaryContentId}`
+      : `/campaigns/${campaign.id}`
+    router.push(redirectUrl)
   }
   catch {
     error.value = 'Erreur lors de la création de la campagne'

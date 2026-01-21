@@ -31,25 +31,20 @@ const contentStore = useContentStore()
 const widgetsStore = useWidgetsStore()
 const api = useApi()
 
-const {
-  enterHistoryMode,
-  navigateToEditor,
-} = useVersionHistory()
+const { enterHistoryMode, navigateToEditor } = useVersionHistory()
 
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 
-async function loadContent() {
+async function loadContent(): Promise<void> {
   isLoading.value = true
   loadError.value = null
 
   try {
     const data = await api.get<ContentDesignResponse>(`/api/v1/campaigns/${campaignId.value}/contents/${contentId.value}/design`)
 
-    // Update stores with loaded data
     editorStore.setDesign(data.design)
     widgetsStore.setWidgets(data.design.widgets || [])
-
     contentStore.setMetadata({
       id: data.id,
       type: 'landing-page',
@@ -58,7 +53,6 @@ async function loadContent() {
       status: data.status,
     })
 
-    // Enter history mode after content is loaded
     await enterHistoryMode()
   }
   catch (error: unknown) {
@@ -69,10 +63,6 @@ async function loadContent() {
   finally {
     isLoading.value = false
   }
-}
-
-function goBack() {
-  navigateToEditor()
 }
 
 onMounted(() => {
@@ -102,7 +92,7 @@ onUnmounted(() => {
         {{ loadError }}
       </p>
       <div class="error-actions">
-        <button class="back-btn" @click="goBack">
+        <button class="back-btn" @click="navigateToEditor">
           Retour à l'éditeur
         </button>
         <button class="retry-btn" @click="loadContent">

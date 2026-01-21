@@ -20,16 +20,13 @@ const isLoading = ref(true)
 const error = ref<string | null>(null)
 const deletingId = ref<number | null>(null)
 
-async function loadCampaigns() {
+async function loadCampaigns(): Promise<void> {
   isLoading.value = true
   error.value = null
 
   try {
     const response = await api.get<{ data: CampaignListItem[] }>('/api/v1/campaigns', {
-      query: {
-        sortBy: 'updatedAt',
-        sortOrder: 'desc',
-      },
+      query: { sortBy: 'updatedAt', sortOrder: 'desc' },
     })
     campaignsStore.setItems(response.data)
   }
@@ -41,11 +38,11 @@ async function loadCampaigns() {
   }
 }
 
-function handleCampaignClick(campaign: CampaignListItem) {
+function handleCampaignClick(campaign: CampaignListItem): void {
   navigateTo(`/campaigns/${campaign.id}`)
 }
 
-async function handleDelete(campaign: CampaignListItem) {
+async function handleDelete(campaign: CampaignListItem): Promise<void> {
   const confirmed = window.confirm(`Supprimer "${campaign.title}" ? Cette action est irréversible.`)
   if (!confirmed)
     return
@@ -64,7 +61,7 @@ async function handleDelete(campaign: CampaignListItem) {
   }
 }
 
-async function handleLogout() {
+async function handleLogout(): Promise<void> {
   await authStore.logout()
   navigateTo('/login')
 }

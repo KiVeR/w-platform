@@ -33,17 +33,15 @@ const api = useApi()
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 
-async function loadContent() {
+async function loadContent(): Promise<void> {
   isLoading.value = true
   loadError.value = null
 
   try {
     const data = await api.get<ContentDesignResponse>(`/api/v1/campaigns/${campaignId.value}/contents/${contentId.value}/design`)
 
-    // Update stores with loaded data
     editorStore.setDesign(data.design)
     widgetsStore.setWidgets(data.design.widgets || [])
-
     contentStore.setMetadata({
       id: data.id,
       type: 'landing-page',

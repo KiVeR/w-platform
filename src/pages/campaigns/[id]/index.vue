@@ -23,7 +23,7 @@ const error = ref<string | null>(null)
 const showAddModal = ref(false)
 const deletingContentId = ref<number | null>(null)
 
-async function loadCampaign() {
+async function loadCampaign(): Promise<void> {
   isLoading.value = true
   error.value = null
 
@@ -44,20 +44,13 @@ function getEditUrl(content: CampaignWithContents['contents'][0]): string {
   return `/campaigns/${campaignId.value}/${typeSlug}/${content.id}`
 }
 
-function canEdit(type: ContentType): boolean {
-  return isEditorAvailable(type)
-}
-
-async function handleAddContent(type: ContentType) {
+function handleAddContent(type: ContentType): void {
   showAddModal.value = false
-
-  // TODO: Replace with API call
-  // const content = await campaignApi.createContent(campaignId.value, { type, title: 'Nouveau contenu' })
   const typeSlug = type === 'landing-page' ? 'lp' : type
   router.push(`/campaigns/${campaignId.value}/${typeSlug}/new`)
 }
 
-async function handleDeleteContent(content: CampaignWithContents['contents'][0]) {
+async function handleDeleteContent(content: CampaignWithContents['contents'][0]): Promise<void> {
   const confirmed = window.confirm(`Supprimer "${content.title}" ? Cette action est irréversible.`)
   if (!confirmed)
     return
@@ -160,7 +153,7 @@ onMounted(() => {
               v-for="content in campaignStore.contents"
               :key="content.id"
               class="content-card"
-              :class="{ 'content-card--unavailable': !canEdit(content.type) }"
+              :class="{ 'content-card--unavailable': !isEditorAvailable(content.type) }"
             >
               <div class="content-info">
                 <span class="content-icon">{{ CONTENT_TYPE_EMOJI[content.type] }}</span>
@@ -171,7 +164,7 @@ onMounted(() => {
                   <div class="content-meta">
                     <span class="content-type">{{ CONTENT_TYPE_LABELS[content.type] }}</span>
                     <span
-                      v-if="!canEdit(content.type)"
+                      v-if="!isEditorAvailable(content.type)"
                       class="editor-badge"
                     >
                       Éditeur à venir
@@ -190,7 +183,7 @@ onMounted(() => {
                   :to="getEditUrl(content)"
                   class="btn-edit"
                 >
-                  {{ canEdit(content.type) ? 'Éditer' : 'Voir' }}
+                  {{ isEditorAvailable(content.type) ? 'Éditer' : 'Voir' }}
                 </NuxtLink>
                 <button
                   class="btn-delete"
@@ -226,7 +219,7 @@ onMounted(() => {
             >
               <span class="option-icon">{{ CONTENT_TYPE_EMOJI[type] }}</span>
               <span class="option-label">{{ CONTENT_TYPE_LABELS[type] }}</span>
-              <span v-if="!canEdit(type)" class="option-badge">À venir</span>
+              <span v-if="!isEditorAvailable(type)" class="option-badge">À venir</span>
             </button>
           </div>
           <button class="btn-cancel-modal" @click="showAddModal = false">

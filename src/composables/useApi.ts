@@ -14,54 +14,48 @@ export function useApi() {
   const authStore = useAuthStore()
   const router = useRouter()
 
-  async function apiFetch<T>(
-    url: string,
-    options: FetchOptions = {},
-  ): Promise<T> {
-    const fetchWithAuth = async (isRetry = false): Promise<T> => {
-      try {
-        return await $fetch<T>(url, {
-          ...options,
-          credentials: 'include',
-          headers: {
-            ...options.headers,
-            ...(authStore.accessToken && {
-              Authorization: `Bearer ${authStore.accessToken}`,
-            }),
-          },
-        })
-      }
-      catch (error: unknown) {
-        const fetchError = error as { statusCode?: number }
+  async function apiFetch<T>(url: string, options: FetchOptions = {}): Promise<T> {
+    const headers = authStore.accessToken
+      ? { ...options.headers, Authorization: `Bearer ${authStore.accessToken}` }
+      : options.headers
 
-        if (fetchError.statusCode === 401 && !isRetry) {
-          const newToken = await tokenRefreshManager.refreshToken()
+    try {
+      return await $fetch<T>(url, { ...options, credentials: 'include', headers })
+    }
+    catch (error: unknown) {
+      const fetchError = error as { statusCode?: number }
 
-          if (newToken) {
-            return fetchWithAuth(true)
-          }
-
-          authStore.clearAuth()
-          router.push('/login')
-          throw new Error('Session expirée')
-        }
-
+      if (fetchError.statusCode !== 401) {
         throw error
       }
+
+      const newToken = await tokenRefreshManager.refreshToken()
+      if (newToken) {
+        const retryHeaders = { ...options.headers, Authorization: `Bearer ${newToken}` }
+        return $fetch<T>(url, { ...options, credentials: 'include', headers: retryHeaders })
+      }
+
+      authStore.clearAuth()
+      router.push('/login')
+      throw new Error('Session expirée')
     }
-
-    return fetchWithAuth()
   }
 
-  return {
-    apiFetch,
-    get: <T>(url: string, options?: FetchOptions) =>
-      apiFetch<T>(url, { ...options, method: 'GET' }),
-    post: <T>(url: string, body?: unknown, options?: FetchOptions) =>
-      apiFetch<T>(url, { ...options, method: 'POST', body }),
-    put: <T>(url: string, body?: unknown, options?: FetchOptions) =>
-      apiFetch<T>(url, { ...options, method: 'PUT', body }),
-    delete: <T>(url: string, options?: FetchOptions) =>
-      apiFetch<T>(url, { ...options, method: 'DELETE' }),
+  function get<T>(url: string, options?: FetchOptions): Promise<T> {
+    return apiFetch<T>(url, { ...options, method: 'GET' })
   }
+
+  function post<T>(url: string, body?: unknown, options?: FetchOptions): Promise<T> {
+    return apiFetch<T>(url, { ...options, method: 'POST', body })
+  }
+
+  function put<T>(url: string, body?: unknown, options?: FetchOptions): Promise<T> {
+    return apiFetch<T>(url, { ...options, method: 'PUT', body })
+  }
+
+  function del<T>(url: string, options?: FetchOptions): Promise<T> {
+    return apiFetch<T>(url, { ...options, method: 'DELETE' })
+  }
+
+  return { apiFetch, get, post, put, delete: del }
 }

@@ -2,37 +2,33 @@ import type { ApiResponse } from './types'
 import { tokenRefreshManager } from './tokenRefreshManager'
 
 const BASE_URL = '/api/v1'
-
-interface RequestOptions extends RequestInit {
-  timeout?: number
-  _isRetry?: boolean
-}
+const DEFAULT_TIMEOUT = 10000
 
 function getAuthToken(): string | null {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('accessToken')
-  }
-  return null
+  if (typeof window === 'undefined')
+    return null
+  return localStorage.getItem('accessToken')
 }
 
-async function request<T>(
-  endpoint: string,
-  options: RequestOptions = {},
-): Promise<ApiResponse<T>> {
-  const { timeout = 10000, _isRetry = false, ...fetchOptions } = options
-
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), timeout)
-
-  const token = getAuthToken()
+function buildHeaders(token: string | null): Record<string, string> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   }
-
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }
+  return headers
+}
+
+async function request<T>(
+  endpoint: string,
+  options: RequestInit & { timeout?: number } = {},
+  isRetry = false,
+): Promise<ApiResponse<T>> {
+  const { timeout = DEFAULT_TIMEOUT, ...fetchOptions } = options
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
 
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -40,28 +36,19 @@ async function request<T>(
       credentials: 'include',
       signal: controller.signal,
       headers: {
-        ...headers,
-        ...fetchOptions.headers,
+        ...buildHeaders(getAuthToken()),
+        ...(fetchOptions.headers as Record<string, string>),
       },
     })
 
     clearTimeout(timeoutId)
 
-    // Handle 401 Unauthorized - attempt token refresh
-    if (response.status === 401 && !_isRetry) {
+    if (response.status === 401 && !isRetry) {
       const newToken = await tokenRefreshManager.refreshToken()
-
       if (newToken) {
-        // Retry the original request with the new token
-        return request<T>(endpoint, { ...options, _isRetry: true })
+        return request<T>(endpoint, options, true)
       }
-
-      // Refresh failed - return error response
-      return {
-        success: false,
-        error: 'Session expirée. Veuillez vous reconnecter.',
-        timestamp: new Date().toISOString(),
-      }
+      return { success: false, error: 'Session expirée. Veuillez vous reconnecter.', timestamp: new Date().toISOString() }
     }
 
     if (!response.ok) {
@@ -73,19 +60,25 @@ async function request<T>(
   }
   catch (error) {
     clearTimeout(timeoutId)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Erreur inconnue',
-      timestamp: new Date().toISOString(),
-    }
+    const message = error instanceof Error ? error.message : 'Erreur inconnue'
+    return { success: false, error: message, timestamp: new Date().toISOString() }
   }
 }
 
-export const apiClient = {
-  get: <T>(endpoint: string) => request<T>(endpoint, { method: 'GET' }),
-  post: <T>(endpoint: string, body: unknown) =>
-    request<T>(endpoint, { method: 'POST', body: JSON.stringify(body) }),
-  put: <T>(endpoint: string, body: unknown) =>
-    request<T>(endpoint, { method: 'PUT', body: JSON.stringify(body) }),
-  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
+function get<T>(endpoint: string): Promise<ApiResponse<T>> {
+  return request<T>(endpoint, { method: 'GET' })
 }
+
+function post<T>(endpoint: string, body: unknown): Promise<ApiResponse<T>> {
+  return request<T>(endpoint, { method: 'POST', body: JSON.stringify(body) })
+}
+
+function put<T>(endpoint: string, body: unknown): Promise<ApiResponse<T>> {
+  return request<T>(endpoint, { method: 'PUT', body: JSON.stringify(body) })
+}
+
+function del<T>(endpoint: string): Promise<ApiResponse<T>> {
+  return request<T>(endpoint, { method: 'DELETE' })
+}
+
+export const apiClient = { get, post, put, delete: del }

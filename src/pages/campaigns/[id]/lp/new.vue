@@ -13,18 +13,15 @@ const api = useApi()
 const isCreating = ref(true)
 const createError = ref<string | null>(null)
 
-async function createContent() {
+async function createContent(): Promise<void> {
   isCreating.value = true
   createError.value = null
 
   try {
-    // Create new landing page content via API
     const content = await api.post<{ id: number }>(`/api/v1/campaigns/${campaignId.value}/contents`, {
       type: 'landing-page',
       title: 'Nouvelle page',
     })
-
-    // Redirect to the editor with the new content ID
     router.replace(`/campaigns/${campaignId.value}/lp/${content.id}`)
   }
   catch (error: unknown) {
