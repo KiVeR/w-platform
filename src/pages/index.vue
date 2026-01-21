@@ -5,7 +5,7 @@ definePageMeta({
   title: 'Kreo',
 })
 
-navigateTo('/editor/1')
+navigateTo('/dashboard')
 </script>
 
 <template>
