@@ -33,6 +33,11 @@ function handleKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape' && isHistoryActive.value) {
     navigateToEditor()
   }
+
+  // Escape to exit preview mode
+  if (event.key === 'Escape' && uiStore.isPreviewMode) {
+    uiStore.setMode('designer')
+  }
 }
 
 onMounted(() => {
@@ -73,12 +78,16 @@ function handleShellClick(event: MouseEvent) {
 <template>
   <div class="app-shell" @click="handleShellClick">
     <div class="shell-left">
-      <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
+      <transition name="slide-left">
+        <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
+      </transition>
     </div>
 
     <div class="shell-main">
-      <EditorToolbar />
-      <div class="canvas-wrapper">
+      <transition name="fade">
+        <EditorToolbar v-if="!uiStore.isPreviewMode" />
+      </transition>
+      <div class="canvas-wrapper" :class="{ 'focus-mode': uiStore.isPreviewMode }">
         <CenterCanvas />
       </div>
     </div>
@@ -140,5 +149,31 @@ function handleShellClick(event: MouseEvent) {
 .slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Focus mode (preview) */
+.canvas-wrapper.focus-mode {
+  padding: 0;
 }
 </style>

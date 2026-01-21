@@ -1,11 +1,59 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import type { PreviewDevice } from '@/stores/ui'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   showFrame?: boolean
+  device?: PreviewDevice
 }>(), {
   showFrame: true,
+  device: 'mobile',
 })
+
+// Device configurations
+const DEVICE_CONFIG = {
+  mobile: {
+    aspectRatio: '393 / 852',
+    borderRadius: '54px',
+    bezelRadius: '46px',
+    screenRadius: '44px',
+    showNotch: true,
+    showHomeIndicator: true,
+    statusBarHeight: '48px',
+    contentPaddingTop: '50px',
+  },
+  tablet: {
+    aspectRatio: '820 / 1180',
+    borderRadius: '24px',
+    bezelRadius: '20px',
+    screenRadius: '18px',
+    showNotch: false,
+    showHomeIndicator: true,
+    statusBarHeight: '32px',
+    contentPaddingTop: '36px',
+  },
+  desktop: {
+    aspectRatio: '16 / 10',
+    borderRadius: '12px',
+    bezelRadius: '8px',
+    screenRadius: '0px',
+    showNotch: false,
+    showHomeIndicator: false,
+    statusBarHeight: '0px',
+    contentPaddingTop: '0px',
+  },
+} as const
+
+const config = computed(() => DEVICE_CONFIG[props.device])
+
+const frameStyles = computed(() => ({
+  '--aspect-ratio': config.value.aspectRatio,
+  '--border-radius': config.value.borderRadius,
+  '--bezel-radius': config.value.bezelRadius,
+  '--screen-radius': config.value.screenRadius,
+  '--status-bar-height': config.value.statusBarHeight,
+  '--content-padding-top': config.value.contentPaddingTop,
+}))
 
 function formatTime() {
   return new Date().toLocaleTimeString('fr-FR', {
@@ -34,17 +82,21 @@ onUnmounted(() => {
   <div class="mobile-frame-container">
     <div
       class="smartphone-frame"
-      :class="{ 'with-frame': showFrame }"
+      :class="[
+        { 'with-frame': showFrame },
+        `device-${device}`,
+      ]"
+      :style="frameStyles"
     >
       <template v-if="showFrame">
         <div class="smartphone-bezel">
           <div class="smartphone-screen">
-            <!-- Status Bar iOS -->
-            <header class="status-bar">
+            <!-- Status Bar (mobile/tablet only) -->
+            <header v-if="device !== 'desktop'" class="status-bar">
               <div class="time">
                 {{ time }}
               </div>
-              <div class="notch-area" />
+              <div v-if="config.showNotch" class="notch-area" />
               <div class="status-icons">
                 <!-- Signal -->
                 <svg class="status-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
@@ -66,8 +118,8 @@ onUnmounted(() => {
               <slot />
             </div>
 
-            <!-- Home Indicator -->
-            <div class="home-indicator" />
+            <!-- Home Indicator (mobile/tablet) -->
+            <div v-if="config.showHomeIndicator" class="home-indicator" />
           </div>
         </div>
       </template>
@@ -93,14 +145,14 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
-/* --- SMARTPHONE FRAME (iPhone-style mockup) --- */
+/* --- SMARTPHONE FRAME --- */
 .smartphone-frame {
   position: relative;
   height: 100%;
   max-height: 100%;
-  aspect-ratio: 393 / 852;
+  aspect-ratio: var(--aspect-ratio, 393 / 852);
   background: linear-gradient(135deg, #4a4a4a 0%, #2c2c2e 50%, #1c1c1e 100%);
-  border-radius: 54px;
+  border-radius: var(--border-radius, 54px);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1) inset,
     0 0 0 1px #1c1c1e,
@@ -120,14 +172,27 @@ onUnmounted(() => {
   width: 100%;
 }
 
+/* Desktop specific styling */
+.smartphone-frame.device-desktop {
+  background: linear-gradient(135deg, #e5e5e5 0%, #d4d4d4 50%, #c4c4c4 100%);
+  padding: 4px;
+  max-width: 100%;
+}
+
 .smartphone-bezel {
   width: 100%;
   height: 100%;
   background: #000;
-  border-radius: 46px;
+  border-radius: var(--bezel-radius, 46px);
   overflow: hidden;
   position: relative;
   box-shadow: 0 0 0 2px #000;
+  transition: border-radius 0.3s ease;
+}
+
+.device-desktop .smartphone-bezel {
+  background: #333;
+  box-shadow: none;
 }
 
 .smartphone-screen {
@@ -138,11 +203,12 @@ onUnmounted(() => {
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  border-radius: 44px;
+  border-radius: var(--screen-radius, 44px);
+  transition: border-radius 0.3s ease;
 }
 
 .status-bar {
-  height: 48px;
+  height: var(--status-bar-height, 48px);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -155,6 +221,12 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
+  transition: height 0.3s ease;
+}
+
+.device-tablet .status-bar {
+  padding: 0 16px;
+  font-size: 12px;
 }
 
 .status-bar .time {
@@ -171,6 +243,11 @@ onUnmounted(() => {
 .status-bar .status-icon {
   width: 14px;
   height: 14px;
+}
+
+.device-tablet .status-bar .status-icon {
+  width: 12px;
+  height: 12px;
 }
 
 .notch-area {
@@ -199,7 +276,7 @@ onUnmounted(() => {
 .app-content {
   flex: 1;
   background: #f5f5f7;
-  padding-top: 50px;
+  padding-top: var(--content-padding-top, 50px);
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
@@ -207,6 +284,7 @@ onUnmounted(() => {
   flex-direction: column;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  transition: padding-top 0.3s ease;
 }
 
 .app-content::-webkit-scrollbar {
@@ -224,6 +302,11 @@ onUnmounted(() => {
   border-radius: 100px;
   opacity: 0.8;
   z-index: 100;
+}
+
+.device-tablet .home-indicator {
+  width: 140px;
+  bottom: 6px;
 }
 
 /* Mode sans frame */

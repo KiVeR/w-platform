@@ -15,6 +15,9 @@ export const useUIStore = defineStore('ui', () => {
   const rightSidebarOpen = ref(true)
   const activeTab = ref<OptionsTab>('content')
 
+  // Preview mode sidebar state preservation
+  const sidebarStateBeforePreview = ref<{ left: boolean, right: boolean } | null>(null)
+
   // Campaign context
   const currentCampaignId = ref<number | null>(null)
   const currentContentType = ref<ContentType | null>(null)
@@ -22,6 +25,7 @@ export const useUIStore = defineStore('ui', () => {
   // Computed
   const isReadOnly = computed(() => mode.value === 'history' || mode.value === 'preview')
   const isHistoryMode = computed(() => mode.value === 'history')
+  const isPreviewMode = computed(() => mode.value === 'preview')
   const isInCampaignContext = computed(() => currentCampaignId.value !== null)
   const isLandingPageEditor = computed(() => currentContentType.value === 'landing-page')
   const isRCSEditor = computed(() => currentContentType.value === 'rcs')
@@ -29,6 +33,25 @@ export const useUIStore = defineStore('ui', () => {
 
   // Actions
   function setMode(newMode: EditorMode) {
+    const oldMode = mode.value
+
+    // Entering preview mode → save sidebar state and hide them
+    if (newMode === 'preview' && oldMode !== 'preview') {
+      sidebarStateBeforePreview.value = {
+        left: leftSidebarOpen.value,
+        right: rightSidebarOpen.value,
+      }
+      leftSidebarOpen.value = false
+      rightSidebarOpen.value = false
+    }
+
+    // Exiting preview mode → restore sidebar state
+    if (oldMode === 'preview' && newMode !== 'preview' && sidebarStateBeforePreview.value) {
+      leftSidebarOpen.value = sidebarStateBeforePreview.value.left
+      rightSidebarOpen.value = sidebarStateBeforePreview.value.right
+      sidebarStateBeforePreview.value = null
+    }
+
     mode.value = newMode
   }
 
@@ -100,6 +123,7 @@ export const useUIStore = defineStore('ui', () => {
     // Computed
     isReadOnly,
     isHistoryMode,
+    isPreviewMode,
     isInCampaignContext,
     isLandingPageEditor,
     isRCSEditor,
