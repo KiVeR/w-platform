@@ -2,12 +2,16 @@
 import type { WidgetCategory } from '@/types/widget'
 import { Sparkles } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
+import AIChatPanel from '@/components/ai/AIChatPanel.vue'
 import { getWidgetsByCategory, widgetCategories, widgetConfigs } from '@/config/widgets'
+import { useAIChatStore } from '@/stores/aiChat'
 import WidgetItem from './WidgetItem.vue'
 
 const props = defineProps<{
   searchQuery?: string
 }>()
+
+const aiChatStore = useAIChatStore()
 
 const activeFilter = ref<WidgetCategory | 'all'>('all')
 
@@ -97,11 +101,18 @@ watch(() => props.searchQuery, (query) => {
       </div>
     </div>
 
-    <!-- Bouton IA (placeholder) -->
-    <button class="ai-assistant-btn" disabled title="Bientôt disponible">
+    <!-- Bouton IA -->
+    <button
+      class="ai-assistant-btn"
+      title="Ouvrir l'assistant IA"
+      @click="aiChatStore.open()"
+    >
       <Sparkles :size="16" />
       <span>Aide-moi à créer...</span>
     </button>
+
+    <!-- AI Chat Panel -->
+    <AIChatPanel />
   </div>
 </template>
 
@@ -203,19 +214,20 @@ watch(() => props.searchQuery, (query) => {
   justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3);
-  border: 1px dashed var(--color-border);
+  border: 1px dashed var(--color-primary-300);
   border-radius: var(--radius-lg);
-  background: var(--color-surface);
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, #fef3c7 100%);
   font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  cursor: not-allowed;
+  color: var(--color-primary-600);
+  cursor: pointer;
   transition: all var(--transition-fast);
 }
 
-.ai-assistant-btn:not(:disabled):hover {
-  border-color: var(--color-primary-300);
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-  cursor: pointer;
+.ai-assistant-btn:hover {
+  border-color: var(--color-primary-500);
+  background: linear-gradient(135deg, var(--color-primary-100) 0%, #fde68a 100%);
+  color: var(--color-primary-700);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
 </style>

@@ -202,3 +202,20 @@ model SMSData {
 
   @@map("sms_data")
 }
+
+// ==================== AI FEATURES ====================
+
+model AIUsage {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  periodKey       String   // YYYY-MM format for monthly tracking
+  count           Int      @default(0)
+  lastGeneratedAt DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, periodKey])
+  @@index([userId])
+  @@index([periodKey])
+  @@map("ai_usage")
+}
