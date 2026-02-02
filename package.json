@@ -20,7 +20,8 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "user": "tsx scripts/user.ts",
-    "user:seed": "tsx scripts/user.ts seed"
+    "user:seed": "tsx scripts/user.ts seed",
+    "batch-lp": "tsx .claude/scripts/batch-lp.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

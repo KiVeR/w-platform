@@ -59,3 +59,4 @@ x-thought/
 generated-lp*.json
 generated-lp*.png
 .claude/screenshots/
+.claude/batch/
