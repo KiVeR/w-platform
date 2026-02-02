@@ -19,7 +19,7 @@ export const DEFAULT_PAGE_SIZE = 20
 /**
  * Increment version string (e.g., "1.0" -> "1.1", "1.9" -> "1.10")
  */
-function incrementContentVersion(currentVersion: string): string {
+export function incrementContentVersion(currentVersion: string): string {
   const parts = currentVersion.split('.')
   if (parts.length !== 2) {
     return '1.0'

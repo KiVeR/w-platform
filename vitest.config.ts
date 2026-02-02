@@ -29,6 +29,7 @@ export default defineConfig({
       '~': fileURLToPath(new URL('./src', import.meta.url)),
       '~~': fileURLToPath(new URL('.', import.meta.url)),
       '@@': fileURLToPath(new URL('.', import.meta.url)),
+      '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
     },
   },
 })

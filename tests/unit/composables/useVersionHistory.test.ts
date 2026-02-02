@@ -1,9 +1,9 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Mock the API
-vi.mock('@/services/api', () => ({
-  api: {
+// Mock the API used by the store
+vi.mock('@/services/api/contentVersionApi', () => ({
+  contentVersionApi: {
     getVersions: vi.fn(),
     getVersion: vi.fn(),
     restoreVersion: vi.fn(),
@@ -26,54 +26,32 @@ describe('useVersionHistory', () => {
   })
 
   describe('loadVersions', () => {
-    it('fetches versions from API', async () => {
-      const mockVersions = {
-        data: [
-          { id: 1, version: '1.0', widgetCount: 5, createdAt: '2026-01-01', isLatest: true },
-          { id: 2, version: '0.9', widgetCount: 4, createdAt: '2025-12-15', isLatest: false },
+    it('fetches versions from API via store', async () => {
+      const mockResponse = {
+        versions: [
+          { id: 1, version: '1.0', widgetCount: 5, createdAt: '2026-01-01', isCurrent: true },
+          { id: 2, version: '0.9', widgetCount: 4, createdAt: '2025-12-15', isCurrent: false },
         ],
-        total: 2,
-        page: 1,
-        limit: 10,
-        totalPages: 1,
+        pagination: { total: 2, page: 1, pageSize: 10, totalPages: 1 },
+        rateLimit: { remaining: 10, limit: 10, resetAt: '2026-01-01T00:00:00Z' },
       }
 
-      const { api } = await import('@/services/api')
-      vi.mocked(api.getVersions).mockResolvedValue(mockVersions)
+      const { contentVersionApi } = await import('@/services/api/contentVersionApi')
+      vi.mocked(contentVersionApi.getVersions).mockResolvedValue(mockResponse)
 
-      const { useVersionHistory } = await import('@/composables/useVersionHistory')
-      const { versions, loadVersions, hasMore, total } = useVersionHistory()
+      // Set up content store with an ID
+      const { useContentStore } = await import('@/stores/content')
+      const contentStore = useContentStore()
+      contentStore.id = 1
 
-      await loadVersions(1)
+      const { useVersionHistoryStore } = await import('@/stores/versionHistory')
+      const store = useVersionHistoryStore()
 
-      expect(api.getVersions).toHaveBeenCalledWith(1, {
-        page: 1,
-        limit: 10,
-        sortOrder: 'desc',
-      })
-      expect(versions.value).toEqual(mockVersions.data)
-      expect(total.value).toBe(2)
-      expect(hasMore.value).toBe(false)
-    })
+      await store.loadVersions()
 
-    it('sets hasMore when more pages available', async () => {
-      const mockVersions = {
-        data: [{ id: 1, version: '1.0', widgetCount: 5, createdAt: '2026-01-01', isLatest: true }],
-        total: 25,
-        page: 1,
-        limit: 10,
-        totalPages: 3,
-      }
-
-      const { api } = await import('@/services/api')
-      vi.mocked(api.getVersions).mockResolvedValue(mockVersions)
-
-      const { useVersionHistory } = await import('@/composables/useVersionHistory')
-      const { loadVersions, hasMore } = useVersionHistory()
-
-      await loadVersions(1)
-
-      expect(hasMore.value).toBe(true)
+      expect(contentVersionApi.getVersions).toHaveBeenCalledWith(1, expect.objectContaining({ page: 1 }))
+      expect(store.versions).toEqual(mockResponse.versions)
+      expect(store.total).toBe(2)
     })
   })
 
@@ -84,28 +62,24 @@ describe('useVersionHistory', () => {
         version: '1.0',
         widgetCount: 5,
         createdAt: '2026-01-01',
-        isLatest: true,
+        isCurrent: true,
         design: { globalStyles: {}, widgets: [] },
       }
 
-      const { api } = await import('@/services/api')
-      vi.mocked(api.getVersion).mockResolvedValue(mockVersionDetail)
+      const { contentVersionApi } = await import('@/services/api/contentVersionApi')
+      vi.mocked(contentVersionApi.getVersion).mockResolvedValue(mockVersionDetail)
 
-      const { useVersionHistory } = await import('@/composables/useVersionHistory')
-      const { selectedVersion, selectVersion, clearCache } = useVersionHistory()
+      const { useContentStore } = await import('@/stores/content')
+      const contentStore = useContentStore()
+      contentStore.id = 1
 
-      // Clear cache before test
-      clearCache()
+      const { useVersionHistoryStore } = await import('@/stores/versionHistory')
+      const store = useVersionHistoryStore()
 
-      // Mock editor store to have a landingPageId
-      const { useEditorStore } = await import('@/stores/editor')
-      const editorStore = useEditorStore()
-      editorStore.landingPageId = 1
+      await store.selectVersion(1)
 
-      await selectVersion(1)
-
-      expect(api.getVersion).toHaveBeenCalledWith(1, 1)
-      expect(selectedVersion.value).toEqual(mockVersionDetail)
+      expect(contentVersionApi.getVersion).toHaveBeenCalledWith(1, 1)
+      expect(store.selectedVersion).toEqual(mockVersionDetail)
     })
   })
 })

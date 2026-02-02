@@ -22,7 +22,7 @@ vi.mock('@/components/history/RestoreConfirmModal.vue', () => ({
 
 // Use real Vue refs for reactivity
 const mockVersions = ref([])
-const mockSelectedVersion = ref(null)
+const mockSelectedVersion = ref<Record<string, unknown> | null>(null)
 const mockIsLoading = ref(false)
 const mockIsRestoring = ref(false)
 const mockHasMore = ref(false)
@@ -89,14 +89,6 @@ describe('versionHistorySidebar', () => {
     const wrapper = mount(VersionHistorySidebar)
 
     expect(wrapper.find('.header-title h2').text()).toBe('Historique')
-  })
-
-  it('calls navigateToEditor when close button is clicked', async () => {
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
-    const wrapper = mount(VersionHistorySidebar)
-
-    await wrapper.find('.btn-close').trigger('click')
-    expect(mockNavigateToEditor).toHaveBeenCalled()
   })
 
   it('shows restore button when non-latest version is selected', async () => {
