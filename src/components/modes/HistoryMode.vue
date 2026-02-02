@@ -33,7 +33,7 @@ const formattedDate = computed(() => {
       v-if="selectedVersion"
       :version="selectedVersion.version"
       :date="formattedDate"
-      :is-latest="selectedVersion.isLatest"
+      :is-latest="selectedVersion.isCurrent"
     />
 
     <!-- Loading state -->

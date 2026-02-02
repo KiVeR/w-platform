@@ -5,6 +5,7 @@ import { useAIChatStore } from '@/stores/aiChat'
 import { useAuthStore } from '@/stores/auth'
 import { useEditorStore } from '@/stores/editor'
 import { useHistoryStore } from '@/stores/history'
+import { useWidgetsStore } from '@/stores/widgets'
 
 /**
  * Composable for AI chat functionality
@@ -20,6 +21,7 @@ export function useAIChat() {
   const authStore = useAuthStore()
   const editorStore = useEditorStore()
   const historyStore = useHistoryStore()
+  const widgetsStore = useWidgetsStore()
 
   /**
    * Fetch current quota from API
@@ -178,8 +180,11 @@ export function useAIChat() {
       historyStore.pushState(toRaw(editorStore.design))
     }
 
-    // Apply the new design
+    // Apply the new design to editor store
     editorStore.setDesign(design)
+
+    // Sync widgets with the widgets store
+    widgetsStore.setWidgets(design.widgets || [])
   }
 
   /**
