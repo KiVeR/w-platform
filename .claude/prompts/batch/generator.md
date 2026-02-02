@@ -39,25 +39,20 @@ Re-read your JSON and check this checklist (report pass/fail for each):
 Fix any issues (max 2 passes).
 
 ## Step 6: Inject via API
-Run these Node.js commands via Bash:
+Run these Node.js commands via Bash. The auth token is already provided — do NOT call the login endpoint.
 
-1. Login:
+1. Create content:
 ```
-node -e "fetch('http://localhost:5174/api/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'admin@test.com',password:'Admin123!'})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
-```
-
-2. Create content:
-```
-node -e "const token='{ACCESS_TOKEN}';fetch('http://localhost:5174/api/v1/contents',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({type:'landing-page',title:'{{LP_TITLE}}'})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
+node -e "const token='{{ACCESS_TOKEN}}';fetch('http://localhost:5174/api/v1/contents',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({type:'landing-page',title:'{{LP_TITLE}}'})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
 ```
 
-3. Inject design:
+2. Inject design (replace {CONTENT_ID} with the id from step 1):
 ```
-node -e "const token='{ACCESS_TOKEN}';const design=require('fs').readFileSync('.claude/batch/lp-{{BRIEF_ID}}.json','utf8');fetch('http://localhost:5174/api/v1/contents/{CONTENT_ID}/design',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({design:JSON.parse(design),createVersion:true})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
+node -e "const token='{{ACCESS_TOKEN}}';const design=require('fs').readFileSync('.claude/batch/lp-{{BRIEF_ID}}.json','utf8');fetch('http://localhost:5174/api/v1/contents/{CONTENT_ID}/design',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({design:JSON.parse(design),createVersion:true})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
 ```
 
 ## Step 7: Screenshot
-Run: `node scripts/screenshot-preview.mjs {CONTENT_ID} .claude/batch/screenshots/{{SLUG}}-preview.png`
+Run: `node scripts/screenshot-preview.mjs {CONTENT_ID} .claude/batch/screenshots/{{SLUG}}-preview.png --token {{ACCESS_TOKEN}}`
 Read the screenshot with the Read tool and analyze the visual rendering briefly.
 
 ## Step 8: Widget feedback

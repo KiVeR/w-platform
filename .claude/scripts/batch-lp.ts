@@ -182,20 +182,72 @@ function fillTemplate(template: string, vars: Record<string, string | number>): 
   return result
 }
 
-function runClaude(prompt: string): Promise<string> {
+interface StreamEvent {
+  type?: string
+  delta?: { text?: string }
+  result?: string
+  subtype?: string
+}
+
+function runClaude(prompt: string, label?: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn('claude', ['-p', '--output-format', 'text'], {
+    const args = [
+      '-p',
+      '--verbose',
+      '--output-format',
+      'stream-json',
+      '--allowedTools',
+      'Read',
+      'Write',
+      'Edit',
+      'Bash',
+      'Glob',
+      'Grep',
+    ]
+    const child = spawn('claude', args, {
       cwd: process.cwd(),
       stdio: ['pipe', 'pipe', 'pipe'],
     })
 
-    const chunks: string[] = []
+    const resultChunks: string[] = []
     let stderr = ''
+    let lineBuffer = ''
+    const tag = label ? `${c.cyan}[${label}]${c.reset} ` : ''
+    let toolCount = 0
 
     child.stdout.on('data', (data: Buffer) => {
-      const text = data.toString()
-      chunks.push(text)
-      process.stdout.write(`${c.gray}${text}${c.reset}`)
+      lineBuffer += data.toString()
+      const lines = lineBuffer.split('\n')
+      lineBuffer = lines.pop() ?? ''
+      for (const line of lines) {
+        if (!line.trim())
+          continue
+        try {
+          const event = JSON.parse(line) as StreamEvent
+
+          if (label) {
+            // Parallel mode: compact activity indicators
+            if (event.type === 'content_block_start') {
+              toolCount++
+              if (toolCount % 5 === 0)
+                process.stdout.write(`${tag}${c.gray}${toolCount} steps...${c.reset}\n`)
+            }
+          }
+          else {
+            // Solo mode: stream full text
+            if (event.type === 'content_block_delta' && event.delta?.text) {
+              process.stdout.write(`${c.gray}${event.delta.text}${c.reset}`)
+            }
+          }
+
+          if (event.type === 'result' && event.result) {
+            resultChunks.push(event.result)
+          }
+        }
+        catch {
+          // Not JSON, skip
+        }
+      }
     })
 
     child.stderr.on('data', (data: Buffer) => {
@@ -207,7 +259,7 @@ function runClaude(prompt: string): Promise<string> {
         reject(new Error(`Claude agent failed (exit ${code}):\n${stderr}`))
       }
       else {
-        resolve(chunks.join(''))
+        resolve(resultChunks.join(''))
       }
     })
 
@@ -215,11 +267,9 @@ function runClaude(prompt: string): Promise<string> {
       reject(new Error(`Claude agent spawn failed: ${err.message}`))
     })
 
-    // Send prompt via stdin and close
     child.stdin.write(prompt)
     child.stdin.end()
 
-    // Timeout
     setTimeout(() => {
       child.kill()
       reject(new Error(`Claude agent timed out after ${CLAUDE_TIMEOUT / 1000}s`))
@@ -257,7 +307,7 @@ function parseFeedback(output: string): Record<string, unknown> | null {
 // Pre-flight checks
 // ---------------------------------------------------------------------------
 
-async function preflight(): Promise<boolean> {
+async function preflight(): Promise<string | false> {
   // Check server
   try {
     const res = await fetch(`${BASE_URL}/api/v1/health`)
@@ -270,7 +320,8 @@ async function preflight(): Promise<boolean> {
     return false
   }
 
-  // Check auth
+  // Auth — get token once for all agents
+  let token = ''
   try {
     const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
       method: 'POST',
@@ -280,7 +331,8 @@ async function preflight(): Promise<boolean> {
     const data = await res.json() as { accessToken?: string }
     if (!data.accessToken)
       throw new Error('no token')
-    log.success('Authentication OK')
+    token = data.accessToken
+    log.success('Authentication OK (token obtained for agents)')
   }
   catch {
     log.error('Authentication failed. Check credentials.')
@@ -294,14 +346,14 @@ async function preflight(): Promise<boolean> {
   await mkdir(resolve(BATCH_DIR, 'feedback'), { recursive: true })
   log.success('Directories created')
 
-  return true
+  return token
 }
 
 // ---------------------------------------------------------------------------
 // Phases
 // ---------------------------------------------------------------------------
 
-async function phaseGeneration(state: State): Promise<void> {
+async function phaseGeneration(state: State, token: string): Promise<void> {
   log.phase('PHASE 1 — GENERATION')
   const template = await loadPromptTemplate('generator')
   const pending = state.briefs.filter(b => b.generation === 'pending')
@@ -323,9 +375,11 @@ async function phaseGeneration(state: State): Promise<void> {
         BRIEF_TEXT: brief.prompt,
         SLUG: brief.slug,
         LP_TITLE: brief.sector,
+        ACCESS_TOKEN: token,
       })
 
-      const output = await runClaude(prompt)
+      const soloMode = state.config.maxParallel === 1
+      const output = await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
 
       // Parse feedback from output
       const feedback = parseFeedback(output)
@@ -385,7 +439,8 @@ async function phaseCritique(state: State): Promise<void> {
         BRIEF_TEXT: brief.prompt,
       })
 
-      await runClaude(prompt)
+      const soloMode = state.config.maxParallel === 1
+      await runClaude(prompt, soloMode ? undefined : `B${brief.id} ${roleName}`)
       log.agent(brief.id, `${roleName} ${c.green}done${c.reset}`)
     }
     catch (err) {
@@ -424,7 +479,8 @@ async function phaseVote(state: State): Promise<void> {
 
     try {
       const prompt = fillTemplate(template, { BRIEF_ID: brief.id })
-      await runClaude(prompt)
+      const soloMode = state.config.maxParallel === 1
+      await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
       briefState.vote = 'done'
       log.agent(brief.id, `${c.green}Consensus reached${c.reset}`)
     }
@@ -441,7 +497,7 @@ async function phaseVote(state: State): Promise<void> {
   await saveState(state)
 }
 
-async function phaseRevision(state: State): Promise<void> {
+async function phaseRevision(state: State, token: string): Promise<void> {
   log.phase('PHASE 4 — REVISION')
   const template = await loadPromptTemplate('revisor')
   const ready = state.briefs.filter(b => b.vote === 'done' && b.revision === 'pending')
@@ -462,9 +518,11 @@ async function phaseRevision(state: State): Promise<void> {
         BRIEF_ID: brief.id,
         SLUG: brief.slug,
         CONTENT_ID: briefState.contentId ?? 0,
+        ACCESS_TOKEN: token,
       })
 
-      const output = await runClaude(prompt)
+      const soloMode = state.config.maxParallel === 1
+      const output = await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
 
       const feedback = parseFeedback(output)
       if (feedback) {
@@ -593,8 +651,9 @@ const run = defineCommand({
     if (resumeFrom)
       log.info(`Resuming from: ${resumeFrom}`)
 
-    // Pre-flight
-    if (!await preflight()) {
+    // Pre-flight — returns auth token
+    const token = await preflight()
+    if (!token) {
       process.exit(1)
     }
 
@@ -620,16 +679,16 @@ const run = defineCommand({
 
     // Run phases sequentially
     const phaseFns = [
-      phaseGeneration,
-      phaseCritique,
-      phaseVote,
-      phaseRevision,
-      phaseSynthesis,
-      phaseMetaAnalysis,
+      () => phaseGeneration(state, token),
+      () => phaseCritique(state),
+      () => phaseVote(state),
+      () => phaseRevision(state, token),
+      () => phaseSynthesis(state),
+      () => phaseMetaAnalysis(state),
     ]
 
     for (let i = startIdx; i < phaseFns.length; i++) {
-      await phaseFns[i](state)
+      await phaseFns[i]()
     }
 
     printReport(state)
