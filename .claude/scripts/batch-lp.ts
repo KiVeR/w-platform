@@ -12,7 +12,8 @@
  *   yarn batch-lp report                       # Show final report
  */
 
-import { exec } from 'node:child_process'
+import type { Buffer } from 'node:buffer'
+import { spawn } from 'node:child_process'
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import process from 'node:process'
@@ -183,26 +184,46 @@ function fillTemplate(template: string, vars: Record<string, string | number>): 
 
 function runClaude(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = exec(
-      `claude -p ${JSON.stringify(prompt)} --no-input`,
-      {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: CLAUDE_TIMEOUT,
-        cwd: process.cwd(),
-      },
-      (err, stdout, stderr) => {
-        if (err) {
-          reject(new Error(`Claude agent failed: ${err.message}\n${stderr}`))
-        }
-        else {
-          resolve(stdout)
-        }
-      },
-    )
-    // Forward agent output in real-time
-    child.stdout?.on('data', (data) => {
-      process.stdout.write(`${c.gray}${String(data)}${c.reset}`)
+    const child = spawn('claude', ['-p', '--output-format', 'text'], {
+      cwd: process.cwd(),
+      stdio: ['pipe', 'pipe', 'pipe'],
     })
+
+    const chunks: string[] = []
+    let stderr = ''
+
+    child.stdout.on('data', (data: Buffer) => {
+      const text = data.toString()
+      chunks.push(text)
+      process.stdout.write(`${c.gray}${text}${c.reset}`)
+    })
+
+    child.stderr.on('data', (data: Buffer) => {
+      stderr += data.toString()
+    })
+
+    child.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Claude agent failed (exit ${code}):\n${stderr}`))
+      }
+      else {
+        resolve(chunks.join(''))
+      }
+    })
+
+    child.on('error', (err) => {
+      reject(new Error(`Claude agent spawn failed: ${err.message}`))
+    })
+
+    // Send prompt via stdin and close
+    child.stdin.write(prompt)
+    child.stdin.end()
+
+    // Timeout
+    setTimeout(() => {
+      child.kill()
+      reject(new Error(`Claude agent timed out after ${CLAUDE_TIMEOUT / 1000}s`))
+    }, CLAUDE_TIMEOUT)
   })
 }
 
