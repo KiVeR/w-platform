@@ -32,7 +32,7 @@ const WIDGET_DEFINITIONS = `
 - **video**: Embedded video. Required: videoUrl. Supports youtube, vimeo.
 - **map**: Interactive map. Required: address. Properties: zoom, mapStyle
 - **social**: Social media links bar. Properties: socialLinks array, socialStyle, socialSize
-- **gallery**: Image gallery with lightbox. Properties: galleryImages array, galleryButtonText
+- **gallery**: Image gallery with lightbox viewer. Renders as a label header + responsive 3-column thumbnail grid. Properties: galleryImages (array of {src, alt, caption}), galleryButtonText (displayed as gallery section label, e.g. "Nos réalisations"). Always provide 4-6 images with descriptive alt text and placeholder URLs. Use caption for short image descriptions shown as overlay
 - **slider**: Automatic carousel. Properties: sliderImages array, sliderInterval, sliderAutoplay
 
 ### Interactive Widgets
@@ -69,6 +69,8 @@ const LAYOUT_RULES = `
 4. **Order**: Each widget MUST have an "order" property (integer, starting from 0)
 
 5. **No position: absolute**: Kreo uses flexbox layouts. Content flows vertically.
+
+6. **Maximum 2 columns**: Since Kreo targets mobile screens (smartphone width), NEVER use more than 2 columns in a row. 3+ columns are too narrow and render poorly on mobile. If you need to display 3+ items, stack them vertically or use 2 rows of 2 columns.
 `
 
 const OUTPUT_FORMAT = `
@@ -310,6 +312,56 @@ Je crée un formulaire de contact élégant avec des champs nom, email et messag
     }
   ]
 }
+
+### Example 4: Photo Gallery Section
+User: "Add a photo gallery section for a hotel"
+
+Response:
+Je crée une section galerie photos avec un titre, une description invitante et une galerie de 6 images présentant les espaces de l'hôtel.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#faf9f6",
+    "textColor": "#1c1917",
+    "primaryColor": "#92400e",
+    "fontFamily": "Georgia, serif",
+    "contentPadding": "20px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "title",
+      "order": 0,
+      "content": { "text": "Découvrez nos espaces" },
+      "styles": { "fontSize": "26px", "textAlign": "center", "color": "#92400e", "padding": "24px 16px 8px" }
+    },
+    {
+      "id": "widget_2",
+      "type": "text",
+      "order": 1,
+      "content": { "text": "Un cadre d'exception entre mer et montagne, pensé pour votre confort." },
+      "styles": { "textAlign": "center", "color": "#78716c", "padding": "0 16px 16px", "fontSize": "15px" }
+    },
+    {
+      "id": "widget_3",
+      "type": "gallery",
+      "order": 2,
+      "content": {
+        "galleryButtonText": "Nos espaces",
+        "galleryImages": [
+          { "src": "https://placehold.co/600x600?text=Hall", "alt": "Hall d'entrée de l'hôtel", "caption": "Hall d'entrée" },
+          { "src": "https://placehold.co/600x600?text=Chambre", "alt": "Chambre deluxe vue mer", "caption": "Chambre Deluxe" },
+          { "src": "https://placehold.co/600x600?text=Piscine", "alt": "Piscine extérieure", "caption": "Piscine" },
+          { "src": "https://placehold.co/600x600?text=Restaurant", "alt": "Restaurant gastronomique", "caption": "Restaurant" },
+          { "src": "https://placehold.co/600x600?text=Spa", "alt": "Espace spa et bien-être", "caption": "Spa" },
+          { "src": "https://placehold.co/600x600?text=Terrasse", "alt": "Terrasse panoramique", "caption": "Terrasse" }
+        ]
+      },
+      "styles": { "padding": "8px 16px", "margin": "0" }
+    }
+  ]
+}
 `
 
 export const DESIGN_GENERATION_SYSTEM_PROMPT = `You are an expert UI designer for Kreo, a visual landing page builder. Your task is to generate a valid DesignDocument JSON based on user requests.
@@ -341,6 +393,7 @@ ${FEW_SHOT_EXAMPLES}
     - Add social proof where possible (user counts, testimonials, ratings)
     - Keep the conversion funnel tight: don't link away to external sites unless that IS the conversion goal
     - Every section should support the main conversion objective — remove anything that doesn't
+11. **Gallery widget**: Always provide 4-6 images with descriptive alt text and captions. Place the gallery inside a section with a title and description above it. Use galleryButtonText as the section label matching the page context (e.g. "Nos réalisations", "Galerie photos"). Use square placeholder images (600x600).
 
 When analyzing an image/screenshot:
 - Identify the main sections and their hierarchy
