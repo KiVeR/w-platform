@@ -99,8 +99,12 @@ Return a valid JSON DesignDocument with this exact structure:
 }
 \`\`\`
 
-IMPORTANT:
-- Return ONLY the JSON, no markdown code blocks, no explanation
+CRITICAL OUTPUT RULES:
+- First, write a brief description (1-2 sentences in French) of the design you are creating
+- Then output the exact separator: ---JSON---
+- Then output the JSON DesignDocument starting with { and ending with }
+- Do NOT wrap the JSON in markdown code blocks (no \`\`\`json)
+- Do NOT add any text or explanation after the JSON
 - Validate that all required content properties are present
 - Use sensible default styles when not specified
 - Keep the design clean and professional
@@ -113,6 +117,8 @@ const FEW_SHOT_EXAMPLES = `
 User: "Create a landing page for a restaurant with header, about section, and contact"
 
 Response:
+Je crée une landing page chaleureuse pour un restaurant avec un titre doré, une description, une image du lieu, et un bouton de réservation téléphonique.
+---JSON---
 {
   "version": "1.0",
   "globalStyles": {
@@ -127,7 +133,7 @@ Response:
       "id": "widget_1",
       "type": "title",
       "order": 0,
-      "content": { "text": "🍽️ Chez Nous" },
+      "content": { "text": "Chez Nous" },
       "styles": { "fontSize": "36px", "textAlign": "center", "color": "#ca8a04", "padding": "24px" }
     },
     {
@@ -141,7 +147,7 @@ Response:
       "id": "widget_3",
       "type": "image",
       "order": 2,
-      "content": { "src": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", "alt": "Interior of our restaurant" },
+      "content": { "src": "https://placehold.co/800x600?text=Restaurant", "alt": "Interior of our restaurant" },
       "styles": { "width": "100%", "borderRadius": "12px", "padding": "16px" }
     },
     {
@@ -162,7 +168,7 @@ Response:
       "id": "widget_6",
       "type": "button",
       "order": 5,
-      "content": { "text": "📞 Appelez-nous", "action": "tel", "phone": "+33123456789" },
+      "content": { "text": "Appelez-nous", "action": "tel", "phone": "+33123456789" },
       "styles": { "backgroundColor": "#ca8a04", "color": "#ffffff", "padding": "16px 32px", "margin": "16px auto" }
     }
   ]
@@ -172,6 +178,8 @@ Response:
 User: "Create a section with image on the left and text on the right"
 
 Response:
+Je crée une mise en page deux colonnes avec une image produit à gauche et un texte de présentation avec bouton d'action à droite.
+---JSON---
 {
   "version": "1.0",
   "globalStyles": {
@@ -198,7 +206,7 @@ Response:
               "id": "widget_3",
               "type": "image",
               "order": 0,
-              "content": { "src": "https://images.unsplash.com/photo-1560472355-536de3962603?w=600", "alt": "Featured product" },
+              "content": { "src": "https://placehold.co/600x400?text=Product", "alt": "Featured product" },
               "styles": { "width": "100%", "borderRadius": "8px" }
             }
           ]
@@ -242,6 +250,8 @@ Response:
 User: "Create a contact form with name, email and message"
 
 Response:
+Je crée un formulaire de contact élégant avec des champs nom, email et message, sur un fond clair avec des couleurs bleues.
+---JSON---
 {
   "version": "1.0",
   "globalStyles": {
@@ -321,6 +331,16 @@ ${FEW_SHOT_EXAMPLES}
 5. **Be creative but practical**: Generate realistic, usable designs
 6. **French labels**: Use French for any user-facing text (buttons, labels, etc.)
 7. **Accessibility**: Always include alt text for images
+8. **Image placeholders**: NEVER invent or hallucinate image URLs. Always use placeholder URLs like \`https://placehold.co/800x600?text=Description\` for images. Never use unsplash.com or any other real image hosting URL.
+9. **No emojis in content**: NEVER use emojis in title text, button text, paragraph text, or any user-facing content. Emojis are only allowed in icon widgets (iconName) and effect widgets (effectImage) where they serve as the actual visual element.
+10. **Conversion & engagement**: Design every page with a clear conversion goal. Apply these principles:
+    - Define ONE primary action (visit store, call, fill form, download app) and make it the most prominent CTA
+    - Place the primary CTA above the fold (within the first 3-4 widgets) AND repeat it at the bottom
+    - Use action-oriented button text focused on user benefit ("Obtenir mes bons de réduction" not "En savoir plus")
+    - Create urgency when relevant (dates, limited stock, time-limited offers)
+    - Add social proof where possible (user counts, testimonials, ratings)
+    - Keep the conversion funnel tight: don't link away to external sites unless that IS the conversion goal
+    - Every section should support the main conversion objective — remove anything that doesn't
 
 When analyzing an image/screenshot:
 - Identify the main sections and their hierarchy
@@ -329,7 +349,7 @@ When analyzing an image/screenshot:
 - Extract colors for globalStyles
 - Adapt complex layouts to Kreo's flexbox model
 
-Remember: Return ONLY valid JSON, no markdown, no explanation text.`
+Remember: Always start with a brief French description, then the ---JSON--- separator, then the valid JSON. No markdown code blocks.`
 
 /**
  * Build the user message with optional image context
@@ -338,12 +358,16 @@ export function buildUserMessage(prompt: string, hasImage: boolean): string {
   if (hasImage) {
     return `Based on the image provided and this request: "${prompt}"
 
-Generate a DesignDocument JSON that recreates this design using Kreo widgets. Adapt the layout to work with Kreo's row/column system.`
+Generate a DesignDocument JSON that recreates this design using Kreo widgets. Adapt the layout to work with Kreo's row/column system.
+
+Remember: Brief French description, then ---JSON---, then pure JSON starting with { and ending with }.`
   }
 
   return `User request: "${prompt}"
 
-Generate a DesignDocument JSON that fulfills this request using Kreo widgets.`
+Generate a DesignDocument JSON that fulfills this request using Kreo widgets.
+
+Remember: Brief French description, then ---JSON---, then pure JSON starting with { and ending with }.`
 }
 
 /**
