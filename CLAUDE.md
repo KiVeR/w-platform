@@ -13,6 +13,15 @@ yarn dev          # Dev server (port 5174)
 yarn build        # Compile TypeScript + Vite build
 yarn lint         # ESLint
 yarn lint:fix     # ESLint with auto-fix
+yarn test         # Vitest unit tests
+yarn test:coverage # Vitest with coverage
+yarn test:e2e     # Playwright E2E tests
+yarn db:generate  # Prisma generate
+yarn db:push      # Prisma db push
+yarn db:migrate   # Prisma migrate dev
+yarn db:studio    # Prisma Studio
+yarn user         # User management CLI
+yarn user:seed    # Seed users
 ```
 
 ## Architecture
@@ -24,8 +33,14 @@ yarn lint:fix     # ESLint with auto-fix
 | `editor` | Design document, save state, global styles |
 | `widgets` | Widget CRUD, widget tree, drag-drop reordering |
 | `selection` | Selected widget, keyboard navigation |
-| `ui` | Editor mode (designer/preview/expert), sidebar visibility, options tab |
+| `ui` | Editor mode (designer/preview/expert/history), sidebar visibility, options tab |
 | `history` | Undo/redo (max 50 actions) |
+| `auth` | Authentication, user session, tokens, login/logout |
+| `content` | Single content metadata (id, type, title, status) |
+| `contents` | Content list, dashboard, pagination, filtering |
+| `presets` | Template and section presets |
+| `versionHistory` | Version history, restore, diff |
+| `aiChat` | AI chat interface, design generation |
 
 ### Widget System
 
@@ -38,12 +53,11 @@ Renderer implementations in `src/components/widgets/registry/`.
 
 ### Widget Categories
 
-- **base**: title, text, image, button, separator, spacer, click-to-call, link-image
-- **structure**: row, column
-- **form**: form, form-field
-- **media**: video, map, social, icon, gallery, slider, effect
-- **wellpack**: barcode, store-locator, drive, scratch, flipcard
-- **action**: button, click-to-call
+- **content**: title, text, image, separator, spacer, icon
+- **actions**: button, click-to-call, link-image
+- **layout**: row, column, form, form-field
+- **media**: video, map, social, gallery, slider
+- **interactive**: barcode, store-locator, drive, scratch, flipcard, effect
 
 ### Adding a New Widget
 
@@ -57,7 +71,7 @@ Required properties:
 type: 'my-widget'
 label: 'Mon Widget'              // French label for UI
 icon: '🔧'
-category: 'base'                 // base | structure | form | media | wellpack | action
+category: 'content'              // content | actions | layout | media | interactive
 description: 'English description for LLM...'
 usageHints: ['Hint 1', 'Hint 2'] // Tips for LLM and users
 requiredContent: ['prop1']       // Required content properties
@@ -70,7 +84,7 @@ allowedChildren: ['type1'] OR disallowedChildren: ['type2']
 ```
 
 **Step 3: Create Zod schema in `shared/schemas/widgets/`**
-- Add content validation schema in the appropriate category file (base, structure, form, media, wellpack)
+- Add content validation schema in the appropriate category file (content, actions, layout, media, interactive)
 - Export from `shared/schemas/widgets/index.ts`
 
 **Step 4: Create renderer component**
@@ -88,12 +102,45 @@ allowedChildren: ['type1'] OR disallowedChildren: ['type2']
 
 ```
 components/
-├── canvas/     # Canvas rendering (MobileFrame, WidgetRenderer, CanvasDropzone)
-├── layout/     # Editor structure (EditorLayout, Toolbar, Sidebars)
-├── options/    # Property panels (ContentOptions, StyleOptions, GlobalOptions)
-├── modes/      # Edit modes (DesignerMode, PreviewMode, ExpertMode)
-└── widgets/    # Widget system (registry/, WidgetPalette, WidgetItem)
+├── ai/           # AI chat UI (AIChatPanel, AIChatMessage)
+├── canvas/       # Canvas rendering (MobileFrame, WidgetRenderer, CanvasDropzone)
+├── contents/     # Content management (ContentList, ContentCard)
+├── dashboard/    # Dashboard components
+├── history/      # Version history UI
+├── icons/        # Icon components
+├── layout/       # Editor structure (EditorLayout, Toolbar, Sidebars)
+├── modes/        # Edit modes (DesignerMode, PreviewMode, ExpertMode)
+├── options/      # Property panels (ContentOptions, StyleOptions, GlobalOptions)
+├── placeholders/ # Empty state placeholders
+├── shared/       # Shared components
+├── templates/    # Template browser UI
+├── ui/           # Reusable UI components
+└── widgets/      # Widget system (registry/, WidgetPalette, WidgetItem)
 ```
+
+### Shared Code (`shared/`)
+
+```
+shared/
+├── constants/   # Shared constants (status, roles, permissions, content)
+├── schemas/     # Zod validation schemas (auth, content, design, ai, widgets, version, palette)
+├── types/       # Shared TypeScript types (api, content, user, ai)
+├── utils/       # Shared utilities
+└── widgets/     # Widget definitions (SINGLE SOURCE OF TRUTH for types and categories)
+```
+
+### Key Composables (`src/composables/`)
+
+| Composable | Usage |
+|------------|-------|
+| `useApi` | Authenticated API calls with auto-refresh |
+| `useAIChat` | AI chat and design generation |
+| `useVersionHistory` | Version history management |
+| `useAutoSave` | Auto-save functionality |
+| `useEditorKeyboard` | Keyboard shortcuts |
+| `useGlobalStyles` | Global styles management |
+| `useToast` | Toast notifications |
+| `useRecovery` | Design recovery |
 
 ## Agents
 
@@ -152,7 +199,7 @@ import { createAuditLog } from '../../../utils/audit'
 All exports from `server/utils/` are globally available in server code:
 - `prisma` - Prisma client
 - `createAuditLog`, `logAudit` - Audit logging
-- `requireAuth`, `requireCampaignWithAccess` - Permission checks
+- `requireAuth`, `requireContentAccess` - Permission checks
 - `generateAccessToken`, `verifyAccessToken` - JWT utilities
 - `enforceRateLimit`, `RATE_LIMITS` - Rate limiting
 - `toPrismaContentType`, `toApiContentType` - Type mappers
