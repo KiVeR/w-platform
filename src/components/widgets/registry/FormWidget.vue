@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget, WidgetType } from '@/types/widget'
+import { ClipboardList } from 'lucide-vue-next'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'
 import PreviewRenderer from '@/components/canvas/PreviewRenderer.vue'
@@ -84,7 +85,7 @@ function isFormField(widget: Widget): boolean {
   >
     <!-- Header badge - seulement en mode édition -->
     <div v-if="!readonly" class="form-header">
-      <span class="form-badge">📋 Formulaire</span>
+      <span class="form-badge"><ClipboardList :size="12" /> Formulaire</span>
     </div>
 
     <!-- Mode édition : draggable -->
@@ -170,13 +171,7 @@ function isFormField(widget: Widget): boolean {
 
 <style scoped>
 .form-widget {
-  width: 100%;
-  border: 2px dashed #94a3b8;
   position: relative;
-}
-
-.form-widget--readonly {
-  border: none;
 }
 
 .form-header {
@@ -184,6 +179,9 @@ function isFormField(widget: Widget): boolean {
 }
 
 .form-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 600;
   color: #64748b;

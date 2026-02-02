@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormFieldType, Widget } from '@/types/widget'
+import { GripVertical } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
 import { generateFieldName } from '@/utils/form'
@@ -57,7 +58,7 @@ function handleRemove() {
     }"
   >
     <div v-if="!readonly" class="field-handle" title="Glisser pour réordonner">
-      ⋮⋮
+      <GripVertical :size="16" />
     </div>
 
     <div class="field-content">
@@ -131,8 +132,8 @@ function handleRemove() {
 .form-field-widget {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding: 8px;
+  gap: 4px;
+  padding: 6px 4px;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-md);
