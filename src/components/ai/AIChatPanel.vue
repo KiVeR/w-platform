@@ -151,10 +151,11 @@ function handleExampleClick(prompt: string) {
                 :message="{
                   id: 'streaming',
                   role: 'assistant',
-                  content: store.currentStreamText,
+                  content: store.displayStreamText,
                   createdAt: new Date(),
                 }"
                 :is-streaming="true"
+                :is-generating-design="store.isGeneratingDesign"
               />
             </template>
           </div>

@@ -3,6 +3,7 @@ import type { DesignDocument } from '@/types/widget'
 import { Check, Expand, Pencil } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import MobileFrame from '@/components/canvas/MobileFrame.vue'
+import PreviewContent from '@/components/canvas/PreviewContent.vue'
 import { useAIChat } from '@/composables/useAIChat'
 
 const props = defineProps<{
@@ -46,11 +47,9 @@ function handleExpand() {
   >
     <!-- Preview frame -->
     <div class="ai-design-preview-frame">
-      <MobileFrame
-        :design="designDoc"
-        :scale="isExpanded ? 0.7 : 0.5"
-        :interactive="false"
-      />
+      <MobileFrame :show-frame="true">
+        <PreviewContent :design="designDoc" />
+      </MobileFrame>
     </div>
 
     <!-- Info and actions -->
@@ -98,19 +97,14 @@ function handleExpand() {
   display: flex;
   justify-content: center;
   padding: 16px;
-  background: linear-gradient(135deg, #f3f4f6 25%, transparent 25%),
-    linear-gradient(225deg, #f3f4f6 25%, transparent 25%),
-    linear-gradient(45deg, #f3f4f6 25%, transparent 25%),
-    linear-gradient(315deg, #f3f4f6 25%, #ffffff 25%);
-  background-size: 16px 16px;
-  background-position: 0 0, 8px 0, 8px -8px, 0px 8px;
-  max-height: 300px;
-  overflow-y: auto;
-  transition: max-height 0.3s ease;
+  background: #f3f4f6;
+  height: 320px;
+  overflow: hidden;
+  transition: height 0.3s ease;
 }
 
 .ai-design-preview--expanded .ai-design-preview-frame {
-  max-height: 500px;
+  height: 520px;
 }
 
 .ai-design-preview-info {

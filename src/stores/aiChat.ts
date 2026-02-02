@@ -23,6 +23,30 @@ export const useAIChatStore = defineStore('aiChat', () => {
   )
   const lastGeneratedDesign = computed(() => lastAssistantMessage.value?.design as DesignDocument | undefined)
 
+  // Extract only the text description (before ---JSON--- or first {)
+  const JSON_SEPARATOR = '---JSON---'
+  const displayStreamText = computed(() => {
+    const text = currentStreamText.value
+    const sepIndex = text.indexOf(JSON_SEPARATOR)
+    if (sepIndex !== -1)
+      return text.slice(0, sepIndex).trim()
+    // Fallback: cut at first { that looks like JSON start
+    const braceIndex = text.indexOf('\n{')
+    if (braceIndex !== -1)
+      return text.slice(0, braceIndex).trim()
+    // If stream starts with {, it's all JSON
+    if (text.trimStart().startsWith('{'))
+      return ''
+    return text
+  })
+
+  const isGeneratingDesign = computed(() => {
+    if (!isStreaming.value)
+      return false
+    const text = currentStreamText.value
+    return text.includes(JSON_SEPARATOR) || text.trimStart().startsWith('{')
+  })
+
   // Actions
   function open() {
     isOpen.value = true
@@ -69,10 +93,25 @@ export const useAIChatStore = defineStore('aiChat', () => {
   }
 
   function completeAssistantMessage(design?: DesignDocument) {
+    // Extract only the description text, not the JSON
+    const fullText = currentStreamText.value
+    const sepIndex = fullText.indexOf(JSON_SEPARATOR)
+    let content = fullText
+    if (sepIndex !== -1) {
+      content = fullText.slice(0, sepIndex).trim()
+    }
+    else {
+      const braceIndex = fullText.indexOf('\n{')
+      if (braceIndex !== -1)
+        content = fullText.slice(0, braceIndex).trim()
+      else if (fullText.trimStart().startsWith('{'))
+        content = ''
+    }
+
     const message: AIChatMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
       role: 'assistant',
-      content: currentStreamText.value,
+      content,
       design,
       createdAt: new Date(),
     }
@@ -125,6 +164,8 @@ export const useAIChatStore = defineStore('aiChat', () => {
     hasMessages,
     lastAssistantMessage,
     lastGeneratedDesign,
+    displayStreamText,
+    isGeneratingDesign,
     // Actions
     open,
     close,
