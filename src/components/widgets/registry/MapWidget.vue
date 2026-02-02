@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { Map, MapPin, Mountain, Satellite } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -53,7 +54,7 @@ const mapStyleLabel = computed(() => {
     <!-- Carte Google Maps -->
     <div v-if="hasMap" class="map-container">
       <div class="map-badge">
-        <span>📍 {{ mapStyleLabel }}</span>
+        <span class="badge-content"><MapPin :size="12" /> {{ mapStyleLabel }}</span>
       </div>
       <iframe
         :src="mapEmbedUrl"
@@ -71,7 +72,7 @@ const mapStyleLabel = computed(() => {
     <!-- Placeholder -->
     <div v-else class="map-placeholder">
       <div class="placeholder-icon">
-        📍
+        <MapPin :size="48" />
       </div>
       <p class="placeholder-text">
         Google Maps
@@ -80,9 +81,9 @@ const mapStyleLabel = computed(() => {
         Entrez une adresse ou des coordonnées
       </p>
       <div class="map-styles-preview">
-        <span class="style-chip active">🗺️ Plan</span>
-        <span class="style-chip">🛰️ Satellite</span>
-        <span class="style-chip">⛰️ Terrain</span>
+        <span class="style-chip active"><Map :size="10" /> Plan</span>
+        <span class="style-chip"><Satellite :size="10" /> Satellite</span>
+        <span class="style-chip"><Mountain :size="10" /> Terrain</span>
       </div>
     </div>
   </div>
@@ -151,8 +152,14 @@ const mapStyleLabel = computed(() => {
 }
 
 .placeholder-icon {
-  font-size: 48px;
+  color: #2e7d32;
   margin-bottom: 12px;
+}
+
+.badge-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .placeholder-text {
@@ -174,6 +181,9 @@ const mapStyleLabel = computed(() => {
 }
 
 .style-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 8px;
   background: white;
   border-radius: var(--radius-xl);

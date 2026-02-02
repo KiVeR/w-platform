@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { Images } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -9,7 +10,9 @@ const props = defineProps<{
 
 const images = computed(() => props.widget.content.galleryImages || [])
 const hasImages = computed(() => images.value.length > 0)
-const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voir la galerie')
+const buttonText = computed(() => props.widget.content.galleryButtonText || 'Galerie photos')
+const visibleImages = computed(() => images.value.slice(0, 6))
+const extraCount = computed(() => Math.max(0, images.value.length - 6))
 </script>
 
 <template>
@@ -21,38 +24,41 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
       textAlign: widget.styles.textAlign,
     }"
   >
-    <!-- Bouton galerie -->
-    <button class="gallery-button" @click.prevent>
-      <span class="button-icon">🖼️</span>
-      {{ buttonText }}
-    </button>
+    <template v-if="hasImages">
+      <!-- Header -->
+      <div class="gallery-header">
+        <span class="gallery-label">{{ buttonText }}</span>
+        <span class="gallery-count">{{ images.length }} photo{{ images.length > 1 ? 's' : '' }}</span>
+      </div>
 
-    <!-- Preview des images -->
-    <div v-if="hasImages" class="gallery-preview">
+      <!-- Grid -->
       <div class="gallery-grid">
         <div
-          v-for="(image, index) in images.slice(0, 4)"
+          v-for="(image, index) in visibleImages"
           :key="index"
-          class="gallery-thumb"
+          class="gallery-item"
         >
           <img :src="image.src" :alt="image.alt || `Image ${index + 1}`">
-          <div v-if="index === 3 && images.length > 4" class="more-overlay">
-            +{{ images.length - 4 }}
+          <div v-if="image.caption" class="gallery-caption">
+            {{ image.caption }}
+          </div>
+          <div v-if="index === 5 && extraCount > 0" class="gallery-more">
+            +{{ extraCount }}
           </div>
         </div>
       </div>
-      <div class="images-count">
-        {{ images.length }} image{{ images.length > 1 ? 's' : '' }}
-      </div>
-    </div>
+    </template>
 
-    <!-- État vide -->
+    <!-- Empty state -->
     <div v-else class="gallery-empty">
-      <p class="empty-text">
-        Aucune image
+      <div class="gallery-empty-icon">
+        <Images :size="32" />
+      </div>
+      <p class="gallery-empty-text">
+        Aucune image dans la galerie
       </p>
-      <p class="empty-hint">
-        Ajoutez des images dans les options
+      <p class="gallery-empty-hint">
+        Ajoutez des images dans les options du widget
       </p>
     </div>
   </div>
@@ -63,88 +69,100 @@ const buttonText = computed(() => props.widget.content.galleryButtonText || 'Voi
   width: 100%;
 }
 
-.gallery-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border: 2px solid #6366f1;
-  background: transparent;
-  color: #6366f1;
-  border-radius: var(--radius-lg);
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
+/* Header */
+.gallery-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 
-.gallery-button:hover {
-  background: #6366f1;
-  color: white;
+.gallery-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: currentColor;
 }
 
-.button-icon {
-  font-size: 18px;
+.gallery-count {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 400;
 }
 
-.gallery-preview {
-  margin-top: 16px;
-}
-
+/* Grid */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  max-width: 320px;
-  margin: 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: 100%;
 }
 
-.gallery-thumb {
+.gallery-item {
   position: relative;
   aspect-ratio: 1;
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
   overflow: hidden;
+  background: #f1f5f9;
 }
 
-.gallery-thumb img {
+.gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.more-overlay {
+.gallery-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 6px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  color: white;
+  font-size: 10px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-more {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
   color: white;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
 }
 
-.images-count {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #64748b;
-}
-
+/* Empty state */
 .gallery-empty {
-  margin-top: 16px;
-  padding: 20px;
+  padding: 24px 16px;
   background: #f8fafc;
   border: 2px dashed #e2e8f0;
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
+  text-align: center;
 }
 
-.empty-text {
+.gallery-empty-icon {
+  display: flex;
+  justify-content: center;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.gallery-empty-text {
   color: #64748b;
   font-size: 14px;
   margin: 0 0 4px 0;
 }
 
-.empty-hint {
+.gallery-empty-hint {
   color: #94a3b8;
   font-size: 12px;
   margin: 0;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { Car, MapPin, Phone } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
@@ -39,7 +40,7 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
       }"
       @click.prevent
     >
-      <span class="button-icon">🚗</span>
+      <Car :size="20" />
       {{ buttonText }}
     </button>
 
@@ -65,14 +66,14 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
             class="action-btn"
             :style="{ borderColor: btnGoColor, color: btnGoColor }"
           >
-            📍 {{ btnGoLabel }}
+            <MapPin :size="14" /> {{ btnGoLabel }}
           </button>
           <button
             v-if="stores[0]?.phone"
             class="action-btn"
             :style="{ borderColor: btnCallColor, color: btnCallColor }"
           >
-            📞 {{ btnCallLabel }}
+            <Phone :size="14" /> {{ btnCallLabel }}
           </button>
         </div>
       </div>
@@ -105,7 +106,6 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
   gap: 8px;
   padding: 14px 28px;
   border: 2px solid;
-  background: var(--btn-color);
   color: white;
   border-radius: var(--radius-lg);
   font-size: 16px;
@@ -117,10 +117,6 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
 .drive-button:hover {
   opacity: 0.9;
   transform: translateY(-1px);
-}
-
-.button-icon {
-  font-size: 20px;
 }
 
 .drive-preview {

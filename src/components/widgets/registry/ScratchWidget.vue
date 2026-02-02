@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { Hand, Link, Ticket } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -28,7 +29,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
     <div v-if="hasImages" class="scratch-container">
       <!-- Badges de config -->
       <div class="scratch-badges">
-        <span class="badge">🎰 Carte à gratter</span>
+        <span class="badge"><Ticket :size="12" /> Carte à gratter</span>
         <span class="badge config">Pièce: {{ scratchSize }}px | {{ scratchPercent }}% requis</span>
       </div>
 
@@ -48,13 +49,13 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
         >
         <!-- Overlay d'indication -->
         <div class="scratch-overlay">
-          <span class="scratch-hint">✋ Grattez pour découvrir</span>
+          <span class="scratch-hint"><Hand :size="16" /> Grattez pour découvrir</span>
         </div>
       </div>
 
       <!-- Lien si configuré -->
       <div v-if="link" class="scratch-link">
-        <span class="link-icon">🔗</span>
+        <Link :size="12" />
         <span class="link-text">{{ link }}</span>
       </div>
     </div>
@@ -62,7 +63,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
     <!-- État vide -->
     <div v-else class="scratch-empty">
       <div class="empty-icon">
-        🎰
+        <Ticket :size="48" />
       </div>
       <p class="empty-text">
         Carte à gratter
@@ -92,6 +93,9 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
 }
 
 .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 10px;
   background: #1e293b;
   color: white;
@@ -147,6 +151,9 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
 }
 
 .scratch-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.95);
   color: #1e293b;
   padding: 8px 16px;
@@ -182,7 +189,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
 }
 
 .empty-icon {
-  font-size: 48px;
+  color: #92400e;
   margin-bottom: 8px;
 }
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { AlertTriangle, BarChart3, ScanBarcode } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -168,7 +169,7 @@ const barcodeTypeLabel = computed(() => {
     <!-- Variable placeholder -->
     <div v-else-if="hasVariable" class="barcode-variable">
       <div class="variable-icon">
-        📊
+        <BarChart3 :size="32" />
       </div>
       <p class="variable-code">
         {{ widget.content.barcodeCode }}
@@ -181,7 +182,7 @@ const barcodeTypeLabel = computed(() => {
     <!-- Erreur -->
     <div v-else-if="errorMessage" class="barcode-error">
       <div class="error-icon">
-        ⚠️
+        <AlertTriangle :size="32" />
       </div>
       <p>{{ errorMessage }}</p>
     </div>
@@ -201,7 +202,7 @@ const barcodeTypeLabel = computed(() => {
     <!-- Placeholder -->
     <div v-else class="barcode-placeholder">
       <div class="placeholder-icon">
-        📊
+        <ScanBarcode :size="48" />
       </div>
       <p class="placeholder-text">
         Code barre
@@ -261,9 +262,13 @@ const barcodeTypeLabel = computed(() => {
 }
 
 .placeholder-icon,
-.error-icon,
 .variable-icon {
-  font-size: 36px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.error-icon {
+  color: #ef4444;
   margin-bottom: 8px;
 }
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { MapPin } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
@@ -41,7 +42,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
       }"
       @click.prevent
     >
-      <span class="button-icon">📍</span>
+      <MapPin :size="18" />
       {{ buttonText }}
     </button>
 
@@ -110,10 +111,6 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 
 .store-locator-button:hover {
   opacity: 0.8;
-}
-
-.button-icon {
-  font-size: 18px;
 }
 
 .stores-preview {

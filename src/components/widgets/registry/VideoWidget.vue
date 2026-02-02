@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { Video } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -54,14 +55,6 @@ const embedUrl = computed(() => {
 
 const hasVideo = computed(() => !!embedUrl.value)
 
-const providerIcon = computed(() => {
-  switch (parsedVideo.value.provider) {
-    case 'youtube': return '▶️'
-    case 'vimeo': return '🎬'
-    default: return '🎥'
-  }
-})
-
 const providerName = computed(() => {
   switch (parsedVideo.value.provider) {
     case 'youtube': return 'YouTube'
@@ -83,7 +76,7 @@ const providerName = computed(() => {
     <!-- Preview avec vidéo -->
     <div v-if="hasVideo" class="video-container">
       <div class="video-provider-badge">
-        <span>{{ providerIcon }} {{ providerName }}</span>
+        <span class="badge-content"><Video :size="12" /> {{ providerName }}</span>
       </div>
       <iframe
         :src="embedUrl"
@@ -97,7 +90,7 @@ const providerName = computed(() => {
     <!-- Placeholder quand pas de vidéo -->
     <div v-else class="video-placeholder">
       <div class="placeholder-icon">
-        🎥
+        <Video :size="48" />
       </div>
       <p class="placeholder-text">
         Collez une URL YouTube ou Vimeo
@@ -106,8 +99,8 @@ const providerName = computed(() => {
         Détection automatique de la plateforme
       </p>
       <div class="placeholder-examples">
-        <span class="example-badge youtube">▶️ YouTube</span>
-        <span class="example-badge vimeo">🎬 Vimeo</span>
+        <span class="example-badge youtube"><Video :size="10" /> YouTube</span>
+        <span class="example-badge vimeo"><Video :size="10" /> Vimeo</span>
       </div>
     </div>
   </div>
@@ -162,9 +155,14 @@ const providerName = computed(() => {
 }
 
 .placeholder-icon {
-  font-size: 48px;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 12px;
-  opacity: 0.8;
+}
+
+.badge-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .placeholder-text {
@@ -186,6 +184,9 @@ const providerName = computed(() => {
 }
 
 .example-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 10px;
   border-radius: var(--radius-xl);
   font-size: 11px;

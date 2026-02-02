@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { GalleryHorizontal } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -75,7 +76,7 @@ onUnmounted(() => {
     <div v-if="hasImages" class="slider-container">
       <!-- Badge -->
       <div class="slider-badge">
-        🎠 {{ currentIndex + 1 }} / {{ images.length }}
+        <GalleryHorizontal :size="12" /> {{ currentIndex + 1 }} / {{ images.length }}
       </div>
 
       <!-- Image -->
@@ -121,7 +122,7 @@ onUnmounted(() => {
     <!-- État vide -->
     <div v-else class="slider-empty">
       <div class="empty-icon">
-        🎠
+        <GalleryHorizontal :size="48" />
       </div>
       <p class="empty-text">
         Carrousel
@@ -147,6 +148,9 @@ onUnmounted(() => {
   top: 8px;
   left: 8px;
   z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 4px 10px;
@@ -232,7 +236,7 @@ onUnmounted(() => {
 }
 
 .empty-icon {
-  font-size: 48px;
+  color: #64748b;
   margin-bottom: 8px;
 }
 

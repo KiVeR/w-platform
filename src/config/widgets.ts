@@ -726,36 +726,39 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Galerie',
     icon: '🖼️',
     category: 'media',
-    description: 'Image gallery with lightbox viewer. Displays multiple images in a grid that opens in fullscreen when clicked. Ideal for product photos, portfolios, or event galleries.',
+    description: 'Image gallery with lightbox viewer. Renders as a label header + responsive 3-column thumbnail grid. Each image can have a caption overlay. Ideal for product photos, portfolios, hotel rooms, or event galleries. Provide 4-6 images for best visual result.',
     usageHints: [
-      'Add images to galleryImages array with src and alt',
-      'Use consistent image dimensions for a clean grid',
-      'Customize galleryButtonText for the CTA',
-      'Consider slider widget for automatic image rotation',
+      'Add 4-6 images to galleryImages array with src, alt, and caption',
+      'Use square images (1:1 ratio) for a clean grid',
+      'Set galleryButtonText as the gallery section label',
+      'Use caption for short descriptions shown as overlay on thumbnails',
     ],
     examples: [
       {
-        description: 'Product gallery',
+        description: 'Hotel photo gallery',
         widget: {
           type: 'gallery',
           content: {
             galleryImages: [
-              { src: 'https://example.com/img1.jpg', alt: 'Product view 1' },
-              { src: 'https://example.com/img2.jpg', alt: 'Product view 2' },
+              { src: 'https://placehold.co/600x600?text=Hall', alt: 'Hotel lobby', caption: 'Hall d\'entrée' },
+              { src: 'https://placehold.co/600x600?text=Chambre', alt: 'Deluxe room', caption: 'Chambre Deluxe' },
+              { src: 'https://placehold.co/600x600?text=Piscine', alt: 'Swimming pool', caption: 'Piscine' },
+              { src: 'https://placehold.co/600x600?text=Restaurant', alt: 'Restaurant', caption: 'Restaurant' },
+              { src: 'https://placehold.co/600x600?text=Spa', alt: 'Spa area', caption: 'Spa' },
+              { src: 'https://placehold.co/600x600?text=Terrasse', alt: 'Terrace', caption: 'Terrasse' },
             ],
-            galleryButtonText: 'Voir les photos',
+            galleryButtonText: 'Nos espaces',
           },
         },
       },
     ],
     defaultContent: {
       galleryImages: [],
-      galleryButtonText: 'Voir la galerie',
+      galleryButtonText: 'Galerie photos',
     },
     defaultStyles: {
       margin: '16px 0',
       padding: '8px',
-      textAlign: 'center',
     },
   },
   {
