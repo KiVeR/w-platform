@@ -72,6 +72,7 @@ interface BriefState {
   generation: 'pending' | 'done' | 'error'
   critique: 'pending' | 'done' | 'error'
   vote: 'pending' | 'done' | 'error'
+  humanReview: 'pending' | 'done' | 'skipped'
   revision: 'pending' | 'done' | 'error'
 }
 
@@ -191,6 +192,7 @@ function initState(maxParallel: number, briefIds: number[]): State {
       generation: 'pending' as const,
       critique: 'pending' as const,
       vote: 'pending' as const,
+      humanReview: 'pending' as const,
       revision: 'pending' as const,
     }))
 
@@ -379,6 +381,7 @@ async function preflight(runDir: string): Promise<string | false> {
   await mkdir(resolve(runDir, 'votes'), { recursive: true })
   await mkdir(resolve(runDir, 'screenshots'), { recursive: true })
   await mkdir(resolve(runDir, 'feedback'), { recursive: true })
+  await mkdir(resolve(runDir, 'human-review'), { recursive: true })
   log.success(`Directories created in ${runDir}`)
 
   return token
@@ -537,6 +540,43 @@ async function phaseVote(state: State, runDir: string): Promise<void> {
   await saveState(state, runDir)
 }
 
+async function phaseHumanReview(state: State, runDir: string, skipReview: boolean): Promise<void> {
+  log.phase('PHASE 3.5 — HUMAN REVIEW')
+  const pending = state.briefs.filter(b => b.vote === 'done' && b.humanReview === 'pending')
+
+  if (pending.length === 0) {
+    log.info('All human reviews already done, skipping')
+    return
+  }
+
+  if (skipReview) {
+    log.warn(`Skipping human review for ${pending.length} LPs (--skip-review)`)
+    for (const b of pending)
+      b.humanReview = 'skipped'
+    await saveState(state, runDir)
+    return
+  }
+
+  // Check if all have human-review files already
+  const allReviewed = await Promise.all(
+    pending.map(b => fileExists(resolve(runDir, `human-review/${b.id}.json`))),
+  )
+  if (allReviewed.every(Boolean)) {
+    log.info('All human review files found, continuing')
+    for (const b of pending)
+      b.humanReview = 'done'
+    await saveState(state, runDir)
+    return
+  }
+
+  log.warn(`${pending.length} LP en attente de review humaine`)
+  log.info(`→ Ouvrir ${BASE_URL}/batch/review`)
+  log.info(`→ Puis relancer : yarn batch-lp run --resume-from revision`)
+  state.phase = 'humanReview'
+  await saveState(state, runDir)
+  process.exit(0)
+}
+
 async function phaseRevision(state: State, token: string, runDir: string): Promise<void> {
   log.phase('PHASE 4 — REVISION')
   const template = await loadPromptTemplate('revisor')
@@ -633,8 +673,8 @@ function printReport(state: State, runDir: string): void {
   log.phase('FINAL REPORT')
   log.info(`Run #${state.runId} — ${runDir}`)
 
-  console.log(`${c.bold}  #  | Sector                  | Status Gen | Critique | Vote | Revision${c.reset}`)
-  console.log('  ---|-------------------------|------------|----------|------|----------')
+  console.log(`${c.bold}  #  | Sector                  | Gen  | Crit | Vote | Review | Revision${c.reset}`)
+  console.log('  ---|-------------------------|------|------|------|--------|----------')
 
   for (const b of state.briefs) {
     const status = (s: string) => {
@@ -642,11 +682,13 @@ function printReport(state: State, runDir: string): void {
         return `${c.green}done${c.reset}`
       if (s === 'error')
         return `${c.red}err ${c.reset}`
-      return `${c.gray}skip${c.reset}`
+      if (s === 'skipped')
+        return `${c.yellow}skip${c.reset}`
+      return `${c.gray}wait${c.reset}`
     }
     const id = String(b.id).padStart(2)
     const sector = b.sector.padEnd(23)
-    console.log(`  ${id} | ${sector} | ${status(b.generation)}       | ${status(b.critique)}     | ${status(b.vote)} | ${status(b.revision)}`)
+    console.log(`  ${id} | ${sector} | ${status(b.generation)} | ${status(b.critique)} | ${status(b.vote)} | ${status(b.humanReview)} | ${status(b.revision)}`)
   }
 
   if (state.errors.length > 0) {
@@ -697,17 +739,19 @@ async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: 
 // Commands
 // ---------------------------------------------------------------------------
 
-const PHASES = ['generation', 'critique', 'vote', 'revision', 'synthesis', 'meta'] as const
+const PHASES = ['generation', 'critique', 'vote', 'humanReview', 'revision', 'synthesis', 'meta'] as const
 
 const run = defineCommand({
   meta: { name: 'run', description: 'Run the batch LP generation pipeline' },
   args: {
     'max-parallel': { type: 'string', default: '5', description: 'Max concurrent agents' },
     'resume-from': { type: 'string', default: '', description: 'Resume from phase' },
+    'skip-review': { type: 'boolean', default: false, description: 'Skip human review phase' },
     'briefs': { type: 'string', default: '', description: 'Comma-separated brief IDs' },
   },
   async run({ args }) {
     const maxParallel = Number.parseInt(args['max-parallel'] as string) || 5
+    const skipReview = Boolean(args['skip-review'])
     const resumeFrom = (args['resume-from'] as string) || ''
     const briefIds = (args.briefs as string)
       ? (args.briefs as string).split(',').map(Number).filter(Boolean)
@@ -766,6 +810,7 @@ const run = defineCommand({
       () => phaseGeneration(state, token, runDir),
       () => phaseCritique(state, runDir),
       () => phaseVote(state, runDir),
+      () => phaseHumanReview(state, runDir, skipReview),
       () => phaseRevision(state, token, runDir),
       () => phaseSynthesis(state, runDir),
       () => phaseMetaAnalysis(state, runDir),
@@ -814,9 +859,139 @@ const report = defineCommand({
   },
 })
 
+const calibrate = defineCommand({
+  meta: { name: 'calibrate', description: 'Test critic calibration on a few briefs' },
+  args: {
+    briefs: { type: 'string', default: '', description: 'Brief IDs to test (default: 3 random generated)' },
+    run: { type: 'string', default: '', description: 'Run ID (default: latest)' },
+  },
+  async run({ args }) {
+    const result = await resolveRunDir((args.run as string) || undefined)
+    if (!result)
+      return
+
+    const { runDir, state } = result
+    const generated = state.briefs.filter(b => b.generation === 'done')
+
+    if (generated.length === 0) {
+      log.error('No generated LPs in this run. Run generation first.')
+      return
+    }
+
+    // Pick briefs
+    let selected: BriefState[]
+    const briefArg = args.briefs as string
+    if (briefArg) {
+      const ids = briefArg.split(',').map(Number)
+      selected = generated.filter(b => ids.includes(b.id))
+      if (selected.length === 0) {
+        log.error(`None of briefs ${briefArg} are generated. Available: ${generated.map(b => b.id).join(', ')}`)
+        return
+      }
+    }
+    else {
+      // Random 3 (or less if fewer available)
+      const shuffled = [...generated].sort(() => Math.random() - 0.5)
+      selected = shuffled.slice(0, Math.min(3, shuffled.length))
+    }
+
+    log.phase('CALIBRATION TEST')
+    log.info(`Testing ${selected.length} briefs: ${selected.map(b => `#${b.id} (${b.sector})`).join(', ')}`)
+
+    // Reset critique/vote for selected briefs & delete old files
+    for (const b of selected) {
+      b.critique = 'pending'
+      b.vote = 'pending'
+      for (const role of ['marketing', 'ux', 'brand']) {
+        try {
+          await unlink(resolve(runDir, `critiques/${b.id}-${role}.json`))
+        }
+        catch {}
+      }
+      try {
+        await unlink(resolve(runDir, `votes/${b.id}-consensus.json`))
+      }
+      catch {}
+    }
+    await saveState(state, runDir)
+
+    // Run critique + vote on selected briefs only
+    // Temporarily replace state.briefs to scope the phases
+    const originalBriefs = state.briefs
+    state.briefs = selected
+    await phaseCritique(state, runDir)
+    await phaseVote(state, runDir)
+    state.briefs = originalBriefs
+
+    // Restore selected brief states in original array
+    for (const s of selected) {
+      const orig = originalBriefs.find(b => b.id === s.id)!
+      orig.critique = s.critique
+      orig.vote = s.vote
+    }
+    await saveState(state, runDir)
+
+    // Read consensus files and print calibration report
+    log.phase('CALIBRATION RESULTS')
+
+    let totalScore = 0
+    let totalCriteria = 0
+    let highScores = 0
+    let lowScores = 0
+
+    for (const b of selected) {
+      const consensusPath = resolve(runDir, `votes/${b.id}-consensus.json`)
+      if (!await fileExists(consensusPath)) {
+        log.error(`No consensus for brief #${b.id}`)
+        continue
+      }
+
+      const consensus = JSON.parse(await readFile(consensusPath, 'utf8'))
+
+      console.log(`\n  ${c.bold}Brief #${b.id} — ${b.sector}${c.reset}`)
+
+      // Read individual critique files for detailed scores
+      for (const role of ['marketing', 'ux', 'brand'] as const) {
+        const critiquePath = resolve(runDir, `critiques/${b.id}-${role}.json`)
+        if (!await fileExists(critiquePath))
+          continue
+
+        const critique = JSON.parse(await readFile(critiquePath, 'utf8'))
+        const avg = critique.averageScore || 0
+        const scoreValues = Object.values(critique.scores || {}) as number[]
+
+        for (const v of scoreValues) {
+          totalCriteria++
+          totalScore += v
+          if (v >= 8)
+            highScores++
+          if (v <= 3)
+            lowScores++
+        }
+
+        const color = avg <= 4 ? c.red : avg <= 6.5 ? c.yellow : c.green
+        console.log(`    ${role.padEnd(10)} ${color}${avg.toFixed(1)}${c.reset}  |  scores: ${scoreValues.join(', ')}`)
+      }
+
+      const overall = consensus.overallScore || 0
+      console.log(`    ${c.bold}Overall:   ${overall.toFixed(1)}${c.reset}`)
+    }
+
+    const avg = totalCriteria > 0 ? totalScore / totalCriteria : 0
+    const highPct = totalCriteria > 0 ? (highScores / totalCriteria * 100) : 0
+    const lowPct = totalCriteria > 0 ? (lowScores / totalCriteria * 100) : 0
+
+    console.log(`\n  ${'─'.repeat(52)}`)
+    console.log(`  ${c.bold}Overall average: ${avg.toFixed(1)} / 10${c.reset}`)
+    console.log(`  Target range:    4.5 — 6.5  ${avg >= 4.5 && avg <= 6.5 ? `${c.green}✓ OK${c.reset}` : `${c.red}✗ OUT OF RANGE${c.reset}`}`)
+    console.log(`  Scores 8+:  ${highScores}/${totalCriteria} (${highPct.toFixed(1)}%)  — target < 10%  ${highPct < 10 ? `${c.green}✓${c.reset}` : `${c.red}✗${c.reset}`}`)
+    console.log(`  Scores ≤3:  ${lowScores}/${totalCriteria} (${lowPct.toFixed(1)}%)  — target ~5%    ${lowPct <= 10 ? `${c.green}✓${c.reset}` : `${c.red}✗${c.reset}`}`)
+  },
+})
+
 const main = defineCommand({
   meta: { name: 'batch-lp', version: '1.0.0', description: 'Multi-agent batch LP generation pipeline' },
-  subCommands: { run, status, report },
+  subCommands: { run, status, report, calibrate },
 })
 
 runMain(main)

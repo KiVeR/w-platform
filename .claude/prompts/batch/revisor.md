@@ -8,8 +8,21 @@ Read these files first:
 ## Current design
 Read: `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
 
-## Consensus modifications to apply
-Read: `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`
+## Modifications to apply
+
+First check if a human review file exists:
+- `{{BATCH_DIR}}/human-review/{{BRIEF_ID}}.json`
+
+If it exists, read it and use it as the source of truth along with the consensus:
+1. Read the consensus: `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`
+2. Read the human review file
+3. For each modification in the human review:
+   - `"action": "accept"` → apply the corresponding consensus modification as-is
+   - `"action": "edit"` → apply using `editedDescription` instead of the original description
+   - `"action": "reject"` → skip this modification entirely
+
+If no human review file exists, fall back to the consensus only:
+- Read: `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`
 
 Apply each accepted modification in priority order. For each modification:
 1. Locate the target widget(s)
