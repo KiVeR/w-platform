@@ -50,7 +50,7 @@ function handleToggleFavorite(e: Event) {
     >
       <span class="content-icon" aria-hidden="true">{{ CONTENT_TYPE_EMOJI[content.type] }}</span>
       <div class="content-info">
-        <span class="content-title">{{ content.title }}</span>
+        <span class="content-title" :title="content.title">{{ content.title }}</span>
         <span class="content-meta">{{ formatRelativeTime(content.updatedAt) }}</span>
       </div>
     </NuxtLink>
@@ -120,7 +120,7 @@ function handleToggleFavorite(e: Event) {
   display: flex;
   align-items: center;
   min-width: 160px;
-  max-width: 200px;
+  max-width: 240px;
 }
 
 /* Compact card for quick access */
@@ -164,8 +164,11 @@ function handleToggleFavorite(e: Event) {
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--color-text-primary);
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
+  word-break: break-word;
   text-overflow: ellipsis;
 }
 

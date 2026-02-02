@@ -287,7 +287,8 @@ onUnmounted(() => {
 }
 
 .dashboard {
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   background-color: var(--color-background);
 }
 
