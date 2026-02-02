@@ -18,6 +18,7 @@ import { access, mkdir, readdir, readFile, symlink, unlink, writeFile } from 'no
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { defineCommand, runMain } from 'citty'
+import { validateDesignTokens } from '../../shared/utils/design-tokens'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -432,6 +433,29 @@ async function phaseGeneration(state: State, token: string, runDir: string): Pro
         }
         if (typeof (feedback as Record<string, unknown>).title === 'string') {
           briefState.title = (feedback as Record<string, unknown>).title as string
+        }
+      }
+
+      // Validate design tokens compliance
+      const lpFile = resolve(runDir, `lp-${brief.id}.json`)
+      if (await fileExists(lpFile)) {
+        try {
+          const design = JSON.parse(await readFile(lpFile, 'utf8'))
+          const widgets = design.widgets || []
+          const result = validateDesignTokens(widgets)
+          const pct = (result.complianceRate * 100).toFixed(0)
+          if (result.valid) {
+            log.agent(brief.id, `${c.green}Design tokens: 100% compliant${c.reset}`)
+          }
+          else {
+            log.agent(brief.id, `${c.yellow}Design tokens: ${pct}% compliant (${result.violations.length} violations)${c.reset}`)
+            for (const v of result.violations.slice(0, 5)) {
+              log.agent(brief.id, `  ${c.gray}${v.widgetId}.${v.property}: ${v.value} → ${v.nearestToken}${c.reset}`)
+            }
+          }
+        }
+        catch {
+          // JSON parse error — skip validation
         }
       }
 

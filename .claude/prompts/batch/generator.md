@@ -17,6 +17,7 @@ Create a complete DesignDocument JSON for this brief. Rules:
 - Follow ALL layout rules from the guidelines (row->column only, max 2 columns, unique IDs, sequential order)
 - No emojis in content (only in icon/effect widget properties)
 - Primary CTA above the fold AND repeated at bottom
+- **Design token compliance**: Use ONLY values from the design token scale (see design-generation.ts) for fontSize, fontWeight, lineHeight, spacing (padding/margin/gap), and borderRadius. Compound values like "16px 24px" must use token values for each side.
 
 ## Step 3: Write to file
 Write the JSON to `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
@@ -35,6 +36,9 @@ Re-read your JSON and check this checklist (report pass/fail for each):
 - Accessibility: images have alt, form-fields have labels
 - Spacing: separators/spacers between sections
 - Schema compliance: unique IDs, sequential order, row->column only
+- Design tokens - fontSize: all values from scale (12/14/16/18/20/24/28/32/36/48px)
+- Design tokens - spacing: all padding/margin/gap use only token values (0/4/8/12/16/24/32/48px)
+- Design tokens - variety: at least 3 different fontSize values for visual hierarchy
 
 Fix any issues (max 2 passes).
 

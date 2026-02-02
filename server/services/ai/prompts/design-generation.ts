@@ -5,6 +5,10 @@
  * DesignDocument JSON from user prompts and images.
  */
 
+import { formatDesignTokensForPrompt } from '#shared/constants/design-tokens'
+
+const DESIGN_TOKEN_CONSTRAINTS = formatDesignTokensForPrompt()
+
 // Widget definitions extracted from widgets.ts for the LLM
 const WIDGET_DEFINITIONS = `
 ## Available Widget Types
@@ -128,7 +132,7 @@ Je crée une landing page chaleureuse pour un restaurant avec un titre doré, un
     "textColor": "#1c1917",
     "primaryColor": "#ca8a04",
     "fontFamily": "Georgia, serif",
-    "contentPadding": "20px"
+    "contentPadding": "16px"
   },
   "widgets": [
     {
@@ -326,7 +330,7 @@ Je crée une section galerie photos avec un titre, une description invitante et 
     "textColor": "#1c1917",
     "primaryColor": "#92400e",
     "fontFamily": "Georgia, serif",
-    "contentPadding": "20px"
+    "contentPadding": "16px"
   },
   "widgets": [
     {
@@ -334,14 +338,14 @@ Je crée une section galerie photos avec un titre, une description invitante et 
       "type": "title",
       "order": 0,
       "content": { "text": "Découvrez nos espaces" },
-      "styles": { "fontSize": "26px", "textAlign": "center", "color": "#92400e", "padding": "24px 16px 8px" }
+      "styles": { "fontSize": "28px", "textAlign": "center", "color": "#92400e", "padding": "24px 16px 8px" }
     },
     {
       "id": "widget_2",
       "type": "text",
       "order": 1,
       "content": { "text": "Un cadre d'exception entre mer et montagne, pensé pour votre confort." },
-      "styles": { "textAlign": "center", "color": "#78716c", "padding": "0 16px 16px", "fontSize": "15px" }
+      "styles": { "textAlign": "center", "color": "#78716c", "padding": "0 16px 16px", "fontSize": "14px" }
     },
     {
       "id": "widget_3",
@@ -369,6 +373,8 @@ export const DESIGN_GENERATION_SYSTEM_PROMPT = `You are an expert UI designer fo
 ${WIDGET_DEFINITIONS}
 
 ${LAYOUT_RULES}
+
+${DESIGN_TOKEN_CONSTRAINTS}
 
 ${OUTPUT_FORMAT}
 
