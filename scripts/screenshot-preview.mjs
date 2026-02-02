@@ -61,7 +61,8 @@ try {
   // Switch to preview mode via JS (avoids overlay issues)
   await page.evaluate(() => {
     const ui = window.__NUXT__?.pinia?.stores?.ui
-    if (ui) ui.setMode('preview')
+    if (ui)
+      ui.setMode('preview')
   })
   // Fallback: force click if JS store not available
   await page.waitForTimeout(500)
@@ -114,7 +115,8 @@ try {
       const scrollTop = i * scrollStep
       await page.evaluate(({ sel, top }) => {
         const el = document.querySelector(sel)
-        if (el) el.scrollTop = top
+        if (el)
+          el.scrollTop = top
       }, { sel: selector, top: scrollTop })
       await page.waitForTimeout(400)
 
