@@ -1,9 +1,9 @@
 You are performing meta-analysis on a batch LP generation pipeline run.
 
 ## Input
-- Read `.claude/batch/synthesis.md`
-- Read `.claude/batch/state.json` (check for previous run history in the `runs` array)
-- Read all vote files: `.claude/batch/votes/*-consensus.json`
+- Read `{{BATCH_DIR}}/synthesis.md`
+- Read `{{BATCH_DIR}}/state.json` (check for previous run history in the `runs` array)
+- Read all vote files: `{{BATCH_DIR}}/votes/*-consensus.json`
 
 ## Analysis tasks
 
@@ -27,7 +27,7 @@ Based on recurring critiques, generate specific recommendations for improving:
 - Few-shot examples — which LPs to use as examples (score 8+)
 
 ## Output
-Write to `.claude/batch/meta-analysis.md`:
+Write to `{{BATCH_DIR}}/meta-analysis.md`:
 
 ```markdown
 # Meta-Analysis — Run #{RUN_ID} — {DATE}

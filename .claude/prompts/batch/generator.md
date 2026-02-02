@@ -19,7 +19,7 @@ Create a complete DesignDocument JSON for this brief. Rules:
 - Primary CTA above the fold AND repeated at bottom
 
 ## Step 3: Write to file
-Write the JSON to `.claude/batch/lp-{{BRIEF_ID}}.json`
+Write the JSON to `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
 
 ## Step 4: Validate
 Read `shared/schemas/design.schema.ts` and verify your JSON matches the constraints.
@@ -48,11 +48,11 @@ node -e "const token='{{ACCESS_TOKEN}}';fetch('http://localhost:5174/api/v1/cont
 
 2. Inject design (replace {CONTENT_ID} with the id from step 1):
 ```
-node -e "const token='{{ACCESS_TOKEN}}';const design=require('fs').readFileSync('.claude/batch/lp-{{BRIEF_ID}}.json','utf8');fetch('http://localhost:5174/api/v1/contents/{CONTENT_ID}/design',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({design:JSON.parse(design),createVersion:true})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
+node -e "const token='{{ACCESS_TOKEN}}';const design=require('fs').readFileSync('{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json','utf8');fetch('http://localhost:5174/api/v1/contents/{CONTENT_ID}/design',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({design:JSON.parse(design),createVersion:true})}).then(r=>r.json()).then(d=>console.log(JSON.stringify(d))).catch(e=>console.error(e))"
 ```
 
 ## Step 7: Screenshot
-Run: `node scripts/screenshot-preview.mjs {CONTENT_ID} .claude/batch/screenshots/{{SLUG}}-preview.png --token {{ACCESS_TOKEN}}`
+Run: `node scripts/screenshot-preview.mjs {CONTENT_ID} {{BATCH_DIR}}/screenshots/{{SLUG}}-preview.png --token {{ACCESS_TOKEN}}`
 Read the screenshot with the Read tool and analyze the visual rendering briefly.
 
 ## Step 8: Widget feedback

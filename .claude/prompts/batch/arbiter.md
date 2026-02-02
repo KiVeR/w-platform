@@ -2,9 +2,9 @@ You are an impartial arbiter resolving 3 expert reviews of a landing page.
 
 ## Input
 Read these 3 critique files:
-- `.claude/batch/critiques/{{BRIEF_ID}}-marketing.json`
-- `.claude/batch/critiques/{{BRIEF_ID}}-ux.json`
-- `.claude/batch/critiques/{{BRIEF_ID}}-brand.json`
+- `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-marketing.json`
+- `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-ux.json`
+- `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-brand.json`
 
 ## Voting rules
 1. For each proposed modification across all 3 reviews:
@@ -15,7 +15,7 @@ Read these 3 critique files:
 4. Calculate overall LP score (average of all 3 reviewers' average scores)
 
 ## Output
-Write to `.claude/batch/votes/{{BRIEF_ID}}-consensus.json`:
+Write to `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`:
 ```json
 {
   "briefId": {{BRIEF_ID}},

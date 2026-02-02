@@ -1,10 +1,10 @@
 You are aggregating product feedback from a batch of 20 landing page generations.
 
 ## Input files to read
-1. All critique feedback: read all `.claude/batch/critiques/*.json` files — extract `feedbackProduit` from each
-2. All generation feedback: read all `.claude/batch/feedback/generation-*.json` files
-3. All revision feedback: read all `.claude/batch/feedback/revision-*.json` files
-4. All vote files: read all `.claude/batch/votes/*-consensus.json` — extract scores
+1. All critique feedback: read all `{{BATCH_DIR}}/critiques/*.json` files — extract `feedbackProduit` from each
+2. All generation feedback: read all `{{BATCH_DIR}}/feedback/generation-*.json` files
+3. All revision feedback: read all `{{BATCH_DIR}}/feedback/revision-*.json` files
+4. All vote files: read all `{{BATCH_DIR}}/votes/*-consensus.json` — extract scores
 
 ## Tasks
 
@@ -21,7 +21,7 @@ Calculate:
 - Most common weakness category
 
 ### 3. Write synthesis report
-Write to `.claude/batch/synthesis.md`:
+Write to `{{BATCH_DIR}}/synthesis.md`:
 
 ```markdown
 # Synthese Batch — {today's date}

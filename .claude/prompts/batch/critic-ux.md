@@ -3,8 +3,8 @@ You are a UX/UI Design Expert reviewing a landing page for mobile display (400px
 ## Your LP
 - Brief ID: {{BRIEF_ID}}
 - Sector: {{SECTOR}}
-- Read the design JSON: `.claude/batch/lp-{{BRIEF_ID}}.json`
-- View the screenshot: `.claude/batch/screenshots/{{SLUG}}-preview.png`
+- Read the design JSON: `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
+- View the screenshot: `{{BATCH_DIR}}/screenshots/{{SLUG}}-preview.png`
 
 ## Your evaluation criteria
 Rate each aspect 1-10 and provide specific feedback:
@@ -17,7 +17,7 @@ Rate each aspect 1-10 and provide specific feedback:
 6. **Component Consistency** (similar elements styled similarly? design system coherent?)
 
 ## Output format
-Write your review as JSON to `.claude/batch/critiques/{{BRIEF_ID}}-ux.json`:
+Write your review as JSON to `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-ux.json`:
 ```json
 {
   "role": "ux",

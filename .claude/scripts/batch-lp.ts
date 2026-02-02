@@ -14,7 +14,7 @@
 
 import type { Buffer } from 'node:buffer'
 import { spawn } from 'node:child_process'
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { access, mkdir, readdir, readFile, symlink, unlink, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { defineCommand, runMain } from 'citty'
@@ -26,9 +26,8 @@ import { defineCommand, runMain } from 'citty'
 const BASE_URL = 'http://localhost:5174'
 const AUTH_EMAIL = 'admin@test.com'
 const AUTH_PASSWORD = 'Admin123!'
-const BATCH_DIR = resolve('.claude/batch')
+const BATCH_BASE = resolve('.claude/batch/runs')
 const PROMPTS_DIR = resolve('.claude/prompts/batch')
-const STATE_FILE = resolve(BATCH_DIR, 'state.json')
 const CLAUDE_TIMEOUT = 10 * 60 * 1000 // 10 min per agent
 
 // ANSI colors (same pattern as user.ts)
@@ -134,14 +133,50 @@ async function fileExists(path: string): Promise<boolean> {
   }
 }
 
-async function loadState(): Promise<State | null> {
-  if (!await fileExists(STATE_FILE))
-    return null
-  return JSON.parse(await readFile(STATE_FILE, 'utf8'))
+async function getNextRunId(): Promise<number> {
+  try {
+    const entries = await readdir(BATCH_BASE)
+    const ids = entries.map(Number).filter(n => !Number.isNaN(n))
+    return ids.length > 0 ? Math.max(...ids) + 1 : 1
+  }
+  catch {
+    return 1
+  }
 }
 
-async function saveState(state: State): Promise<void> {
-  await writeFile(STATE_FILE, JSON.stringify(state, null, 2))
+function getRunDir(runId: number): string {
+  return resolve(BATCH_BASE, String(runId))
+}
+
+async function getLatestRunDir(): Promise<string | null> {
+  const latestLink = resolve(BATCH_BASE, 'latest')
+  try {
+    const stateFile = resolve(latestLink, 'state.json')
+    if (await fileExists(stateFile))
+      return latestLink
+  }
+  catch {}
+  return null
+}
+
+async function updateLatestSymlink(runId: number): Promise<void> {
+  const latestLink = resolve(BATCH_BASE, 'latest')
+  try {
+    await unlink(latestLink)
+  }
+  catch {}
+  await symlink(String(runId), latestLink)
+}
+
+async function loadState(runDir: string): Promise<State | null> {
+  const stateFile = resolve(runDir, 'state.json')
+  if (!await fileExists(stateFile))
+    return null
+  return JSON.parse(await readFile(stateFile, 'utf8'))
+}
+
+async function saveState(state: State, runDir: string): Promise<void> {
+  await writeFile(resolve(runDir, 'state.json'), JSON.stringify(state, null, 2))
 }
 
 function initState(maxParallel: number, briefIds: number[]): State {
@@ -307,7 +342,7 @@ function parseFeedback(output: string): Record<string, unknown> | null {
 // Pre-flight checks
 // ---------------------------------------------------------------------------
 
-async function preflight(): Promise<string | false> {
+async function preflight(runDir: string): Promise<string | false> {
   // Check server
   try {
     const res = await fetch(`${BASE_URL}/api/v1/health`)
@@ -339,12 +374,12 @@ async function preflight(): Promise<string | false> {
     return false
   }
 
-  // Create directories
-  await mkdir(resolve(BATCH_DIR, 'critiques'), { recursive: true })
-  await mkdir(resolve(BATCH_DIR, 'votes'), { recursive: true })
-  await mkdir(resolve(BATCH_DIR, 'screenshots'), { recursive: true })
-  await mkdir(resolve(BATCH_DIR, 'feedback'), { recursive: true })
-  log.success('Directories created')
+  // Create directories in run dir
+  await mkdir(resolve(runDir, 'critiques'), { recursive: true })
+  await mkdir(resolve(runDir, 'votes'), { recursive: true })
+  await mkdir(resolve(runDir, 'screenshots'), { recursive: true })
+  await mkdir(resolve(runDir, 'feedback'), { recursive: true })
+  log.success(`Directories created in ${runDir}`)
 
   return token
 }
@@ -353,7 +388,7 @@ async function preflight(): Promise<string | false> {
 // Phases
 // ---------------------------------------------------------------------------
 
-async function phaseGeneration(state: State, token: string): Promise<void> {
+async function phaseGeneration(state: State, token: string, runDir: string): Promise<void> {
   log.phase('PHASE 1 — GENERATION')
   const template = await loadPromptTemplate('generator')
   const pending = state.briefs.filter(b => b.generation === 'pending')
@@ -376,6 +411,7 @@ async function phaseGeneration(state: State, token: string): Promise<void> {
         SLUG: brief.slug,
         LP_TITLE: brief.sector,
         ACCESS_TOKEN: token,
+        BATCH_DIR: runDir,
       })
 
       const soloMode = state.config.maxParallel === 1
@@ -385,7 +421,7 @@ async function phaseGeneration(state: State, token: string): Promise<void> {
       const feedback = parseFeedback(output)
       if (feedback) {
         await writeFile(
-          resolve(BATCH_DIR, `feedback/generation-${brief.id}.json`),
+          resolve(runDir, `feedback/generation-${brief.id}.json`),
           JSON.stringify(feedback, null, 2),
         )
         if (typeof (feedback as Record<string, unknown>).contentId === 'number') {
@@ -406,11 +442,11 @@ async function phaseGeneration(state: State, token: string): Promise<void> {
     }
 
     state.phase = 'generation'
-    await saveState(state)
+    await saveState(state, runDir)
   })
 }
 
-async function phaseCritique(state: State): Promise<void> {
+async function phaseCritique(state: State, runDir: string): Promise<void> {
   log.phase('PHASE 2 — CRITIQUE')
   const roles = ['critic-marketing', 'critic-ux', 'critic-brand'] as const
   const generated = state.briefs.filter(b => b.generation === 'done' && b.critique === 'pending')
@@ -437,6 +473,7 @@ async function phaseCritique(state: State): Promise<void> {
         SECTOR: brief.sector,
         SLUG: brief.slug,
         BRIEF_TEXT: brief.prompt,
+        BATCH_DIR: runDir,
       })
 
       const soloMode = state.config.maxParallel === 1
@@ -452,16 +489,16 @@ async function phaseCritique(state: State): Promise<void> {
   // Mark critique as done for briefs that have all 3 files
   for (const b of generated) {
     const allDone = await Promise.all(
-      ['marketing', 'ux', 'brand'].map(r => fileExists(resolve(BATCH_DIR, `critiques/${b.id}-${r}.json`))),
+      ['marketing', 'ux', 'brand'].map(r => fileExists(resolve(runDir, `critiques/${b.id}-${r}.json`))),
     )
     b.critique = allDone.every(Boolean) ? 'done' : 'error'
   }
 
   state.phase = 'critique'
-  await saveState(state)
+  await saveState(state, runDir)
 }
 
-async function phaseVote(state: State): Promise<void> {
+async function phaseVote(state: State, runDir: string): Promise<void> {
   log.phase('PHASE 3 — VOTE & CONSENSUS')
   const template = await loadPromptTemplate('arbiter')
   const ready = state.briefs.filter(b => b.critique === 'done' && b.vote === 'pending')
@@ -478,7 +515,10 @@ async function phaseVote(state: State): Promise<void> {
     log.agent(brief.id, 'Arbitrating...')
 
     try {
-      const prompt = fillTemplate(template, { BRIEF_ID: brief.id })
+      const prompt = fillTemplate(template, {
+        BRIEF_ID: brief.id,
+        BATCH_DIR: runDir,
+      })
       const soloMode = state.config.maxParallel === 1
       await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
       briefState.vote = 'done'
@@ -490,14 +530,14 @@ async function phaseVote(state: State): Promise<void> {
       log.agent(brief.id, `${c.red}Failed${c.reset}`)
     }
 
-    await saveState(state)
+    await saveState(state, runDir)
   })
 
   state.phase = 'vote'
-  await saveState(state)
+  await saveState(state, runDir)
 }
 
-async function phaseRevision(state: State, token: string): Promise<void> {
+async function phaseRevision(state: State, token: string, runDir: string): Promise<void> {
   log.phase('PHASE 4 — REVISION')
   const template = await loadPromptTemplate('revisor')
   const ready = state.briefs.filter(b => b.vote === 'done' && b.revision === 'pending')
@@ -519,6 +559,7 @@ async function phaseRevision(state: State, token: string): Promise<void> {
         SLUG: brief.slug,
         CONTENT_ID: briefState.contentId ?? 0,
         ACCESS_TOKEN: token,
+        BATCH_DIR: runDir,
       })
 
       const soloMode = state.config.maxParallel === 1
@@ -527,7 +568,7 @@ async function phaseRevision(state: State, token: string): Promise<void> {
       const feedback = parseFeedback(output)
       if (feedback) {
         await writeFile(
-          resolve(BATCH_DIR, `feedback/revision-${brief.id}.json`),
+          resolve(runDir, `feedback/revision-${brief.id}.json`),
           JSON.stringify(feedback, null, 2),
         )
       }
@@ -541,20 +582,21 @@ async function phaseRevision(state: State, token: string): Promise<void> {
       log.agent(brief.id, `${c.red}Failed${c.reset}`)
     }
 
-    await saveState(state)
+    await saveState(state, runDir)
   })
 
   state.phase = 'revision'
-  await saveState(state)
+  await saveState(state, runDir)
 }
 
-async function phaseSynthesis(state: State): Promise<void> {
+async function phaseSynthesis(state: State, runDir: string): Promise<void> {
   log.phase('PHASE 5 — SYNTHESIS')
   const template = await loadPromptTemplate('synthesizer')
 
   try {
-    await runClaude(template)
-    log.success('Synthesis report written to .claude/batch/synthesis.md')
+    const prompt = fillTemplate(template, { BATCH_DIR: runDir })
+    await runClaude(prompt)
+    log.success(`Synthesis report written to ${runDir}/synthesis.md`)
   }
   catch (err) {
     state.errors.push({ phase: 'synthesis', briefId: 0, error: (err as Error).message })
@@ -562,16 +604,17 @@ async function phaseSynthesis(state: State): Promise<void> {
   }
 
   state.phase = 'synthesis'
-  await saveState(state)
+  await saveState(state, runDir)
 }
 
-async function phaseMetaAnalysis(state: State): Promise<void> {
+async function phaseMetaAnalysis(state: State, runDir: string): Promise<void> {
   log.phase('PHASE 6 — META-ANALYSIS')
   const template = await loadPromptTemplate('meta-analyzer')
 
   try {
-    await runClaude(template)
-    log.success('Meta-analysis written to .claude/batch/meta-analysis.md')
+    const prompt = fillTemplate(template, { BATCH_DIR: runDir })
+    await runClaude(prompt)
+    log.success(`Meta-analysis written to ${runDir}/meta-analysis.md`)
   }
   catch (err) {
     state.errors.push({ phase: 'meta', briefId: 0, error: (err as Error).message })
@@ -579,15 +622,16 @@ async function phaseMetaAnalysis(state: State): Promise<void> {
   }
 
   state.phase = 'done'
-  await saveState(state)
+  await saveState(state, runDir)
 }
 
 // ---------------------------------------------------------------------------
 // Final report
 // ---------------------------------------------------------------------------
 
-function printReport(state: State): void {
+function printReport(state: State, runDir: string): void {
   log.phase('FINAL REPORT')
+  log.info(`Run #${state.runId} — ${runDir}`)
 
   console.log(`${c.bold}  #  | Sector                  | Status Gen | Critique | Vote | Revision${c.reset}`)
   console.log('  ---|-------------------------|------------|----------|------|----------')
@@ -619,9 +663,34 @@ function printReport(state: State): void {
   const doneCount = state.briefs.filter(b => b.revision === 'done').length
   console.log(`\n${c.bold}Total: ${doneCount}/${state.briefs.length} LPs completed${c.reset}`)
   console.log(`\nReports:`)
-  console.log(`  ${c.cyan}.claude/batch/synthesis.md${c.reset} — Widget feedback aggregation`)
-  console.log(`  ${c.cyan}.claude/batch/meta-analysis.md${c.reset} — System improvement recommendations`)
+  console.log(`  ${c.cyan}${runDir}/synthesis.md${c.reset} — Widget feedback aggregation`)
+  console.log(`  ${c.cyan}${runDir}/meta-analysis.md${c.reset} — System improvement recommendations`)
   console.log(`\nNext step: ${c.cyan}/optimize-lp-pipeline${c.reset} to apply improvements`)
+}
+
+// ---------------------------------------------------------------------------
+// Helpers: resolve run directory for CLI commands
+// ---------------------------------------------------------------------------
+
+async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: State } | null> {
+  if (runArg) {
+    const runDir = getRunDir(Number(runArg))
+    const state = await loadState(runDir)
+    if (!state) {
+      log.error(`No state found for run #${runArg}`)
+      return null
+    }
+    return { runDir, state }
+  }
+  const latestDir = await getLatestRunDir()
+  if (!latestDir) {
+    log.error('No batch in progress. Run: yarn batch-lp run')
+    return null
+  }
+  const state = await loadState(latestDir)
+  if (!state)
+    return null
+  return { runDir: latestDir, state }
 }
 
 // ---------------------------------------------------------------------------
@@ -651,23 +720,38 @@ const run = defineCommand({
     if (resumeFrom)
       log.info(`Resuming from: ${resumeFrom}`)
 
-    // Pre-flight — returns auth token
-    const token = await preflight()
-    if (!token) {
-      process.exit(1)
-    }
-
-    // Load or create state
+    // Determine run directory
+    let runDir: string
     let state: State
-    if (resumeFrom && await fileExists(STATE_FILE)) {
-      state = (await loadState())!
+
+    if (resumeFrom) {
+      // Resume: use latest run
+      const latestDir = await getLatestRunDir()
+      if (!latestDir) {
+        log.error('No existing run to resume. Run without --resume-from first.')
+        process.exit(1)
+      }
+      runDir = latestDir
+      state = (await loadState(runDir))!
       state.config.maxParallel = maxParallel
-      log.info(`Loaded existing state (run #${state.runId})`)
+      log.info(`Resuming run #${state.runId} from ${runDir}`)
     }
     else {
+      // New run
+      const runId = await getNextRunId()
+      runDir = getRunDir(runId)
       state = initState(maxParallel, briefIds)
-      await saveState(state)
-      log.info('Initialized new state')
+      state.runId = runId
+      await mkdir(runDir, { recursive: true })
+      await saveState(state, runDir)
+      await updateLatestSymlink(runId)
+      log.info(`New run #${runId} in ${runDir}`)
+    }
+
+    // Pre-flight — returns auth token
+    const token = await preflight(runDir)
+    if (!token) {
+      process.exit(1)
     }
 
     // Determine starting phase
@@ -679,49 +763,52 @@ const run = defineCommand({
 
     // Run phases sequentially
     const phaseFns = [
-      () => phaseGeneration(state, token),
-      () => phaseCritique(state),
-      () => phaseVote(state),
-      () => phaseRevision(state, token),
-      () => phaseSynthesis(state),
-      () => phaseMetaAnalysis(state),
+      () => phaseGeneration(state, token, runDir),
+      () => phaseCritique(state, runDir),
+      () => phaseVote(state, runDir),
+      () => phaseRevision(state, token, runDir),
+      () => phaseSynthesis(state, runDir),
+      () => phaseMetaAnalysis(state, runDir),
     ]
 
     for (let i = startIdx; i < phaseFns.length; i++) {
       await phaseFns[i]()
     }
 
-    printReport(state)
+    printReport(state, runDir)
   },
 })
 
 const status = defineCommand({
   meta: { name: 'status', description: 'Show current pipeline state' },
-  async run() {
-    const state = await loadState()
-    if (!state) {
-      log.error('No batch in progress. Run: yarn batch-lp run')
+  args: {
+    run: { type: 'string', default: '', description: 'Specific run ID (default: latest)' },
+  },
+  async run({ args }) {
+    const result = await resolveRunDir((args.run as string) || undefined)
+    if (!result)
       return
-    }
-    log.info(`Run #${state.runId} — Phase: ${state.phase}`)
-    printReport(state)
+    log.info(`Run #${result.state.runId} — Phase: ${result.state.phase}`)
+    printReport(result.state, result.runDir)
   },
 })
 
 const report = defineCommand({
   meta: { name: 'report', description: 'Show final report' },
-  async run() {
-    const state = await loadState()
-    if (!state) {
-      log.error('No batch results. Run: yarn batch-lp run')
+  args: {
+    run: { type: 'string', default: '', description: 'Specific run ID (default: latest)' },
+  },
+  async run({ args }) {
+    const result = await resolveRunDir((args.run as string) || undefined)
+    if (!result)
       return
-    }
-    printReport(state)
+    printReport(result.state, result.runDir)
 
     // Show synthesis if available
-    if (await fileExists(resolve(BATCH_DIR, 'synthesis.md'))) {
+    const synthPath = resolve(result.runDir, 'synthesis.md')
+    if (await fileExists(synthPath)) {
       console.log(`\n${c.bold}Synthesis:${c.reset}`)
-      const content = await readFile(resolve(BATCH_DIR, 'synthesis.md'), 'utf8')
+      const content = await readFile(synthPath, 'utf8')
       console.log(content.slice(0, 2000))
     }
   },
