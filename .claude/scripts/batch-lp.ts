@@ -29,7 +29,8 @@ const AUTH_EMAIL = 'admin@test.com'
 const AUTH_PASSWORD = 'Admin123!'
 const BATCH_BASE = resolve('.claude/batch/runs')
 const PROMPTS_DIR = resolve('.claude/prompts/batch')
-const CLAUDE_TIMEOUT = 10 * 60 * 1000 // 10 min per agent
+const CLAUDE_TIMEOUT = 15 * 60 * 1000 // 15 min per agent
+const MAX_RETRIES = 1 // Auto-retry failed briefs once
 
 // ANSI colors (same pattern as user.ts)
 const c = {
@@ -332,7 +333,13 @@ async function runInBatches<T>(
   }
 }
 
-function parseFeedback(output: string): Record<string, unknown> | null {
+interface GenerationFeedback {
+  contentId?: number
+  title?: string
+  [key: string]: unknown
+}
+
+function parseFeedback(output: string): GenerationFeedback | null {
   const match = output.match(/FEEDBACK_START\n([\s\S]*?)\nFEEDBACK_END/)
   if (!match)
     return null
@@ -341,6 +348,38 @@ function parseFeedback(output: string): Record<string, unknown> | null {
   }
   catch {
     return null
+  }
+}
+
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err)
+}
+
+function agentLabel(state: State, label: string): string | undefined {
+  return state.config.maxParallel === 1 ? undefined : label
+}
+
+async function logDesignTokenCompliance(briefId: number, runDir: string): Promise<void> {
+  const lpFile = resolve(runDir, `lp-${briefId}.json`)
+  if (!await fileExists(lpFile))
+    return
+  try {
+    const design = JSON.parse(await readFile(lpFile, 'utf8'))
+    const widgets = design.widgets || []
+    const result = validateDesignTokens(widgets)
+    const pct = (result.complianceRate * 100).toFixed(0)
+    if (result.valid) {
+      log.agent(briefId, `${c.green}Design tokens: 100% compliant${c.reset}`)
+    }
+    else {
+      log.agent(briefId, `${c.yellow}Design tokens: ${pct}% compliant (${result.violations.length} violations)${c.reset}`)
+      for (const v of result.violations.slice(0, 5)) {
+        log.agent(briefId, `  ${c.gray}${v.widgetId}.${v.property}: ${v.value} → ${v.nearestToken}${c.reset}`)
+      }
+    }
+  }
+  catch {
+    // JSON parse error — skip validation
   }
 }
 
@@ -427,11 +466,8 @@ async function preflight(runDir: string): Promise<string | false> {
   }
 
   // Create directories in run dir
-  await mkdir(resolve(runDir, 'critiques'), { recursive: true })
-  await mkdir(resolve(runDir, 'votes'), { recursive: true })
-  await mkdir(resolve(runDir, 'screenshots'), { recursive: true })
-  await mkdir(resolve(runDir, 'feedback'), { recursive: true })
-  await mkdir(resolve(runDir, 'human-review'), { recursive: true })
+  for (const dir of ['critiques', 'votes', 'screenshots', 'feedback', 'human-review'])
+    await mkdir(resolve(runDir, dir), { recursive: true })
   log.success(`Directories created in ${runDir}`)
 
   return token
@@ -440,6 +476,57 @@ async function preflight(runDir: string): Promise<string | false> {
 // ---------------------------------------------------------------------------
 // Phases
 // ---------------------------------------------------------------------------
+
+async function generateSingleBrief(
+  brief: Brief,
+  briefState: BriefState,
+  template: string,
+  token: string,
+  runDir: string,
+  state: State,
+  isRetry = false,
+): Promise<void> {
+  const retryTag = isRetry ? `${c.yellow}Retry${c.reset} ` : ''
+  log.agent(brief.id, `${retryTag}Generating ${brief.sector}...`)
+
+  try {
+    const prompt = fillTemplate(template, {
+      BRIEF_ID: brief.id,
+      BRIEF_TEXT: brief.prompt,
+      SLUG: brief.slug,
+      LP_TITLE: brief.sector,
+      ACCESS_TOKEN: token,
+      BATCH_DIR: runDir,
+    })
+
+    const output = await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))
+
+    const feedback = parseFeedback(output)
+    if (feedback) {
+      await writeFile(
+        resolve(runDir, `feedback/generation-${brief.id}.json`),
+        JSON.stringify(feedback, null, 2),
+      )
+      if (typeof feedback.contentId === 'number')
+        briefState.contentId = feedback.contentId
+      if (typeof feedback.title === 'string')
+        briefState.title = feedback.title
+    }
+
+    await logDesignTokenCompliance(brief.id, runDir)
+
+    briefState.generation = 'done'
+    log.agent(brief.id, `${c.green}Done${isRetry ? ' (retry)' : ''}${c.reset}`)
+  }
+  catch (err) {
+    briefState.generation = 'error'
+    state.errors.push({ phase: 'generation', briefId: brief.id, error: errorMessage(err) })
+    log.agent(brief.id, `${c.red}${isRetry ? 'Retry failed' : 'Failed'}: ${errorMessage(err)}${c.reset}`)
+  }
+
+  state.phase = 'generation'
+  await saveState(state, runDir)
+}
 
 async function phaseGeneration(state: State, token: string, runDir: string): Promise<void> {
   log.phase('PHASE 1 — GENERATION')
@@ -455,71 +542,22 @@ async function phaseGeneration(state: State, token: string, runDir: string): Pro
 
   await runInBatches(pending, state.config.maxParallel, async (briefState) => {
     const brief = BRIEFS.find(b => b.id === briefState.id)!
-    log.agent(brief.id, `Generating ${brief.sector}...`)
-
-    try {
-      const prompt = fillTemplate(template, {
-        BRIEF_ID: brief.id,
-        BRIEF_TEXT: brief.prompt,
-        SLUG: brief.slug,
-        LP_TITLE: brief.sector,
-        ACCESS_TOKEN: token,
-        BATCH_DIR: runDir,
-      })
-
-      const soloMode = state.config.maxParallel === 1
-      const output = await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
-
-      // Parse feedback from output
-      const feedback = parseFeedback(output)
-      if (feedback) {
-        await writeFile(
-          resolve(runDir, `feedback/generation-${brief.id}.json`),
-          JSON.stringify(feedback, null, 2),
-        )
-        if (typeof (feedback as Record<string, unknown>).contentId === 'number') {
-          briefState.contentId = (feedback as Record<string, unknown>).contentId as number
-        }
-        if (typeof (feedback as Record<string, unknown>).title === 'string') {
-          briefState.title = (feedback as Record<string, unknown>).title as string
-        }
-      }
-
-      // Validate design tokens compliance
-      const lpFile = resolve(runDir, `lp-${brief.id}.json`)
-      if (await fileExists(lpFile)) {
-        try {
-          const design = JSON.parse(await readFile(lpFile, 'utf8'))
-          const widgets = design.widgets || []
-          const result = validateDesignTokens(widgets)
-          const pct = (result.complianceRate * 100).toFixed(0)
-          if (result.valid) {
-            log.agent(brief.id, `${c.green}Design tokens: 100% compliant${c.reset}`)
-          }
-          else {
-            log.agent(brief.id, `${c.yellow}Design tokens: ${pct}% compliant (${result.violations.length} violations)${c.reset}`)
-            for (const v of result.violations.slice(0, 5)) {
-              log.agent(brief.id, `  ${c.gray}${v.widgetId}.${v.property}: ${v.value} → ${v.nearestToken}${c.reset}`)
-            }
-          }
-        }
-        catch {
-          // JSON parse error — skip validation
-        }
-      }
-
-      briefState.generation = 'done'
-      log.agent(brief.id, `${c.green}Done${c.reset}`)
-    }
-    catch (err) {
-      briefState.generation = 'error'
-      state.errors.push({ phase: 'generation', briefId: brief.id, error: (err as Error).message })
-      log.agent(brief.id, `${c.red}Failed: ${(err as Error).message}${c.reset}`)
-    }
-
-    state.phase = 'generation'
-    await saveState(state, runDir)
+    await generateSingleBrief(brief, briefState, template, token, runDir, state)
   })
+
+  // Auto-retry failed briefs
+  const failed = state.briefs.filter(b => b.generation === 'error')
+  if (failed.length > 0 && MAX_RETRIES > 0) {
+    log.info(`${c.yellow}Retrying ${failed.length} failed brief(s)...${c.reset}`)
+    for (const briefState of failed) {
+      briefState.generation = 'pending'
+      state.errors = state.errors.filter(e => !(e.phase === 'generation' && e.briefId === briefState.id))
+    }
+    await runInBatches(failed, state.config.maxParallel, async (briefState) => {
+      const brief = BRIEFS.find(b => b.id === briefState.id)!
+      await generateSingleBrief(brief, briefState, template, token, runDir, state, true)
+    })
+  }
 }
 
 async function phaseCritique(state: State, runDir: string): Promise<void> {
@@ -552,12 +590,11 @@ async function phaseCritique(state: State, runDir: string): Promise<void> {
         BATCH_DIR: runDir,
       })
 
-      const soloMode = state.config.maxParallel === 1
-      await runClaude(prompt, soloMode ? undefined : `B${brief.id} ${roleName}`)
+      await runClaude(prompt, agentLabel(state, `B${brief.id} ${roleName}`))
       log.agent(brief.id, `${roleName} ${c.green}done${c.reset}`)
     }
     catch (err) {
-      state.errors.push({ phase: 'critique', briefId: brief.id, error: `${role}: ${(err as Error).message}` })
+      state.errors.push({ phase: 'critique', briefId: brief.id, error: `${role}: ${errorMessage(err)}` })
       log.agent(brief.id, `${roleName} ${c.red}failed${c.reset}`)
     }
   })
@@ -595,14 +632,13 @@ async function phaseVote(state: State, runDir: string): Promise<void> {
         BRIEF_ID: brief.id,
         BATCH_DIR: runDir,
       })
-      const soloMode = state.config.maxParallel === 1
-      await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
+      await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))
       briefState.vote = 'done'
       log.agent(brief.id, `${c.green}Consensus reached${c.reset}`)
     }
     catch (err) {
       briefState.vote = 'error'
-      state.errors.push({ phase: 'vote', briefId: brief.id, error: (err as Error).message })
+      state.errors.push({ phase: 'vote', briefId: brief.id, error: errorMessage(err) })
       log.agent(brief.id, `${c.red}Failed${c.reset}`)
     }
 
@@ -675,8 +711,7 @@ async function phaseRevision(state: State, token: string, runDir: string): Promi
         BATCH_DIR: runDir,
       })
 
-      const soloMode = state.config.maxParallel === 1
-      const output = await runClaude(prompt, soloMode ? undefined : `Brief ${brief.id}`)
+      const output = await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))
 
       const feedback = parseFeedback(output)
       if (feedback) {
@@ -691,7 +726,7 @@ async function phaseRevision(state: State, token: string, runDir: string): Promi
     }
     catch (err) {
       briefState.revision = 'error'
-      state.errors.push({ phase: 'revision', briefId: brief.id, error: (err as Error).message })
+      state.errors.push({ phase: 'revision', briefId: brief.id, error: errorMessage(err) })
       log.agent(brief.id, `${c.red}Failed${c.reset}`)
     }
 
@@ -712,8 +747,8 @@ async function phaseSynthesis(state: State, runDir: string): Promise<void> {
     log.success(`Synthesis report written to ${runDir}/synthesis.md`)
   }
   catch (err) {
-    state.errors.push({ phase: 'synthesis', briefId: 0, error: (err as Error).message })
-    log.error(`Synthesis failed: ${(err as Error).message}`)
+    state.errors.push({ phase: 'synthesis', briefId: 0, error: errorMessage(err) })
+    log.error(`Synthesis failed: ${errorMessage(err)}`)
   }
 
   state.phase = 'synthesis'
@@ -730,8 +765,8 @@ async function phaseMetaAnalysis(state: State, runDir: string): Promise<void> {
     log.success(`Meta-analysis written to ${runDir}/meta-analysis.md`)
   }
   catch (err) {
-    state.errors.push({ phase: 'meta', briefId: 0, error: (err as Error).message })
-    log.error(`Meta-analysis failed: ${(err as Error).message}`)
+    state.errors.push({ phase: 'meta', briefId: 0, error: errorMessage(err) })
+    log.error(`Meta-analysis failed: ${errorMessage(err)}`)
   }
 
   state.phase = 'done'
