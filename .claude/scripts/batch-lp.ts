@@ -95,31 +95,34 @@ interface State {
 }
 
 // ---------------------------------------------------------------------------
-// Briefs
+// Sectors (stable IDs, briefs generated dynamically by Claude agent)
 // ---------------------------------------------------------------------------
 
-const BRIEFS: Brief[] = [
-  { id: 1, sector: 'restauration-rapide', slug: 'smash-house-burger', prompt: 'Restaurant de burgers artisanaux "Le Smash House". Promotion limitée : menu Burger Signature + frites maison + boisson à 12€ au lieu de 18€, valable jusqu\'au 28 février 2026. Ambiance street food moderne. CTA principal : Commander maintenant (bouton vers menu). CTA secondaire : Réserver une table (click-to-call). Inclure photo hero du burger, section ingrédients frais, horaires d\'ouverture.' },
-  { id: 2, sector: 'banque-assurance', slug: 'banque-proximite-rdv', prompt: 'Agence Banque Proximité. Consultation patrimoniale gratuite et sans engagement avec un conseiller dédié. Mettre en avant : sécurité de l\'épargne, accompagnement personnalisé, 30 ans d\'expertise. CTA principal : formulaire de prise de RDV (nom, email, téléphone, créneau préféré). CTA secondaire : appeler l\'agence. Inclure carte de localisation de l\'agence. Ton rassurant et professionnel.' },
-  { id: 3, sector: 'mode-pret-a-porter', slug: 'eclat-paris-vente-flash', prompt: 'Marque "Éclat Paris". Vente flash -50% sur toute la collection été 2026, 48h seulement. Ambiance élégante et exclusive. CTA : Découvrir la collection (bouton). Inclure galerie de 4+ looks phares, section "pourquoi Éclat" (qualité, made in France, livraison express). Urgence forte avec mention du temps restant. Ton luxueux mais accessible.' },
-  { id: 4, sector: 'automobile', slug: 'ecomotion-volta-essai', prompt: 'Constructeur EcoMotion. Essai gratuit du nouveau SUV 100% électrique "Volta". Autonomie 600km, recharge rapide 20min. CTA principal : Réserver mon essai (formulaire avec nom, ville, date souhaitée). Vidéo de présentation du véhicule. Section caractéristiques techniques avec icônes. Ton moderne et technologique. Palette sombre (noir/vert électrique).' },
-  { id: 5, sector: 'immobilier', slug: 'jardins-emeraude-portes-ouvertes', prompt: 'Résidence neuve "Les Jardins d\'Émeraude" à Nantes. Journée portes ouvertes le 15 mars 2026. Appartements T2 à T4 à partir de 185 000€. CTA : S\'inscrire aux portes ouvertes (formulaire). Section galerie avec vues des appartements et espaces communs. Plan de localisation avec carte. Ton chaleureux et familial. Palette verte/nature.' },
-  { id: 6, sector: 'fitness', slug: 'fitclub-premier-mois', prompt: 'FitClub Premium. Offre de lancement : premier mois offert sans engagement. 50+ cours collectifs, coach personnel, espace bien-être. CTA principal : Je profite de l\'offre (bouton). Section slider des équipements. Icônes pour les avantages (parking, douches, sauna). Ton énergique et motivant. Palette orange/noir dynamique.' },
-  { id: 7, sector: 'telecoms', slug: 'neomobile-forfait-5g', prompt: 'Opérateur NéoMobile. Nouveau forfait 5G illimité à 19,99€/mois sans engagement (au lieu de 34,99€). Appels, SMS, data illimités en France + 50Go en Europe. CTA : Souscrire maintenant (bouton). Comparatif avec la concurrence via icônes. Simple, direct, sans blabla. Palette bleue/blanche épurée.' },
-  { id: 8, sector: 'cosmetique-beaute', slug: 'maison-lumiere-serum', prompt: 'Maison Lumière. Recevez gratuitement un échantillon du nouveau sérum anti-âge "Éclat Divin". Formulaire d\'inscription (nom, email, adresse, type de peau). Section ingrédients naturels avec icônes. Témoignage d\'une ambassadrice. Ton luxueux et sensoriel. Palette dorée/crème.' },
-  { id: 9, sector: 'education-formation', slug: 'digilearn-webinaire-ia', prompt: 'Institut DigiLearn. Webinaire gratuit "L\'IA au service de votre carrière" le 20 mars 2026 à 19h. Intervenant : Dr. Sophie Martin, experte IA. CTA : S\'inscrire au webinaire (formulaire email + prénom). Programme en 3 points. Vidéo teaser de l\'intervenante. Ton sérieux et inspirant. Palette bleu marine/blanc.' },
-  { id: 10, sector: 'voyage-tourisme', slug: 'odyssee-grece-earlybird', prompt: 'Agence Odyssée Voyages. Offre early-bird : séjour tout compris en Grèce (Santorin) 7 nuits, -30% pour toute réservation avant le 1er avril 2026. À partir de 890€/personne. CTA : Réserver mon séjour (bouton). Galerie photos de Santorin. Section inclus dans le séjour. Ton évasion et rêve. Palette bleu méditerranée/blanc.' },
-  { id: 11, sector: 'sante-pharmacie', slug: 'pharmasante-vaccination', prompt: 'Réseau PharmaSanté. Campagne de vaccination grippe saisonnière. Sans RDV, dans vos pharmacies participantes. CTA : Trouver ma pharmacie (store-locator / carte). Section FAQ simplifiée. Icônes pour les publics concernés (seniors, femmes enceintes, professionnels de santé). Ton bienveillant et informatif. Palette bleu clair/blanc.' },
-  { id: 12, sector: 'grande-distribution', slug: 'freshmarket-fidelite', prompt: 'Supermarchés FreshMarket. Nouveau programme de fidélité avec carte 100% dématérialisée. 1 point par euro dépensé, paliers de récompenses. CTA : Activer ma carte (formulaire email + téléphone). Section barcode pour scanner en caisse. Avantages avec icônes (réductions exclusives, anniversaire, accès prioritaire). Ton pratique et économique. Palette verte/jaune.' },
-  { id: 13, sector: 'evenementiel', slug: 'nuits-sonores-festival', prompt: 'Festival "Nuits Sonores Lyon 2026". 4 jours de musique électronique, 80+ artistes, 5 scènes. Du 28 au 31 mai 2026. CTA : Acheter mon pass (bouton vers billetterie). Galerie artistes avec photos. Programme par jour. Liens réseaux sociaux. Ton festif et dynamique. Palette noir/violet/néon.' },
-  { id: 14, sector: 'ong-association', slug: 'terre-vivante-dons', prompt: 'Association "Terre Vivante". Campagne de reforestation : 1 don = 1 arbre planté. Objectif : 100 000 arbres en 2026. CTA principal : Je plante un arbre (bouton don). Compteur d\'arbres plantés (simulé via texte). Section impact : chiffres clés avec icônes. Photo forte de la forêt. Ton engagé et émotionnel. Palette vert forêt/terre.' },
-  { id: 15, sector: 'b2b-saas', slug: 'pipelinecrm-demo', prompt: 'PipelineCRM. Logiciel CRM tout-en-un pour PME. Démo gratuite de 30 min avec un expert. +35% de conversion en moyenne chez nos clients. CTA : Demander ma démo (formulaire nom, entreprise, email, taille équipe). Section 3 bénéfices avec icônes. Logo clients (simulés). Ton expert et orienté ROI. Palette bleu corporate/gris.' },
-  { id: 16, sector: 'ecommerce-alimentaire', slug: 'freshbox-livraison', prompt: 'FreshBox. Livraison de courses à domicile. -15€ sur la première commande avec le code FRESH15. Livraison en 2h, produits frais garantis, 5000+ références. CTA : Commander maintenant (bouton). Section fonctionnement en 3 étapes avec icônes. Image hero panier de courses. Ton pratique et moderne. Palette verte/blanche.' },
-  { id: 17, sector: 'luxe-horlogerie', slug: 'aether-watches-eternite', prompt: 'Maison Aether Watches. Découvrez la nouvelle collection "Éternité" : montres automatiques en édition limitée (500 exemplaires). CTA : Réserver ma visite privée (bouton). Vidéo du mécanisme. Image hero plein écran de la montre. Détails matériaux et savoir-faire. Ton prestige absolu. Palette noir/or. Minimaliste.' },
-  { id: 18, sector: 'sport-club-pro', slug: 'olympique-lyon-abonnement', prompt: 'Olympique Club de Lyon. Abonnement saison 2026-2027 : accès à tous les matchs à domicile. Early-bird -20% avant le 30 avril 2026. CTA principal : Souscrire mon abonnement (bouton). Slider photos du stade et des joueurs. Section formules (Essentiel, Premium, VIP). CTA secondaire : Acheter un billet à l\'unité. Ton passionné et dynamique. Palette bleu/rouge du club.' },
-  { id: 19, sector: 'collectivite', slug: 'mairie-carte-identite', prompt: 'Mairie de Villefranche. Demande de carte d\'identité en ligne : simplifiez vos démarches. Formulaire pré-inscription (nom, date de naissance, email, pièces à fournir). Section documents nécessaires avec icônes. Lien pour télécharger les formulaires (drive). Horaires du service et carte. Ton officiel mais accessible. Palette bleu/blanc/rouge.' },
-  { id: 20, sector: 'jeu-concours', slug: 'snackfun-grattez-gagnez', prompt: 'Marque SnackFun. Grand jeu de l\'été : grattez et tentez de gagner ! Lot principal : voyage à Bali pour 2. + 1000 bons d\'achat de 50€. CTA : Tenter ma chance (scratch widget). Section lots à gagner avec images. Règlement du jeu. Effet confetti. Flipcard pour découvrir des indices. Ton fun et excitant. Palette jaune/rose/turquoise.' },
+const SECTORS: { id: number, sector: string }[] = [
+  { id: 1, sector: 'restauration-rapide' },
+  { id: 2, sector: 'banque-assurance' },
+  { id: 3, sector: 'mode-pret-a-porter' },
+  { id: 4, sector: 'automobile' },
+  { id: 5, sector: 'immobilier' },
+  { id: 6, sector: 'fitness' },
+  { id: 7, sector: 'telecoms' },
+  { id: 8, sector: 'cosmetique-beaute' },
+  { id: 9, sector: 'education-formation' },
+  { id: 10, sector: 'voyage-tourisme' },
+  { id: 11, sector: 'sante-pharmacie' },
+  { id: 12, sector: 'grande-distribution' },
+  { id: 13, sector: 'evenementiel' },
+  { id: 14, sector: 'ong-association' },
+  { id: 15, sector: 'b2b-saas' },
+  { id: 16, sector: 'ecommerce-alimentaire' },
+  { id: 17, sector: 'luxe-horlogerie' },
+  { id: 18, sector: 'sport-club-pro' },
+  { id: 19, sector: 'collectivite' },
+  { id: 20, sector: 'jeu-concours' },
 ]
+
+// Mutable — populated by phaseBriefGeneration() or loaded from briefs.json
+let BRIEFS: Brief[] = []
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -339,6 +342,52 @@ function parseFeedback(output: string): Record<string, unknown> | null {
   catch {
     return null
   }
+}
+
+// ---------------------------------------------------------------------------
+// Phase 0: Brief generation
+// ---------------------------------------------------------------------------
+
+async function phaseBriefGeneration(runDir: string, briefIds: number[]): Promise<void> {
+  const briefsFile = resolve(runDir, 'briefs.json')
+
+  // If briefs.json already exists (resume), just load it
+  if (await fileExists(briefsFile)) {
+    BRIEFS = JSON.parse(await readFile(briefsFile, 'utf8'))
+    log.info(`Loaded ${BRIEFS.length} briefs from existing briefs.json`)
+    return
+  }
+
+  log.phase('PHASE 0 — BRIEF GENERATION')
+
+  const sectors = SECTORS.filter(s => briefIds.length === 0 || briefIds.includes(s.id))
+  const sectorsText = sectors.map(s => `${s.id}:${s.sector}`).join(', ')
+
+  log.info(`Generating briefs for ${sectors.length} sectors: ${sectorsText}`)
+
+  const template = await loadPromptTemplate('brief-generator')
+  const prompt = fillTemplate(template, {
+    SECTORS_TO_GENERATE: sectorsText,
+    BATCH_DIR: runDir,
+  })
+
+  await runClaude(prompt)
+
+  // Load and validate
+  if (!await fileExists(briefsFile)) {
+    throw new Error('Brief generation agent did not produce briefs.json')
+  }
+
+  BRIEFS = JSON.parse(await readFile(briefsFile, 'utf8'))
+
+  // Validate all requested sectors are covered
+  const generatedIds = new Set(BRIEFS.map(b => b.id))
+  const missing = sectors.filter(s => !generatedIds.has(s.id))
+  if (missing.length > 0) {
+    log.warn(`Missing briefs for sectors: ${missing.map(s => `${s.id}:${s.sector}`).join(', ')}`)
+  }
+
+  log.success(`Generated ${BRIEFS.length} briefs`)
 }
 
 // ---------------------------------------------------------------------------
@@ -763,7 +812,7 @@ async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: 
 // Commands
 // ---------------------------------------------------------------------------
 
-const PHASES = ['generation', 'critique', 'vote', 'humanReview', 'revision', 'synthesis', 'meta'] as const
+const PHASES = ['briefs', 'generation', 'critique', 'vote', 'humanReview', 'revision', 'synthesis', 'meta'] as const
 
 const run = defineCommand({
   meta: { name: 'run', description: 'Run the batch LP generation pipeline' },
@@ -800,6 +849,8 @@ const run = defineCommand({
         process.exit(1)
       }
       runDir = latestDir
+      // Load briefs.json from existing run
+      await phaseBriefGeneration(runDir, briefIds)
       state = (await loadState(runDir))!
       state.config.maxParallel = maxParallel
       log.info(`Resuming run #${state.runId} from ${runDir}`)
@@ -808,11 +859,13 @@ const run = defineCommand({
       // New run
       const runId = await getNextRunId()
       runDir = getRunDir(runId)
+      await mkdir(runDir, { recursive: true })
+      await updateLatestSymlink(runId)
+      // Generate briefs via Claude agent
+      await phaseBriefGeneration(runDir, briefIds)
       state = initState(maxParallel, briefIds)
       state.runId = runId
-      await mkdir(runDir, { recursive: true })
       await saveState(state, runDir)
-      await updateLatestSymlink(runId)
       log.info(`New run #${runId} in ${runDir}`)
     }
 
@@ -822,8 +875,10 @@ const run = defineCommand({
       process.exit(1)
     }
 
-    // Determine starting phase
-    const startIdx = resumeFrom ? PHASES.indexOf(resumeFrom as typeof PHASES[number]) : 0
+    // Determine starting phase (skip 'briefs' — already done above)
+    const startIdx = resumeFrom
+      ? PHASES.indexOf(resumeFrom as typeof PHASES[number])
+      : 1 // skip briefs phase (index 0), already executed
     if (startIdx < 0) {
       log.error(`Unknown phase: ${resumeFrom}. Valid: ${PHASES.join(', ')}`)
       process.exit(1)
@@ -831,6 +886,7 @@ const run = defineCommand({
 
     // Run phases sequentially
     const phaseFns = [
+      () => phaseBriefGeneration(runDir, briefIds), // briefs (index 0)
       () => phaseGeneration(state, token, runDir),
       () => phaseCritique(state, runDir),
       () => phaseVote(state, runDir),
