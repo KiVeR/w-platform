@@ -54,3 +54,8 @@ test-results/
 # Plans
 plans/
 x-thought/
+
+# Generated LP artifacts
+generated-lp*.json
+generated-lp*.png
+.claude/screenshots/
