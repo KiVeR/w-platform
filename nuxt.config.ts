@@ -42,6 +42,7 @@ export default defineNuxtConfig({
     // Server-only secrets
     jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-in-production',
+    jwtAccessExpiration: process.env.JWT_ACCESS_EXPIRATION || '15m',
     databaseUrl: process.env.DATABASE_URL,
 
     // Public (exposed to client)

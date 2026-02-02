@@ -1,9 +1,10 @@
 /**
  * Capture a screenshot of a landing page preview in Kreo editor.
  *
- * Usage: node scripts/screenshot-preview.mjs <contentId> [output]
+ * Usage: node scripts/screenshot-preview.mjs <contentId> [output] [--token <jwt>]
  *   contentId - The content ID to preview
  *   output    - Output path (default: generated-lp-preview.png)
+ *   --token   - JWT access token (skips login form, avoids rate limits)
  *
  * Requires dev server running on port 5174.
  */
@@ -11,11 +12,20 @@ import { mkdir } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { chromium } from '@playwright/test'
 
-const contentId = process.argv[2]
-const output = process.argv[3] || 'generated-lp-preview.png'
+// Parse args (positional + --token flag)
+const args = process.argv.slice(2)
+const tokenIdx = args.indexOf('--token')
+let token = null
+if (tokenIdx !== -1) {
+  token = args[tokenIdx + 1]
+  args.splice(tokenIdx, 2)
+}
+
+const contentId = args[0]
+const output = args[1] || 'generated-lp-preview.png'
 
 if (!contentId) {
-  console.error('Usage: node scripts/screenshot-preview.mjs <contentId> [output]')
+  console.error('Usage: node scripts/screenshot-preview.mjs <contentId> [output] [--token <jwt>]')
   process.exit(1)
 }
 
@@ -28,16 +38,25 @@ const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 
 try {
-  // Login
-  await page.goto(`${BASE}/login`)
-  await page.fill('input[type="email"]', 'admin@test.com')
-  await page.fill('input[type="password"]', 'Admin123!')
-  await page.click('button[type="submit"]')
-  await page.waitForURL('**/dashboard', { timeout: 10000 })
-
-  // Navigate to editor
-  await page.goto(`${BASE}/lp/${contentId}`)
-  await page.waitForTimeout(2000)
+  if (token) {
+    // Inject token via localStorage — skip login form entirely
+    await page.goto(`${BASE}/login`)
+    await page.evaluate((t) => {
+      localStorage.setItem('accessToken', t)
+    }, token)
+    await page.goto(`${BASE}/lp/${contentId}`)
+    await page.waitForTimeout(2000)
+  }
+  else {
+    // Login via form
+    await page.goto(`${BASE}/login`)
+    await page.fill('input[type="email"]', 'admin@test.com')
+    await page.fill('input[type="password"]', 'Admin123!')
+    await page.click('button[type="submit"]')
+    await page.waitForURL('**/dashboard', { timeout: 10000 })
+    await page.goto(`${BASE}/lp/${contentId}`)
+    await page.waitForTimeout(2000)
+  }
 
   // Switch to preview mode via JS (avoids overlay issues)
   await page.evaluate(() => {

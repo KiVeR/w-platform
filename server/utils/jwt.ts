@@ -10,7 +10,7 @@ export interface JwtPayload extends AuthUser {
 export function generateAccessToken(user: AuthUser): string {
   const config = useRuntimeConfig()
   return jwt.sign(user, config.jwtSecret, {
-    expiresIn: '15m',
+    expiresIn: (config.jwtAccessExpiration as string) || '15m',
   })
 }
 
