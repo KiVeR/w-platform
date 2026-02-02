@@ -81,6 +81,10 @@ export interface OpenAICompatibleDriverConfig extends AIDriverConfig {
   imageDetail?: 'auto' | 'low' | 'high'
   /** Organization ID (OpenAI-specific) */
   organization?: string
+  /** Enable JSON mode (response_format: json_object) */
+  jsonMode?: boolean
+  /** Ollama uses 'format' param instead of 'response_format' */
+  isOllama?: boolean
 }
 
 /**
@@ -126,6 +130,10 @@ export interface ProviderInfo {
   supportsVision: boolean
   /** Available models */
   models: ModelInfo[]
+  /** Whether provider supports JSON mode */
+  supportsJsonMode?: boolean
+  /** Whether provider uses Ollama-style format param */
+  isOllama?: boolean
 }
 
 /**

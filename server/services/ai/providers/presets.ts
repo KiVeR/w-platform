@@ -14,6 +14,7 @@ export const PROVIDER_PRESETS: Record<Exclude<KnownProvider, 'claude'>, Provider
     defaultModel: 'gpt-4o',
     envKeyName: 'OPENAI_API_KEY',
     supportsVision: true,
+    supportsJsonMode: true,
     models: [
       { id: 'gpt-4o', name: 'GPT-4o', vision: true, contextLength: 128000 },
       { id: 'gpt-4o-mini', name: 'GPT-4o Mini', vision: true, contextLength: 128000 },
@@ -29,6 +30,7 @@ export const PROVIDER_PRESETS: Record<Exclude<KnownProvider, 'claude'>, Provider
     defaultModel: 'llama-3.3-70b-versatile',
     envKeyName: 'GROQ_API_KEY',
     supportsVision: true,
+    supportsJsonMode: true,
     models: [
       { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B', vision: false, contextLength: 131072 },
       { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B', vision: false, contextLength: 131072 },
@@ -45,6 +47,7 @@ export const PROVIDER_PRESETS: Record<Exclude<KnownProvider, 'claude'>, Provider
     defaultModel: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
     envKeyName: 'TOGETHER_API_KEY',
     supportsVision: true,
+    supportsJsonMode: true,
     models: [
       { id: 'meta-llama/Llama-3.3-70B-Instruct-Turbo', name: 'Llama 3.3 70B', vision: false, contextLength: 131072 },
       { id: 'meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo', name: 'Llama 3.2 90B Vision', vision: true, contextLength: 131072 },
@@ -60,6 +63,7 @@ export const PROVIDER_PRESETS: Record<Exclude<KnownProvider, 'claude'>, Provider
     defaultModel: 'mistral-large-latest',
     envKeyName: 'MISTRAL_API_KEY',
     supportsVision: true,
+    supportsJsonMode: true,
     models: [
       { id: 'mistral-large-latest', name: 'Mistral Large', vision: false, contextLength: 128000 },
       { id: 'mistral-small-latest', name: 'Mistral Small', vision: false, contextLength: 128000 },
@@ -76,6 +80,8 @@ export const PROVIDER_PRESETS: Record<Exclude<KnownProvider, 'claude'>, Provider
     defaultModel: 'llama3.2',
     envKeyName: 'OLLAMA_HOST', // URL instead of key
     supportsVision: true,
+    supportsJsonMode: true,
+    isOllama: true,
     models: [
       { id: 'llama3.2', name: 'Llama 3.2', vision: false, contextLength: 131072 },
       { id: 'llama3.2-vision', name: 'Llama 3.2 Vision', vision: true, contextLength: 131072 },

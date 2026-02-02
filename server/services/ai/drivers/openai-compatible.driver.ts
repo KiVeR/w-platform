@@ -66,98 +66,113 @@ export class OpenAICompatibleDriver implements AIDriver {
   async* streamDesign(input: AIGenerationInput): AsyncGenerator<AIStreamChunk> {
     const messages = this.buildMessages(input)
 
-    try {
-      // Create streaming completion
-      const stream = await this.client.chat.completions.create({
-        model: this.model,
-        max_tokens: this.config.maxTokens || DEFAULT_MAX_TOKENS,
-        temperature: this.config.temperature ?? DEFAULT_TEMPERATURE,
-        messages,
-        stream: true,
-      })
+    // Build request params
+    const requestParams: Record<string, unknown> = {
+      model: this.model,
+      max_tokens: this.config.maxTokens || DEFAULT_MAX_TOKENS,
+      temperature: this.config.temperature ?? DEFAULT_TEMPERATURE,
+      messages,
+      stream: true,
+    }
 
-      let fullResponse = ''
-      let usage: AITokenUsage = {
-        promptTokens: 0,
-        completionTokens: 0,
-        totalTokens: 0,
-      }
-
-      // Stream tokens
-      for await (const chunk of stream) {
-        const delta = chunk.choices[0]?.delta
-
-        if (delta?.content) {
-          fullResponse += delta.content
-          yield {
-            type: 'token',
-            content: delta.content,
-          }
-        }
-
-        // Capture usage from final chunk (if available)
-        // Note: Not all providers include usage in streaming
-        if (chunk.usage) {
-          usage = {
-            promptTokens: chunk.usage.prompt_tokens,
-            completionTokens: chunk.usage.completion_tokens,
-            totalTokens: chunk.usage.total_tokens,
-          }
-        }
-      }
-
-      // Parse and validate the generated design
-      const design = this.parseDesignFromResponse(fullResponse)
-
-      if (design) {
-        const parseResult = designDocumentSchema.safeParse(design)
-
-        if (parseResult.success) {
-          yield {
-            type: 'design',
-            content: parseResult.data,
-          }
-        }
-        else {
-          // Try to fix common issues
-          const fixedDesign = this.attemptDesignFix(design, parseResult.error.errors)
-          const retryResult = designDocumentSchema.safeParse(fixedDesign)
-
-          if (retryResult.success) {
-            yield {
-              type: 'design',
-              content: retryResult.data,
-            }
-          }
-          else {
-            yield {
-              type: 'error',
-              content: `Design validation failed: ${parseResult.error.errors.map(e => e.message).join(', ')}`,
-              code: 'GENERATION_FAILED',
-            }
-          }
-        }
+    // Enable JSON mode if supported
+    if (this.config.jsonMode) {
+      if (this.config.isOllama) {
+        requestParams.format = 'json'
       }
       else {
-        yield {
-          type: 'error',
-          content: 'Failed to parse design from response',
-          code: 'GENERATION_FAILED',
-        }
-      }
-
-      yield {
-        type: 'done',
-        usage,
+        requestParams.response_format = { type: 'json_object' }
       }
     }
+
+    try {
+      yield* this.streamWithParams(requestParams)
+    }
     catch (error) {
+      // Fallback: retry without JSON mode if not supported
+      if (this.config.jsonMode
+        && error instanceof OpenAI.BadRequestError
+        && error.message?.includes('response_format')) {
+        console.warn(`[${this.name}] JSON mode not supported, retrying without it`)
+        delete requestParams.response_format
+        delete requestParams.format
+        try {
+          yield* this.streamWithParams(requestParams)
+          return
+        }
+        catch (retryError) {
+          yield this.handleError(retryError)
+          yield { type: 'done', usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 } }
+          return
+        }
+      }
       yield this.handleError(error)
       yield {
         type: 'done',
         usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
       }
     }
+  }
+
+  /**
+   * Execute streaming request and yield parsed chunks
+   */
+  private async* streamWithParams(requestParams: Record<string, unknown>): AsyncGenerator<AIStreamChunk> {
+    const stream = await this.client.chat.completions.create(requestParams as unknown as Parameters<typeof this.client.chat.completions.create>[0] & { stream: true })
+
+    let fullResponse = ''
+    let usage: AITokenUsage = {
+      promptTokens: 0,
+      completionTokens: 0,
+      totalTokens: 0,
+    }
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta
+
+      if (delta?.content) {
+        fullResponse += delta.content
+        yield { type: 'token', content: delta.content }
+      }
+
+      if (chunk.usage) {
+        usage = {
+          promptTokens: chunk.usage.prompt_tokens,
+          completionTokens: chunk.usage.completion_tokens,
+          totalTokens: chunk.usage.total_tokens,
+        }
+      }
+    }
+
+    const design = this.parseDesignFromResponse(fullResponse)
+
+    if (design) {
+      const parseResult = designDocumentSchema.safeParse(design)
+
+      if (parseResult.success) {
+        yield { type: 'design', content: parseResult.data }
+      }
+      else {
+        const fixedDesign = this.attemptDesignFix(design, parseResult.error.errors)
+        const retryResult = designDocumentSchema.safeParse(fixedDesign)
+
+        if (retryResult.success) {
+          yield { type: 'design', content: retryResult.data }
+        }
+        else {
+          yield {
+            type: 'error',
+            content: `Design validation failed: ${parseResult.error.errors.map(e => e.message).join(', ')}`,
+            code: 'GENERATION_FAILED',
+          }
+        }
+      }
+    }
+    else {
+      yield { type: 'error', content: 'Failed to parse design from response', code: 'GENERATION_FAILED' }
+    }
+
+    yield { type: 'done', usage }
   }
 
   /**
@@ -277,7 +292,7 @@ export class OpenAICompatibleDriver implements AIDriver {
   /**
    * Normalize error messages for specific providers
    */
-  private normalizeErrorMessage(error: OpenAI.APIError): string {
+  private normalizeErrorMessage(error: InstanceType<typeof OpenAI.APIError>): string {
     const baseURL = this.config.baseURL || ''
 
     // Provider-specific error handling

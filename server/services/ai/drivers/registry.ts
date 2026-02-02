@@ -80,6 +80,8 @@ export class DriverRegistry {
       supportsVision: overrides?.supportsVision ?? preset.supportsVision,
       maxTokens: overrides?.maxTokens,
       temperature: overrides?.temperature,
+      jsonMode: preset.supportsJsonMode,
+      isOllama: preset.isOllama,
     }
 
     try {
