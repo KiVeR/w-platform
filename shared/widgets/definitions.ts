@@ -47,6 +47,10 @@ export const WIDGET_TYPES = [
   'slider',
   'link-image',
   'effect',
+  // Phase 1 - Urgence & Social Proof
+  'countdown',
+  'testimonial',
+  'badge',
 ] as const
 
 /**

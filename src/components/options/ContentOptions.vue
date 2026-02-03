@@ -33,6 +33,10 @@ const optionComponents: Partial<Record<WidgetType, Component>> = {
   'slider': defineAsyncComponent(() => import('./content/SliderOptions.vue')),
   'link-image': defineAsyncComponent(() => import('./content/LinkImageOptions.vue')),
   'effect': defineAsyncComponent(() => import('./content/EffectOptions.vue')),
+  // Phase 1 - Urgence & Social Proof
+  'countdown': defineAsyncComponent(() => import('./content/CountdownOptions.vue')),
+  'testimonial': defineAsyncComponent(() => import('./content/TestimonialOptions.vue')),
+  'badge': defineAsyncComponent(() => import('./content/BadgeOptions.vue')),
 }
 
 const currentComponent = computed(() => {

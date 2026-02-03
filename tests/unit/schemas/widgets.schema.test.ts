@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
+  badgeContentSchema,
   buttonContentSchema,
   clickToCallContentSchema,
+  countdownContentSchema,
   formFieldContentSchema,
   getContentSchemaForWidget,
   getContentValidationErrors,
   imageContentSchema,
+  testimonialContentSchema,
   titleContentSchema,
   validateWidgetContent,
   videoContentSchema,
@@ -178,6 +181,134 @@ describe('widget Content Schemas', () => {
         videoProvider: 'invalid',
       }
       expect(() => videoContentSchema.parse(content)).toThrow()
+    })
+  })
+
+  // ==================== PHASE 1 WIDGETS ====================
+
+  describe('countdownContentSchema', () => {
+    it('accepts valid countdown content with targetDate', () => {
+      const content = { targetDate: '2026-12-31T23:59:59' }
+      expect(() => countdownContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('accepts countdown with all options', () => {
+      const content = {
+        targetDate: '2026-12-31T23:59:59',
+        label: 'Offre expire dans',
+        expiredLabel: 'Offre terminée',
+        showDays: true,
+        showHours: true,
+        showMinutes: true,
+        showSeconds: false,
+      }
+      expect(() => countdownContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('requires targetDate to be a string', () => {
+      const content = {}
+      expect(() => countdownContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects additional unknown properties (strict mode)', () => {
+      const content = {
+        targetDate: '2026-12-31T23:59:59',
+        unknownProp: 'value',
+      }
+      expect(() => countdownContentSchema.parse(content)).toThrow()
+    })
+  })
+
+  describe('testimonialContentSchema', () => {
+    it('accepts valid testimonial with quote and author', () => {
+      const content = { quote: 'Excellent service !', author: 'Marie D.' }
+      expect(() => testimonialContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('accepts testimonial with all options', () => {
+      const content = {
+        quote: 'Excellent service, je recommande !',
+        author: 'Marie Dupont',
+        role: 'Directrice Marketing',
+        avatarUrl: 'https://example.com/avatar.jpg',
+        rating: 4.5,
+        company: 'Acme Corp',
+      }
+      expect(() => testimonialContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('rejects empty quote', () => {
+      const content = { quote: '', author: 'John' }
+      expect(() => testimonialContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects empty author', () => {
+      const content = { quote: 'Great!', author: '' }
+      expect(() => testimonialContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects missing quote', () => {
+      const content = { author: 'John' }
+      expect(() => testimonialContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects missing author', () => {
+      const content = { quote: 'Great!' }
+      expect(() => testimonialContentSchema.parse(content)).toThrow()
+    })
+
+    it('accepts rating between 0 and 5', () => {
+      expect(() => testimonialContentSchema.parse({ quote: 'Good', author: 'A', rating: 0 })).not.toThrow()
+      expect(() => testimonialContentSchema.parse({ quote: 'Good', author: 'A', rating: 2.5 })).not.toThrow()
+      expect(() => testimonialContentSchema.parse({ quote: 'Good', author: 'A', rating: 5 })).not.toThrow()
+    })
+
+    it('rejects rating below 0', () => {
+      const content = { quote: 'Great!', author: 'John', rating: -1 }
+      expect(() => testimonialContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects rating above 5', () => {
+      const content = { quote: 'Great!', author: 'John', rating: 6 }
+      expect(() => testimonialContentSchema.parse(content)).toThrow()
+    })
+  })
+
+  describe('badgeContentSchema', () => {
+    it('accepts valid badge with text', () => {
+      const content = { text: 'PROMO' }
+      expect(() => badgeContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('accepts badge with filled variant', () => {
+      const content = { text: '-30%', variant: 'filled' }
+      expect(() => badgeContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('accepts badge with outline variant', () => {
+      const content = { text: 'NEW', variant: 'outline' }
+      expect(() => badgeContentSchema.parse(content)).not.toThrow()
+    })
+
+    it('defaults to filled variant when not specified', () => {
+      const content = { text: 'TEST' }
+      const result = badgeContentSchema.parse(content)
+      expect(result.variant).toBe('filled')
+    })
+
+    it('rejects empty text', () => {
+      const content = { text: '' }
+      expect(() => badgeContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects missing text', () => {
+      const content = {}
+      expect(() => badgeContentSchema.parse(content)).toThrow()
+    })
+
+    it('rejects invalid variant', () => {
+      const content = { text: 'NEW', variant: 'invalid' }
+      expect(() => badgeContentSchema.parse(content)).toThrow()
     })
   })
 })

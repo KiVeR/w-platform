@@ -78,8 +78,8 @@ export const widgetConfigs: WidgetConfig[] = [
       },
     ],
     defaultContent: {
-      src: 'https://picsum.photos/seed/default/300/200',
-      alt: 'Image',
+      src: '',
+      alt: '',
     },
     defaultStyles: {
       width: '100%',
@@ -890,6 +890,133 @@ export const widgetConfigs: WidgetConfig[] = [
       margin: '0',
       padding: '0',
       height: '100px',
+    },
+  },
+
+  // ==================== PHASE 1 - URGENCE & SOCIAL PROOF ====================
+  {
+    type: 'countdown',
+    label: 'Compte à rebours',
+    icon: '⏱️',
+    category: 'interactive',
+    description: 'Countdown timer showing time remaining until a target date. Creates urgency for promotions, events, or deadlines.',
+    usageHints: [
+      'Place below hero or pricing for maximum impact',
+      'Use for promo end dates, event deadlines, stock limits',
+      'Combine with Badge widget for "LIMITED TIME" effect',
+    ],
+    requiredContent: ['targetDate'],
+    examples: [
+      {
+        description: 'Promo countdown',
+        widget: {
+          type: 'countdown',
+          content: {
+            targetDate: '2026-12-31T23:59:59',
+            label: 'Offre expire dans',
+            expiredLabel: 'Offre terminée',
+          },
+          styles: {},
+        },
+      },
+    ],
+    defaultContent: {
+      targetDate: '',
+      label: 'Fin de l\'offre dans',
+      expiredLabel: 'Offre terminée',
+      showDays: true,
+      showHours: true,
+      showMinutes: true,
+      showSeconds: true,
+    },
+    defaultStyles: {
+      margin: '16px',
+      padding: '16px',
+      textAlign: 'center',
+    },
+  },
+  {
+    type: 'testimonial',
+    label: 'Témoignage',
+    icon: '💬',
+    category: 'content',
+    description: 'Customer testimonial with quote, author, optional avatar and star rating. Essential for social proof.',
+    usageHints: [
+      'Place after product/service description',
+      'Include rating for e-commerce and reviews',
+      'Use avatar for personal touch',
+    ],
+    requiredContent: ['quote', 'author'],
+    examples: [
+      {
+        description: 'Customer review with rating',
+        widget: {
+          type: 'testimonial',
+          content: {
+            quote: 'Excellent service !',
+            author: 'Marie D.',
+            rating: 5,
+            role: 'Cliente depuis 2024',
+          },
+          styles: {},
+        },
+      },
+    ],
+    defaultContent: {
+      quote: '',
+      author: '',
+      role: '',
+      avatarUrl: '',
+      rating: 0,
+      company: '',
+    },
+    defaultStyles: {
+      margin: '16px',
+      padding: '16px',
+      backgroundColor: '#f9fafb',
+      borderRadius: '8px',
+    },
+  },
+  {
+    type: 'badge',
+    label: 'Badge',
+    icon: '🏷️',
+    category: 'content',
+    description: 'Small label/tag for promotions, status indicators, or categories. Use for "NEW", "-30%", "BEST SELLER", etc.',
+    usageHints: [
+      'Place inside Row with image for overlay effect',
+      'Use filled variant for promos, outline for categories',
+      'Keep text short (1-3 words max)',
+    ],
+    requiredContent: ['text'],
+    examples: [
+      {
+        description: 'Promo badge',
+        widget: {
+          type: 'badge',
+          content: {
+            text: '-30%',
+            variant: 'filled',
+          },
+          styles: {
+            backgroundColor: '#ef4444',
+            color: '#ffffff',
+          },
+        },
+      },
+    ],
+    defaultContent: {
+      text: '',
+      variant: 'filled',
+    },
+    defaultStyles: {
+      padding: '4px 12px',
+      borderRadius: '9999px',
+      fontSize: '12px',
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      backgroundColor: '#ef4444',
+      color: '#ffffff',
     },
   },
 ]

@@ -2,6 +2,7 @@ import type { z } from 'zod'
 import { baseWidgetContentSchemas } from './base.schema'
 import { formWidgetContentSchemas } from './form.schema'
 import { mediaWidgetContentSchemas } from './media.schema'
+import { phase1WidgetContentSchemas } from './phase1.schema'
 import { structureWidgetContentSchemas } from './structure.schema'
 import { wellpackWidgetContentSchemas } from './wellpack.schema'
 
@@ -9,6 +10,7 @@ import { wellpackWidgetContentSchemas } from './wellpack.schema'
 export * from './base.schema'
 export * from './form.schema'
 export * from './media.schema'
+export * from './phase1.schema'
 export * from './structure.schema'
 export * from './wellpack.schema'
 
@@ -19,6 +21,7 @@ export const widgetContentSchemas = {
   ...formWidgetContentSchemas,
   ...mediaWidgetContentSchemas,
   ...wellpackWidgetContentSchemas,
+  ...phase1WidgetContentSchemas,
 } as const
 
 export type WidgetContentSchemaType = keyof typeof widgetContentSchemas

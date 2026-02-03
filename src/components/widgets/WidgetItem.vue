@@ -2,6 +2,7 @@
 import type { WidgetConfig } from '@/types/widget'
 import {
   AlignLeft,
+  Badge,
   Barcode,
   Car,
   ClipboardList,
@@ -12,6 +13,7 @@ import {
   Images,
   Link2,
   MapPin,
+  MessageSquareQuote,
   Minus,
   MousePointer,
   MoveVertical,
@@ -25,6 +27,7 @@ import {
   Star,
   Store,
   TextCursorInput,
+  Timer,
 } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
@@ -65,6 +68,10 @@ const iconMap: Record<string, any> = {
   'slider': SlidersHorizontal,
   'link-image': Link2,
   'effect': Snowflake,
+  // Phase 1 - Urgence & Social Proof
+  'countdown': Timer,
+  'testimonial': MessageSquareQuote,
+  'badge': Badge,
 }
 
 function handleDragStart(event: DragEvent) {

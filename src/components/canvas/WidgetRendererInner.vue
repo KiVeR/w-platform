@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import type { Widget, WidgetType } from '@/types/widget'
+// Phase 1 widgets - Urgence & Social Proof
+import BadgeWidget from '@/components/widgets/registry/BadgeWidget.vue'
 // Wellpack widgets
 import BarcodeWidget from '@/components/widgets/registry/BarcodeWidget.vue'
 import ButtonWidget from '@/components/widgets/registry/ButtonWidget.vue'
 import ClickToCallWidget from '@/components/widgets/registry/ClickToCallWidget.vue'
+import CountdownWidget from '@/components/widgets/registry/CountdownWidget.vue'
 import DriveWidget from '@/components/widgets/registry/DriveWidget.vue'
 import EffectWidget from '@/components/widgets/registry/EffectWidget.vue'
 import FlipcardWidget from '@/components/widgets/registry/FlipcardWidget.vue'
@@ -23,6 +26,7 @@ import SliderWidget from '@/components/widgets/registry/SliderWidget.vue'
 import SocialWidget from '@/components/widgets/registry/SocialWidget.vue'
 import SpacerWidget from '@/components/widgets/registry/SpacerWidget.vue'
 import StoreLocatorWidget from '@/components/widgets/registry/StoreLocatorWidget.vue'
+import TestimonialWidget from '@/components/widgets/registry/TestimonialWidget.vue'
 import TextWidget from '@/components/widgets/registry/TextWidget.vue'
 import TitleWidget from '@/components/widgets/registry/TitleWidget.vue'
 // Media widgets
@@ -67,6 +71,10 @@ const widgetComponents: Partial<Record<WidgetType, Component>> = {
   'slider': SliderWidget,
   'link-image': LinkImageWidget,
   'effect': EffectWidget,
+  // Phase 1 - Urgence & Social Proof
+  'countdown': CountdownWidget,
+  'testimonial': TestimonialWidget,
+  'badge': BadgeWidget,
 }
 </script>
 
