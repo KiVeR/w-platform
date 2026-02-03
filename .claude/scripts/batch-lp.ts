@@ -238,6 +238,7 @@ function runClaude(prompt: string, label?: string): Promise<string> {
       '--verbose',
       '--output-format',
       'stream-json',
+      '--dangerously-skip-permissions',
       '--allowedTools',
       'Read',
       'Write',
@@ -297,6 +298,8 @@ function runClaude(prompt: string, label?: string): Promise<string> {
     })
 
     child.on('close', (code) => {
+      if (stderr && process.env.DEBUG)
+        console.error(`[DEBUG stderr] ${stderr}`)
       if (code !== 0) {
         reject(new Error(`Claude agent failed (exit ${code}):\n${stderr}`))
       }
@@ -784,16 +787,14 @@ function printReport(state: State, runDir: string): void {
   console.log(`${c.bold}  #  | Sector                  | Gen  | Crit | Vote | Review | Revision${c.reset}`)
   console.log('  ---|-------------------------|------|------|------|--------|----------')
 
+  const statusDisplay: Record<string, string> = {
+    done: `${c.green}done${c.reset}`,
+    error: `${c.red}err ${c.reset}`,
+    skipped: `${c.yellow}skip${c.reset}`,
+  }
+  const status = (s: string) => statusDisplay[s] || `${c.gray}wait${c.reset}`
+
   for (const b of state.briefs) {
-    const status = (s: string) => {
-      if (s === 'done')
-        return `${c.green}done${c.reset}`
-      if (s === 'error')
-        return `${c.red}err ${c.reset}`
-      if (s === 'skipped')
-        return `${c.yellow}skip${c.reset}`
-      return `${c.gray}wait${c.reset}`
-    }
     const id = String(b.id).padStart(2)
     const sector = b.sector.padEnd(23)
     console.log(`  ${id} | ${sector} | ${status(b.generation)} | ${status(b.critique)} | ${status(b.vote)} | ${status(b.humanReview)} | ${status(b.revision)}`)
@@ -822,14 +823,23 @@ function printReport(state: State, runDir: string): void {
 // Helpers: resolve run directory for CLI commands
 // ---------------------------------------------------------------------------
 
+async function loadBriefsFromRun(runDir: string): Promise<void> {
+  const briefsFile = resolve(runDir, 'briefs.json')
+  if (await fileExists(briefsFile)) {
+    BRIEFS = JSON.parse(await readFile(briefsFile, 'utf8'))
+  }
+}
+
 async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: State } | null> {
+  let runDir: string
   if (runArg) {
-    const runDir = getRunDir(Number(runArg))
+    runDir = getRunDir(Number(runArg))
     const state = await loadState(runDir)
     if (!state) {
       log.error(`No state found for run #${runArg}`)
       return null
     }
+    await loadBriefsFromRun(runDir)
     return { runDir, state }
   }
   const latestDir = await getLatestRunDir()
@@ -837,10 +847,12 @@ async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: 
     log.error('No batch in progress. Run: yarn batch-lp run')
     return null
   }
-  const state = await loadState(latestDir)
+  runDir = latestDir
+  const state = await loadState(runDir)
   if (!state)
     return null
-  return { runDir: latestDir, state }
+  await loadBriefsFromRun(runDir)
+  return { runDir, state }
 }
 
 // ---------------------------------------------------------------------------
@@ -936,6 +948,7 @@ const run = defineCommand({
     }
 
     printReport(state, runDir)
+    process.exit(0)
   },
 })
 
