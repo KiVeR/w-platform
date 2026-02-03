@@ -10,7 +10,7 @@ Read these two files:
 
 ## Step 2: Generate design JSON
 Create a complete DesignDocument JSON for this brief. Rules:
-- French text for all user-facing content
+- French text for all user-facing content WITH PROPER ACCENTS (é, è, ê, à, ù, ô, î, ç). Missing accents destroy credibility. Examples: "Découvrir", "Réserver", "Démarrer", "Précommander", "Accéder"
 - Placeholder images: `https://placehold.co/WIDTHxHEIGHT?text=Description`
 - Cohesive color palette matching the sector/tone
 - Rich design: multiple sections, spacing, clear visual hierarchy
@@ -38,6 +38,7 @@ Re-read your JSON and check this checklist (report pass/fail for each):
 - Accessibility: images have alt, form-fields have labels
 - Spacing: separators/spacers between sections
 - Schema compliance: unique IDs, sequential order, row->column only
+- French accents: SCAN every French word for missing accents. Check titles, buttons, descriptions. Common errors to catch: Decouvrir→Découvrir, Reserver→Réserver, Demarrer→Démarrer, specialite→spécialité, evenement→événement, a→à (preposition), ou→où (where), deja→déjà, des→dès (from)
 - Design tokens - fontSize: all values from scale (12/14/16/18/20/24/28/32/36/48px)
 - Design tokens - spacing: all padding/margin/gap use only token values (0/4/8/12/16/24/32/48px)
 - Design tokens - variety: at least 3 different fontSize values for visual hierarchy

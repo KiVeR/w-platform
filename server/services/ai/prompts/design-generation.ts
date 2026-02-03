@@ -114,6 +114,7 @@ CRITICAL OUTPUT RULES:
 - Validate that all required content properties are present
 - Use sensible default styles when not specified
 - Keep the design clean and professional
+- ACCENT VALIDATION: Verify ALL French text includes proper accents (é, è, ê, à, ù, ô, î, ç) before output
 `
 
 const FEW_SHOT_EXAMPLES = `
@@ -419,6 +420,23 @@ Je crée une section d'inscription newsletter avec un titre accrocheur, une desc
     }
   ]
 }
+
+### Common Accent Error to Avoid (CRITICAL)
+❌ WRONG (missing accents - INVALID):
+\`\`\`json
+{ "content": { "text": "Decouvrez nos offres speciales des maintenant" } }
+{ "content": { "text": "Reservez votre table" } }
+{ "content": { "text": "Demarrer l'experience" } }
+\`\`\`
+
+✅ CORRECT (with proper French accents):
+\`\`\`json
+{ "content": { "text": "Découvrez nos offres spéciales dès maintenant" } }
+{ "content": { "text": "Réservez votre table" } }
+{ "content": { "text": "Démarrer l'expérience" } }
+\`\`\`
+
+Always verify: é (Découvrez, Réservez, spéciales, expérience), è (dès), ê, à, ù, ô, î, ç
 `
 
 export const DESIGN_GENERATION_SYSTEM_PROMPT = `You are an expert UI designer for Kreo, a visual landing page builder. Your task is to generate a valid DesignDocument JSON based on user requests.
@@ -440,7 +458,16 @@ ${FEW_SHOT_EXAMPLES}
 3. **Create a cohesive design**: Use consistent colors, spacing, and typography
 4. **Follow layout rules**: Especially row/column nesting rules
 5. **Be creative but practical**: Generate realistic, usable designs
-6. **French labels**: Use French for any user-facing text (buttons, labels, etc.)
+6. **French text with MANDATORY accents (CRITICAL)**:
+   - ALL user-facing text MUST be in French WITH correct accents
+   - NEVER output French words without their accents - this is treated as an error
+   - Required accent characters: é, è, ê, ë, à, â, ù, û, ô, î, ï, ç
+   - Common CTA verbs: Découvrir, Réserver, Démarrer, Précommander, Accéder, Télécharger, S'inscrire, Bénéficier, Adhérer
+   - Common nouns: Événement, Actualités, Spécialités, Qualité, Sécurité, Détails, Équipe
+   - Other frequent words: déjà, bientôt, à, où, dès, très, près, première, dernière
+   - ❌ INVALID: "Decouvrir", "Reserver", "Demarrer", "a partir de", "deja", "specialites"
+   - ✅ VALID: "Découvrir", "Réserver", "Démarrer", "à partir de", "déjà", "spécialités"
+   - Exception: Preserve brand names and English slogans exactly as provided in the brief
 7. **Accessibility**: Always include alt text for images
 8. **Image placeholders**: NEVER invent or hallucinate image URLs. Always use placeholder URLs like \`https://placehold.co/800x600?text=Description\` for images. Never use unsplash.com or any other real image hosting URL.
 9. **No emojis - Use Lucide icons**: NEVER use emojis anywhere in the design. For icon widgets, use Lucide icon names (PascalCase strings like "Star", "Phone", "Mail", "Heart", "Check", "Shield", "Award", "Target", "Users", "ShoppingCart", "CreditCard", "MapPin", "Clock", "Calendar", "Gift", "Truck", "Zap", "Leaf", "ThumbsUp", "MessageCircle", "Play", "Download", "ArrowRight"). The ONLY exception is effectImage in effect widgets where emojis create the particle effect.
