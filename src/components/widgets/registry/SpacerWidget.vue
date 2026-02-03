@@ -27,7 +27,6 @@ defineProps<{
 
 <style scoped>
 .spacer-widget {
-  width: 100%;
   position: relative;
   background: repeating-linear-gradient(
     45deg,

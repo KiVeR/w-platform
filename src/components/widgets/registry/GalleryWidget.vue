@@ -55,7 +55,7 @@ const extraCount = computed(() => Math.max(0, images.value.length - 6))
         <Images :size="32" />
       </div>
       <p class="gallery-empty-text">
-        Aucune image dans la galerie
+        Ajouter des images
       </p>
       <p class="gallery-empty-hint">
         Ajoutez des images dans les options du widget
@@ -66,7 +66,6 @@ const extraCount = computed(() => Math.max(0, images.value.length - 6))
 
 <style scoped>
 .gallery-widget {
-  width: 100%;
 }
 
 /* Header */

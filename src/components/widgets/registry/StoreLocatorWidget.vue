@@ -85,7 +85,6 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 <style scoped>
 .store-locator-widget {
   position: relative;
-  width: 100%;
 }
 
 .store-locator-label {

@@ -16,6 +16,8 @@ const titleStyles = computed(() => ({
   ...props.widget.styles,
   fontFamily: props.widget.styles.fontFamily || headingFontFamily.value,
 }))
+
+const isPlaceholder = computed(() => !props.widget.content.text?.trim())
 const isEditing = ref(false)
 const editText = ref(props.widget.content.text || '')
 
@@ -67,6 +69,7 @@ function handleKeydown(event: KeyboardEvent) {
     <h1
       v-else
       class="title-text"
+      :class="{ 'is-placeholder': isPlaceholder }"
       @dblclick="startEditing"
     >
       {{ widget.content.text || 'Titre' }}
@@ -76,7 +79,6 @@ function handleKeydown(event: KeyboardEvent) {
 
 <style scoped>
 .title-widget {
-  width: 100%;
 }
 
 .title-text {
@@ -87,6 +89,11 @@ function handleKeydown(event: KeyboardEvent) {
   text-align: inherit;
   cursor: text;
   word-wrap: break-word;
+}
+
+.title-text.is-placeholder {
+  opacity: 0.5;
+  font-style: italic;
 }
 
 .title-input {

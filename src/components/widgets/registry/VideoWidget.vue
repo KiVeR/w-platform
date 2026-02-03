@@ -108,7 +108,6 @@ const providerName = computed(() => {
 
 <style scoped>
 .video-widget {
-  width: 100%;
   overflow: hidden;
 }
 
@@ -143,20 +142,20 @@ const providerName = computed(() => {
 }
 
 .video-placeholder {
+  width: 100%;
+  min-height: 180px;
+  background-color: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px 16px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: var(--radius-lg);
-  min-height: 180px;
-  text-align: center;
+  color: #94a3b8;
 }
 
 .placeholder-icon {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .badge-content {
@@ -166,16 +165,12 @@ const providerName = computed(() => {
 }
 
 .placeholder-text {
-  color: white;
   font-size: 14px;
-  font-weight: 500;
-  margin: 0 0 4px 0;
 }
 
 .placeholder-hint {
-  color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
-  margin: 0 0 16px 0;
+  margin-top: 4px;
 }
 
 .placeholder-examples {

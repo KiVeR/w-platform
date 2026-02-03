@@ -93,7 +93,6 @@ function addColumn() {
 
 <style scoped>
 .row-widget {
-  width: 100%;
   position: relative;
   background: rgba(20, 184, 166, 0.05);
   border: 1px dashed rgba(20, 184, 166, 0.3);

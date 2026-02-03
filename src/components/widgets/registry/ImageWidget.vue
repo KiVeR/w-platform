@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { ImagePlus } from 'lucide-vue-next'
 
 defineProps<{
   widget: Widget
@@ -16,15 +17,14 @@ defineProps<{
       class="widget-image"
     >
     <div v-else class="image-placeholder">
-      <span class="placeholder-icon">🖼</span>
-      <span class="placeholder-text">Image</span>
+      <ImagePlus :size="32" class="placeholder-icon" />
+      <span class="placeholder-text">Ajouter une image</span>
     </div>
   </div>
 </template>
 
 <style scoped>
 .image-widget {
-  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -50,7 +50,6 @@ defineProps<{
 }
 
 .placeholder-icon {
-  font-size: 32px;
   margin-bottom: 8px;
 }
 

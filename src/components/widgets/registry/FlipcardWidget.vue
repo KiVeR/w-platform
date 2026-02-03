@@ -76,7 +76,7 @@ function toggleFlip() {
         🔄
       </div>
       <p class="empty-text">
-        Carte retournable
+        Configurer la carte retournable
       </p>
       <p class="empty-hint">
         Configurez les images recto/verso dans les options
@@ -87,7 +87,6 @@ function toggleFlip() {
 
 <style scoped>
 .flipcard-widget {
-  width: 100%;
 }
 
 .flipcard-container {

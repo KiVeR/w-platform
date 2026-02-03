@@ -96,7 +96,7 @@ function getHref(link: SocialLink) {
         <span class="placeholder-icon" style="--platform-color: #ff0000">▶</span>
       </div>
       <p class="placeholder-text">
-        Réseaux sociaux
+        Ajouter des réseaux sociaux
       </p>
       <p class="placeholder-hint">
         Configurez vos liens dans le panneau
@@ -110,7 +110,6 @@ function getHref(link: SocialLink) {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  width: 100%;
 }
 
 /* Style Icons (default) */
@@ -204,43 +203,42 @@ function getHref(link: SocialLink) {
 /* Placeholder */
 .social-placeholder {
   width: 100%;
+  min-height: 120px;
+  background-color: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
+  justify-content: center;
+  color: #94a3b8;
 }
 
 .placeholder-icons {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .placeholder-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 14px;
+  background: #e2e8f0;
+  color: #94a3b8;
+  font-size: 12px;
   font-weight: bold;
 }
 
 .placeholder-text {
-  color: white;
   font-size: 14px;
-  font-weight: 600;
-  margin: 0 0 4px 0;
 }
 
 .placeholder-hint {
-  color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
-  margin: 0;
+  margin-top: 4px;
 }
 </style>

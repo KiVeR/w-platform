@@ -66,7 +66,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
         <Ticket :size="48" />
       </div>
       <p class="empty-text">
-        Carte à gratter
+        Configurer la carte à gratter
       </p>
       <p class="empty-hint">
         Configurez les images dans les options
@@ -77,7 +77,6 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
 
 <style scoped>
 .scratch-widget {
-  width: 100%;
 }
 
 .scratch-container {

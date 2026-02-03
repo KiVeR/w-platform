@@ -97,7 +97,6 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
 <style scoped>
 .drive-widget {
   position: relative;
-  width: 100%;
 }
 
 .drive-button {

@@ -13,6 +13,7 @@ const { primaryColor } = useGlobalStyles()
 const iconName = computed(() => props.widget.content.iconName || '⭐')
 const iconSize = computed(() => props.widget.content.iconSize || '48px')
 const hasLink = computed(() => !!props.widget.content.href)
+const isPlaceholder = computed(() => !props.widget.content.iconName)
 
 const wrapperStyle = computed(() => ({
   fontSize: iconSize.value,
@@ -24,7 +25,7 @@ const wrapperStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="icon-widget" :style="wrapperStyle">
+  <div class="icon-widget" :class="{ 'is-placeholder': isPlaceholder }" :style="wrapperStyle">
     <!-- Avec lien -->
     <a
       v-if="hasLink"
@@ -47,7 +48,6 @@ const wrapperStyle = computed(() => ({
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
   line-height: 1;
 }
 
@@ -63,5 +63,9 @@ const wrapperStyle = computed(() => ({
 
 .icon-link:hover .icon-display {
   transform: scale(1.15);
+}
+
+.icon-widget.is-placeholder {
+  opacity: 0.5;
 }
 </style>

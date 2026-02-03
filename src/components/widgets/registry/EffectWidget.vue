@@ -127,7 +127,6 @@ onUnmounted(() => {
 <style scoped>
 .effect-widget {
   position: relative;
-  width: 100%;
   min-height: 80px;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   border-radius: 12px;

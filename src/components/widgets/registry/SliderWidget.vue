@@ -125,7 +125,7 @@ onUnmounted(() => {
         <GalleryHorizontal :size="48" />
       </div>
       <p class="empty-text">
-        Carrousel
+        Ajouter des images au carrousel
       </p>
       <p class="empty-hint">
         Ajoutez des images dans les options
@@ -136,7 +136,6 @@ onUnmounted(() => {
 
 <style scoped>
 .slider-widget {
-  width: 100%;
 }
 
 .slider-container {

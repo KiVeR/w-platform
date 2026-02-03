@@ -17,6 +17,8 @@ const textStyles = computed(() => ({
   fontFamily: props.widget.styles.fontFamily || fontFamily.value,
   lineHeight: props.widget.styles.lineHeight || lineHeight.value,
 }))
+
+const isPlaceholder = computed(() => !props.widget.content.text?.trim())
 const isEditing = ref(false)
 const editText = ref(props.widget.content.text || '')
 
@@ -64,6 +66,7 @@ function handleKeydown(event: KeyboardEvent) {
     <p
       v-else
       class="text-content"
+      :class="{ 'is-placeholder': isPlaceholder }"
       @dblclick="startEditing"
     >
       {{ widget.content.text || 'Texte...' }}
@@ -73,7 +76,6 @@ function handleKeydown(event: KeyboardEvent) {
 
 <style scoped>
 .text-widget {
-  width: 100%;
 }
 
 .text-content {
@@ -85,6 +87,11 @@ function handleKeydown(event: KeyboardEvent) {
   cursor: text;
   word-wrap: break-word;
   white-space: pre-wrap;
+}
+
+.text-content.is-placeholder {
+  opacity: 0.5;
+  font-style: italic;
 }
 
 .text-input {

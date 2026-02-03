@@ -75,7 +75,7 @@ const mapStyleLabel = computed(() => {
         <MapPin :size="48" />
       </div>
       <p class="placeholder-text">
-        Google Maps
+        Configurer la carte
       </p>
       <p class="placeholder-hint">
         Entrez une adresse ou des coordonnées
@@ -91,7 +91,6 @@ const mapStyleLabel = computed(() => {
 
 <style scoped>
 .map-widget {
-  width: 100%;
   overflow: hidden;
 }
 
@@ -140,20 +139,20 @@ const mapStyleLabel = computed(() => {
 }
 
 .map-placeholder {
+  width: 100%;
+  min-height: 200px;
+  background-color: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px 16px;
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  border-radius: var(--radius-lg);
-  min-height: 200px;
-  text-align: center;
+  color: #94a3b8;
 }
 
 .placeholder-icon {
-  color: #2e7d32;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .badge-content {
@@ -163,16 +162,12 @@ const mapStyleLabel = computed(() => {
 }
 
 .placeholder-text {
-  color: #2e7d32;
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 4px 0;
+  font-size: 14px;
 }
 
 .placeholder-hint {
-  color: #558b2f;
   font-size: 12px;
-  margin: 0 0 16px 0;
+  margin-top: 4px;
 }
 
 .map-styles-preview {

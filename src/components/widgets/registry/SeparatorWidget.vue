@@ -29,7 +29,6 @@ const separatorStyles = computed(() => ({
 <style scoped>
 .separator-widget {
   position: relative;
-  width: 100%;
 }
 
 .widget-separator {

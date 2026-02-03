@@ -205,7 +205,7 @@ const barcodeTypeLabel = computed(() => {
         <ScanBarcode :size="48" />
       </div>
       <p class="placeholder-text">
-        Code barre
+        Ajouter un code-barres
       </p>
       <p class="placeholder-hint">
         Entrez un code EAN-13 ou EAN-8
@@ -216,7 +216,6 @@ const barcodeTypeLabel = computed(() => {
 
 <style scoped>
 .barcode-widget {
-  width: 100%;
 }
 
 .barcode-container {

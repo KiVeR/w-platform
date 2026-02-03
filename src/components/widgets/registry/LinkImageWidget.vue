@@ -58,7 +58,7 @@ const hasLink = computed(() => !!href.value)
         🔗
       </div>
       <p class="empty-text">
-        Image lien
+        Ajouter une image cliquable
       </p>
       <p class="empty-hint">
         Configurez l'image et le lien dans les options
@@ -69,7 +69,6 @@ const hasLink = computed(() => !!href.value)
 
 <style scoped>
 .link-image-widget {
-  width: 100%;
 }
 
 .link-image-container {
