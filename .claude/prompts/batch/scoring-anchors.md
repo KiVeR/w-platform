@@ -24,6 +24,12 @@ Use these concrete examples to calibrate your scores. If you're unsure, compare 
 - Visual chaos that screams "unprofessional"
 - Stock imagery that contradicts the brand message
 
+**UI/Aesthetics Examples:**
+- Actively ugly color combinations (clashing hues, garish saturation)
+- Harsh, unrefined shadows that look like default CSS
+- Images pixelated, stretched, or poorly cropped
+- Zero visual harmony — elements scattered without compositional logic
+
 ---
 
 ## Score 3-4/10 — Below Average (Noticeable Problems)
@@ -45,6 +51,12 @@ Use these concrete examples to calibrate your scores. If you're unsure, compare 
 - Tone inconsistent (formal in header, casual in body)
 - Stock photos that feel generic rather than brand-specific
 - Would not stand out among competitors
+
+**UI/Aesthetics Examples:**
+- Colors functional but flat (pure black on white, no depth)
+- Inconsistent border radii or shadow styles across elements
+- Images adequate quality but uninspiring compositions
+- Layout feels mechanical rather than composed
 
 ---
 
@@ -70,6 +82,12 @@ Use these concrete examples to calibrate your scores. If you're unsure, compare 
 - Professional appearance but no personality
 - "Template feel" — swap the logo and it still works
 
+**UI/Aesthetics Examples:**
+- Visually adequate but generic — "Bootstrap template" feel
+- Colors safe and inoffensive, no sophisticated palette
+- Shadows and borders present but unremarkable
+- No visual moment that makes you pause — entirely forgettable
+
 ---
 
 ## Score 7-8/10 — Good (Solid Work, Some Excellence)
@@ -91,6 +109,12 @@ Use these concrete examples to calibrate your scores. If you're unsure, compare 
 - Tone that has personality while staying appropriate
 - Visual elements that reinforce the brand story
 - Would remember this LP if shown again tomorrow
+
+**UI/Aesthetics Examples:**
+- Color palette with depth (tints, shades, subtle gradients)
+- Refined micro-details: elegant shadows, consistent radii, polish
+- Images feel curated rather than stock — good composition
+- Visual harmony present — elements feel intentionally placed
 
 ---
 
@@ -115,6 +139,12 @@ Use these concrete examples to calibrate your scores. If you're unsure, compare 
 - Emotional resonance — you FEEL something viewing it
 - Unique personality impossible to confuse with competitors
 - Would recommend as a best-in-class sector example
+
+**UI/Aesthetics Examples:**
+- Genuinely beautiful — would screenshot for design inspiration
+- Sophisticated color relationships and visual depth
+- Pixel-perfect polish, refined micro-interactions potential
+- Compositional mastery — feels like art direction, not template
 
 ---
 

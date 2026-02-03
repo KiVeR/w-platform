@@ -565,7 +565,7 @@ async function phaseGeneration(state: State, token: string, runDir: string): Pro
 
 async function phaseCritique(state: State, runDir: string): Promise<void> {
   log.phase('PHASE 2 — CRITIQUE')
-  const roles = ['critic-marketing', 'critic-ux', 'critic-brand'] as const
+  const roles = ['critic-marketing', 'critic-ux', 'critic-brand', 'critic-ui'] as const
   const generated = state.briefs.filter(b => b.generation === 'done' && b.critique === 'pending')
 
   if (generated.length === 0) {
@@ -573,7 +573,7 @@ async function phaseCritique(state: State, runDir: string): Promise<void> {
     return
   }
 
-  log.info(`${generated.length} LPs to critique (×3 reviewers = ${generated.length * 3} agents)`)
+  log.info(`${generated.length} LPs to critique (×4 reviewers = ${generated.length * 4} agents)`)
 
   // Build flat list of (brief, role) pairs
   const tasks = generated.flatMap(b => roles.map(role => ({ briefState: b, role })))
@@ -602,10 +602,10 @@ async function phaseCritique(state: State, runDir: string): Promise<void> {
     }
   })
 
-  // Mark critique as done for briefs that have all 3 files
+  // Mark critique as done for briefs that have all 4 files
   for (const b of generated) {
     const allDone = await Promise.all(
-      ['marketing', 'ux', 'brand'].map(r => fileExists(resolve(runDir, `critiques/${b.id}-${r}.json`))),
+      ['marketing', 'ux', 'brand', 'ui'].map(r => fileExists(resolve(runDir, `critiques/${b.id}-${r}.json`))),
     )
     b.critique = allDone.every(Boolean) ? 'done' : 'error'
   }
@@ -1030,7 +1030,7 @@ const calibrate = defineCommand({
     for (const b of selected) {
       b.critique = 'pending'
       b.vote = 'pending'
-      for (const role of ['marketing', 'ux', 'brand']) {
+      for (const role of ['marketing', 'ux', 'brand', 'ui']) {
         try {
           await unlink(resolve(runDir, `critiques/${b.id}-${role}.json`))
         }
@@ -1079,7 +1079,7 @@ const calibrate = defineCommand({
       console.log(`\n  ${c.bold}Brief #${b.id} — ${b.sector}${c.reset}`)
 
       // Read individual critique files for detailed scores
-      for (const role of ['marketing', 'ux', 'brand'] as const) {
+      for (const role of ['marketing', 'ux', 'brand', 'ui'] as const) {
         const critiquePath = resolve(runDir, `critiques/${b.id}-${role}.json`)
         if (!await fileExists(critiquePath))
           continue
