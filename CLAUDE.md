@@ -89,7 +89,69 @@ allowedChildren: ['type1'] OR disallowedChildren: ['type2']
 
 **Step 4: Create renderer component**
 - Create `src/components/widgets/registry/MyWidgetWidget.vue`
-- Import and register in `WidgetRenderer.vue`
+- Import and register in `WidgetRenderer.vue`, `WidgetRendererInner.vue`, and `PreviewRenderer.vue`
+- Add icon mapping in `WidgetItem.vue`
+
+**Widget Placeholder Pattern (required for empty states):**
+```vue
+<script setup>
+import { Wrench } from 'lucide-vue-next'  // Use appropriate Lucide icon
+</script>
+
+<template>
+  <div class="my-widget" :style="{ margin: widget.styles.margin }">
+    <div v-if="!hasContent" class="my-widget-placeholder">
+      <Wrench :size="32" class="placeholder-icon" />
+      <span class="placeholder-text">Label du widget</span>
+    </div>
+    <div v-else class="my-widget-content">
+      <!-- Actual content here -->
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* IMPORTANT: Widget wrapper should NOT have width: 100% to allow placeholder centering */
+.my-widget {
+  /* No width: 100% here! Let flexbox parent control width */
+}
+
+.my-widget-placeholder {
+  width: 100%;
+  min-height: 120px;
+  background-color: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.placeholder-icon {
+  margin-bottom: 8px;
+}
+
+.placeholder-text {
+  font-size: 14px;
+}
+
+/* Content takes full width when present */
+.my-widget-content {
+  width: 100%;
+}
+</style>
+```
+Key requirements:
+- **NO EMOJIS** - Always use Lucide icons (`lucide-vue-next`)
+- **NO `width: 100%` on widget wrapper** - This prevents placeholder centering in flexbox context
+- Icon size: 32px (standard) or 24px (compact widgets)
+- Placeholder: `width: 100%` + `display: flex` + `align-items: center` + `justify-content: center`
+- Content wrapper: `width: 100%` to take full width when content is present
+- `min-height` for consistent sizing (80-140px depending on widget)
+- Dashed border + light gray background for visual boundary
+- `margin-bottom: 8px` on icon (not `gap` on container)
 
 **Step 5: Create options panel (if needed)**
 - Add `src/components/options/content/MyWidgetOptions.vue`
