@@ -58,7 +58,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'image',
     label: 'Image',
-    icon: '🖼',
+    icon: 'Image',
     category: 'content',
     description: 'Display an image. Use for product photos, illustrations, banners, or decorative visuals. Always provide alt text for accessibility.',
     usageHints: [
@@ -165,7 +165,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'spacer',
     label: 'Espace',
-    icon: '↕',
+    icon: 'MoveVertical',
     category: 'content',
     description: 'Invisible vertical spacing element. Use to add breathing room between widgets without a visible line. Height is fully customizable.',
     usageHints: [
@@ -192,7 +192,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'click-to-call',
     label: 'Click to Call',
-    icon: '📞',
+    icon: 'Phone',
     category: 'actions',
     description: 'Phone call button optimized for mobile. Tapping opens the phone dialer with the configured number. Use for customer support, sales hotlines, or direct contact.',
     usageHints: [
@@ -298,7 +298,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'form',
     label: 'Formulaire',
-    icon: '📋',
+    icon: 'ClipboardList',
     category: 'layout',
     description: 'Form container for collecting user input. Contains form-field widgets and a submit button. Supports email notifications and redirect after submission.',
     usageHints: [
@@ -381,7 +381,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'video',
     label: 'Vidéo',
-    icon: '🎬',
+    icon: 'Video',
     category: 'media',
     description: 'Embedded video player. Supports YouTube, Vimeo, and custom video URLs. Configure autoplay, mute, loop, and controls options.',
     usageHints: [
@@ -420,7 +420,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'map',
     label: 'Carte',
-    icon: '📍',
+    icon: 'MapPin',
     category: 'media',
     description: 'Interactive map display. Enter an address to show a location. Supports different map styles and zoom levels.',
     usageHints: [
@@ -456,7 +456,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'social',
     label: 'Réseaux',
-    icon: '🔗',
+    icon: 'Share2',
     category: 'media',
     description: 'Social media links bar. Displays icons linking to your social profiles. Supports Facebook, Instagram, Twitter/X, LinkedIn, YouTube, WhatsApp, and more.',
     usageHints: [
@@ -502,11 +502,11 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'icon',
     label: 'Icône',
-    icon: '⭐',
+    icon: 'Star',
     category: 'content',
-    description: 'Single decorative or functional icon. Use emojis or icon characters. Can be linked to make it clickable. Great for visual accents in feature lists.',
+    description: 'Single decorative or functional icon using Lucide library. Can be linked to make it clickable. Great for visual accents in feature lists.',
     usageHints: [
-      'Use emoji characters for universal compatibility',
+      'Use Lucide icon names (PascalCase): Star, Phone, Mail, Heart, Check, etc.',
       'Set iconColor to match your color scheme',
       'Add href to make the icon clickable',
       'Use in row/column layouts for feature grids',
@@ -516,12 +516,12 @@ export const widgetConfigs: WidgetConfig[] = [
         description: 'Feature icon with link',
         widget: {
           type: 'icon',
-          content: { iconName: '📧', iconSize: '48px', iconColor: '#3b82f6', href: 'mailto:contact@example.com' },
+          content: { iconName: 'Mail', iconSize: '48px', iconColor: '#3b82f6', href: 'mailto:contact@example.com' },
         },
       },
     ],
     defaultContent: {
-      iconName: '⭐',
+      iconName: 'Star',
       iconSize: '48px',
       iconColor: '',
       href: '',
@@ -537,7 +537,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'barcode',
     label: 'Code barre',
-    icon: '📊',
+    icon: 'Barcode',
     category: 'interactive',
     description: 'Barcode generator for coupons and loyalty programs. Supports EAN-13, Code128, QR codes, and more. Can use dynamic variables for personalized codes.',
     usageHints: [
@@ -571,7 +571,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'store-locator',
     label: 'Store Locator',
-    icon: '📍',
+    icon: 'Store',
     category: 'interactive',
     description: 'Interactive store finder. Displays a list of locations users can browse. Links to external map or dedicated store locator page.',
     usageHints: [
@@ -607,7 +607,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'drive',
     label: 'Drive to Store',
-    icon: '🚗',
+    icon: 'Car',
     category: 'interactive',
     description: 'Geolocation-based nearest store finder. Uses user location to find and display the closest store with directions and call options. Ideal for drive-to-store campaigns.',
     usageHints: [
@@ -645,7 +645,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'scratch',
     label: 'Carte à gratter',
-    icon: '🎰',
+    icon: 'Sparkles',
     category: 'interactive',
     description: 'Interactive scratch card for gamification. Users scratch the foreground to reveal a hidden image or prize beneath. Great for promotions, contests, and engagement campaigns.',
     usageHints: [
@@ -685,7 +685,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'flipcard',
     label: 'Carte retournable',
-    icon: '🔄',
+    icon: 'FlipHorizontal',
     category: 'interactive',
     description: 'Interactive flip card with front and back faces. Users tap or click to flip and reveal the back side. Ideal for before/after, product info, or teaser reveals.',
     usageHints: [
@@ -724,7 +724,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'gallery',
     label: 'Galerie',
-    icon: '🖼️',
+    icon: 'Images',
     category: 'media',
     description: 'Image gallery with lightbox viewer. Renders as a label header + responsive 3-column thumbnail grid. Each image can have a caption overlay. Ideal for product photos, portfolios, hotel rooms, or event galleries. Provide 4-6 images for best visual result.',
     usageHints: [
@@ -764,7 +764,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'slider',
     label: 'Carrousel',
-    icon: '🎠',
+    icon: 'SlidersHorizontal',
     category: 'media',
     description: 'Automatic image carousel/slideshow. Displays images in sequence with configurable timing and navigation arrows. Use for hero banners, product showcases, or promotional content.',
     usageHints: [
@@ -804,7 +804,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'link-image',
     label: 'Image lien',
-    icon: '🔗',
+    icon: 'Link2',
     category: 'actions',
     description: 'Clickable image that links to a URL. Combines image display with navigation. Use for promotional banners, sponsor logos, or any image that should be a link.',
     usageHints: [
@@ -841,7 +841,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'effect',
     label: 'Effet',
-    icon: '❄️',
+    icon: 'Snowflake',
     category: 'interactive',
     description: 'Animated particle effect overlay. Creates falling/floating elements (snow, confetti, hearts, etc.) for festive or celebratory pages. Use sparingly for visual impact.',
     usageHints: [
@@ -897,7 +897,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'countdown',
     label: 'Compte à rebours',
-    icon: '⏱️',
+    icon: 'Timer',
     category: 'interactive',
     description: 'Countdown timer showing time remaining until a target date. Creates urgency for promotions, events, or deadlines.',
     usageHints: [
@@ -938,7 +938,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'testimonial',
     label: 'Témoignage',
-    icon: '💬',
+    icon: 'MessageSquareQuote',
     category: 'content',
     description: 'Customer testimonial with quote, author, optional avatar and star rating. Essential for social proof.',
     usageHints: [
@@ -980,7 +980,7 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'badge',
     label: 'Badge',
-    icon: '🏷️',
+    icon: 'Tag',
     category: 'content',
     description: 'Small label/tag for promotions, status indicators, or categories. Use for "NEW", "-30%", "BEST SELLER", etc.',
     usageHints: [

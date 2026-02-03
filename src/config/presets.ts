@@ -183,14 +183,14 @@ export const templatePresets: TemplatePreset[] = [
         id: 'event-date',
         type: 'text',
         order: 2,
-        content: { text: '📅 Samedi 15 Mars 2025 à 19h00' },
+        content: { text: 'Samedi 15 Mars 2025 à 19h00' },
         styles: { textAlign: 'center', fontSize: '16px', fontWeight: '600', color: '#0d9488' },
       },
       {
         id: 'event-location',
         type: 'text',
         order: 3,
-        content: { text: '📍 Espace des Congrès, 123 Avenue des Champs, 75008 Paris' },
+        content: { text: 'Espace des Congrès, 123 Avenue des Champs, 75008 Paris' },
         styles: { textAlign: 'center', padding: '8px 16px 16px', color: '#64748b' },
       },
       {
@@ -308,7 +308,7 @@ export const templatePresets: TemplatePreset[] = [
         id: 'product-features',
         type: 'text',
         order: 5,
-        content: { text: '✓ Étanche 50m\n✓ Verre saphir anti-rayures\n✓ Garantie 2 ans\n✓ Livraison gratuite' },
+        content: { text: '• Étanche 50m\n• Verre saphir anti-rayures\n• Garantie 2 ans\n• Livraison gratuite' },
         styles: { padding: '0 16px 16px', lineHeight: '1.8' },
       },
       {
@@ -406,7 +406,7 @@ export const templatePresets: TemplatePreset[] = [
         id: 'contact-address',
         type: 'text',
         order: 5,
-        content: { text: '📍 123 Rue de la Paix, 75002 Paris\n📞 01 23 45 67 89\n✉️ contact@exemple.fr' },
+        content: { text: '123 Rue de la Paix, 75002 Paris\n01 23 45 67 89\ncontact@exemple.fr' },
         styles: { textAlign: 'center', lineHeight: '2', padding: '0 16px' },
       },
       {
@@ -446,8 +446,8 @@ export const templatePresets: TemplatePreset[] = [
         id: 'newsletter-icon',
         type: 'icon',
         order: 0,
-        content: { iconName: 'mail' },
-        styles: { fontSize: '48px', textAlign: 'center', padding: '32px 16px 16px', color: '#0d9488' },
+        content: { iconName: 'Mail', iconSize: '48px', iconColor: '#0d9488' },
+        styles: { textAlign: 'center', padding: '32px 16px 16px' },
       },
       {
         id: 'newsletter-title',
@@ -467,7 +467,7 @@ export const templatePresets: TemplatePreset[] = [
         id: 'newsletter-benefits',
         type: 'text',
         order: 3,
-        content: { text: '✨ Offres exclusives réservées aux abonnés\n🎁 -10% sur votre première commande\n📬 Maximum 2 emails par mois\n🚫 Désabonnement en 1 clic' },
+        content: { text: '• Offres exclusives réservées aux abonnés\n• -10% sur votre première commande\n• Maximum 2 emails par mois\n• Désabonnement en 1 clic' },
         styles: { padding: '0 16px 24px', lineHeight: '2', color: '#e2e8f0' },
       },
       {
@@ -576,7 +576,7 @@ export const sectionPresets: SectionPreset[] = [
             content: {},
             styles: { gap: '8px', textAlign: 'center' },
             children: [
-              { id: 'feature-icon1', type: 'icon', order: 0, content: { iconName: 'zap' }, styles: { fontSize: '32px', color: '#0d9488' } },
+              { id: 'feature-icon1', type: 'icon', order: 0, content: { iconName: 'Zap', iconSize: '32px', iconColor: '#0d9488' }, styles: { textAlign: 'center' } },
               { id: 'feature-title1', type: 'title', order: 1, content: { text: 'Rapide' }, styles: { fontSize: '16px', fontWeight: '600' } },
               { id: 'feature-text1', type: 'text', order: 2, content: { text: 'Description de l\'avantage numéro un.' }, styles: { fontSize: '14px', color: '#64748b' } },
             ],
@@ -588,7 +588,7 @@ export const sectionPresets: SectionPreset[] = [
             content: {},
             styles: { gap: '8px', textAlign: 'center' },
             children: [
-              { id: 'feature-icon2', type: 'icon', order: 0, content: { iconName: 'shield' }, styles: { fontSize: '32px', color: '#0d9488' } },
+              { id: 'feature-icon2', type: 'icon', order: 0, content: { iconName: 'Shield', iconSize: '32px', iconColor: '#0d9488' }, styles: { textAlign: 'center' } },
               { id: 'feature-title2', type: 'title', order: 1, content: { text: 'Sécurisé' }, styles: { fontSize: '16px', fontWeight: '600' } },
               { id: 'feature-text2', type: 'text', order: 2, content: { text: 'Description de l\'avantage numéro deux.' }, styles: { fontSize: '14px', color: '#64748b' } },
             ],
@@ -600,7 +600,7 @@ export const sectionPresets: SectionPreset[] = [
             content: {},
             styles: { gap: '8px', textAlign: 'center' },
             children: [
-              { id: 'feature-icon3', type: 'icon', order: 0, content: { iconName: 'heart' }, styles: { fontSize: '32px', color: '#0d9488' } },
+              { id: 'feature-icon3', type: 'icon', order: 0, content: { iconName: 'Heart', iconSize: '32px', iconColor: '#0d9488' }, styles: { textAlign: 'center' } },
               { id: 'feature-title3', type: 'title', order: 1, content: { text: 'Fiable' }, styles: { fontSize: '16px', fontWeight: '600' } },
               { id: 'feature-text3', type: 'text', order: 2, content: { text: 'Description de l\'avantage numéro trois.' }, styles: { fontSize: '14px', color: '#64748b' } },
             ],

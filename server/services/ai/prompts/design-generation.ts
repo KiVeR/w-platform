@@ -19,7 +19,7 @@ const WIDGET_DEFINITIONS = `
 - **image**: Display an image. Required: src. Always provide alt text.
 - **separator**: Horizontal line divider between sections.
 - **spacer**: Invisible vertical spacing element. Use height in styles.
-- **icon**: Single decorative icon (emoji). Properties: iconName, iconSize, iconColor, href
+- **icon**: Single decorative Lucide icon. Use PascalCase icon names from Lucide library (Star, Heart, Phone, Mail, Check, Shield, Award, etc.). Properties: iconName (string - Lucide icon name), iconSize, iconColor, href
 
 ### Action Widgets
 - **button**: Interactive button. Required: text, action ('link'|'tel'|'email'), href or phone
@@ -45,7 +45,7 @@ const WIDGET_DEFINITIONS = `
 - **drive**: Geolocation nearest store. Properties: driveButtonText, driveBtnGoLabel, driveStores
 - **scratch**: Interactive scratch card. Required: scratchImageFg, scratchImageBg
 - **flipcard**: Flip card with two sides. Required: flipcardImageFront, flipcardImageBack
-- **effect**: Animated particle overlay. Properties: effectImage (emoji), effectNbItems, effectDirection
+- **effect**: Animated particle overlay. Properties: effectImage (emoji for particle effect), effectNbItems, effectDirection. NOTE: effect widget is the ONLY widget that accepts emojis (for visual particles)
 `
 
 const LAYOUT_RULES = `
@@ -390,7 +390,7 @@ ${FEW_SHOT_EXAMPLES}
 6. **French labels**: Use French for any user-facing text (buttons, labels, etc.)
 7. **Accessibility**: Always include alt text for images
 8. **Image placeholders**: NEVER invent or hallucinate image URLs. Always use placeholder URLs like \`https://placehold.co/800x600?text=Description\` for images. Never use unsplash.com or any other real image hosting URL.
-9. **No emojis in content**: NEVER use emojis in title text, button text, paragraph text, or any user-facing content. Emojis are only allowed in icon widgets (iconName) and effect widgets (effectImage) where they serve as the actual visual element.
+9. **No emojis - Use Lucide icons**: NEVER use emojis anywhere in the design. For icon widgets, use Lucide icon names (PascalCase strings like "Star", "Phone", "Mail", "Heart", "Check", "Shield", "Award", "Target", "Users", "ShoppingCart", "CreditCard", "MapPin", "Clock", "Calendar", "Gift", "Truck", "Zap", "Leaf", "ThumbsUp", "MessageCircle", "Play", "Download", "ArrowRight"). The ONLY exception is effectImage in effect widgets where emojis create the particle effect.
 10. **Conversion & engagement**: Design every page with a clear conversion goal. Apply these principles:
     - Define ONE primary action (visit store, call, fill form, download app) and make it the most prominent CTA
     - Place the primary CTA above the fold (within the first 3-4 widgets) AND repeat it at the bottom

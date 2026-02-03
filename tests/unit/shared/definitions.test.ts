@@ -3,8 +3,8 @@ import { WIDGET_CATEGORIES, WIDGET_TYPES, widgetCategorySchema, widgetTypeSchema
 
 describe('widget definitions - single source of truth', () => {
   describe('widget types array', () => {
-    it('contains all 24 expected widget types', () => {
-      expect(WIDGET_TYPES).toHaveLength(24)
+    it('contains all 27 expected widget types', () => {
+      expect(WIDGET_TYPES).toHaveLength(27)
     })
 
     it('contains all base widgets', () => {
@@ -41,6 +41,13 @@ describe('widget definitions - single source of truth', () => {
     it('contains advanced widgets', () => {
       const advancedWidgets = ['gallery', 'slider', 'link-image', 'effect']
       for (const widget of advancedWidgets) {
+        expect(WIDGET_TYPES).toContain(widget)
+      }
+    })
+
+    it('contains phase 1 widgets (urgency & social proof)', () => {
+      const phase1Widgets = ['countdown', 'testimonial', 'badge']
+      for (const widget of phase1Widgets) {
         expect(WIDGET_TYPES).toContain(widget)
       }
     })

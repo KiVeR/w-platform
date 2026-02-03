@@ -2,6 +2,7 @@
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
+import { getLucideIcon, isEmoji } from '@/utils/lucide-icons'
 
 const props = defineProps<{
   widget: Widget
@@ -10,14 +11,32 @@ const props = defineProps<{
 
 const { primaryColor } = useGlobalStyles()
 
-const iconName = computed(() => props.widget.content.iconName || '⭐')
+const iconName = computed(() => props.widget.content.iconName || 'Star')
 const iconSize = computed(() => props.widget.content.iconSize || '48px')
 const hasLink = computed(() => !!props.widget.content.href)
 const isPlaceholder = computed(() => !props.widget.content.iconName)
 
+// Determine if the icon is an emoji or a Lucide icon name
+const isEmojiIcon = computed(() => isEmoji(iconName.value))
+const lucideComponent = computed(() => {
+  if (isEmojiIcon.value)
+    return null
+  return getLucideIcon(iconName.value)
+})
+
+// Convert iconSize string (e.g., '48px') to number for Lucide components
+const iconSizeNumeric = computed(() => {
+  const match = iconSize.value.match(/^(\d+)/)
+  return match ? Number.parseInt(match[1], 10) : 48
+})
+
+// Icon color for Lucide components
+const iconColor = computed(() => props.widget.content.iconColor || primaryColor.value)
+
 const wrapperStyle = computed(() => ({
-  fontSize: iconSize.value,
-  color: props.widget.content.iconColor || primaryColor.value,
+  // Only use fontSize for emoji icons
+  fontSize: isEmojiIcon.value ? iconSize.value : undefined,
+  color: iconColor.value,
   textAlign: props.widget.styles.textAlign || 'center',
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
@@ -26,19 +45,24 @@ const wrapperStyle = computed(() => ({
 
 <template>
   <div class="icon-widget" :class="{ 'is-placeholder': isPlaceholder }" :style="wrapperStyle">
-    <!-- Avec lien -->
-    <a
-      v-if="hasLink"
-      :href="widget.content.href"
-      :target="widget.content.href?.startsWith('http') ? '_blank' : '_self'"
-      rel="noopener noreferrer"
-      class="icon-link"
+    <component
+      :is="hasLink ? 'a' : 'span'"
+      :href="hasLink ? widget.content.href : undefined"
+      :target="hasLink && widget.content.href?.startsWith('http') ? '_blank' : undefined"
+      :rel="hasLink ? 'noopener noreferrer' : undefined"
+      :class="{ 'icon-link': hasLink }"
     >
-      <span class="icon-display">{{ iconName }}</span>
-    </a>
-
-    <!-- Sans lien -->
-    <span v-else class="icon-display">{{ iconName }}</span>
+      <!-- Lucide icon -->
+      <component
+        :is="lucideComponent"
+        v-if="lucideComponent"
+        :size="iconSizeNumeric"
+        :color="iconColor"
+        class="icon-display lucide-icon"
+      />
+      <!-- Emoji fallback -->
+      <span v-else class="icon-display emoji-icon">{{ iconName }}</span>
+    </component>
   </div>
 </template>
 
@@ -56,9 +80,17 @@ const wrapperStyle = computed(() => ({
   transition: transform 0.2s, color 0.2s ease;
 }
 
+.lucide-icon {
+  /* Lucide icons handle their own sizing */
+  flex-shrink: 0;
+}
+
 .icon-link {
   text-decoration: none;
   color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon-link:hover .icon-display {
