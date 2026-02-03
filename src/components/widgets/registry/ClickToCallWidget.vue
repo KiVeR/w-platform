@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
+import IconText from '@/components/ui/IconText.vue'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
@@ -25,6 +26,15 @@ const buttonStyles = computed(() => ({
   fontWeight: props.widget.styles.fontWeight,
   borderRadius: props.widget.styles.borderRadius || borderRadius.value,
 }))
+
+// Default to Phone icon, but allow customization
+const icon = computed(() => props.widget.content.icon || 'Phone')
+const iconPosition = computed(() => props.widget.content.iconPosition || 'start')
+const iconSize = computed(() => {
+  const fontSizeStr = props.widget.styles.fontSize || '16px'
+  const fontSize = Number.parseFloat(fontSizeStr)
+  return Math.round(fontSize * 1.1)
+})
 </script>
 
 <template>
@@ -36,8 +46,14 @@ const buttonStyles = computed(() => ({
       :style="buttonStyles"
       @click.prevent
     >
-      <span class="phone-icon">📞</span>
-      <span class="button-text">{{ widget.content.text || 'Appeler' }}</span>
+      <IconText
+        :icon="icon"
+        :icon-position="iconPosition"
+        :icon-size="iconSize"
+        gap="8px"
+      >
+        {{ widget.content.text || 'Appeler' }}
+      </IconText>
     </a>
     <div v-if="widget.content.phone" class="phone-number">
       {{ widget.content.phone }}
@@ -53,7 +69,6 @@ const buttonStyles = computed(() => ({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   padding: 12px 24px;
   text-decoration: none;
   cursor: pointer;
@@ -67,10 +82,6 @@ const buttonStyles = computed(() => ({
 .widget-button:hover {
   opacity: 0.9;
   transform: translateY(-1px);
-}
-
-.phone-icon {
-  font-size: 1.1em;
 }
 
 .phone-number {

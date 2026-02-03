@@ -16,6 +16,9 @@ export const imageContentSchema = z.object({
   alt: z.string().optional(),
 }).strict()
 
+// ==================== ICON PROPS (shared) ====================
+export const iconPositionSchema = z.enum(['start', 'end'])
+
 // ==================== BUTTON ====================
 export const buttonActionSchema = z.enum(['link', 'tel', 'email'])
 
@@ -25,6 +28,8 @@ export const buttonContentSchema = z.object({
   href: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().optional(),
+  icon: z.string().optional(),
+  iconPosition: iconPositionSchema.optional(),
 }).refine(
   (data) => {
     if (data.action === 'link') {
@@ -62,6 +67,8 @@ export const clickToCallContentSchema = z.object({
   text: z.string().min(1, 'Button text is required'),
   phone: z.string().min(1, 'Phone number is required'),
   action: z.literal('tel').optional(),
+  icon: z.string().optional(),
+  iconPosition: iconPositionSchema.optional(),
 }).strict()
 
 // ==================== LINK-IMAGE ====================

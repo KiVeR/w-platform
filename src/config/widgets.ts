@@ -91,30 +91,31 @@ export const widgetConfigs: WidgetConfig[] = [
   {
     type: 'button',
     label: 'Bouton',
-    icon: '▢',
+    icon: 'MousePointerClick',
     category: 'actions',
-    description: 'Interactive button with customizable action. Supports navigation links (href), phone calls (tel:), and email (mailto:). Use for CTAs, form submission, and user actions.',
+    description: 'Interactive button with customizable action. Supports navigation links (href), phone calls (tel:), and email (mailto:). Use for CTAs, form submission, and user actions. Supports optional Lucide icon (prefix or suffix).',
     usageHints: [
       'Always provide descriptive button text (not just "Click here")',
       'Use action="link" for navigation, action="tel" for phone calls',
       'Ensure href/phone property matches the action type',
       'Place buttons after explanatory content, not before',
+      'Add icon for visual emphasis (e.g., ArrowRight, Phone, Download)',
     ],
     requiredContent: ['text', 'action'],
     examples: [
       {
-        description: 'CTA button with external link',
+        description: 'CTA button with icon',
         widget: {
           type: 'button',
-          content: { text: 'Découvrir nos offres', action: 'link', href: 'https://example.com/offers' },
+          content: { text: 'Découvrir nos offres', action: 'link', href: 'https://example.com/offers', icon: 'ArrowRight', iconPosition: 'end' },
           styles: { backgroundColor: '#3b82f6', color: '#ffffff' },
         },
       },
       {
-        description: 'Phone call button',
+        description: 'Phone call button with icon',
         widget: {
           type: 'button',
-          content: { text: 'Appelez-nous', action: 'tel', phone: '+33123456789' },
+          content: { text: 'Appelez-nous', action: 'tel', phone: '+33123456789', icon: 'Phone', iconPosition: 'start' },
           styles: { backgroundColor: '#22c55e', color: '#ffffff' },
         },
       },
@@ -123,6 +124,8 @@ export const widgetConfigs: WidgetConfig[] = [
       text: 'Cliquez ici',
       action: 'link',
       href: '',
+      icon: '',
+      iconPosition: 'start',
     },
     defaultStyles: {
       color: '#ffffff',
@@ -194,12 +197,12 @@ export const widgetConfigs: WidgetConfig[] = [
     label: 'Click to Call',
     icon: 'Phone',
     category: 'actions',
-    description: 'Phone call button optimized for mobile. Tapping opens the phone dialer with the configured number. Use for customer support, sales hotlines, or direct contact.',
+    description: 'Phone call button optimized for mobile. Tapping opens the phone dialer with the configured number. Use for customer support, sales hotlines, or direct contact. Displays Lucide icon (default: Phone).',
     usageHints: [
       'Use international format for phone numbers (+33...)',
       'Provide clear button text indicating the action',
       'Place prominently for easy mobile access',
-      'Consider using button widget with action="tel" for more styling options',
+      'Change icon to PhoneCall, Smartphone, or Headphones for variety',
     ],
     requiredContent: ['phone'],
     examples: [
@@ -207,7 +210,7 @@ export const widgetConfigs: WidgetConfig[] = [
         description: 'Customer support hotline',
         widget: {
           type: 'click-to-call',
-          content: { text: 'Service client', phone: '+33800123456', action: 'tel' },
+          content: { text: 'Service client', phone: '+33800123456', action: 'tel', icon: 'Phone' },
           styles: { backgroundColor: '#22c55e', color: '#ffffff' },
         },
       },
@@ -216,6 +219,8 @@ export const widgetConfigs: WidgetConfig[] = [
       text: 'Appeler',
       phone: '+33123456789',
       action: 'tel',
+      icon: 'Phone',
+      iconPosition: 'start',
     },
     defaultStyles: {
       color: '#ffffff',

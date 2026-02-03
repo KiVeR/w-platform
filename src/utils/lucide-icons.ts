@@ -39,21 +39,6 @@ export function isLucideIconName(name: string): boolean {
 }
 
 /**
- * Check if a string contains emoji characters
- * @param str - The string to check
- * @returns true if the string contains emojis
- */
-export function isEmoji(str: string): boolean {
-  if (!str)
-    return false
-
-  // Use Unicode emoji property for reliable detection
-  // This regex matches emoji presentation characters
-  const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u
-  return emojiRegex.test(str)
-}
-
-/**
  * Convert a string to PascalCase
  * @param str - Input string (kebab-case, camelCase, or space-separated)
  * @returns PascalCase string
@@ -70,18 +55,25 @@ function toPascalCase(str: string): string {
     .replace(/^[a-z]/, char => char.toUpperCase())
 }
 
+// Cache for icon names (computed once)
+let cachedIconNames: string[] | null = null
+
 /**
  * Get all available Lucide icon names
  * @returns Array of all icon names (PascalCase)
  */
 export function getAllIconNames(): string[] {
-  return Object.keys(icons).filter(key =>
+  if (cachedIconNames)
+    return cachedIconNames
+
+  cachedIconNames = Object.keys(icons).filter(key =>
     // Filter out non-component exports (like createIcons, etc.)
     key !== 'default'
     && key !== 'createIcons'
     && key !== 'icons'
     && typeof (icons as unknown as Record<string, unknown>)[key] === 'object',
   )
+  return cachedIconNames
 }
 
 /**

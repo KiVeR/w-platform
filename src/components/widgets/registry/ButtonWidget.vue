@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
+import IconText from '@/components/ui/IconText.vue'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
@@ -37,6 +38,15 @@ const href = computed(() => {
       return href || '#'
   }
 })
+
+// Icon props
+const icon = computed(() => props.widget.content.icon || '')
+const iconPosition = computed(() => props.widget.content.iconPosition || 'start')
+const iconSize = computed(() => {
+  const fontSizeStr = props.widget.styles.fontSize || '16px'
+  const fontSize = Number.parseFloat(fontSizeStr)
+  return Math.round(fontSize * 1.1)
+})
 </script>
 
 <template>
@@ -48,7 +58,14 @@ const href = computed(() => {
       :style="buttonStyles"
       @click.prevent
     >
-      {{ widget.content.text || 'Bouton' }}
+      <IconText
+        :icon="icon"
+        :icon-position="iconPosition"
+        :icon-size="iconSize"
+        gap="8px"
+      >
+        {{ widget.content.text || 'Bouton' }}
+      </IconText>
     </a>
   </div>
 </template>

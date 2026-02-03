@@ -95,7 +95,7 @@ allowedChildren: ['type1'] OR disallowedChildren: ['type2']
 **Widget Placeholder Pattern (required for empty states):**
 ```vue
 <script setup>
-import { Wrench } from 'lucide-vue-next'  // Use appropriate Lucide icon
+import { Wrench } from 'lucide-vue-next' // Use appropriate Lucide icon
 </script>
 
 <template>

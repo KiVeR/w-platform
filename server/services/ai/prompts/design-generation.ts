@@ -19,11 +19,11 @@ const WIDGET_DEFINITIONS = `
 - **image**: Display an image. Required: src. Always provide alt text.
 - **separator**: Horizontal line divider between sections.
 - **spacer**: Invisible vertical spacing element. Use height in styles.
-- **icon**: Single decorative Lucide icon. Use PascalCase icon names from Lucide library (Star, Heart, Phone, Mail, Check, Shield, Award, etc.). Properties: iconName (string - Lucide icon name), iconSize, iconColor, href
+- **icon**: Single decorative Lucide icon. Use PascalCase icon names from Lucide library (Star, Heart, Phone, Mail, Check, Shield, Award, etc.). Properties: iconName (string - Lucide icon name), iconSize (ONLY use: '24px', '36px', '48px', '64px', '96px'), iconColor, href
 
 ### Action Widgets
-- **button**: Interactive button. Required: text, action ('link'|'tel'|'email'), href or phone
-- **click-to-call**: Phone call button. Required: phone, text
+- **button**: Interactive button. Required: text, action ('link'|'tel'|'email'), href or phone. Optional: icon (Lucide name, e.g. "ArrowRight", "Download"), iconPosition ('start'|'end', default: 'start')
+- **click-to-call**: Phone call button. Required: phone, text. Optional: icon (default: "Phone"), iconPosition ('start'|'end'). Action is always 'tel'.
 - **link-image**: Clickable image. Required: linkImageSrc, linkImageHref, linkImageAlt
 
 ### Layout Widgets
@@ -363,6 +363,59 @@ Je crée une section galerie photos avec un titre, une description invitante et 
         ]
       },
       "styles": { "padding": "8px 16px", "margin": "0" }
+    }
+  ]
+}
+
+### Example 5: Call-to-Action with Icon
+User: "Create a newsletter subscription section with an email CTA"
+
+Response:
+Je crée une section d'inscription newsletter avec un titre accrocheur, une description des avantages, et un bouton CTA avec icône flèche pour guider l'action.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#f0f9ff",
+    "textColor": "#0c4a6e",
+    "primaryColor": "#0284c7",
+    "fontFamily": "Inter, sans-serif",
+    "contentPadding": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "title",
+      "order": 0,
+      "content": { "text": "Restez informé" },
+      "styles": { "fontSize": "28px", "textAlign": "center", "color": "#0c4a6e", "padding": "24px 16px 8px" }
+    },
+    {
+      "id": "widget_2",
+      "type": "text",
+      "order": 1,
+      "content": { "text": "Recevez nos offres exclusives et actualités directement dans votre boîte mail. Pas de spam, promis !" },
+      "styles": { "textAlign": "center", "color": "#0369a1", "padding": "0 16px 16px", "fontSize": "16px" }
+    },
+    {
+      "id": "widget_3",
+      "type": "button",
+      "order": 2,
+      "content": {
+        "text": "Je m'inscris",
+        "action": "link",
+        "href": "/newsletter",
+        "icon": "ArrowRight",
+        "iconPosition": "end"
+      },
+      "styles": { "backgroundColor": "#0284c7", "color": "#ffffff", "padding": "16px 32px", "margin": "8px auto", "borderRadius": "8px", "fontSize": "18px", "fontWeight": "600" }
+    },
+    {
+      "id": "widget_4",
+      "type": "text",
+      "order": 3,
+      "content": { "text": "Déjà 12 500 abonnés satisfaits" },
+      "styles": { "textAlign": "center", "color": "#64748b", "fontSize": "14px", "padding": "8px 16px" }
     }
   ]
 }

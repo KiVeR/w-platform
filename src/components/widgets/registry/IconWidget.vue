@@ -2,7 +2,7 @@
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
-import { getLucideIcon, isEmoji } from '@/utils/lucide-icons'
+import { getLucideIcon } from '@/utils/lucide-icons'
 
 const props = defineProps<{
   widget: Widget
@@ -16,13 +16,7 @@ const iconSize = computed(() => props.widget.content.iconSize || '48px')
 const hasLink = computed(() => !!props.widget.content.href)
 const isPlaceholder = computed(() => !props.widget.content.iconName)
 
-// Determine if the icon is an emoji or a Lucide icon name
-const isEmojiIcon = computed(() => isEmoji(iconName.value))
-const lucideComponent = computed(() => {
-  if (isEmojiIcon.value)
-    return null
-  return getLucideIcon(iconName.value)
-})
+const lucideComponent = computed(() => getLucideIcon(iconName.value))
 
 // Convert iconSize string (e.g., '48px') to number for Lucide components
 const iconSizeNumeric = computed(() => {
@@ -34,8 +28,6 @@ const iconSizeNumeric = computed(() => {
 const iconColor = computed(() => props.widget.content.iconColor || primaryColor.value)
 
 const wrapperStyle = computed(() => ({
-  // Only use fontSize for emoji icons
-  fontSize: isEmojiIcon.value ? iconSize.value : undefined,
   color: iconColor.value,
   textAlign: props.widget.styles.textAlign || 'center',
   padding: props.widget.styles.padding,
@@ -52,16 +44,13 @@ const wrapperStyle = computed(() => ({
       :rel="hasLink ? 'noopener noreferrer' : undefined"
       :class="{ 'icon-link': hasLink }"
     >
-      <!-- Lucide icon -->
       <component
         :is="lucideComponent"
         v-if="lucideComponent"
         :size="iconSizeNumeric"
         :color="iconColor"
-        class="icon-display lucide-icon"
+        class="icon-display"
       />
-      <!-- Emoji fallback -->
-      <span v-else class="icon-display emoji-icon">{{ iconName }}</span>
     </component>
   </div>
 </template>
@@ -77,12 +66,8 @@ const wrapperStyle = computed(() => ({
 
 .icon-display {
   display: inline-block;
-  transition: transform 0.2s, color 0.2s ease;
-}
-
-.lucide-icon {
-  /* Lucide icons handle their own sizing */
   flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s ease;
 }
 
 .icon-link {
