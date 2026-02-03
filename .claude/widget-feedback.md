@@ -26,6 +26,18 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | Carousel | Widget carrousel dedie pour collections ou produits (batch #3 mode) | 2026-02-02 |
 | Code input | Champ de saisie de code (promo, jeu) avec validation (batch #20 jeu-concours) | 2026-02-02 |
 | Logo widget | Widget logo SVG/PNG dedie distinct du titre texte (batch #5 immobilier) | 2026-02-02 |
+| Animation/Lottie | Widget animation Lottie pour micro-interactions et illustrations animees (batch2 #9 education-formation) | 2026-02-02 |
+| Before-after | Widget comparaison avant/apres avec slider pour montrer des transformations (batch2 #5 immobilier) | 2026-02-02 |
+| Radio-group | Widget groupe de boutons radio visuels pour choix exclusif dans formulaires (batch3 #11 sommeil, #19 budget participatif) | 2026-02-02 |
+| Timeline | Widget chronologie/frise temporelle pour afficher des etapes datees (batch3 #19 budget participatif) | 2026-02-02 |
+| Itinerary | Widget parcours jour par jour pour secteur voyage/croisiere (batch4 #10 voyage) | 2026-02-03 |
+| Hours/Schedule | Widget horaires d'ouverture structure pour commerces locaux (batch4 #4 garage, #11 pharmacie, #6 crossfit) | 2026-02-03 |
+| Ingredient-list | Widget liste d'ingredients INCI structuree pour cosmetique (batch4 #8 cosmetique) | 2026-02-03 |
+| Webcam-embed | Widget flux video en direct ou embed webcam (batch4 #14 ONG) | 2026-02-03 |
+| Stock-indicator | Widget indicateur de stock restant dynamique pour e-commerce (batch4 #18 rugby, #3 mode) | 2026-02-03 |
+| Hero-image | Widget hero avec overlay texte integre pour sections d'accroche (batch4 #18 rugby, 9 LPs) | 2026-02-03 |
+| Sticky-CTA | Widget CTA flottant visible au scroll sur mobile (batch4 #10 voyage, #18 rugby) | 2026-02-03 |
+| Artisan-profile | Widget profil artisan avec photo, prenom et specialite (batch4 #3 mode artisanale) | 2026-02-03 |
 
 ## Options manquantes sur widgets existants
 
@@ -62,6 +74,41 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | social | platform tiktok | TikTok non disponible dans les plateformes du widget social (batch 3 LPs) | 2026-02-02 |
 | social | platform pinterest | Pinterest non disponible dans les plateformes du widget social (batch 1 LP) | 2026-02-02 |
 | social | platform spotify | Spotify non disponible dans les plateformes du widget social (batch 1 LP) | 2026-02-02 |
+| click-to-call | hidePhoneNumber | Masquer le numero brut et afficher uniquement le label du bouton (batch2 2 LPs) | 2026-02-02 |
+| form-field | fieldType: date natif | Le type date est utilise mais pas documente/supporte dans la definition du widget (batch2 2 LPs) | 2026-02-02 |
+| barcode | barcodeType: qrcode | Le widget barcode ne supporte que ean13/ean8/code128, pas de QR code (batch3 #9 formation IA) | 2026-02-02 |
+| scratch | scratchCallToAction (texte CTA sur overlay) | Impossible d'afficher un texte incitatif sur l'overlay du scratch (batch3 #20 jeu-concours) | 2026-02-02 |
+| form-field | fieldType: radio (boutons radio visuels) | Le type radio n'est pas supporte, seulement select pour choix exclusif (batch3 #11 sommeil) | 2026-02-02 |
+| testimonial | source/lien (Google, TripAdvisor) | Credibiliser les avis avec source verifiable (batch4 #1 restauration) | 2026-02-03 |
+| testimonial | companyLogo | Logo entreprise pour temoignages B2B (batch4 #7 telecoms, #15 SaaS) | 2026-02-03 |
+| testimonial | date du voyage/achat | Contextualiser le temoignage dans le temps (batch4 #10 voyage) | 2026-02-03 |
+| testimonial | beforeAfterImages | Photos avant/apres pour prouver resultats (batch4 #6 crossfit, #8 cosmetique) | 2026-02-03 |
+| countdown | unitLabels | Afficher les labels des unites temporelles (jours, heures, min, sec) (batch4 #14 ONG, 9 LPs) | 2026-02-03 |
+| countdown | goalProgress | Afficher la progression vers un objectif (batch4 #14 ONG) | 2026-02-03 |
+| countdown | offerText | Afficher l'offre associee directement dans le widget (batch4 #5 immobilier) | 2026-02-03 |
+| badge | variant (urgency, outline, gradient) | Variantes visuelles pour badges promo (batch4 #4 garage, #13 mariage, 8 LPs) | 2026-02-03 |
+| badge | icon/iconLeft | Icone integree dans le badge (batch4 #9 formation, #11 pharmacie) | 2026-02-03 |
+| badge | pulse/animated | Animation pulse/glow pour attirer l'attention (batch4 #12 bio, #18 rugby) | 2026-02-03 |
+| effect | customImages | Utiliser des images custom au lieu d'emojis pour confetti/effet (batch4 #20 chocolaterie) | 2026-02-03 |
+| effect | trigger | Declencheur d'effet (on load, on scroll, on click) (batch4 #20 chocolaterie) | 2026-02-03 |
+| effect | backgroundColor | Couleur de fond de la zone d'effet (batch4 #14 ONG) | 2026-02-03 |
+| gallery | logoMode | Afficher des logos plutot que des photos (batch4 #9 formation) | 2026-02-03 |
+| gallery | badgeOverlay | Badge en overlay sur chaque image (batch4 #3 mode) | 2026-02-03 |
+| gallery | imageDescription | Description longue par image (batch4 #14 ONG) | 2026-02-03 |
+| form-field | time (type natif) | Champ heure pour reservation (batch4 #11 pharmacie) | 2026-02-03 |
+| form-field | radioGroup | Groupe de boutons radio visuels (batch4 #14 ONG) | 2026-02-03 |
+| form-field | autocomplete address | Autocompletion pour champ adresse (batch4 #7 telecoms) | 2026-02-03 |
+| form-field | inputMask | Masques de saisie pour telephone, code postal (batch4 #7 telecoms) | 2026-02-03 |
+| video | thumbnail | Image de preview avant lecture (batch4 #6 crossfit) | 2026-02-03 |
+| separator | variant (dashed, dotted, gradient, wave) | Variantes de style pour separateurs (batch4 #11 pharmacie, #16 epicerie, #19 collectivite) | 2026-02-03 |
+| separator | spacing | Espacement integre au separateur (batch4 #6 crossfit) | 2026-02-03 |
+| title/text | letterSpacing | Espacement des lettres pour style premium (batch4 #10 voyage, #17 horlogerie) | 2026-02-03 |
+| row/column | backgroundGradient | Fond en degrade lineaire/radial (batch4 #1 restauration, #7 telecoms, #12 bio) | 2026-02-03 |
+| row/column | backgroundImage | Image de fond sur conteneurs (batch4 #18 rugby) | 2026-02-03 |
+| row/column | elevation/boxShadow | Ombres portees pour effet carte (batch4 #1 restauration, #10 voyage, #17 horlogerie) | 2026-02-03 |
+| row | 3+ colonnes | Support de plus de 2 colonnes pour grilles (batch4 17 LPs) | 2026-02-03 |
+| globalStyles | accentColor | Couleur d'accent secondaire dans la palette (batch4 #1 restauration) | 2026-02-03 |
+| globalStyles | secondaryColor/tertiaryColor | Palettes complexes multi-couleurs (batch4 #2 assurance) | 2026-02-03 |
 
 ## Limitations rencontrées
 
@@ -88,3 +135,19 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | Pas de plateforme TikTok dans le widget social | Le widget social utilise 'twitter' comme fallback pour TikTok (batch 4 LPs) | 2026-02-02 |
 | Flipcard limite aux images (pas de texte) | Le widget flipcard ne supporte que des images front/back, pas de contenu texte riche (batch 2 LPs) | 2026-02-02 |
 | Scratch widget sans champ code prealable | Impossible de conditionner le scratch a une saisie de code, pas de liaison avec un formulaire (batch 2 LPs) | 2026-02-02 |
+| Pas d'affichage conditionnel de widgets | Impossible de montrer/cacher des widgets selon une condition (ex: apres soumission formulaire) (batch2 4 LPs) | 2026-02-02 |
+| Script screenshot-preview.mjs timeout | Le script de screenshot echoue avec timeout sur le bouton Apercu (batch3 #5, #6, #8, #19) | 2026-02-02 |
+| Rate limiting bloque les screenshots | Les captures d'ecran automatisees sont bloquees par le rate limiting (batch3 #2, #6) | 2026-02-02 |
+| Testimonial carousel impossible | Le widget testimonial ne permet qu'un seul temoignage, pas de slider (batch4 15 LPs) | 2026-02-03 |
+| Countdown sans labels d'unites | Le countdown affiche uniquement les chiffres sans "jours/heures/min/sec" (batch4 #14 ONG) | 2026-02-03 |
+| Pas de jauge de progression visuelle | Impossible de creer une barre de progression vers un objectif de campagne (batch4 #14 ONG, #19 collectivite) | 2026-02-03 |
+| Pas de tableau de comparaison responsive | Impossible de creer un tableau comparatif de prix natif (batch4 #2 assurance, #7 telecoms, #15 SaaS) | 2026-02-03 |
+| Form-fields sans masques de saisie | Pas de validation format telephone, code postal en temps reel (batch4 #7 telecoms) | 2026-02-03 |
+| Scratch non conditionnable | Impossible de lier le scratch a une soumission de formulaire prealable (batch4 #20 chocolaterie) | 2026-02-03 |
+| Effet widget avec emojis inapproprie premium | L'effet sparkle/confetti utilise des emojis qui degradent le positionnement luxe (batch4 #8 cosmetique, #13 mariage) | 2026-02-03 |
+| Pas d'overlay texte sur images slider | Les slides n'ont pas de caption, titre ou CTA superpose (batch4 #5 immobilier, #18 rugby, 9 LPs) | 2026-02-03 |
+| Video placeholder non remplacable | Les videos YouTube placeholder ne peuvent pas etre configurees avec de vraies URLs (batch4 #8 cosmetique, #11 pharmacie) | 2026-02-03 |
+| Map single marker | Le widget map ne supporte qu'un seul marqueur, pas de multi-sites (batch4 #19 collectivite) | 2026-02-03 |
+| Token JWT expire pour screenshots | Le script Playwright echoue avec token expire lors des captures automatisees (batch4 #15 SaaS) | 2026-02-03 |
+| Row background gradient non supporte | Les widgets row ne supportent pas les backgrounds avec gradients CSS (batch4 #18 rugby) | 2026-02-03 |
+| Icon Lucide affiche texte brut | Le widget icon avec iconName Lucide affiche le nom textuel au lieu de l'icone SVG (batch4 #7 telecoms, #17 horlogerie, 20 LPs) | 2026-02-03 |
