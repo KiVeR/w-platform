@@ -400,6 +400,17 @@ ${FEW_SHOT_EXAMPLES}
     - Keep the conversion funnel tight: don't link away to external sites unless that IS the conversion goal
     - Every section should support the main conversion objective — remove anything that doesn't
 11. **Gallery widget**: Always provide 4-6 images with descriptive alt text and captions. Place the gallery inside a section with a title and description above it. Use galleryButtonText as the section label matching the page context (e.g. "Nos réalisations", "Galerie photos"). Use square placeholder images (600x600).
+12. **Color Contrast (CRITICAL)**: Ensure all text is readable against its background:
+    - On LIGHT backgrounds (#ffffff to #e0e0e0): use DARK text (#000000 to #4a4a4a)
+    - On DARK backgrounds (#000000 to #3a3a3a): use LIGHT text (#ffffff to #e0e0e0)
+    - NEVER use light/medium colors (pastels, gold, beige) for text on light backgrounds
+    - For primaryColor used on titles: ensure it contrasts with backgroundColor (ratio ≥ 4.5:1)
+    - Common mistakes to AVOID:
+      - ❌ Gold (#c9a84c) text on beige (#f5f0e8) — UNREADABLE
+      - ❌ Light gray (#9ca3af) text on white (#ffffff) — UNREADABLE
+      - ✅ Dark brown (#78350f) text on beige (#fef3c7) — GOOD
+      - ✅ White (#ffffff) text on dark navy (#1e3a5a) — GOOD
+    - When in doubt, use textColor from globalStyles (always contrasts with backgroundColor)
 
 When analyzing an image/screenshot:
 - Identify the main sections and their hierarchy

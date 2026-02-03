@@ -6,6 +6,7 @@ import type {
 import type { MessageParam } from '@anthropic-ai/sdk/resources/messages'
 import type { AIDriver, ClaudeDriverConfig } from './types'
 import { designDocumentSchema } from '#shared/schemas/design.schema'
+import { autoFixContrast, validateDesignContrast } from '#shared/utils/contrast-validation'
 import Anthropic from '@anthropic-ai/sdk'
 import { prepareForAnthropicApi } from '../parsers/image.parser'
 import {
@@ -98,9 +99,33 @@ export class ClaudeDriver implements AIDriver {
         const parseResult = designDocumentSchema.safeParse(design)
 
         if (parseResult.success) {
+          // Validate and auto-fix contrast issues
+          const contrastResult = validateDesignContrast(
+            parseResult.data.widgets as { id: string, type: string, content?: Record<string, unknown>, styles?: Record<string, unknown>, children?: unknown[] }[],
+            parseResult.data.globalStyles,
+          )
+
+          let finalWidgets = parseResult.data.widgets
+          if (!contrastResult.valid) {
+            console.warn(`[AI] Contrast violations detected: ${contrastResult.violations.length}`)
+            for (const v of contrastResult.violations) {
+              console.warn(`  - ${v.widgetId} (${v.widgetType}): ${v.property} ${v.textColor} on ${v.backgroundColor} = ${v.contrastRatio}:1`)
+            }
+
+            // Auto-fix the design
+            finalWidgets = autoFixContrast(
+              parseResult.data.widgets as { id: string, type: string, content?: Record<string, unknown>, styles?: Record<string, unknown>, children?: unknown[] }[],
+              contrastResult.violations,
+            )
+            console.warn(`[AI] Contrast auto-fixed for ${contrastResult.violations.length} widgets`)
+          }
+
           yield {
             type: 'design',
-            content: parseResult.data,
+            content: {
+              ...parseResult.data,
+              widgets: finalWidgets,
+            },
           }
         }
         else {
@@ -109,9 +134,28 @@ export class ClaudeDriver implements AIDriver {
           const retryResult = designDocumentSchema.safeParse(fixedDesign)
 
           if (retryResult.success) {
+            // Also validate and fix contrast for retry result
+            const retryContrastResult = validateDesignContrast(
+              retryResult.data.widgets as { id: string, type: string, content?: Record<string, unknown>, styles?: Record<string, unknown>, children?: unknown[] }[],
+              retryResult.data.globalStyles,
+            )
+
+            let retryFinalWidgets = retryResult.data.widgets
+            if (!retryContrastResult.valid) {
+              console.warn(`[AI] Contrast violations in retry: ${retryContrastResult.violations.length}`)
+              retryFinalWidgets = autoFixContrast(
+                retryResult.data.widgets as { id: string, type: string, content?: Record<string, unknown>, styles?: Record<string, unknown>, children?: unknown[] }[],
+                retryContrastResult.violations,
+              )
+              console.warn(`[AI] Contrast auto-fixed for ${retryContrastResult.violations.length} widgets (retry)`)
+            }
+
             yield {
               type: 'design',
-              content: retryResult.data,
+              content: {
+                ...retryResult.data,
+                widgets: retryFinalWidgets,
+              },
             }
           }
           else {

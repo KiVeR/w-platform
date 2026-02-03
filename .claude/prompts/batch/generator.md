@@ -29,7 +29,9 @@ Read `shared/schemas/design.schema.ts` and verify your JSON matches the constrai
 Re-read your JSON and check this checklist (report pass/fail for each):
 - No emojis in title/text/button content
 - Visual hierarchy: main title >=36px > section titles >=24px > body >=14px
-- Color contrast: text readable on backgrounds
+- Color contrast: DARK text (#1a1a1a to #4a4a4a) on light backgrounds, LIGHT text (#ffffff to #e0e0e0) on dark backgrounds
+- Color contrast: NO gold/pastel/beige text on light backgrounds (ratio ≥ 4.5:1 required)
+- Color contrast: primaryColor titles must be readable on backgroundColor
 - Content completeness: hero + 2+ sections + CTA + footer
 - Conversion focus: CTA above fold + at bottom, action-oriented text
 - Layout balance: balanced column content
