@@ -79,4 +79,9 @@ After completing the design, provide a **"Retour produit"** section to the user 
 
 Be specific and concrete — reference the exact moment in the design where you felt the limitation.
 
-**IMPORTANT**: After displaying the feedback to the user, **append** your findings to `.claude/widget-feedback.md` using the Edit tool. Add new rows to the appropriate tables (Widgets manquants, Options manquantes, Limitations). Use today's date. Do NOT overwrite existing entries — only append. Skip duplicates if the same feedback already exists in the file.
+**IMPORTANT**: After displaying the feedback to the user, **update** `.claude/widget-feedback.md` using the Edit tool:
+- For NEW items: Add new rows to the "### En attente" subsection with `Demandes = 1`
+- For EXISTING items: Increment the "Demandes" counter by 1 (e.g., `| 3 |` → `| 4 |`)
+- Tables are sorted by Demandes (descending) — reposition the row if its count changes significantly
+- Use today's date for new entries
+- Do NOT modify the "### ✅ Implémentés" or "### ✅ Résolues" sections

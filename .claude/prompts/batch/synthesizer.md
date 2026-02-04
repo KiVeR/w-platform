@@ -53,4 +53,9 @@ Write to `{{BATCH_DIR}}/synthesis.md`:
 ```
 
 ### 4. Update widget-feedback.md
-Read `.claude/widget-feedback.md`. For each NEW entry (not already present), append it to the appropriate table with today's date. Do NOT overwrite existing entries.
+Read `.claude/widget-feedback.md` and update it:
+- For NEW items: Add new rows to the "### En attente" subsection with `Demandes = <frequency from synthesis>`
+- For EXISTING items: Increment the "Demandes" counter by the frequency found in this batch
+- Tables are sorted by Demandes (descending) — reposition rows accordingly after updating counts
+- Use today's date for new entries
+- Do NOT modify the "### ✅ Implémentés" or "### ✅ Résolues" sections — those track completed work
