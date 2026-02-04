@@ -165,19 +165,35 @@ export interface WidgetContent {
 }
 
 export interface WidgetStyles {
+  // Typography
   fontSize?: string
   fontWeight?: string
+  lineHeight?: string
+  letterSpacing?: string
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
+
+  // Colors
   color?: string
   backgroundColor?: string
+
+  // Layout
   textAlign?: 'left' | 'center' | 'right'
   padding?: string
   margin?: string
-  borderRadius?: string
   height?: string
   width?: string
+  maxWidth?: string
+
+  // Border
+  borderRadius?: string
   borderStyle?: 'solid' | 'dashed' | 'dotted'
   borderColor?: string
   borderWidth?: string
+
+  // Visual Effects
+  boxShadow?: string
+  opacity?: string
+
   // Flexbox for row/column
   display?: 'flex' | 'block' | 'inline' | 'inline-block' | 'grid' | 'none'
   flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse'
@@ -186,6 +202,7 @@ export interface WidgetStyles {
   gap?: string
   flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse'
   flex?: string
+
   [key: string]: string | undefined
 }
 

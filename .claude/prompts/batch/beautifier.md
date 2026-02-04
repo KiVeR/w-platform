@@ -18,19 +18,30 @@ Your ONLY focus: **Make this design MORE BEAUTIFUL without changing its meaning 
 
 Think like a senior designer doing the final polish pass before client delivery: refining shadows, tuning color relationships, perfecting spacing rhythm, adding subtle visual touches that elevate "functional" to "refined."
 
-## Aesthetic Profile Detection
+## Aesthetic Profile: {{STYLE_PROFILE}} (ENFORCED)
 
-Before making changes, analyze the design and DETECT the appropriate aesthetic profile:
+**DO NOT detect or change the profile.** This LP was generated with the **{{STYLE_PROFILE}}** profile and you MUST maintain it.
 
-| Profile | Characteristics | Best For Sectors |
-|---------|----------------|------------------|
-| **minimal** | Clean, lots of white space, subtle shadows, muted colors | B2B SaaS, tech, consulting |
-| **modern** | Layered shadows, subtle gradients, rounded corners | Telecom, fitness, e-commerce |
-| **bold** | Dramatic shadows, vibrant colors, accent borders | Fast food, events, gaming |
-| **elegant** | Refined typography, sophisticated colors, gold/silver accents | Luxury, real estate, cosmetics |
-| **playful** | Colorful, patterns, rounded shapes, fun touches | Education, NGO, family-oriented |
+### Profile-Specific Beautification Guidelines
 
-Write your detected profile in your analysis before applying changes.
+| Profile | Shadow Style | Color Approach | Border Radius | Typography |
+|---------|-------------|----------------|---------------|------------|
+| **minimal** | Subtle (0 1px 3px) | Muted, 2-3 colors max | 4px default | Light weights (400), generous spacing |
+| **modern** | Layered (0 4px 12px) | Balanced, subtle gradients OK | 8px default | Mixed weights, clear hierarchy |
+| **bold** | Dramatic (0 8px 24px) | Vibrant, high saturation | 8-12px | Heavy weights (700-900) |
+| **elegant** | Refined (0 2px 8px) | Sophisticated, muted | 4-8px | Refined, generous letter-spacing |
+| **playful** | Soft (0 4px 8px) | Colorful, varied | 12px+ (rounded) | Varied sizes, friendly |
+
+### Color Mood: {{COLOR_MOOD}} (ENFORCED)
+
+When adjusting colors, respect the assigned color mood:
+- **vibrant**: Enhance saturation, use complementary accents
+- **muted**: Desaturate, use earthy tones
+- **monochrome**: Stick to shades of the primary color
+- **warm**: Lean toward oranges, reds, yellows
+- **cool**: Lean toward blues, greens, purples
+
+Your beautification must ENHANCE the existing {{STYLE_PROFILE}}/{{COLOR_MOOD}} direction, not fight against it.
 
 ## Intervention Level: MODERATE
 
@@ -126,12 +137,12 @@ Non-compliant values will be flagged as violations.
 
 Before making changes:
 
-1. **Detect aesthetic profile** — What style fits this sector/design?
-2. **Identify weakest elements** — What looks "off" or unpolished?
-3. **Diagnose specific issues** — Flat shadows? Jarring colors? Inconsistent spacing?
-4. **Propose targeted fixes** — What minimal change has maximum impact?
+1. **Confirm aesthetic profile** — This LP uses {{STYLE_PROFILE}}/{{COLOR_MOOD}}. All changes must enhance this direction
+2. **Identify weakest elements** — What looks "off" or unpolished FOR THIS PROFILE?
+3. **Diagnose specific issues** — Does shadow level match profile? Colors match mood? Spacing match style?
+4. **Propose targeted fixes** — What minimal change has maximum impact while respecting the profile?
 5. **Check ripple effects** — Does this change require others for consistency?
-6. **Verify constraints** — Brand colors preserved? Tokens used? Under 15 changes?
+6. **Verify constraints** — Brand colors preserved? Tokens used? Under 15 changes? Profile respected?
 
 ## Output Steps
 
@@ -141,8 +152,8 @@ Write analysis to `{{BATCH_DIR}}/beautification/{{BRIEF_ID}}-analysis.json`:
 {
   "briefId": {{BRIEF_ID}},
   "sector": "{{SECTOR}}",
-  "detectedProfile": "minimal|modern|bold|elegant|playful",
-  "profileRationale": "Why this profile fits the design/sector",
+  "assignedProfile": "{{STYLE_PROFILE}}",
+  "assignedColorMood": "{{COLOR_MOOD}}",
   "currentWeaknesses": ["max 3 specific aesthetic issues from UI critique"],
   "strengthsToPreserve": ["elements that already work well"],
   "plannedChanges": [
@@ -182,7 +193,8 @@ Write evaluation to `{{BATCH_DIR}}/beautification/{{BRIEF_ID}}-evaluation.json`:
 ```json
 {
   "briefId": {{BRIEF_ID}},
-  "detectedProfile": "...",
+  "assignedProfile": "{{STYLE_PROFILE}}",
+  "assignedColorMood": "{{COLOR_MOOD}}",
   "changesSummary": {
     "total": 0,
     "byCategory": {
@@ -231,7 +243,8 @@ FEEDBACK_START
 {
   "briefId": {{BRIEF_ID}},
   "phase": "beautification",
-  "detectedProfile": "...",
+  "assignedProfile": "{{STYLE_PROFILE}}",
+  "assignedColorMood": "{{COLOR_MOOD}}",
   "modificationsApplied": 0,
   "categoriesModified": ["shadows", "colors", ...],
   "feedbackProduit": {

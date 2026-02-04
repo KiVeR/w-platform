@@ -3,6 +3,52 @@ You are generating a landing page for Kreo. Follow these instructions EXACTLY.
 ## Brief
 {{BRIEF_TEXT}}
 
+## Creative Direction (MANDATORY)
+
+You MUST follow this creative direction to ensure design diversity across the batch.
+
+### Style Profile: {{STYLE_PROFILE}}
+
+| Profile | Design Characteristics |
+|---------|------------------------|
+| minimal | Clean lines, maximum whitespace, subtle shadows (0 1px 2px), light font weights (400), muted colors, 2-3 colors max |
+| modern | Layered shadows (0 4px 12px), subtle gradients, rounded corners (8-12px), balanced typography |
+| bold | Strong contrasts, dramatic shadows (0 8px 24px), heavy font weights (700-900), vibrant saturated colors |
+| elegant | Refined typography, sophisticated muted palette, gold/silver accents, generous spacing, subtle details |
+| playful | Colorful palette, rounded shapes (12px+), fun copy, slightly informal tone, varied element sizes |
+
+### Layout Pattern: {{LAYOUT_PATTERN}}
+
+| Pattern | Structure | Use When |
+|---------|-----------|----------|
+| funnel | CTA → explanation → features → CTA | High urgency, clear single action |
+| showcase | Full-bleed hero → product/service grid → testimonials → CTA | Visual products, portfolio |
+| story | Problem → agitation → solution → CTA | Complex services, B2B |
+| asymmetric | 30/70 or 40/60 columns, offset elements, visual interest | Creative sectors, differentiation |
+| form-first | Form above fold, benefits below | Lead generation, appointments |
+
+### Color Mood: {{COLOR_MOOD}}
+
+| Mood | Characteristics | Example Approach |
+|------|-----------------|------------------|
+| vibrant | High saturation, complementary colors | Bold primary + contrasting accents |
+| muted | Desaturated, earthy, sophisticated | Neutral base + subtle colored accents |
+| monochrome | Single hue, multiple shades | Primary color in 3-4 tint/shade variations |
+| warm | Oranges, reds, yellows, browns | Inviting, energetic, appetizing |
+| cool | Blues, greens, purples | Professional, calming, trustworthy |
+
+### Anti-Patterns (AVOID)
+
+These common mistakes make all LPs look identical. DO NOT:
+
+- ❌ **Excessive separators**: Max 2 separators per LP. Use spacing/backgrounds instead
+- ❌ **Generic CTAs**: NO "En savoir plus", "Découvrir", "Cliquez ici". Use benefit-driven CTAs: "Réserver ma place", "Obtenir mon devis", "Commencer maintenant"
+- ❌ **Predictable structure**: NOT always hero → features → testimonials → CTA → footer
+- ❌ **Default blue**: Blue is overused. Match colors to sector and mood
+- ❌ **Uniform font sizes**: Use at least 4 different sizes for clear hierarchy (48 > 32 > 24 > 16)
+- ❌ **Flat design**: Add depth with shadows, subtle gradients, layered backgrounds
+- ❌ **Equal columns only**: Try asymmetric layouts (30/70, 40/60) for visual interest
+
 ## Step 1: Read design guidelines
 Read these two files:
 - `server/services/ai/prompts/design-generation.ts`
@@ -10,13 +56,29 @@ Read these two files:
 
 ## Step 2: Generate design JSON
 Create a complete DesignDocument JSON for this brief. Rules:
+
+### Content Rules
 - French text for all user-facing content WITH PROPER ACCENTS (é, è, ê, à, ù, ô, î, ç). Missing accents destroy credibility. Examples: "Découvrir", "Réserver", "Démarrer", "Précommander", "Accéder"
 - Placeholder images: `https://placehold.co/WIDTHxHEIGHT?text=Description`
-- Cohesive color palette matching the sector/tone
-- Rich design: multiple sections, spacing, clear visual hierarchy
-- Follow ALL layout rules from the guidelines (row->column only, max 2 columns, unique IDs, sequential order)
 - No emojis in content (only in icon/effect widget properties)
-- Primary CTA above the fold AND repeated at bottom
+
+### Creative Direction Rules (FOLLOW YOUR ASSIGNED PROFILE)
+- **Apply your Style Profile ({{STYLE_PROFILE}})**: shadows, typography weights, color saturation
+- **Follow your Layout Pattern ({{LAYOUT_PATTERN}})**: structure your sections accordingly
+- **Use your Color Mood ({{COLOR_MOOD}})**: warm/cool/vibrant/muted/monochrome palette
+- **Place CTA strategically based on layout pattern**:
+  - funnel: CTA first, then again at bottom
+  - showcase: CTA after product/service display
+  - story: CTA only at the climax (after solution reveal)
+  - asymmetric: CTA in the larger column
+  - form-first: form IS the hero, benefits support it
+
+### Layout Rules
+- Follow ALL layout rules from the guidelines (row->column only, max 2 columns, unique IDs, sequential order)
+- Rich design: multiple sections, spacing, clear visual hierarchy
+- Cohesive color palette matching the sector AND your assigned color mood
+
+### Design Token Compliance
 - **Design token compliance**: Use ONLY values from the design token scale (see design-generation.ts) for fontSize, fontWeight, lineHeight, spacing (padding/margin/gap), and borderRadius. Compound values like "16px 24px" must use token values for each side.
 
 ## Step 3: Write to file

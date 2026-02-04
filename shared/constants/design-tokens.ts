@@ -8,11 +8,26 @@
  */
 
 export const DESIGN_TOKENS = {
+  // Typography
   fontSize: ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'],
   fontWeight: ['400', '600', '700', '900'],
   lineHeight: ['1', '1.2', '1.4', '1.5', '1.6', '1.8', '2'],
+  letterSpacing: ['-0.02em', '0', '0.02em', '0.05em', '0.1em'],
+  textTransform: ['none', 'uppercase', 'lowercase', 'capitalize'],
+
+  // Spacing
   spacing: ['0', '4px', '8px', '12px', '16px', '24px', '32px', '48px'],
   borderRadius: ['0', '4px', '8px', '12px', '50px'],
+
+  // Visual Effects
+  boxShadow: [
+    'none',
+    '0 1px 2px rgba(0,0,0,0.05)', // subtle
+    '0 4px 8px rgba(0,0,0,0.1)', // medium
+    '0 8px 24px rgba(0,0,0,0.15)', // strong
+    '0 4px 12px rgba(0,0,0,0.25)', // prominent
+  ],
+  opacity: ['0.25', '0.5', '0.75', '1'],
 } as const
 
 export type DesignTokenCategory = keyof typeof DESIGN_TOKENS
@@ -39,6 +54,36 @@ export const BORDER_RADIUS_LABELS: Record<string, string> = {
   '50px': 'Circulaire',
 }
 
+export const LETTER_SPACING_LABELS: Record<string, string> = {
+  '-0.02em': 'Serré',
+  '0': 'Normal',
+  '0.02em': 'Légèrement espacé',
+  '0.05em': 'Espacé',
+  '0.1em': 'Très espacé',
+}
+
+export const BOX_SHADOW_LABELS: Record<string, string> = {
+  'none': 'Aucune',
+  '0 1px 2px rgba(0,0,0,0.05)': 'Subtile',
+  '0 4px 8px rgba(0,0,0,0.1)': 'Moyenne',
+  '0 8px 24px rgba(0,0,0,0.15)': 'Forte',
+  '0 4px 12px rgba(0,0,0,0.25)': 'Proéminente',
+}
+
+export const TEXT_TRANSFORM_LABELS: Record<string, string> = {
+  none: 'Normal',
+  uppercase: 'MAJUSCULES',
+  lowercase: 'minuscules',
+  capitalize: 'Première Lettre',
+}
+
+export const OPACITY_LABELS: Record<string, string> = {
+  0.25: '25%',
+  0.5: '50%',
+  0.75: '75%',
+  1: '100%',
+}
+
 /**
  * Generate a formatted string of design token constraints for AI prompts.
  * Imported by design-generation.ts to keep prompt in sync with constants.
@@ -54,6 +99,8 @@ ONLY use the exact values listed below for structural style properties. Using ot
 | fontSize | ${DESIGN_TOKENS.fontSize.join(', ')} | 12-14px: captions, fine print · 16-18px: body text · 20-24px: emphasis, subtitles · 28-32px: section titles · 36-48px: hero titles |
 | fontWeight | ${DESIGN_TOKENS.fontWeight.join(', ')} | 400: body text · 600: emphasis · 700: section titles · 900: hero titles |
 | lineHeight | ${DESIGN_TOKENS.lineHeight.join(', ')} | 1-1.2: headings · 1.4-1.6: body text · 1.8-2: loose text |
+| letterSpacing | ${DESIGN_TOKENS.letterSpacing.join(', ')} | -0.02em: tight (hero titles) · 0: normal · 0.05-0.1em: uppercase text, labels |
+| textTransform | ${DESIGN_TOKENS.textTransform.join(', ')} | uppercase: labels, badges · capitalize: titles · none: body text |
 
 ### Spacing Tokens (margin, padding, gap)
 | Allowed Values | Usage Context |
@@ -67,11 +114,18 @@ Compound values MUST use token values for each side: "16px 24px" ✅, "15px 20px
 |----------------|---------------|
 | ${DESIGN_TOKENS.borderRadius.join(', ')} | 0: sharp · 4px: subtle · 8px: medium (default) · 12px: rounded · 50px: pill/circle |
 
+### Visual Effects Tokens
+| Property | Allowed Values | Usage Context |
+|----------|----------------|---------------|
+| boxShadow | none, subtle (0 1px 2px), medium (0 4px 8px), strong (0 8px 24px), prominent (0 4px 12px) | none: flat elements · subtle: minimal profile · medium: modern profile · strong: bold profile |
+| opacity | ${DESIGN_TOKENS.opacity.join(', ')} | Use for overlay effects, disabled states, decorative backgrounds |
+
 ### Visual Hierarchy Rules
-- Hero title: fontSize 36-48px, fontWeight 900
+- Hero title: fontSize 36-48px, fontWeight 900, letterSpacing -0.02em
 - Section titles: fontSize 24-32px, fontWeight 700
-- Body text: fontSize 16-18px, fontWeight 400
+- Body text: fontSize 16-18px, fontWeight 400, lineHeight 1.5-1.6
 - Captions/small: fontSize 12-14px, fontWeight 400
+- Labels/badges: fontSize 12-14px, textTransform uppercase, letterSpacing 0.05em
 
 ### Variety Requirement
 Use at least 3 different fontSize values and 4 different spacing values to create visual rhythm. Avoid mechanical uniformity.

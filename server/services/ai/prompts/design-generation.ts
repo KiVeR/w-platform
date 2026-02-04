@@ -421,6 +421,449 @@ Je crée une section d'inscription newsletter avec un titre accrocheur, une desc
   ]
 }
 
+### Example 6: Dark Mode / Bold Design
+User: "Create a gaming event landing page with dark theme"
+
+Response:
+Je crée une landing page gaming avec fond sombre, couleurs néon vibrantes, et un CTA proéminent en haut.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#0f0f1a",
+    "textColor": "#e2e8f0",
+    "primaryColor": "#8b5cf6",
+    "fontFamily": "Inter, sans-serif",
+    "contentPadding": "16px",
+    "widgetGap": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "button",
+      "order": 0,
+      "content": { "text": "Réserver ma place maintenant", "action": "link", "href": "/register", "icon": "Zap", "iconPosition": "start" },
+      "styles": { "backgroundColor": "#8b5cf6", "color": "#ffffff", "padding": "16px 32px", "margin": "16px auto", "borderRadius": "8px", "fontSize": "18px", "fontWeight": "700" }
+    },
+    {
+      "id": "widget_2",
+      "type": "title",
+      "order": 1,
+      "content": { "text": "CYBER ARENA 2026" },
+      "styles": { "fontSize": "48px", "textAlign": "center", "color": "#8b5cf6", "padding": "24px 16px 8px", "fontWeight": "900" }
+    },
+    {
+      "id": "widget_3",
+      "type": "text",
+      "order": 2,
+      "content": { "text": "Le plus grand tournoi e-sport de France. 500 joueurs. 100 000€ de cashprize. 15-16 mars 2026." },
+      "styles": { "textAlign": "center", "color": "#a5b4fc", "padding": "0 16px 24px", "fontSize": "18px" }
+    },
+    {
+      "id": "widget_4",
+      "type": "image",
+      "order": 3,
+      "content": { "src": "https://placehold.co/800x400?text=Gaming+Arena", "alt": "Arena de compétition e-sport" },
+      "styles": { "width": "100%", "borderRadius": "12px", "padding": "0 16px" }
+    },
+    {
+      "id": "widget_5",
+      "type": "title",
+      "order": 4,
+      "content": { "text": "Pourquoi participer ?" },
+      "styles": { "fontSize": "28px", "textAlign": "center", "color": "#e2e8f0", "padding": "32px 16px 16px" }
+    },
+    {
+      "id": "widget_6",
+      "type": "row",
+      "order": 5,
+      "content": { "gap": "16px" },
+      "styles": { "padding": "0 16px" },
+      "children": [
+        {
+          "id": "widget_7",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "50%" },
+          "styles": { "backgroundColor": "#1e1e2f", "padding": "24px", "borderRadius": "12px" },
+          "children": [
+            { "id": "widget_8", "type": "icon", "order": 0, "content": { "iconName": "Trophy", "iconSize": "48px", "iconColor": "#fbbf24" }, "styles": { "margin": "0 auto 12px" } },
+            { "id": "widget_9", "type": "title", "order": 1, "content": { "text": "100 000€" }, "styles": { "fontSize": "24px", "textAlign": "center", "color": "#fbbf24" } },
+            { "id": "widget_10", "type": "text", "order": 2, "content": { "text": "De cashprize à remporter" }, "styles": { "textAlign": "center", "color": "#94a3b8", "fontSize": "14px" } }
+          ]
+        },
+        {
+          "id": "widget_11",
+          "type": "column",
+          "order": 1,
+          "content": { "columnWidth": "50%" },
+          "styles": { "backgroundColor": "#1e1e2f", "padding": "24px", "borderRadius": "12px" },
+          "children": [
+            { "id": "widget_12", "type": "icon", "order": 0, "content": { "iconName": "Users", "iconSize": "48px", "iconColor": "#22d3ee" }, "styles": { "margin": "0 auto 12px" } },
+            { "id": "widget_13", "type": "title", "order": 1, "content": { "text": "500+" }, "styles": { "fontSize": "24px", "textAlign": "center", "color": "#22d3ee" } },
+            { "id": "widget_14", "type": "text", "order": 2, "content": { "text": "Joueurs attendus" }, "styles": { "textAlign": "center", "color": "#94a3b8", "fontSize": "14px" } }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+### Example 7: Form-First Layout (Lead Gen)
+User: "Create a lead generation page for a real estate agency"
+
+Response:
+Je crée une page de génération de leads avec le formulaire en hero, suivi des avantages.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#faf5f0",
+    "textColor": "#292524",
+    "primaryColor": "#b45309",
+    "fontFamily": "Georgia, serif",
+    "contentPadding": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "title",
+      "order": 0,
+      "content": { "text": "Estimez votre bien gratuitement" },
+      "styles": { "fontSize": "32px", "textAlign": "center", "color": "#b45309", "padding": "24px 16px 8px" }
+    },
+    {
+      "id": "widget_2",
+      "type": "text",
+      "order": 1,
+      "content": { "text": "Recevez une estimation précise sous 24h par nos experts locaux." },
+      "styles": { "textAlign": "center", "color": "#78716c", "padding": "0 16px 16px", "fontSize": "16px" }
+    },
+    {
+      "id": "widget_3",
+      "type": "form",
+      "order": 2,
+      "content": { "successMessage": "Merci ! Un expert vous contactera sous 24h.", "emailNotify": true, "emailTo": "estimation@agence.fr" },
+      "styles": { "backgroundColor": "#ffffff", "padding": "24px", "borderRadius": "12px", "margin": "0 16px 24px" },
+      "children": [
+        { "id": "widget_4", "type": "form-field", "order": 0, "content": { "fieldType": "select", "label": "Type de bien", "options": ["Appartement", "Maison", "Terrain", "Commerce"], "required": true }, "styles": {} },
+        { "id": "widget_5", "type": "form-field", "order": 1, "content": { "fieldType": "text", "label": "Adresse du bien", "placeholder": "12 rue de la Paix, 75001 Paris", "required": true }, "styles": {} },
+        { "id": "widget_6", "type": "form-field", "order": 2, "content": { "fieldType": "text", "label": "Surface (m²)", "placeholder": "85", "required": true }, "styles": {} },
+        { "id": "widget_7", "type": "form-field", "order": 3, "content": { "fieldType": "tel", "label": "Téléphone", "placeholder": "06 12 34 56 78", "required": true }, "styles": {} }
+      ]
+    },
+    {
+      "id": "widget_8",
+      "type": "title",
+      "order": 3,
+      "content": { "text": "Pourquoi nous faire confiance ?" },
+      "styles": { "fontSize": "24px", "textAlign": "center", "padding": "16px" }
+    },
+    {
+      "id": "widget_9",
+      "type": "row",
+      "order": 4,
+      "content": { "gap": "16px" },
+      "styles": { "padding": "0 16px 24px" },
+      "children": [
+        {
+          "id": "widget_10",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "50%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_11", "type": "icon", "order": 0, "content": { "iconName": "Award", "iconSize": "36px", "iconColor": "#b45309" }, "styles": { "margin": "0 auto 8px" } },
+            { "id": "widget_12", "type": "text", "order": 1, "content": { "text": "25 ans d'expertise locale" }, "styles": { "textAlign": "center", "fontSize": "14px" } }
+          ]
+        },
+        {
+          "id": "widget_13",
+          "type": "column",
+          "order": 1,
+          "content": { "columnWidth": "50%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_14", "type": "icon", "order": 0, "content": { "iconName": "ThumbsUp", "iconSize": "36px", "iconColor": "#b45309" }, "styles": { "margin": "0 auto 8px" } },
+            { "id": "widget_15", "type": "text", "order": 1, "content": { "text": "98% de clients satisfaits" }, "styles": { "textAlign": "center", "fontSize": "14px" } }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+### Example 8: Asymmetric Layout (40/60)
+User: "Create a fitness promotion with asymmetric layout"
+
+Response:
+Je crée une page fitness avec un layout asymétrique 40/60 pour mettre en valeur l'offre.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#ffffff",
+    "textColor": "#18181b",
+    "primaryColor": "#dc2626",
+    "fontFamily": "Inter, sans-serif",
+    "contentPadding": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "row",
+      "order": 0,
+      "content": { "gap": "24px", "align": "center" },
+      "styles": { "padding": "24px 16px", "backgroundColor": "#fef2f2" },
+      "children": [
+        {
+          "id": "widget_2",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "40%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_3", "type": "title", "order": 0, "content": { "text": "-50%" }, "styles": { "fontSize": "48px", "color": "#dc2626", "fontWeight": "900" } },
+            { "id": "widget_4", "type": "text", "order": 1, "content": { "text": "Sur votre abonnement annuel" }, "styles": { "fontSize": "16px", "color": "#7f1d1d" } }
+          ]
+        },
+        {
+          "id": "widget_5",
+          "type": "column",
+          "order": 1,
+          "content": { "columnWidth": "60%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_6", "type": "title", "order": 0, "content": { "text": "Offre Nouvel An" }, "styles": { "fontSize": "28px", "color": "#18181b" } },
+            { "id": "widget_7", "type": "text", "order": 1, "content": { "text": "Rejoignez FitZone avant le 31 janvier et bénéficiez de 6 mois offerts + accès illimité aux cours collectifs." }, "styles": { "fontSize": "16px", "lineHeight": "1.6", "padding": "8px 0" } },
+            { "id": "widget_8", "type": "button", "order": 2, "content": { "text": "Profiter de l'offre", "action": "link", "href": "/inscription", "icon": "ArrowRight", "iconPosition": "end" }, "styles": { "backgroundColor": "#dc2626", "color": "#ffffff", "padding": "16px 24px", "borderRadius": "8px", "fontWeight": "700" } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "widget_9",
+      "type": "image",
+      "order": 1,
+      "content": { "src": "https://placehold.co/800x400?text=Salle+de+sport", "alt": "Intérieur de la salle FitZone" },
+      "styles": { "width": "100%", "padding": "0 16px" }
+    },
+    {
+      "id": "widget_10",
+      "type": "text",
+      "order": 2,
+      "content": { "text": "Plus de 15 000 membres nous font déjà confiance" },
+      "styles": { "textAlign": "center", "color": "#71717a", "fontSize": "14px", "padding": "16px" }
+    }
+  ]
+}
+
+### Example 9: Minimal / Monochrome Design
+User: "Create a minimal consulting services page"
+
+Response:
+Je crée une page consulting minimaliste avec une palette monochrome et beaucoup d'espace blanc.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#ffffff",
+    "textColor": "#171717",
+    "primaryColor": "#171717",
+    "fontFamily": "Inter, sans-serif",
+    "contentPadding": "24px",
+    "widgetGap": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "spacer",
+      "order": 0,
+      "content": {},
+      "styles": { "height": "32px" }
+    },
+    {
+      "id": "widget_2",
+      "type": "title",
+      "order": 1,
+      "content": { "text": "Stratégie & Conseil" },
+      "styles": { "fontSize": "36px", "textAlign": "left", "fontWeight": "400", "padding": "0 24px" }
+    },
+    {
+      "id": "widget_3",
+      "type": "text",
+      "order": 2,
+      "content": { "text": "Nous accompagnons les entreprises dans leur transformation digitale depuis 2015. Notre approche : simplicité, efficacité, résultats." },
+      "styles": { "fontSize": "18px", "lineHeight": "1.8", "color": "#525252", "padding": "16px 24px 32px", "maxWidth": "600px" }
+    },
+    {
+      "id": "widget_4",
+      "type": "button",
+      "order": 3,
+      "content": { "text": "Prendre rendez-vous", "action": "link", "href": "/contact" },
+      "styles": { "backgroundColor": "#171717", "color": "#ffffff", "padding": "16px 32px", "borderRadius": "0", "margin": "0 24px", "fontWeight": "400" }
+    },
+    {
+      "id": "widget_5",
+      "type": "spacer",
+      "order": 4,
+      "content": {},
+      "styles": { "height": "48px" }
+    },
+    {
+      "id": "widget_6",
+      "type": "separator",
+      "order": 5,
+      "content": {},
+      "styles": { "margin": "0 24px", "borderColor": "#e5e5e5" }
+    },
+    {
+      "id": "widget_7",
+      "type": "row",
+      "order": 6,
+      "content": { "gap": "48px" },
+      "styles": { "padding": "48px 24px" },
+      "children": [
+        {
+          "id": "widget_8",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "50%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_9", "type": "title", "order": 0, "content": { "text": "120+" }, "styles": { "fontSize": "48px", "fontWeight": "400" } },
+            { "id": "widget_10", "type": "text", "order": 1, "content": { "text": "Projets livrés" }, "styles": { "color": "#737373", "fontSize": "14px" } }
+          ]
+        },
+        {
+          "id": "widget_11",
+          "type": "column",
+          "order": 1,
+          "content": { "columnWidth": "50%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_12", "type": "title", "order": 0, "content": { "text": "8 ans" }, "styles": { "fontSize": "48px", "fontWeight": "400" } },
+            { "id": "widget_13", "type": "text", "order": 1, "content": { "text": "D'expertise" }, "styles": { "color": "#737373", "fontSize": "14px" } }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+### Example 10: Story Layout (Problem → Solution → CTA)
+User: "Create a page for a productivity app using storytelling"
+
+Response:
+Je crée une page storytelling avec structure problème → agitation → solution → CTA unique à la fin.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#f0fdf4",
+    "textColor": "#14532d",
+    "primaryColor": "#16a34a",
+    "fontFamily": "Inter, sans-serif",
+    "contentPadding": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "title",
+      "order": 0,
+      "content": { "text": "Vous perdez 2h par jour en réunions inutiles" },
+      "styles": { "fontSize": "28px", "textAlign": "center", "color": "#991b1b", "padding": "32px 16px 8px" }
+    },
+    {
+      "id": "widget_2",
+      "type": "text",
+      "order": 1,
+      "content": { "text": "Notifications incessantes. Calendrier surchargé. Emails sans fin. Votre productivité s'effondre." },
+      "styles": { "textAlign": "center", "color": "#7f1d1d", "padding": "0 16px 24px", "fontSize": "16px" }
+    },
+    {
+      "id": "widget_3",
+      "type": "image",
+      "order": 2,
+      "content": { "src": "https://placehold.co/800x300?text=Chaos+au+travail", "alt": "Illustration du chaos au travail" },
+      "styles": { "width": "100%", "padding": "0 16px", "borderRadius": "8px" }
+    },
+    {
+      "id": "widget_4",
+      "type": "spacer",
+      "order": 3,
+      "content": {},
+      "styles": { "height": "32px" }
+    },
+    {
+      "id": "widget_5",
+      "type": "title",
+      "order": 4,
+      "content": { "text": "Et si vous repreniez le contrôle ?" },
+      "styles": { "fontSize": "28px", "textAlign": "center", "color": "#16a34a", "padding": "0 16px 8px" }
+    },
+    {
+      "id": "widget_6",
+      "type": "text",
+      "order": 5,
+      "content": { "text": "FocusTime bloque automatiquement les distractions, regroupe vos réunions, et vous offre 2h de travail profond garanti chaque jour." },
+      "styles": { "textAlign": "center", "color": "#166534", "padding": "0 16px 16px", "fontSize": "16px", "lineHeight": "1.6" }
+    },
+    {
+      "id": "widget_7",
+      "type": "row",
+      "order": 6,
+      "content": { "gap": "16px" },
+      "styles": { "padding": "16px" },
+      "children": [
+        {
+          "id": "widget_8",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "50%" },
+          "styles": { "backgroundColor": "#dcfce7", "padding": "16px", "borderRadius": "8px" },
+          "children": [
+            { "id": "widget_9", "type": "icon", "order": 0, "content": { "iconName": "Clock", "iconSize": "36px", "iconColor": "#16a34a" }, "styles": { "margin": "0 auto 8px" } },
+            { "id": "widget_10", "type": "text", "order": 1, "content": { "text": "+2h de focus par jour" }, "styles": { "textAlign": "center", "fontSize": "14px", "fontWeight": "600" } }
+          ]
+        },
+        {
+          "id": "widget_11",
+          "type": "column",
+          "order": 1,
+          "content": { "columnWidth": "50%" },
+          "styles": { "backgroundColor": "#dcfce7", "padding": "16px", "borderRadius": "8px" },
+          "children": [
+            { "id": "widget_12", "type": "icon", "order": 0, "content": { "iconName": "TrendingUp", "iconSize": "36px", "iconColor": "#16a34a" }, "styles": { "margin": "0 auto 8px" } },
+            { "id": "widget_13", "type": "text", "order": 1, "content": { "text": "+40% de productivité" }, "styles": { "textAlign": "center", "fontSize": "14px", "fontWeight": "600" } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "widget_14",
+      "type": "spacer",
+      "order": 7,
+      "content": {},
+      "styles": { "height": "24px" }
+    },
+    {
+      "id": "widget_15",
+      "type": "button",
+      "order": 8,
+      "content": { "text": "Essayer gratuitement pendant 14 jours", "action": "link", "href": "/trial", "icon": "Play", "iconPosition": "start" },
+      "styles": { "backgroundColor": "#16a34a", "color": "#ffffff", "padding": "16px 32px", "margin": "0 auto", "borderRadius": "8px", "fontSize": "18px", "fontWeight": "700" }
+    },
+    {
+      "id": "widget_16",
+      "type": "text",
+      "order": 9,
+      "content": { "text": "Sans carte bancaire • Annulation en 1 clic" },
+      "styles": { "textAlign": "center", "color": "#6b7280", "fontSize": "12px", "padding": "8px 16px 32px" }
+    }
+  ]
+}
+
 ### Common Accent Error to Avoid (CRITICAL)
 ❌ WRONG (missing accents - INVALID):
 \`\`\`json
@@ -473,8 +916,14 @@ ${FEW_SHOT_EXAMPLES}
 9. **No emojis - Use Lucide icons**: NEVER use emojis anywhere in the design. For icon widgets, use Lucide icon names (PascalCase strings like "Star", "Phone", "Mail", "Heart", "Check", "Shield", "Award", "Target", "Users", "ShoppingCart", "CreditCard", "MapPin", "Clock", "Calendar", "Gift", "Truck", "Zap", "Leaf", "ThumbsUp", "MessageCircle", "Play", "Download", "ArrowRight"). The ONLY exception is effectImage in effect widgets where emojis create the particle effect.
 10. **Conversion & engagement**: Design every page with a clear conversion goal. Apply these principles:
     - Define ONE primary action (visit store, call, fill form, download app) and make it the most prominent CTA
-    - Place the primary CTA above the fold (within the first 3-4 widgets) AND repeat it at the bottom
+    - **CTA placement depends on the page structure**:
+      - Funnel pages: CTA first (above fold) + repeat at bottom
+      - Showcase pages: CTA after the product/service display
+      - Story pages: Single CTA at the climax (after solution reveal) — no early CTA
+      - Form-first pages: The form IS the hero CTA
+      - Asymmetric layouts: CTA in the larger column for emphasis
     - Use action-oriented button text focused on user benefit ("Obtenir mes bons de réduction" not "En savoir plus")
+    - **AVOID generic CTAs**: Never use "En savoir plus", "Découvrir", "Cliquez ici". Be specific about the benefit
     - Create urgency when relevant (dates, limited stock, time-limited offers)
     - Add social proof where possible (user counts, testimonials, ratings)
     - Keep the conversion funnel tight: don't link away to external sites unless that IS the conversion goal

@@ -98,6 +98,40 @@ interface State {
 }
 
 // ---------------------------------------------------------------------------
+// Creative Diversity System
+// ---------------------------------------------------------------------------
+
+const STYLE_PROFILES = ['minimal', 'modern', 'bold', 'elegant', 'playful'] as const
+const LAYOUT_PATTERNS = ['funnel', 'showcase', 'story', 'asymmetric', 'form-first'] as const
+const COLOR_MOODS = ['vibrant', 'muted', 'monochrome', 'warm', 'cool'] as const
+
+type StyleProfile = typeof STYLE_PROFILES[number]
+type LayoutPattern = typeof LAYOUT_PATTERNS[number]
+type ColorMood = typeof COLOR_MOODS[number]
+
+interface CreativeSeed {
+  styleProfile: StyleProfile
+  layoutPattern: LayoutPattern
+  colorMood: ColorMood
+}
+
+function getCreativeSeed(briefId: number): CreativeSeed {
+  return {
+    styleProfile: STYLE_PROFILES[briefId % STYLE_PROFILES.length],
+    layoutPattern: LAYOUT_PATTERNS[(briefId + 2) % LAYOUT_PATTERNS.length],
+    colorMood: COLOR_MOODS[(briefId + 4) % COLOR_MOODS.length],
+  }
+}
+
+function formatCreativeSeedVars(seed: CreativeSeed): Record<string, string> {
+  return {
+    STYLE_PROFILE: seed.styleProfile,
+    LAYOUT_PATTERN: seed.layoutPattern,
+    COLOR_MOOD: seed.colorMood,
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Sectors (stable IDs, briefs generated dynamically by Claude agent)
 // ---------------------------------------------------------------------------
 
@@ -494,7 +528,8 @@ async function generateSingleBrief(
   isRetry = false,
 ): Promise<void> {
   const retryTag = isRetry ? `${c.yellow}Retry${c.reset} ` : ''
-  log.agent(brief.id, `${retryTag}Generating ${brief.sector}...`)
+  const creativeSeed = getCreativeSeed(brief.id)
+  log.agent(brief.id, `${retryTag}Generating ${brief.sector} [${creativeSeed.styleProfile}/${creativeSeed.layoutPattern}/${creativeSeed.colorMood}]...`)
 
   try {
     const prompt = fillTemplate(template, {
@@ -504,6 +539,7 @@ async function generateSingleBrief(
       LP_TITLE: brief.sector,
       ACCESS_TOKEN: token,
       BATCH_DIR: runDir,
+      ...formatCreativeSeedVars(creativeSeed),
     })
 
     const output = await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))
@@ -707,7 +743,8 @@ async function phaseRevision(state: State, token: string, runDir: string): Promi
 
   await runInBatches(ready, state.config.maxParallel, async (briefState) => {
     const brief = BRIEFS.find(b => b.id === briefState.id)!
-    log.agent(brief.id, 'Revising...')
+    const creativeSeed = getCreativeSeed(brief.id)
+    log.agent(brief.id, `Revising [${creativeSeed.styleProfile}]...`)
 
     try {
       const prompt = fillTemplate(template, {
@@ -716,6 +753,7 @@ async function phaseRevision(state: State, token: string, runDir: string): Promi
         CONTENT_ID: briefState.contentId ?? 0,
         ACCESS_TOKEN: token,
         BATCH_DIR: runDir,
+        ...formatCreativeSeedVars(creativeSeed),
       })
 
       const output = await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))
@@ -762,7 +800,8 @@ async function phaseBeautification(state: State, token: string, runDir: string):
 
   await runInBatches(ready, state.config.maxParallel, async (briefState) => {
     const brief = BRIEFS.find(b => b.id === briefState.id)!
-    log.agent(brief.id, 'Beautifying...')
+    const creativeSeed = getCreativeSeed(brief.id)
+    log.agent(brief.id, `Beautifying [${creativeSeed.styleProfile}]...`)
 
     try {
       const prompt = fillTemplate(template, {
@@ -772,6 +811,7 @@ async function phaseBeautification(state: State, token: string, runDir: string):
         CONTENT_ID: briefState.contentId ?? 0,
         ACCESS_TOKEN: token,
         BATCH_DIR: runDir,
+        ...formatCreativeSeedVars(creativeSeed),
       })
 
       const output = await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))

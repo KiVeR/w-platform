@@ -6,6 +6,7 @@ export interface TokenViolation {
   property: string
   value: string
   nearestToken: string
+  advisory?: boolean // True for new tokens (warnings only, doesn't affect valid flag)
 }
 
 export interface TokenValidationResult {
@@ -14,11 +15,19 @@ export interface TokenValidationResult {
   complianceRate: number
 }
 
+// Core tokens - validated strictly
 const TOKEN_CHECKED_PROPERTIES: Record<string, DesignTokenCategory> = {
   fontSize: 'fontSize',
   fontWeight: 'fontWeight',
   lineHeight: 'lineHeight',
   borderRadius: 'borderRadius',
+}
+
+// New tokens - validated in advisory mode (warnings, not blocking)
+const ADVISORY_TOKEN_PROPERTIES: Record<string, DesignTokenCategory> = {
+  letterSpacing: 'letterSpacing',
+  textTransform: 'textTransform',
+  opacity: 'opacity',
 }
 
 const SPACING_PROPERTIES = ['padding', 'margin', 'gap', 'rowGap', 'columnGap']
@@ -139,6 +148,25 @@ export function validateDesignTokens(widgets: WidgetLike[]): TokenValidationResu
       }
     }
 
+    // Check advisory token properties (new tokens - warnings only)
+    for (const [prop, category] of Object.entries(ADVISORY_TOKEN_PROPERTIES)) {
+      const value = styles[prop]
+      if (!value)
+        continue
+
+      // Advisory tokens don't count toward compliance rate
+      const scale = DESIGN_TOKENS[category]
+      if (!isTokenCompliant(value, scale)) {
+        violations.push({
+          widgetId,
+          property: prop,
+          value,
+          nearestToken: snapToNearestToken(value, [...scale]),
+          advisory: true,
+        })
+      }
+    }
+
     // Recurse into children
     if (widget.children) {
       for (const child of widget.children) {
@@ -151,10 +179,12 @@ export function validateDesignTokens(widgets: WidgetLike[]): TokenValidationResu
     checkWidget(widget)
   }
 
-  const complianceRate = checkedCount === 0 ? 1 : (checkedCount - violations.length) / checkedCount
+  // Only count non-advisory violations for compliance rate and validity
+  const strictViolations = violations.filter(v => !v.advisory)
+  const complianceRate = checkedCount === 0 ? 1 : (checkedCount - strictViolations.length) / checkedCount
 
   return {
-    valid: violations.length === 0,
+    valid: strictViolations.length === 0,
     violations,
     complianceRate,
   }
