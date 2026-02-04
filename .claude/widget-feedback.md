@@ -127,6 +127,7 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | form-field select | grouped options | Grouper les options par categorie (zone geographique) (batch5 #12 primeurs) | 2026-02-03 |
 | text | style citation | Mise en forme automatique verbatims (guillemets, italique, attribution) (batch5 #12 primeurs) | 2026-02-03 |
 | globalStyles | fontFamily moderne | Support Google Fonts ou familles typographiques variees (batch5 #12 primeurs) | 2026-02-03 |
+| text | line-height | Controle de l'interligne pour ameliorer la lisibilite sur mobile (batch5 #12 primeurs) | 2026-02-04 |
 
 ## Limitations rencontrées
 
