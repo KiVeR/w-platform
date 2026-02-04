@@ -76,6 +76,8 @@ interface BriefState {
   vote: 'pending' | 'done' | 'error'
   humanReview: 'pending' | 'done' | 'skipped'
   revision: 'pending' | 'done' | 'error'
+  beautification: 'pending' | 'done' | 'error' | 'skipped'
+  reCritique: 'pending' | 'done' | 'error' | 'skipped'
 }
 
 interface RunSummary {
@@ -199,6 +201,8 @@ function initState(maxParallel: number, briefIds: number[]): State {
       vote: 'pending' as const,
       humanReview: 'pending' as const,
       revision: 'pending' as const,
+      beautification: 'pending' as const,
+      reCritique: 'pending' as const,
     }))
 
   return {
@@ -740,6 +744,182 @@ async function phaseRevision(state: State, token: string, runDir: string): Promi
   await saveState(state, runDir)
 }
 
+async function phaseBeautification(state: State, token: string, runDir: string): Promise<void> {
+  log.phase('PHASE 4.5 — BEAUTIFICATION')
+
+  // Create beautification directory
+  await mkdir(resolve(runDir, 'beautification'), { recursive: true })
+
+  const template = await loadPromptTemplate('beautifier')
+  const ready = state.briefs.filter(b => b.revision === 'done' && b.beautification === 'pending')
+
+  if (ready.length === 0) {
+    log.info('All beautifications already done, skipping')
+    return
+  }
+
+  log.info(`${ready.length} LPs to beautify`)
+
+  await runInBatches(ready, state.config.maxParallel, async (briefState) => {
+    const brief = BRIEFS.find(b => b.id === briefState.id)!
+    log.agent(brief.id, 'Beautifying...')
+
+    try {
+      const prompt = fillTemplate(template, {
+        BRIEF_ID: brief.id,
+        SLUG: brief.slug,
+        SECTOR: brief.sector,
+        CONTENT_ID: briefState.contentId ?? 0,
+        ACCESS_TOKEN: token,
+        BATCH_DIR: runDir,
+      })
+
+      const output = await runClaude(prompt, agentLabel(state, `Brief ${brief.id}`))
+
+      // Validate beautified file exists
+      const beautifiedPath = resolve(runDir, `lp-${brief.id}-beautified.json`)
+      if (!await fileExists(beautifiedPath)) {
+        // Fallback: copy revised to beautified
+        const revisedPath = resolve(runDir, `lp-${brief.id}-revised.json`)
+        const sourcePath = await fileExists(revisedPath)
+          ? revisedPath
+          : resolve(runDir, `lp-${brief.id}.json`)
+        if (await fileExists(sourcePath)) {
+          const content = await readFile(sourcePath, 'utf8')
+          await writeFile(beautifiedPath, content)
+          log.agent(brief.id, `${c.yellow}No beautified output, using source${c.reset}`)
+        }
+        else {
+          throw new Error('No source design found for beautification')
+        }
+      }
+
+      // Validate design tokens
+      const beautified = JSON.parse(await readFile(beautifiedPath, 'utf8'))
+      const tokenResult = validateDesignTokens(beautified.widgets || [])
+      const pct = (tokenResult.complianceRate * 100).toFixed(0)
+
+      if (tokenResult.valid) {
+        log.agent(brief.id, `${c.green}Beautified (100% token compliant)${c.reset}`)
+      }
+      else {
+        log.agent(brief.id, `${c.yellow}Beautified (${pct}% compliant, ${tokenResult.violations.length} violations)${c.reset}`)
+      }
+
+      // Parse feedback
+      const feedback = parseFeedback(output)
+      if (feedback) {
+        await writeFile(
+          resolve(runDir, `feedback/beautification-${brief.id}.json`),
+          JSON.stringify(feedback, null, 2),
+        )
+      }
+
+      briefState.beautification = 'done'
+    }
+    catch (err) {
+      briefState.beautification = 'error'
+      state.errors.push({ phase: 'beautification', briefId: brief.id, error: errorMessage(err) })
+      log.agent(brief.id, `${c.red}Failed: ${errorMessage(err)}${c.reset}`)
+
+      // Fallback: copy revised to beautified to continue pipeline
+      const revisedPath = resolve(runDir, `lp-${brief.id}-revised.json`)
+      const beautifiedPath = resolve(runDir, `lp-${brief.id}-beautified.json`)
+      const sourcePath = await fileExists(revisedPath)
+        ? revisedPath
+        : resolve(runDir, `lp-${brief.id}.json`)
+      if (await fileExists(sourcePath)) {
+        const content = await readFile(sourcePath, 'utf8')
+        await writeFile(beautifiedPath, content)
+        log.agent(brief.id, `${c.yellow}Fallback: using source design${c.reset}`)
+      }
+    }
+
+    await saveState(state, runDir)
+  })
+
+  state.phase = 'beautification'
+  await saveState(state, runDir)
+}
+
+async function phaseReCritique(state: State, runDir: string): Promise<void> {
+  log.phase('PHASE 4.6 — RE-CRITIQUE (UI)')
+
+  const ready = state.briefs.filter(b => b.beautification === 'done' && b.reCritique === 'pending')
+
+  if (ready.length === 0) {
+    log.info('All re-critiques already done, skipping')
+    return
+  }
+
+  log.info(`${ready.length} beautified LPs to re-evaluate`)
+
+  const template = await loadPromptTemplate('critic-ui')
+
+  await runInBatches(ready, state.config.maxParallel, async (briefState) => {
+    const brief = BRIEFS.find(b => b.id === briefState.id)!
+    log.agent(brief.id, 'Re-critiquing UI...')
+
+    try {
+      // Use beautified design for re-critique
+      const prompt = fillTemplate(template, {
+        BRIEF_ID: brief.id,
+        SECTOR: brief.sector,
+        SLUG: `${brief.slug}-beautified`,
+        BRIEF_TEXT: brief.prompt,
+        BATCH_DIR: runDir,
+      })
+
+      await runClaude(prompt, agentLabel(state, `B${brief.id} re-ui`))
+
+      // Rename output to distinguish from original critique
+      const originalCritique = resolve(runDir, `critiques/${brief.id}-ui.json`)
+      const reCritiquePath = resolve(runDir, `critiques/${brief.id}-ui-post.json`)
+
+      // Read new critique and compare scores
+      if (await fileExists(originalCritique)) {
+        const original = JSON.parse(await readFile(originalCritique, 'utf8'))
+        // The new critique overwrites, so we need to read before it's overwritten
+        // Actually, critic-ui writes to {id}-ui.json, so we should save original first
+        const backupPath = resolve(runDir, `critiques/${brief.id}-ui-pre.json`)
+        if (!await fileExists(backupPath)) {
+          await writeFile(backupPath, JSON.stringify(original, null, 2))
+        }
+      }
+
+      // Read the new critique (which was just written to {id}-ui.json)
+      if (await fileExists(originalCritique)) {
+        const newCritique = JSON.parse(await readFile(originalCritique, 'utf8'))
+        // Copy to post file
+        await writeFile(reCritiquePath, JSON.stringify(newCritique, null, 2))
+
+        // Compare scores
+        const prePath = resolve(runDir, `critiques/${brief.id}-ui-pre.json`)
+        if (await fileExists(prePath)) {
+          const preCritique = JSON.parse(await readFile(prePath, 'utf8'))
+          const delta = (newCritique.averageScore || 0) - (preCritique.averageScore || 0)
+          const deltaStr = delta >= 0 ? `+${delta.toFixed(1)}` : delta.toFixed(1)
+          const color = delta > 0 ? c.green : delta < 0 ? c.red : c.gray
+          log.agent(brief.id, `UI score: ${preCritique.averageScore?.toFixed(1)} → ${newCritique.averageScore?.toFixed(1)} (${color}${deltaStr}${c.reset})`)
+        }
+      }
+
+      briefState.reCritique = 'done'
+      log.agent(brief.id, `${c.green}Re-critique done${c.reset}`)
+    }
+    catch (err) {
+      briefState.reCritique = 'error'
+      state.errors.push({ phase: 'reCritique', briefId: brief.id, error: errorMessage(err) })
+      log.agent(brief.id, `${c.red}Failed${c.reset}`)
+    }
+
+    await saveState(state, runDir)
+  })
+
+  state.phase = 'reCritique'
+  await saveState(state, runDir)
+}
+
 async function phaseSynthesis(state: State, runDir: string): Promise<void> {
   log.phase('PHASE 5 — SYNTHESIS')
   const template = await loadPromptTemplate('synthesizer')
@@ -784,8 +964,8 @@ function printReport(state: State, runDir: string): void {
   log.phase('FINAL REPORT')
   log.info(`Run #${state.runId} — ${runDir}`)
 
-  console.log(`${c.bold}  #  | Sector                  | Gen  | Crit | Vote | Review | Revision${c.reset}`)
-  console.log('  ---|-------------------------|------|------|------|--------|----------')
+  console.log(`${c.bold}  #  | Sector                  | Gen  | Crit | Vote | Rev  | Beaut | ReCrit${c.reset}`)
+  console.log('  ---|-------------------------|------|------|------|------|-------|-------')
 
   const statusDisplay: Record<string, string> = {
     done: `${c.green}done${c.reset}`,
@@ -797,7 +977,14 @@ function printReport(state: State, runDir: string): void {
   for (const b of state.briefs) {
     const id = String(b.id).padStart(2)
     const sector = b.sector.padEnd(23)
-    console.log(`  ${id} | ${sector} | ${status(b.generation)} | ${status(b.critique)} | ${status(b.vote)} | ${status(b.humanReview)} | ${status(b.revision)}`)
+    console.log(`  ${id} | ${sector} | ${status(b.generation)} | ${status(b.critique)} | ${status(b.vote)} | ${status(b.revision)} | ${status(b.beautification)} | ${status(b.reCritique)}`)
+  }
+
+  // Show beautification score deltas if available
+  const beautifiedBriefs = state.briefs.filter(b => b.reCritique === 'done')
+  if (beautifiedBriefs.length > 0) {
+    console.log(`\n${c.bold}Beautification Impact:${c.reset}`)
+    console.log(`  ${c.gray}(Run 'yarn batch-lp report' for detailed scores)${c.reset}`)
   }
 
   if (state.errors.length > 0) {
@@ -811,11 +998,12 @@ function printReport(state: State, runDir: string): void {
     }
   }
 
-  const doneCount = state.briefs.filter(b => b.revision === 'done').length
-  console.log(`\n${c.bold}Total: ${doneCount}/${state.briefs.length} LPs completed${c.reset}`)
+  const doneCount = state.briefs.filter(b => b.beautification === 'done').length
+  console.log(`\n${c.bold}Total: ${doneCount}/${state.briefs.length} LPs beautified${c.reset}`)
   console.log(`\nReports:`)
   console.log(`  ${c.cyan}${runDir}/synthesis.md${c.reset} — Widget feedback aggregation`)
   console.log(`  ${c.cyan}${runDir}/meta-analysis.md${c.reset} — System improvement recommendations`)
+  console.log(`  ${c.cyan}${runDir}/beautification/${c.reset} — Beautification analysis & evaluations`)
   console.log(`\nNext step: ${c.cyan}/optimize-lp-pipeline${c.reset} to apply improvements`)
 }
 
@@ -859,7 +1047,7 @@ async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: 
 // Commands
 // ---------------------------------------------------------------------------
 
-const PHASES = ['briefs', 'generation', 'critique', 'vote', 'humanReview', 'revision', 'synthesis', 'meta'] as const
+const PHASES = ['briefs', 'generation', 'critique', 'vote', 'humanReview', 'revision', 'beautification', 'reCritique', 'synthesis', 'meta'] as const
 
 const run = defineCommand({
   meta: { name: 'run', description: 'Run the batch LP generation pipeline' },
@@ -939,6 +1127,8 @@ const run = defineCommand({
       () => phaseVote(state, runDir),
       () => phaseHumanReview(state, runDir, skipReview),
       () => phaseRevision(state, token, runDir),
+      () => phaseBeautification(state, token, runDir),
+      () => phaseReCritique(state, runDir),
       () => phaseSynthesis(state, runDir),
       () => phaseMetaAnalysis(state, runDir),
     ]
