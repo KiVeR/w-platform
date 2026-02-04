@@ -32,6 +32,7 @@ const rowStyle = computed(() => ({
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
   minHeight: props.readonly ? 'auto' : '60px',
+  boxShadow: props.widget.styles.boxShadow,
 }))
 
 // En mode preview, filtrer les colonnes vides (sans enfants configures)

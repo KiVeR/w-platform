@@ -18,7 +18,7 @@ const separatorStyles = computed(() => ({
 </script>
 
 <template>
-  <div class="separator-widget" :style="{ padding: widget.styles.padding, margin: widget.styles.margin }">
+  <div class="separator-widget" :style="{ padding: widget.styles.padding, margin: widget.styles.margin, opacity: widget.styles.opacity }">
     <hr
       class="widget-separator"
       :style="separatorStyles"

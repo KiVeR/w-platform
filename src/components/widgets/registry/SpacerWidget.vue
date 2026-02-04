@@ -16,6 +16,7 @@ defineProps<{
       height: widget.styles.height || '32px',
       margin: widget.styles.margin,
       padding: widget.styles.padding,
+      opacity: widget.styles.opacity,
     }"
   >
     <!-- Indicateur visible seulement en mode édition -->

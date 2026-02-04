@@ -32,6 +32,7 @@ const wrapperStyle = computed(() => ({
   textAlign: props.widget.styles.textAlign || 'center',
   padding: props.widget.styles.padding,
   margin: props.widget.styles.margin,
+  opacity: props.widget.styles.opacity,
 }))
 </script>
 

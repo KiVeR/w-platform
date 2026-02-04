@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
+import { DESIGN_TOKENS, LETTER_SPACING_LABELS } from '#shared/constants/design-tokens'
+import { computed } from 'vue'
 import { useWidgetsStore } from '@/stores/widgets'
 import ColorPicker from './inputs/ColorPicker.vue'
 import ColorPickerWithTheme from './inputs/ColorPickerWithTheme.vue'
+import ShadowPicker from './shared/ShadowPicker.vue'
 
 const props = defineProps<{
   widget: Widget
@@ -14,6 +17,20 @@ function updateStyle(key: string, value: string | undefined) {
   widgetsStore.updateWidgetStyles(props.widget.id, { [key]: value })
 }
 
+// Widget type groups for conditional rendering
+const hasTypographyStyles = computed(() =>
+  ['title', 'text', 'button', 'click-to-call'].includes(props.widget.type),
+)
+
+const hasShadowStyles = computed(() =>
+  ['button', 'click-to-call', 'image', 'row', 'column'].includes(props.widget.type),
+)
+
+const hasOpacityStyles = computed(() =>
+  ['image', 'icon', 'separator', 'spacer'].includes(props.widget.type),
+)
+
+// Options data
 const fontSizes = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px']
 const textAligns = [
   { value: 'left', label: '⬅ Gauche' },
@@ -24,6 +41,19 @@ const widthModes = [
   { value: 'auto', label: 'Auto' },
   { value: 'full', label: 'Pleine largeur' },
 ]
+const textTransforms = [
+  { value: 'none', label: 'Aa' },
+  { value: 'uppercase', label: 'AA' },
+  { value: 'lowercase', label: 'aa' },
+  { value: 'capitalize', label: 'Ab' },
+]
+const opacities = [
+  { value: '0.25', label: '25%' },
+  { value: '0.5', label: '50%' },
+  { value: '0.75', label: '75%' },
+  { value: '1', label: '100%' },
+]
+const letterSpacings = DESIGN_TOKENS.letterSpacing
 </script>
 
 <template>
@@ -48,7 +78,7 @@ const widthModes = [
     </div>
 
     <!-- Font Size (for title, text, button) -->
-    <div v-if="['title', 'text', 'button', 'click-to-call'].includes(widget.type)" class="option-group">
+    <div v-if="hasTypographyStyles" class="option-group">
       <label class="option-label">Taille de police</label>
       <select
         class="option-select"
@@ -59,6 +89,37 @@ const widthModes = [
           {{ size }}
         </option>
       </select>
+    </div>
+
+    <!-- Letter Spacing (for title, text, button) -->
+    <div v-if="hasTypographyStyles" class="option-group">
+      <label class="option-label">Espacement des lettres</label>
+      <select
+        class="option-select"
+        :value="widget.styles.letterSpacing || '0'"
+        @change="updateStyle('letterSpacing', ($event.target as HTMLSelectElement).value)"
+      >
+        <option v-for="value in letterSpacings" :key="value" :value="value">
+          {{ LETTER_SPACING_LABELS[value] }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Text Transform (for title, text, button) -->
+    <div v-if="hasTypographyStyles" class="option-group">
+      <label class="option-label">Casse du texte</label>
+      <div class="align-buttons">
+        <button
+          v-for="transform in textTransforms"
+          :key="transform.value"
+          class="align-btn"
+          :class="{ active: (widget.styles.textTransform || 'none') === transform.value }"
+          :style="{ textTransform: transform.value }"
+          @click="updateStyle('textTransform', transform.value)"
+        >
+          {{ transform.label }}
+        </button>
+      </div>
     </div>
 
     <!-- Width Mode (for button, click-to-call) -->
@@ -110,6 +171,31 @@ const widthModes = [
           @input="updateStyle('borderRadius', `${($event.target as HTMLInputElement).value}px`)"
         >
         <span class="range-value">{{ widget.styles.borderRadius || '8px' }}</span>
+      </div>
+    </div>
+
+    <!-- Box Shadow (for button, image, row, column) -->
+    <div v-if="hasShadowStyles" class="option-group">
+      <label class="option-label">Ombre</label>
+      <ShadowPicker
+        :model-value="widget.styles.boxShadow"
+        @update:model-value="updateStyle('boxShadow', $event)"
+      />
+    </div>
+
+    <!-- Opacity (for image, icon, separator, spacer) -->
+    <div v-if="hasOpacityStyles" class="option-group">
+      <label class="option-label">Opacité</label>
+      <div class="align-buttons">
+        <button
+          v-for="op in opacities"
+          :key="op.value"
+          class="align-btn"
+          :class="{ active: (widget.styles.opacity || '1') === op.value }"
+          @click="updateStyle('opacity', op.value)"
+        >
+          {{ op.label }}
+        </button>
       </div>
     </div>
 

@@ -25,6 +25,9 @@ const buttonStyles = computed(() => ({
   fontSize: props.widget.styles.fontSize,
   fontWeight: props.widget.styles.fontWeight,
   borderRadius: props.widget.styles.borderRadius || borderRadius.value,
+  boxShadow: props.widget.styles.boxShadow,
+  letterSpacing: props.widget.styles.letterSpacing,
+  textTransform: props.widget.styles.textTransform,
 }))
 
 // Default to Phone icon, but allow customization

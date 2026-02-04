@@ -38,6 +38,7 @@ const columnStyle = computed(() => {
     padding: props.widget.styles.padding || '8px',
     backgroundColor: props.widget.styles.backgroundColor,
     borderRadius: props.widget.styles.borderRadius,
+    boxShadow: props.widget.styles.boxShadow,
   }
 })
 
