@@ -493,6 +493,7 @@ export const widgetConfigs: WidgetConfig[] = [
         { platform: 'twitter', url: '', enabled: false },
         { platform: 'linkedin', url: '', enabled: false },
         { platform: 'youtube', url: '', enabled: false },
+        { platform: 'tiktok', url: '', enabled: false },
         { platform: 'whatsapp', url: '', enabled: false },
       ],
       socialStyle: 'icons',
