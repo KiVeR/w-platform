@@ -51,16 +51,5 @@ const shadowOptions = DESIGN_TOKENS.boxShadow.map(value => ({
 
 .shadow-select {
   flex: 1;
-  padding: 10px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  background-color: var(--color-surface);
-  cursor: pointer;
-}
-
-.shadow-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
 }
 </style>

@@ -10,6 +10,12 @@ const props = defineProps<{
 
 const { secondaryColor } = useGlobalStyles()
 
+const wrapperStyles = computed(() => ({
+  padding: props.widget.styles.padding,
+  margin: props.widget.styles.margin,
+  opacity: props.widget.styles.opacity,
+}))
+
 const separatorStyles = computed(() => ({
   borderStyle: props.widget.styles.borderStyle,
   borderColor: props.widget.styles.borderColor || secondaryColor.value,
@@ -18,11 +24,8 @@ const separatorStyles = computed(() => ({
 </script>
 
 <template>
-  <div class="separator-widget" :style="{ padding: widget.styles.padding, margin: widget.styles.margin, opacity: widget.styles.opacity }">
-    <hr
-      class="widget-separator"
-      :style="separatorStyles"
-    >
+  <div class="separator-widget" :style="wrapperStyles">
+    <hr class="widget-separator" :style="separatorStyles">
   </div>
 </template>
 

@@ -18,17 +18,15 @@ function updateStyle(key: string, value: string | undefined) {
 }
 
 // Widget type groups for conditional rendering
-const hasTypographyStyles = computed(() =>
-  ['title', 'text', 'button', 'click-to-call'].includes(props.widget.type),
-)
+const TYPOGRAPHY_WIDGETS = ['title', 'text', 'button', 'click-to-call']
+const BUTTON_WIDGETS = ['button', 'click-to-call']
+const SHADOW_WIDGETS = ['button', 'click-to-call', 'image', 'row', 'column']
+const OPACITY_WIDGETS = ['image', 'icon', 'separator', 'spacer']
 
-const hasShadowStyles = computed(() =>
-  ['button', 'click-to-call', 'image', 'row', 'column'].includes(props.widget.type),
-)
-
-const hasOpacityStyles = computed(() =>
-  ['image', 'icon', 'separator', 'spacer'].includes(props.widget.type),
-)
+const hasTypographyStyles = computed(() => TYPOGRAPHY_WIDGETS.includes(props.widget.type))
+const isButtonWidget = computed(() => BUTTON_WIDGETS.includes(props.widget.type))
+const hasShadowStyles = computed(() => SHADOW_WIDGETS.includes(props.widget.type))
+const hasOpacityStyles = computed(() => OPACITY_WIDGETS.includes(props.widget.type))
 
 // Options data
 const fontSizes = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px']
@@ -59,7 +57,7 @@ const letterSpacings = DESIGN_TOKENS.letterSpacing
 <template>
   <div class="style-options">
     <!-- Text Color (for title, text, button) -->
-    <div v-if="['title', 'text', 'button', 'click-to-call'].includes(widget.type)" class="option-group">
+    <div v-if="hasTypographyStyles" class="option-group">
       <label class="option-label">Couleur du texte</label>
       <ColorPicker
         :value="widget.styles.color || '#000000'"
@@ -68,7 +66,7 @@ const letterSpacings = DESIGN_TOKENS.letterSpacing
     </div>
 
     <!-- Background Color (for button, click-to-call) - with theme toggle -->
-    <div v-if="['button', 'click-to-call'].includes(widget.type)" class="option-group">
+    <div v-if="isButtonWidget" class="option-group">
       <label class="option-label">Couleur de fond</label>
       <ColorPickerWithTheme
         :value="widget.styles.backgroundColor"
@@ -123,7 +121,7 @@ const letterSpacings = DESIGN_TOKENS.letterSpacing
     </div>
 
     <!-- Width Mode (for button, click-to-call) -->
-    <div v-if="['button', 'click-to-call'].includes(widget.type)" class="option-group">
+    <div v-if="isButtonWidget" class="option-group">
       <label class="option-label">Largeur</label>
       <div class="align-buttons">
         <button
@@ -140,8 +138,7 @@ const letterSpacings = DESIGN_TOKENS.letterSpacing
 
     <!-- Text Align (for title, text, and button/click-to-call when not full width) -->
     <div
-      v-if="['title', 'text'].includes(widget.type)
-        || (['button', 'click-to-call'].includes(widget.type) && widget.styles.widthMode === 'auto')"
+      v-if="['title', 'text'].includes(widget.type) || (isButtonWidget && widget.styles.widthMode === 'auto')"
       class="option-group"
     >
       <label class="option-label">Alignement</label>
@@ -158,8 +155,8 @@ const letterSpacings = DESIGN_TOKENS.letterSpacing
       </div>
     </div>
 
-    <!-- Border Radius (for button, image) -->
-    <div v-if="['button', 'click-to-call', 'image'].includes(widget.type)" class="option-group">
+    <!-- Border Radius (for button, click-to-call, image) -->
+    <div v-if="isButtonWidget || widget.type === 'image'" class="option-group">
       <label class="option-label">Arrondi des coins</label>
       <div class="option-row">
         <input
