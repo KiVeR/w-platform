@@ -38,6 +38,14 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | Hero-image | Widget hero avec overlay texte integre pour sections d'accroche (batch4 #18 rugby, 9 LPs) | 2026-02-03 |
 | Sticky-CTA | Widget CTA flottant visible au scroll sur mobile (batch4 #10 voyage, #18 rugby) | 2026-02-03 |
 | Artisan-profile | Widget profil artisan avec photo, prenom et specialite (batch4 #3 mode artisanale) | 2026-02-03 |
+| File-upload | Widget upload de fichiers/photos pour formulaires de devis (batch4 #17 luxe-horlogerie) | 2026-02-03 |
+| App-store-buttons | Boutons App Store et Google Play natifs avec images officielles (batch4 #12 grande-distribution) | 2026-02-03 |
+| Logo-grid | Grille de logos marques/partenaires pour crédibilité B2B (batch4 #17 luxe, #7 telecoms, #9 formation) | 2026-02-03 |
+| Feature-grid / Icon-grid | Grille 3-4 avantages equilibree sans bricolage row/column (batch5 #4 automobile) | 2026-02-03 |
+| Decorative-shape | Formes geometriques decoratives (cercles, blobs) pour interet visuel (batch5 #4 automobile) | 2026-02-03 |
+| Card | Widget carte avec overlay texte sur image pour compositions sophistiquees (batch5 #4 automobile, #12 primeurs) | 2026-02-03 |
+| Guarantee-badge | Badge de garantie visuel (satisfait ou rembourse, retrait gratuit) (batch5 #12 primeurs) | 2026-02-03 |
+| Carte-interactive | Carte avec points cliquables pour visualiser les producteurs/partenaires (batch5 #12 primeurs) | 2026-02-03 |
 
 ## Options manquantes sur widgets existants
 
@@ -109,6 +117,16 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | row | 3+ colonnes | Support de plus de 2 colonnes pour grilles (batch4 17 LPs) | 2026-02-03 |
 | globalStyles | accentColor | Couleur d'accent secondaire dans la palette (batch4 #1 restauration) | 2026-02-03 |
 | globalStyles | secondaryColor/tertiaryColor | Palettes complexes multi-couleurs (batch4 #2 assurance) | 2026-02-03 |
+| slider | dots/pagination indicator | Le slider hero ne montre pas de dots ou indicateurs de pagination (batch4 #1 restauration) | 2026-02-03 |
+| slider | comparisonMode (before/after) | Mode comparaison avant/apres avec curseur glissant (batch4 #13 evenementiel) | 2026-02-03 |
+| testimonial | avatarShape | Option forme de l'avatar (cercle, carre, arrondi) (batch4 #13 evenementiel) | 2026-02-03 |
+| form-field | dateFormat | Specifier le format de date attendu dans le champ (batch4 #13 evenementiel) | 2026-02-03 |
+| form-field | number (fieldType) | Champ numerique avec validation pour kilometrage, quantite, etc. (batch4 #4 automobile) | 2026-02-03 |
+| countdown | displayStyle (compact/detailed) | Choix entre affichage compact ou detaille du compte a rebours (batch5 #4 automobile) | 2026-02-03 |
+| gallery | provenance/source metadata | Associer producteur/lieu/description a chaque image (batch5 #12 primeurs) | 2026-02-03 |
+| form-field select | grouped options | Grouper les options par categorie (zone geographique) (batch5 #12 primeurs) | 2026-02-03 |
+| text | style citation | Mise en forme automatique verbatims (guillemets, italique, attribution) (batch5 #12 primeurs) | 2026-02-03 |
+| globalStyles | fontFamily moderne | Support Google Fonts ou familles typographiques variees (batch5 #12 primeurs) | 2026-02-03 |
 
 ## Limitations rencontrées
 
@@ -151,3 +169,13 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | Token JWT expire pour screenshots | Le script Playwright echoue avec token expire lors des captures automatisees (batch4 #15 SaaS) | 2026-02-03 |
 | Row background gradient non supporte | Les widgets row ne supportent pas les backgrounds avec gradients CSS (batch4 #18 rugby) | 2026-02-03 |
 | Icon Lucide affiche texte brut | Le widget icon avec iconName Lucide affiche le nom textuel au lieu de l'icone SVG (batch4 #7 telecoms, #17 horlogerie, 20 LPs) | 2026-02-03 |
+| Drive widget geocodage manuel | L'ajout de stores au widget drive requiert lat/lng manuels, pas de geocodage automatique par adresse (batch4 #12 grande-distribution) | 2026-02-03 |
+| Event linking entre widgets absent | Impossible de declencher un effet (confetti) apres action sur un autre widget (scratch) (batch4 #20 jeu-concours) | 2026-02-03 |
+| Barcode QR code absent | Le widget barcode ne supporte pas le format QR code, seulement ean13/ean8/code128 (batch4 #14 ONG) | 2026-02-03 |
+| Form-field number sans validation | Le champ kilometrage devrait etre numerique avec validation, pas un champ text generique (batch4 #4 automobile) | 2026-02-03 |
+| Date-range picker absent | Pas de champ date-range pour selection de plage de dates (batch4 #10 voyage) | 2026-02-03 |
+| BoxShadow sur column non supporte par schema | Le boxShadow ajoute sur les columns des engagements n'est pas valide par le schema de styles (batch5 #4 automobile) | 2026-02-03 |
+| Store-locator sans carte visuelle integree | Le store-locator affiche une liste textuelle mais pas de carte Google Maps pour visualiser les points de vente (batch5 #12 primeurs) | 2026-02-03 |
+| Pas de systeme de theme coherent | Chaque widget definit ses couleurs individuellement, difficile d'avoir une harmonie raffinee (batch5 #4 automobile) | 2026-02-03 |
+| Separateurs decoratifs impossibles | Les separateurs sont uniquement des lignes, pas de vagues, courbes ou elements graphiques (batch5 #12 primeurs) | 2026-02-03 |
+| Compositions image+texte superposees impossibles | Pas de possibilite de creer hero avec texte overlay ni card avec texte sur image (batch5 #4 automobile, #12 primeurs) | 2026-02-03 |
