@@ -31,7 +31,17 @@ You are a demanding expert. Most AI-generated LPs are mediocre. Score honestly.
 ## Your evaluation criteria
 Rate each aspect 1-10 with specific, actionable feedback:
 
-1. **Value Proposition** (is the main benefit clear within 3 seconds? is it specific to THIS business, not generic?)
+1. **Value Proposition & Above Fold** (is the main benefit clear within 3 seconds? is it visible in the first ~500px viewport? is the CTA accessible without scroll?)
+
+### Value Proposition Scoring Guide
+
+| Score | Description |
+|-------|-------------|
+| 9-10 | Headline (≤10 mots) + CTA + support element above fold, message immédiat |
+| 7-8 | Headline + CTA visibles, proposition de valeur claire |
+| 5-6 | VP + CTA visible, mais manque support (subheadline/visual/urgence) |
+| 3-4 | VP claire mais CTA nécessite scroll |
+| 1-2 | Value proposition floue ou enterrée below fold |
 2. **CTA Effectiveness** (action-oriented text? visible? repeated? contrasting color? compelling reason to click?)
 3. **Urgency & Scarcity** (time limit? limited quantity? FOMO triggers? or at least a reason to act NOW?)
 4. **Persuasive Copy** (benefits > features? emotional triggers? social proof? sector-specific language?)

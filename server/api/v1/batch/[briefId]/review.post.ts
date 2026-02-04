@@ -17,13 +17,19 @@ function getRunDir(runId?: number): string {
   return runId ? resolve(base, String(runId)) : resolve(base, 'latest')
 }
 
-const reviewSchema = z.object({
+const structuredReviewSchema = z.object({
   modifications: z.array(z.object({
     index: z.number(),
     action: z.enum(['accept', 'reject', 'edit']),
     editedDescription: z.string().optional(),
   })),
 })
+
+const textFeedbackSchema = z.object({
+  feedback: z.string().min(1),
+})
+
+const reviewSchema = z.union([structuredReviewSchema, textFeedbackSchema])
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
@@ -41,21 +47,46 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Données invalides', data: result.error.flatten() })
   }
 
-  // Write human review file
-  const humanReviewDir = resolve(runDir, 'human-review')
-  await mkdir(humanReviewDir, { recursive: true })
+  const reviewedAt = new Date().toISOString()
 
-  const reviewData = {
-    briefId: Number(briefId),
-    reviewedAt: new Date().toISOString(),
-    reviewedBy: user.email,
-    modifications: result.data.modifications,
+  // Check if it's text feedback or structured review
+  if ('feedback' in result.data) {
+    // Text feedback format - write to human-feedback/
+    const humanFeedbackDir = resolve(runDir, 'human-feedback')
+    await mkdir(humanFeedbackDir, { recursive: true })
+
+    const markdownContent = `# Review - Brief ${briefId}
+
+**Date:** ${reviewedAt}
+**Par:** ${user.email}
+
+## Feedback
+
+${result.data.feedback}
+`
+
+    await writeFile(
+      resolve(humanFeedbackDir, `${briefId}.md`),
+      markdownContent,
+    )
   }
+  else {
+    // Structured format - write to human-review/ (existing behavior)
+    const humanReviewDir = resolve(runDir, 'human-review')
+    await mkdir(humanReviewDir, { recursive: true })
 
-  await writeFile(
-    resolve(humanReviewDir, `${briefId}.json`),
-    JSON.stringify(reviewData, null, 2),
-  )
+    const reviewData = {
+      briefId: Number(briefId),
+      reviewedAt,
+      reviewedBy: user.email,
+      modifications: result.data.modifications,
+    }
+
+    await writeFile(
+      resolve(humanReviewDir, `${briefId}.json`),
+      JSON.stringify(reviewData, null, 2),
+    )
+  }
 
   // Update state.json
   const stateFile = resolve(runDir, 'state.json')

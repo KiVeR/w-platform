@@ -59,8 +59,26 @@ Create a complete DesignDocument JSON for this brief. Rules:
 
 ### Content Rules
 - French text for all user-facing content WITH PROPER ACCENTS (é, è, ê, à, ù, ô, î, ç). Missing accents destroy credibility. Examples: "Découvrir", "Réserver", "Démarrer", "Précommander", "Accéder"
-- Placeholder images: `https://placehold.co/WIDTHxHEIGHT?text=Description`
+- **Images**: Use real URLs from brief OR empty src with descriptive alt: `{ "src": "", "alt": "Photo produit: panier légumes bio colorés sur table en bois" }`. NEVER use placehold.co.
 - No emojis in content (only in icon/effect widget properties)
+
+### Testimonial Format (MANDATORY)
+
+❌ JAMAIS de témoignages vagues :
+```
+"Super service, je recommande !" — Client satisfait
+```
+
+✅ TOUJOURS spécifique avec :
+- Résultat concret (chiffre, délai, économie)
+- Contexte personnel (produit/service utilisé)
+- Nom complet + localisation
+
+Exemple :
+```
+"Ma Clio 2012 démarrait mal en hiver. Batterie + antigel changés en 2h.
+Je monte au col de la Forclaz chaque weekend sans souci." — Sébastien M., Annecy
+```
 
 ### Creative Direction Rules (FOLLOW YOUR ASSIGNED PROFILE)
 - **Apply your Style Profile ({{STYLE_PROFILE}})**: shadows, typography weights, color saturation
@@ -72,6 +90,25 @@ Create a complete DesignDocument JSON for this brief. Rules:
   - story: CTA only at the climax (after solution reveal)
   - asymmetric: CTA in the larger column
   - form-first: form IS the hero, benefits support it
+
+### Above The Fold Constraint (MANDATORY)
+
+The first ~500px (mobile viewport without scroll) MUST include:
+
+**REQUIRED (both):**
+| Element | Requirement | Widget |
+|---------|-------------|--------|
+| Headline | ≤10 mots, bénéfice clair | `title` (fontSize ≥32px) |
+| CTA | Bouton contrasté, bénéfice | `button` (height ≥48px) |
+
+**PLUS ONE from:**
+| Element | Quand | Widget |
+|---------|-------|--------|
+| Sous-titre | Lever objection | `text` (fontSize 16px) |
+| Visuel | Impact émotionnel | `image` (≥100px hauteur) |
+| Urgence | Promo/deadline | `countdown` ou `badge` |
+
+**Mental test**: "Sans scroll, l'utilisateur comprend-il l'offre ET peut-il agir ?"
 
 ### Layout Rules
 - Follow ALL layout rules from the guidelines (row->column only, max 2 columns, unique IDs, sequential order)
@@ -88,7 +125,32 @@ Write the JSON to `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
 Read `shared/schemas/design.schema.ts` and verify your JSON matches the constraints.
 
 ## Step 5: Self-review
-Re-read your JSON and check this checklist (report pass/fail for each):
+Re-read your JSON and perform these checks. Report pass/fail for EACH.
+
+### CRITICAL CHECKS (violation = must fix before continuing)
+
+| Check | Commande mentale |
+|-------|------------------|
+| **Zero placeholders** | JSON ne contient PAS "placehold.co" ni "placeholder" |
+| **Form has submit** | Chaque widget `form` a un widget `button` en dernier enfant |
+| **CTA has benefit** | CTA primaire contient prix/résultat/bénéfice (pas juste "Commander") |
+| **Color count ≤ 3** | Compter les teintes distinctes (excl. noir/blanc/gris) |
+| **Separator count ≤ 3** | Compter les widgets `separator` — max 3 |
+| **Testimonials specific** | Chaque témoignage inclut: résultat concret + nom + lieu |
+| **ATF complete** | Dans les ~500 premiers px: (1) title ≤10 mots, (2) button visible, (3) text OU image OU urgence |
+
+### ATF Mental Scroll Test
+
+Imagine ton JSON rendu sur un écran mobile 375px:
+
+1. **0-100px**: Le headline est-il visible et percutant?
+2. **100-300px**: Le subheadline ou visuel clarifie-t-il l'offre?
+3. **300-500px**: Le CTA primaire est-il cliquable sans scroll?
+
+Si NON à l'une de ces questions → réorganiser les widgets.
+
+### STANDARD CHECKS
+
 - No emojis in title/text/button content
 - Visual hierarchy: main title >=36px > section titles >=24px > body >=14px
 - Color contrast: DARK text (#1a1a1a to #4a4a4a) on light backgrounds, LIGHT text (#ffffff to #e0e0e0) on dark backgrounds
@@ -98,9 +160,8 @@ Re-read your JSON and check this checklist (report pass/fail for each):
 - Conversion focus: CTA above fold + at bottom, action-oriented text
 - Layout balance: balanced column content
 - Accessibility: images have alt, form-fields have labels
-- Spacing: separators/spacers between sections
 - Schema compliance: unique IDs, sequential order, row->column only
-- French accents: SCAN every French word for missing accents. Check titles, buttons, descriptions. Common errors to catch: Decouvrir→Découvrir, Reserver→Réserver, Demarrer→Démarrer, specialite→spécialité, evenement→événement, a→à (preposition), ou→où (where), deja→déjà, des→dès (from)
+- French accents: SCAN every French word for missing accents. Common errors: Decouvrir→Découvrir, Reserver→Réserver, Demarrer→Démarrer, specialite→spécialité, evenement→événement, a→à, ou→où, deja→déjà, des→dès
 - Design tokens - fontSize: all values from scale (12/14/16/18/20/24/28/32/36/48px)
 - Design tokens - spacing: all padding/margin/gap use only token values (0/4/8/12/16/24/32/48px)
 - Design tokens - variety: at least 3 different fontSize values for visual hierarchy

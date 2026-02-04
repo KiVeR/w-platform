@@ -38,6 +38,22 @@ Rate each aspect 1-10 with specific, actionable feedback:
 5. **Mobile Optimization** (touch-friendly buttons? scrollable? no horizontal overflow?)
 6. **Component Consistency** (similar elements styled similarly? design system coherent?)
 7. **Visual Creativity** (surprising layout choices? unique visual treatments? or cookie-cutter template?)
+8. **Above The Fold Compliance** (critical elements in first ~500px viewport?)
+
+### Above The Fold Scoring Guide
+
+| Score | Description |
+|-------|-------------|
+| 9-10 | Headline (≤10 mots) + CTA + subheadline + urgency/visual, parfait équilibre |
+| 7-8 | Headline + CTA + 1 élément support visible, bien structuré |
+| 5-6 | Headline + CTA visibles mais noyés dans du contenu secondaire |
+| 3-4 | Headline visible mais CTA nécessite scroll |
+| 1-2 | ATF dominé par logo, spacers, ou images décoratives sans message |
+
+**Méthode de mesure:**
+1. Ouvrir le screenshot
+2. Tracer mentalement une ligne à ~500px du haut
+3. Au-dessus de cette ligne, identifier: Headline primaire? CTA cliquable? Élément de support?
 
 ## Output format
 Write your review as JSON to `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-ux.json`:
@@ -52,7 +68,8 @@ Write your review as JSON to `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-ux.json`:
     "spacingLayout": 0,
     "mobileOptimization": 0,
     "componentConsistency": 0,
-    "visualCreativity": 0
+    "visualCreativity": 0,
+    "aboveTheFold": 0
   },
   "averageScore": 0,
   "strengths": ["max 2 — only genuinely impressive things"],
@@ -77,7 +94,7 @@ Write your review as JSON to `{{BATCH_DIR}}/critiques/{{BRIEF_ID}}-ux.json`:
 
 Before finalizing your scores, verify:
 
-1. **Calculate your average** across all 7 criteria
+1. **Calculate your average** across all 8 criteria
 2. **If your average is between 4.5 and 5.5**, ask yourself: "Am I being genuinely discriminating, or defaulting to safe middle scores?"
 3. **Check your range**: identify your HIGHEST and LOWEST criterion — the gap should be ≥2 points
 4. **If you gave no score below 4 and no score above 7**, reconsider your calibration — real LPs have both strengths and weaknesses

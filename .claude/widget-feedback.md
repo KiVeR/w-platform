@@ -11,31 +11,35 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 
 | Widget souhaité | Contexte / Use case | Demandes | Date |
 |----------------|---------------------|----------|------|
+| Hero-image | Widget hero avec overlay texte integre pour sections d'accroche | 13 | 2026-02-03 |
 | Pricing card | Widget carte de prix structuree (ancien prix / nouveau prix / CTA) pour offres et forfaits | 12 | 2026-02-02 |
-| Hero-image | Widget hero avec overlay texte integre pour sections d'accroche | 10 | 2026-02-03 |
+| Rating/stars | Note produit avec etoiles pour preuve sociale (avis clients, temoignages) et note agregee (4.8/5 sur 234 avis) | 8 | 2026-02-02 |
 | Accordion/FAQ | Widget accordeon pour FAQ et questions frequentes | 6 | 2026-02-02 |
-| Counter/KPI | Widget compteur / chiffre cle pour afficher des metriques d'impact | 4 | 2026-02-02 |
-| Progress stepper | Widget etapes/progression pour parcours utilisateur ou processus d'inscription | 3 | 2026-02-02 |
-| Hours/Schedule | Widget horaires d'ouverture structure pour commerces locaux | 3 | 2026-02-03 |
+| Trust badges | Badges de confiance/garantie (paiement securise, satisfait ou rembourse, certifications) pour LP e-commerce et services | 5 | 2026-02-02 |
+| Stock-indicator | Widget indicateur de stock restant dynamique pour urgence (Plus que X a ce prix) | 5 | 2026-02-03 |
+| Counter/KPI | Widget compteur / chiffre cle pour afficher des metriques d'impact et preuve sociale | 5 | 2026-02-02 |
+| Hours/Schedule | Widget horaires d'ouverture structure pour commerces locaux | 4 | 2026-02-03 |
+| Sticky-CTA | Widget CTA flottant visible au scroll sur mobile | 4 | 2026-02-03 |
 | Logo-grid | Grille de logos marques/partenaires pour crédibilité B2B | 3 | 2026-02-03 |
-| Rating/stars | Note produit avec etoiles pour preuve sociale (avis clients, temoignages) | 2 | 2026-02-02 |
+| Progress stepper | Widget etapes/progression pour parcours utilisateur ou processus d'inscription | 3 | 2026-02-02 |
+| Social-proof-counter | Widget pour afficher nombre d'avis Google, note moyenne, nombre de clients servis | 3 | 2026-02-04 |
+| Reviews-carousel | Widget carrousel d'avis clients avec systeme de notation integre | 2 | 2026-02-04 |
+| Team / About | Widget presentation equipe ou gerant avec photo pour commerces de proximite | 2 | 2026-02-04 |
 | Card | Widget carte avec overlay texte sur image pour compositions sophistiquees | 2 | 2026-02-03 |
-| Stock-indicator | Widget indicateur de stock restant dynamique pour e-commerce | 2 | 2026-02-03 |
-| Sticky-CTA | Widget CTA flottant visible au scroll sur mobile | 2 | 2026-02-03 |
+| Comparison table | Tableau comparatif pour forfaits ou offres cote a cote avec economie visuelle | 2 | 2026-02-02 |
 | Radio-group | Widget groupe de boutons radio visuels pour choix exclusif dans formulaires | 2 | 2026-02-02 |
-| Feature-grid / Icon-grid | Grille 3-4 avantages equilibree sans bricolage row/column | 1 | 2026-02-03 |
-| Decorative-shape | Formes geometriques decoratives (cercles, blobs) pour interet visuel | 1 | 2026-02-03 |
+| Decorative-divider | Separateurs decoratifs illustres (vagues, feuilles) pour transitions organiques | 2 | 2026-02-04 |
+| Before-after | Widget comparaison avant/apres avec slider pour montrer des transformations | 2 | 2026-02-02 |
+| Pricing table | Tableau de prix avec ancien prix barre / nouveau prix pour menus et offres promo | 2 | 2026-02-02 |
+| Feature-grid / Icon-grid | Grille 3-4 avantages equilibree sans bricolage row/column avec variantes de style | 2 | 2026-02-03 |
+| Logo widget | Widget logo/brand-header SVG/PNG dedie pour afficher l'identite visuelle en en-tete | 2 | 2026-02-02 |
+| Decorative-shape | Formes geometriques decoratives (cercles, blobs) pour interet visuel | 2 | 2026-02-03 |
 | Coupon container | Widget dédié coupon avec bordure pointillée, fond blanc, regroupant titre promo + barcode + conditions | 1 | 2026-02-02 |
-| Trust badges | Badges de confiance (paiement securise, livraison gratuite, satisfaction garantie) pour LP e-commerce | 1 | 2026-02-02 |
-| Pricing table | Tableau de prix avec ancien prix barre / nouveau prix pour menus et offres promo | 1 | 2026-02-02 |
 | Consentement RGPD | Checkbox CGU/RGPD obligatoire pour formulaires collectant des donnees personnelles | 1 | 2026-02-02 |
-| Comparison table | Tableau comparatif pour forfaits ou offres cote a cote | 1 | 2026-02-02 |
 | Gallery grid | Galerie photo en grille (pas slider) pour montrer ambiance d'un lieu | 1 | 2026-02-02 |
 | Carousel | Widget carrousel dedie pour collections ou produits | 1 | 2026-02-02 |
 | Code input | Champ de saisie de code (promo, jeu) avec validation | 1 | 2026-02-02 |
-| Logo widget | Widget logo SVG/PNG dedie distinct du titre texte | 1 | 2026-02-02 |
 | Animation/Lottie | Widget animation Lottie pour micro-interactions et illustrations animees | 1 | 2026-02-02 |
-| Before-after | Widget comparaison avant/apres avec slider pour montrer des transformations | 1 | 2026-02-02 |
 | Timeline | Widget chronologie/frise temporelle pour afficher des etapes datees | 1 | 2026-02-02 |
 | Itinerary | Widget parcours jour par jour pour secteur voyage/croisiere | 1 | 2026-02-03 |
 | Ingredient-list | Widget liste d'ingredients INCI structuree pour cosmetique | 1 | 2026-02-03 |
@@ -45,7 +49,6 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | App-store-buttons | Boutons App Store et Google Play natifs avec images officielles | 1 | 2026-02-03 |
 | Guarantee-badge | Badge de garantie visuel (satisfait ou rembourse, retrait gratuit) | 1 | 2026-02-03 |
 | Carte-interactive | Carte avec points cliquables pour visualiser les producteurs/partenaires | 1 | 2026-02-03 |
-| Social-proof-counter | Widget pour afficher nombre d'avis Google, note moyenne, nombre de clients servis | 1 | 2026-02-04 |
 | Texture-overlay | Appliquer des textures subtiles (papier kraft, grain, tissu lin) sur les sections | 1 | 2026-02-04 |
 | Icon-decorated | Widget icone avec fond circulaire/carre colore integre pour traitement graphique coherent | 1 | 2026-02-04 |
 | Illustration-abstract | Widget compositions graphiques vectorielles dynamiques (formes, lignes) avec couleurs de la palette | 1 | 2026-02-04 |
@@ -67,29 +70,38 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 
 | Widget | Option souhaitée | Contexte / Use case | Demandes | Date |
 |--------|-----------------|---------------------|----------|------|
-| testimonial | slider/carrousel multi-temoignages | Afficher plusieurs temoignages en carrousel plutot qu'un seul | 15 | 2026-02-04 |
+| testimonial | slider/carrousel multi-temoignages | Afficher plusieurs temoignages en carrousel plutot qu'un seul | 17 | 2026-02-04 |
 | button | border / outline / ghost style | Variante bouton outline sans fond pour CTA secondaires | 11 | 2026-02-02 |
 | countdown | unitLabels | Afficher les labels des unites temporelles (jours, heures, min, sec) | 10 | 2026-02-03 |
-| image | overlay text (texte superpose sur image) | Hero et sections visuelles necessitent du texte par-dessus une image | 9 | 2026-02-02 |
-| slider | caption / title par slide | Titre, legende ou texte overlay par image du slider | 9 | 2026-02-02 |
 | badge | variant (urgency, outline, gradient) | Variantes visuelles pour badges promo | 10 | 2026-02-03 |
-| button | subtext / micro-copy sous le bouton | Texte complementaire sous le CTA (ex: 'Livraison offerte', 'Sans engagement') | 8 | 2026-02-02 |
-| row | responsive layout / breakpoint / stackOnMobile | Empilement automatique des colonnes sur mobile | 6 | 2026-02-02 |
+| slider | caption / title par slide | Titre, legende ou texte overlay par image du slider | 10 | 2026-02-02 |
+| image | overlay text (texte superpose sur image) | Hero et sections visuelles necessitent du texte par-dessus une image | 9 | 2026-02-02 |
+| button | subtext / micro-copy sous le bouton | Texte complementaire sous le CTA (ex: 'Livraison offerte', 'Sans engagement') | 9 | 2026-02-02 |
+| row | responsive layout / breakpoint / stackOnMobile | Empilement automatique des colonnes sur mobile | 7 | 2026-02-02 |
 | row/column | boxShadow | Ombres portees sur conteneurs et boutons pour effet carte | 6 | 2026-02-02 |
 | form | bouton submit integre et configurable | Le formulaire n'a pas de bouton submit visible configurable dans le JSON | 6 | 2026-02-02 |
+| row/column | backgroundGradient | Fond en degrade lineaire/radial pour headers et sections premium | 6 | 2026-02-03 |
+| countdown | stockMode / quantite limitee | Afficher "Plus que X places/items" en plus de la date limite | 5 | 2026-02-04 |
+| globalStyles | fontFamilySecondary | Permettre le contraste typographique serif/sans-serif pour hierarchie visuelle | 4 | 2026-02-04 |
 | form-field | options pour select (tableau d'objets label/value) | Le champ select n'accepte que des strings, pas de paires label/value | 4 | 2026-02-02 |
-| row/column | backgroundGradient | Fond en degrade lineaire/radial | 3 | 2026-02-03 |
+| globalStyles | shadowPresets (subtle/medium/elevated) | Presets d'ombres coherents plutot que valeurs CSS manuelles | 4 | 2026-02-04 |
 | row/column | elevation/boxShadow | Ombres portees pour effet carte | 3 | 2026-02-03 |
 | separator | variant (gradient, wave) | Variantes decoratives pour separateurs | 3 | 2026-02-03 |
 | button | sticky (CTA visible au scroll) | CTA principal reste visible pendant le scroll sur mobile | 3 | 2026-02-02 |
+| form-field | fieldType: date natif | Le type date avec date picker au lieu de champ texte | 3 | 2026-02-02 |
+| testimonial | source/lien verifie (Google, TripAdvisor) | Credibiliser les avis avec source verifiable et logo plateforme | 3 | 2026-02-03 |
+| flipcard | textOverlay / contenu texte sur image | Texte superpose sur les faces du flipcard (ex: -40% sur face arriere) | 3 | 2026-02-02 |
+| gallery | columns (2, 3, 4) | Flexibilite du nombre de colonnes pour la galerie | 2 | 2026-02-04 |
+| countdown | colorScheme (light/dark/custom) | Simplifier la configuration des couleurs du countdown | 2 | 2026-02-04 |
+| flipcard | flipcardAltFront/Back | Attributs alt pour accessibilite et description IA des images | 2 | 2026-02-04 |
 | badge | icon/iconLeft | Icone integree dans le badge | 2 | 2026-02-03 |
 | badge | pulse/animated | Animation pulse/glow pour attirer l'attention | 2 | 2026-02-03 |
 | testimonial | beforeAfterImages | Photos avant/apres pour prouver resultats | 2 | 2026-02-03 |
 | testimonial | companyLogo | Logo entreprise pour temoignages B2B | 2 | 2026-02-03 |
+| testimonial | avatarUrl / clientPhoto | Photo du client pour humaniser les temoignages | 2 | 2026-02-04 |
 | click-to-call | hidePhoneNumber | Masquer le numero brut et afficher uniquement le label du bouton | 2 | 2026-02-02 |
-| form-field | fieldType: date natif | Le type date est utilise mais pas documente/supporte dans la definition du widget | 2 | 2026-02-02 |
 | text/title | textTransform (uppercase/lowercase/capitalize) | Transformation de casse dans les styles de texte et titres | 2 | 2026-02-02 |
-| flipcard | contenu texte recto/verso (pas seulement images) | Flipcards limites aux images, besoin de texte riche | 2 | 2026-02-02 |
+| gallery | placeholderFallback | Image placeholder sectorielle quand src est vide | 2 | 2026-02-04 |
 | form-field (checkbox) | Masquer le label pour éviter doublon label/texte checkbox | Le label et le texte checkbox affichent la même chose | 1 | 2026-02-02 |
 | image | Propriété backgroundImage / mode background | Superposer du texte sur une image de fond (slogan sur clémentines) | 1 | 2026-02-02 |
 | text | textDecoration (line-through, underline) | Afficher un prix barre visuellement pour les promos | 1 | 2026-02-02 |
@@ -171,18 +183,24 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 
 | Limitation | Contexte / Use case | Demandes | Date |
 |-----------|---------------------|----------|------|
-| Images placeholder sans remplacement automatique | Toutes les images generees sont des placeholders gris, detruisant la credibilite du rendu | 15 | 2026-02-02 |
+| Images placeholder sans remplacement automatique | Toutes les images generees sont des placeholders gris, detruisant la credibilite du rendu | 18 | 2026-02-02 |
 | Testimonial carousel impossible | Le widget testimonial ne permet qu'un seul temoignage, pas de slider | 15 | 2026-02-03 |
 | Pas de section pleine largeur avec fond distinct | Impossible de creer des bandes de couleur pleine largeur, le contentPadding global s'applique partout | 13 | 2026-02-02 |
+| Pas d'overlay texte sur images slider | Les slides n'ont pas de caption, titre ou CTA superpose | 11 | 2026-02-03 |
 | Pas de texte riche inline / text-decoration | Impossible de styler des portions de texte differemment (prix barre + prix normal) dans un meme widget | 10 | 2026-02-02 |
 | Bouton submit du form non personnalisable | Le formulaire n'a pas de bouton submit configurable (texte, couleur, icone) — CTA hors form requis | 10 | 2026-02-02 |
-| Pas d'overlay texte sur images slider | Les slides n'ont pas de caption, titre ou CTA superpose | 10 | 2026-02-03 |
+| Pas de gradient sur backgrounds (row, column, globalStyles) | Les fonds sont limites aux aplats de couleur, impossible de creer des degrades | 6 | 2026-02-04 |
+| Une seule fontFamily globale | Empeche le contraste typographique titre/corps caracterisant les designs premium | 4 | 2026-02-04 |
 | Pas de compteur dynamique | Les chiffres cles et compteurs de lots restants sont des titres statiques sans animation | 7 | 2026-02-02 |
 | Pas d'ancres internes fonctionnelles | Les liens #section et #formulaire ne fonctionnent pas dans le systeme de widgets | 5 | 2026-02-02 |
 | Pas d'affichage conditionnel de widgets | Impossible de montrer/cacher des widgets selon une condition (ex: apres soumission formulaire) | 4 | 2026-02-02 |
+| Flipcard ne supporte pas texte overlay sur images | Le widget flipcard ne permet que des images, pas de texte superpose (-40% sur face arriere) | 3 | 2026-02-04 |
 | Pas de tableau de comparaison responsive | Impossible de creer un tableau comparatif de prix natif | 3 | 2026-02-03 |
 | Compositions image+texte superposees impossibles | Pas de possibilite de creer hero avec texte overlay ni card avec texte sur image | 2 | 2026-02-03 |
-| Pas de tokens CSS/design system | Valeurs arbitraires pour spacing, shadows - conduit a incohérences et harmonie difficile | 2 | 2026-02-04 |
+| Pas de tokens CSS/design system | Valeurs arbitraires pour spacing, shadows - conduit a incohérences et harmonie difficile | 4 | 2026-02-04 |
+| Gallery sans fallback visuel quand images vides | La galerie affiche des placeholders vides au lieu d'images sectorielles de remplacement | 3 | 2026-02-04 |
+| Countdown ne supporte qu'une date cible (pas de plage) | Impossible d'afficher une periode (du 1er au 15 avril), seulement une deadline | 2 | 2026-02-04 |
+| Testimonial notes decimales (4.5) non supportees | Les notes sont entieres uniquement, pas de demi-etoiles pour credibilite | 2 | 2026-02-04 |
 | Effet widget avec emojis inapproprie premium | L'effet sparkle/confetti utilise des emojis qui degradent le positionnement luxe | 2 | 2026-02-03 |
 | Scratch widget sans champ code prealable | Impossible de conditionner le scratch a une saisie de code, pas de liaison avec un formulaire | 2 | 2026-02-02 |
 | Scratch non conditionnable | Impossible de lier le scratch a une soumission de formulaire prealable | 2 | 2026-02-03 |

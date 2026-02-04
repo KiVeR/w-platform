@@ -10,18 +10,31 @@ Read: `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
 
 ## Modifications to apply
 
-First check if a human review file exists:
-- `{{BATCH_DIR}}/human-review/{{BRIEF_ID}}.json`
+Check for human feedback in this priority order:
 
-If it exists, read it and use it as the source of truth along with the consensus:
+### Priority 1: Text feedback
+Check if `{{BATCH_DIR}}/human-feedback/{{BRIEF_ID}}.md` exists.
+
+If it exists:
+1. Read the feedback text
+2. Read the consensus for context: `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`
+3. Interpret the feedback to understand what changes they want
+4. Apply modifications based on your interpretation
+5. You may combine, ignore, or adapt consensus suggestions based on the feedback
+
+### Priority 2: Structured review
+Check if `{{BATCH_DIR}}/human-review/{{BRIEF_ID}}.json` exists.
+
+If it exists:
 1. Read the consensus: `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`
 2. Read the human review file
-3. For each modification in the human review:
-   - `"action": "accept"` → apply the corresponding consensus modification as-is
-   - `"action": "edit"` → apply using `editedDescription` instead of the original description
-   - `"action": "reject"` → skip this modification entirely
+3. For each modification:
+   - `"action": "accept"` → apply as-is
+   - `"action": "edit"` → use `editedDescription`
+   - `"action": "reject"` → skip
 
-If no human review file exists, fall back to the consensus only:
+### Priority 3: Consensus only
+If no human feedback exists:
 - Read: `{{BATCH_DIR}}/votes/{{BRIEF_ID}}-consensus.json`
 
 Apply each accepted modification in priority order. For each modification:
