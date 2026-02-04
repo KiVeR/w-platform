@@ -154,7 +154,7 @@ Je crée une landing page chaleureuse pour un restaurant avec un titre doré, un
       "id": "widget_3",
       "type": "image",
       "order": 2,
-      "content": { "src": "https://placehold.co/800x600?text=Restaurant", "alt": "Interior of our restaurant" },
+      "content": { "src": "", "alt": "Intérieur chaleureux du restaurant avec tables dressées et éclairage tamisé" },
       "styles": { "width": "100%", "borderRadius": "12px", "padding": "16px" }
     },
     {
@@ -175,7 +175,7 @@ Je crée une landing page chaleureuse pour un restaurant avec un titre doré, un
       "id": "widget_6",
       "type": "button",
       "order": 5,
-      "content": { "text": "Appelez-nous", "action": "tel", "phone": "+33123456789" },
+      "content": { "text": "Réserver ma table au 01 23 45 67 89", "action": "tel", "phone": "+33123456789" },
       "styles": { "backgroundColor": "#ca8a04", "color": "#ffffff", "padding": "16px 32px", "margin": "16px auto" }
     }
   ]
@@ -213,7 +213,7 @@ Je crée une mise en page deux colonnes avec une image produit à gauche et un t
               "id": "widget_3",
               "type": "image",
               "order": 0,
-              "content": { "src": "https://placehold.co/600x400?text=Product", "alt": "Featured product" },
+              "content": { "src": "", "alt": "Photo produit phare en situation d'utilisation" },
               "styles": { "width": "100%", "borderRadius": "8px" }
             }
           ]
@@ -243,7 +243,7 @@ Je crée une mise en page deux colonnes avec une image produit à gauche et un t
               "id": "widget_7",
               "type": "button",
               "order": 2,
-              "content": { "text": "Learn More", "action": "link", "href": "/about" },
+              "content": { "text": "Découvrir notre histoire", "action": "link", "href": "/about" },
               "styles": { "backgroundColor": "#3b82f6", "color": "#ffffff" }
             }
           ]
@@ -290,7 +290,7 @@ Je crée un formulaire de contact élégant avec des champs nom, email et messag
         "emailNotify": true,
         "emailTo": "contact@example.com"
       },
-      "styles": { "backgroundColor": "#ffffff", "padding": "24px", "borderRadius": "12px", "margin": "16px" },
+      "styles": { "backgroundColor": "#ffffff", "padding": "24px", "borderRadius": "12px", "margin": "16px", "boxShadow": "0 4px 8px rgba(0,0,0,0.1)" },
       "children": [
         {
           "id": "widget_4",
@@ -312,6 +312,13 @@ Je crée un formulaire de contact élégant avec des champs nom, email et messag
           "order": 2,
           "content": { "fieldType": "textarea", "label": "Votre message", "placeholder": "Comment pouvons-nous vous aider ?", "required": true },
           "styles": {}
+        },
+        {
+          "id": "widget_7",
+          "type": "button",
+          "order": 3,
+          "content": { "text": "Envoyer ma demande", "action": "submit" },
+          "styles": { "backgroundColor": "#0ea5e9", "color": "#ffffff", "padding": "16px 32px", "margin": "16px 0 0", "borderRadius": "8px" }
         }
       ]
     }
@@ -355,12 +362,12 @@ Je crée une section galerie photos avec un titre, une description invitante et 
       "content": {
         "galleryButtonText": "Nos espaces",
         "galleryImages": [
-          { "src": "https://placehold.co/600x600?text=Hall", "alt": "Hall d'entrée de l'hôtel", "caption": "Hall d'entrée" },
-          { "src": "https://placehold.co/600x600?text=Chambre", "alt": "Chambre deluxe vue mer", "caption": "Chambre Deluxe" },
-          { "src": "https://placehold.co/600x600?text=Piscine", "alt": "Piscine extérieure", "caption": "Piscine" },
-          { "src": "https://placehold.co/600x600?text=Restaurant", "alt": "Restaurant gastronomique", "caption": "Restaurant" },
-          { "src": "https://placehold.co/600x600?text=Spa", "alt": "Espace spa et bien-être", "caption": "Spa" },
-          { "src": "https://placehold.co/600x600?text=Terrasse", "alt": "Terrasse panoramique", "caption": "Terrasse" }
+          { "src": "", "alt": "Hall d'entrée lumineux avec lustre en cristal et sol en marbre", "caption": "Hall d'entrée" },
+          { "src": "", "alt": "Chambre deluxe avec lit king-size et vue panoramique sur la mer", "caption": "Chambre Deluxe" },
+          { "src": "", "alt": "Piscine à débordement avec transats et vue sur les montagnes", "caption": "Piscine" },
+          { "src": "", "alt": "Restaurant gastronomique avec tables dressées et décoration élégante", "caption": "Restaurant" },
+          { "src": "", "alt": "Espace spa zen avec jacuzzi, hammam et lumière tamisée", "caption": "Spa" },
+          { "src": "", "alt": "Terrasse panoramique avec mobilier design et coucher de soleil", "caption": "Terrasse" }
         ]
       },
       "styles": { "padding": "8px 16px", "margin": "0" }
@@ -416,7 +423,7 @@ Je crée une section d'inscription newsletter avec un titre accrocheur, une desc
       "type": "text",
       "order": 3,
       "content": { "text": "Déjà 12 500 abonnés satisfaits" },
-      "styles": { "textAlign": "center", "color": "#64748b", "fontSize": "14px", "padding": "8px 16px" }
+      "styles": { "textAlign": "center", "color": "#64748b", "fontSize": "14px", "padding": "8px 16px", "textTransform": "uppercase", "letterSpacing": "0.05em" }
     }
   ]
 }
@@ -450,7 +457,7 @@ Je crée une landing page gaming avec fond sombre, couleurs néon vibrantes, et 
       "type": "title",
       "order": 1,
       "content": { "text": "CYBER ARENA 2026" },
-      "styles": { "fontSize": "48px", "textAlign": "center", "color": "#8b5cf6", "padding": "24px 16px 8px", "fontWeight": "900" }
+      "styles": { "fontSize": "48px", "textAlign": "center", "color": "#8b5cf6", "padding": "24px 16px 8px", "fontWeight": "900", "letterSpacing": "-0.02em" }
     },
     {
       "id": "widget_3",
@@ -463,7 +470,7 @@ Je crée une landing page gaming avec fond sombre, couleurs néon vibrantes, et 
       "id": "widget_4",
       "type": "image",
       "order": 3,
-      "content": { "src": "https://placehold.co/800x400?text=Gaming+Arena", "alt": "Arena de compétition e-sport" },
+      "content": { "src": "", "alt": "Arena e-sport immersive avec éclairage LED violet, écrans géants et gradins pleins de spectateurs" },
       "styles": { "width": "100%", "borderRadius": "12px", "padding": "0 16px" }
     },
     {
@@ -485,7 +492,7 @@ Je crée une landing page gaming avec fond sombre, couleurs néon vibrantes, et 
           "type": "column",
           "order": 0,
           "content": { "columnWidth": "50%" },
-          "styles": { "backgroundColor": "#1e1e2f", "padding": "24px", "borderRadius": "12px" },
+          "styles": { "backgroundColor": "#1e1e2f", "padding": "24px", "borderRadius": "12px", "boxShadow": "0 8px 24px rgba(0,0,0,0.15)" },
           "children": [
             { "id": "widget_8", "type": "icon", "order": 0, "content": { "iconName": "Trophy", "iconSize": "48px", "iconColor": "#fbbf24" }, "styles": { "margin": "0 auto 12px" } },
             { "id": "widget_9", "type": "title", "order": 1, "content": { "text": "100 000€" }, "styles": { "fontSize": "24px", "textAlign": "center", "color": "#fbbf24" } },
@@ -497,7 +504,7 @@ Je crée une landing page gaming avec fond sombre, couleurs néon vibrantes, et 
           "type": "column",
           "order": 1,
           "content": { "columnWidth": "50%" },
-          "styles": { "backgroundColor": "#1e1e2f", "padding": "24px", "borderRadius": "12px" },
+          "styles": { "backgroundColor": "#1e1e2f", "padding": "24px", "borderRadius": "12px", "boxShadow": "0 8px 24px rgba(0,0,0,0.15)" },
           "children": [
             { "id": "widget_12", "type": "icon", "order": 0, "content": { "iconName": "Users", "iconSize": "48px", "iconColor": "#22d3ee" }, "styles": { "margin": "0 auto 12px" } },
             { "id": "widget_13", "type": "title", "order": 1, "content": { "text": "500+" }, "styles": { "fontSize": "24px", "textAlign": "center", "color": "#22d3ee" } },
@@ -549,43 +556,44 @@ Je crée une page de génération de leads avec le formulaire en hero, suivi des
         { "id": "widget_4", "type": "form-field", "order": 0, "content": { "fieldType": "select", "label": "Type de bien", "options": ["Appartement", "Maison", "Terrain", "Commerce"], "required": true }, "styles": {} },
         { "id": "widget_5", "type": "form-field", "order": 1, "content": { "fieldType": "text", "label": "Adresse du bien", "placeholder": "12 rue de la Paix, 75001 Paris", "required": true }, "styles": {} },
         { "id": "widget_6", "type": "form-field", "order": 2, "content": { "fieldType": "text", "label": "Surface (m²)", "placeholder": "85", "required": true }, "styles": {} },
-        { "id": "widget_7", "type": "form-field", "order": 3, "content": { "fieldType": "tel", "label": "Téléphone", "placeholder": "06 12 34 56 78", "required": true }, "styles": {} }
+        { "id": "widget_7", "type": "form-field", "order": 3, "content": { "fieldType": "tel", "label": "Téléphone", "placeholder": "06 12 34 56 78", "required": true }, "styles": {} },
+        { "id": "widget_8", "type": "button", "order": 4, "content": { "text": "Recevoir mon estimation gratuite", "action": "submit" }, "styles": { "backgroundColor": "#b45309", "color": "#ffffff", "padding": "16px 32px", "borderRadius": "8px", "fontWeight": "600" } }
       ]
     },
     {
-      "id": "widget_8",
+      "id": "widget_9",
       "type": "title",
       "order": 3,
       "content": { "text": "Pourquoi nous faire confiance ?" },
       "styles": { "fontSize": "24px", "textAlign": "center", "padding": "16px" }
     },
     {
-      "id": "widget_9",
+      "id": "widget_10",
       "type": "row",
       "order": 4,
       "content": { "gap": "16px" },
       "styles": { "padding": "0 16px 24px" },
       "children": [
         {
-          "id": "widget_10",
+          "id": "widget_11",
           "type": "column",
           "order": 0,
           "content": { "columnWidth": "50%" },
           "styles": {},
           "children": [
-            { "id": "widget_11", "type": "icon", "order": 0, "content": { "iconName": "Award", "iconSize": "36px", "iconColor": "#b45309" }, "styles": { "margin": "0 auto 8px" } },
-            { "id": "widget_12", "type": "text", "order": 1, "content": { "text": "25 ans d'expertise locale" }, "styles": { "textAlign": "center", "fontSize": "14px" } }
+            { "id": "widget_12", "type": "icon", "order": 0, "content": { "iconName": "Award", "iconSize": "36px", "iconColor": "#b45309" }, "styles": { "margin": "0 auto 8px" } },
+            { "id": "widget_13", "type": "text", "order": 1, "content": { "text": "25 ans d'expertise locale" }, "styles": { "textAlign": "center", "fontSize": "14px" } }
           ]
         },
         {
-          "id": "widget_13",
+          "id": "widget_14",
           "type": "column",
           "order": 1,
           "content": { "columnWidth": "50%" },
           "styles": {},
           "children": [
-            { "id": "widget_14", "type": "icon", "order": 0, "content": { "iconName": "ThumbsUp", "iconSize": "36px", "iconColor": "#b45309" }, "styles": { "margin": "0 auto 8px" } },
-            { "id": "widget_15", "type": "text", "order": 1, "content": { "text": "98% de clients satisfaits" }, "styles": { "textAlign": "center", "fontSize": "14px" } }
+            { "id": "widget_15", "type": "icon", "order": 0, "content": { "iconName": "ThumbsUp", "iconSize": "36px", "iconColor": "#b45309" }, "styles": { "margin": "0 auto 8px" } },
+            { "id": "widget_16", "type": "text", "order": 1, "content": { "text": "98% de clients satisfaits" }, "styles": { "textAlign": "center", "fontSize": "14px" } }
           ]
         }
       ]
@@ -645,7 +653,7 @@ Je crée une page fitness avec un layout asymétrique 40/60 pour mettre en valeu
       "id": "widget_9",
       "type": "image",
       "order": 1,
-      "content": { "src": "https://placehold.co/800x400?text=Salle+de+sport", "alt": "Intérieur de la salle FitZone" },
+      "content": { "src": "", "alt": "Salle de musculation moderne FitZone avec équipements haut de gamme et miroirs" },
       "styles": { "width": "100%", "padding": "0 16px" }
     },
     {
@@ -732,7 +740,7 @@ Je crée une page consulting minimaliste avec une palette monochrome et beaucoup
           "styles": {},
           "children": [
             { "id": "widget_9", "type": "title", "order": 0, "content": { "text": "120+" }, "styles": { "fontSize": "48px", "fontWeight": "400" } },
-            { "id": "widget_10", "type": "text", "order": 1, "content": { "text": "Projets livrés" }, "styles": { "color": "#737373", "fontSize": "14px" } }
+            { "id": "widget_10", "type": "text", "order": 1, "content": { "text": "Projets livrés" }, "styles": { "color": "#737373", "fontSize": "14px", "opacity": "0.75" } }
           ]
         },
         {
@@ -743,7 +751,7 @@ Je crée une page consulting minimaliste avec une palette monochrome et beaucoup
           "styles": {},
           "children": [
             { "id": "widget_12", "type": "title", "order": 0, "content": { "text": "8 ans" }, "styles": { "fontSize": "48px", "fontWeight": "400" } },
-            { "id": "widget_13", "type": "text", "order": 1, "content": { "text": "D'expertise" }, "styles": { "color": "#737373", "fontSize": "14px" } }
+            { "id": "widget_13", "type": "text", "order": 1, "content": { "text": "D'expertise" }, "styles": { "color": "#737373", "fontSize": "14px", "opacity": "0.75" } }
           ]
         }
       ]
@@ -785,7 +793,7 @@ Je crée une page storytelling avec structure problème → agitation → soluti
       "id": "widget_3",
       "type": "image",
       "order": 2,
-      "content": { "src": "https://placehold.co/800x300?text=Chaos+au+travail", "alt": "Illustration du chaos au travail" },
+      "content": { "src": "", "alt": "Illustration d'un bureau surchargé avec notifications, emails et calendrier chaotique" },
       "styles": { "width": "100%", "padding": "0 16px", "borderRadius": "8px" }
     },
     {
@@ -912,7 +920,7 @@ ${FEW_SHOT_EXAMPLES}
    - ✅ VALID: "Découvrir", "Réserver", "Démarrer", "à partir de", "déjà", "spécialités"
    - Exception: Preserve brand names and English slogans exactly as provided in the brief
 7. **Accessibility**: Always include alt text for images
-8. **Image placeholders**: NEVER invent or hallucinate image URLs. Always use placeholder URLs like \`https://placehold.co/800x600?text=Description\` for images. Never use unsplash.com or any other real image hosting URL.
+8. **Image handling**: NEVER invent or hallucinate image URLs. If the brief provides real image URLs, use them. Otherwise, use an empty src with a descriptive alt text: \`{ "src": "", "alt": "Description détaillée de l'image attendue" }\`. Never use placeholder services (placehold.co) or stock photo sites (unsplash.com).
 9. **No emojis - Use Lucide icons**: NEVER use emojis anywhere in the design. For icon widgets, use Lucide icon names (PascalCase strings like "Star", "Phone", "Mail", "Heart", "Check", "Shield", "Award", "Target", "Users", "ShoppingCart", "CreditCard", "MapPin", "Clock", "Calendar", "Gift", "Truck", "Zap", "Leaf", "ThumbsUp", "MessageCircle", "Play", "Download", "ArrowRight"). The ONLY exception is effectImage in effect widgets where emojis create the particle effect.
 10. **Conversion & engagement**: Design every page with a clear conversion goal. Apply these principles:
     - Define ONE primary action (visit store, call, fill form, download app) and make it the most prominent CTA

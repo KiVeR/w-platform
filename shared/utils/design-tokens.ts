@@ -28,6 +28,7 @@ const ADVISORY_TOKEN_PROPERTIES: Record<string, DesignTokenCategory> = {
   letterSpacing: 'letterSpacing',
   textTransform: 'textTransform',
   opacity: 'opacity',
+  boxShadow: 'boxShadow',
 }
 
 const SPACING_PROPERTIES = ['padding', 'margin', 'gap', 'rowGap', 'columnGap']
