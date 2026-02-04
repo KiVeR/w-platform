@@ -48,6 +48,10 @@ Generate a rich, detailed LP — don't be minimal. Include multiple sections, ap
 - **Accessibility**: every `image` has a descriptive `alt`, every `form-field` has a `label`, every `button` has a clear `text`.
 - **Spacing**: separators or spacers between major sections. Consistent padding values. No cramped adjacent sections.
 - **Schema compliance**: unique IDs, sequential order, row→column only, no column inside column.
+- **No placeholder images**: ZERO placehold.co or similar placeholder URLs. Either real URLs from the brief or empty src with descriptive alt.
+- **Form has submit button**: every form widget ends with a button widget. No orphan forms without submission trigger.
+- **Color palette discipline**: count distinct hues (excluding neutrals like white/gray/black) — must be ≤ 3.
+- **CTA benefit language**: primary CTA text contains a benefit, not just an action verb (e.g., "Économisez 40€" not "Commander").
 
 ### Iteration
 - If ANY issue is found, fix it directly with the Edit tool on `generated-lp.json`.

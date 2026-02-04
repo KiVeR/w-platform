@@ -929,6 +929,29 @@ ${FEW_SHOT_EXAMPLES}
     - Keep the conversion funnel tight: don't link away to external sites unless that IS the conversion goal
     - Every section should support the main conversion objective — remove anything that doesn't
 11. **Gallery widget**: Always provide 4-6 images with descriptive alt text and captions. Place the gallery inside a section with a title and description above it. Use galleryButtonText as the section label matching the page context (e.g. "Nos réalisations", "Galerie photos"). Use square placeholder images (600x600).
+13. **No Placeholder Images (CRITICAL)**:
+    - NEVER use placeholder images from placehold.co, placeholder.com, or similar services in production designs
+    - Either use real image URLs provided in the brief, or leave src empty with a descriptive alt text
+    - Placeholder images destroy UI scores and make designs look unprofessional
+    - If no real image is available, use an empty src with detailed alt: \`{ "src": "", "alt": "Photo du produit: panier de légumes bio colorés" }\`
+14. **Color Palette Discipline**:
+    - Limit the design to maximum 3 colors with clear semantic roles:
+      * Primary: Main brand color for headings, links, accents
+      * Accent: CTA buttons, urgency elements, badges ONLY
+      * Neutral: Text, backgrounds, borders (grays/whites)
+    - Never mix more than 3 distinct hues (excluding neutrals)
+    - All instances of the same semantic role must use the SAME color
+15. **Form Must Have Submit Button (CRITICAL)**:
+    - Every form widget MUST have a button widget as the last child
+    - The button must have action='submit' or be clearly labeled as the form submission trigger
+    - A form without a submit button is a critical conversion-blocking bug
+    - Form children order: form-fields first, then ONE button at the end
+16. **Benefit-Oriented CTA Copy**:
+    - Write CTAs that emphasize benefits, not just actions
+    - BAD: "Prendre rendez-vous", "Commander", "Envoyer", "Valider"
+    - GOOD: "Économisez 40€", "Recevez votre panier", "Réservez votre créneau gratuit"
+    - Include the main value proposition in the primary CTA text
+    - Secondary CTAs can be more neutral but should still hint at the benefit
 12. **Color Contrast (CRITICAL)**: Ensure all text is readable against its background:
     - On LIGHT backgrounds (#ffffff to #e0e0e0): use DARK text (#000000 to #4a4a4a)
     - On DARK backgrounds (#000000 to #3a3a3a): use LIGHT text (#ffffff to #e0e0e0)

@@ -2,9 +2,12 @@ You are a pipeline optimization specialist. Your job is to read the meta-analysi
 
 ## Step 1: Read the meta-analysis
 
-Read `.claude/batch/meta-analysis.md` and `.claude/batch/synthesis.md`.
+First, check `.claude/batch/runs/` for available runs. Find the latest run (highest number) and read:
+- `.claude/batch/runs/{latest}/meta-analysis.md`
+- `.claude/batch/runs/{latest}/synthesis.md`
+- `.claude/batch/runs/{latest}/state.json`
 
-If these files don't exist, tell the user to run `/generate-lp-batch` first and stop.
+If no runs exist, tell the user to run `/generate-lp-batch` first and stop.
 
 Summarize to the user:
 - Average score from the batch
@@ -58,7 +61,7 @@ For each change:
 
 ## Step 5: Compare runs
 
-If multiple runs exist in `.claude/batch/state.json`, display a comparison table:
+If multiple runs exist in `.claude/batch/runs/`, read each `state.json` and display a comparison table:
 
 ```
 | Run | Date       | Avg Score | Top Issue                | Delta |
