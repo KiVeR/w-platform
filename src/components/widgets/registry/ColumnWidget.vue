@@ -16,6 +16,10 @@ const props = defineProps<{
   readonly?: boolean
 }>()
 
+const emit = defineEmits<{
+  click: []
+}>()
+
 const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
 
@@ -66,6 +70,7 @@ function handleDragOver(event: DragEvent): void {
       'column-widget--readonly': readonly,
     }"
     :style="columnStyle"
+    @click.self.stop="emit('click')"
     @dragover="!readonly && handleDragOver($event)"
     @drop="!readonly && handleDrop($event)"
   >
@@ -83,7 +88,7 @@ function handleDragOver(event: DragEvent): void {
           :widget="element"
           :is-selected="selectionStore.selectedId === element.id"
           :is-hovered="selectionStore.hoveredId === element.id"
-          @click.stop="selectionStore.select(element.id)"
+          @click="selectionStore.select(element.id)"
           @mouseenter="selectionStore.setHovered(element.id)"
           @mouseleave="selectionStore.setHovered(null)"
         />

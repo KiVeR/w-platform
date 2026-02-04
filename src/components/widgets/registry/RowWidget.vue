@@ -61,7 +61,7 @@ function addColumn() {
           :widget="element"
           :editable="editable"
           :is-selected="selectionStore.selectedId === element.id"
-          @click.stop="selectionStore.select(element.id)"
+          @click="selectionStore.select(element.id)"
         />
       </template>
     </draggable>
