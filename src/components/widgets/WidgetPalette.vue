@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { WidgetCategory } from '@/types/widget'
-import { Sparkles } from 'lucide-vue-next'
+import { Search, Sparkles } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 import AIChatPanel from '@/components/ai/AIChatPanel.vue'
 import { getWidgetsByCategory, widgetCategories, widgetConfigs } from '@/config/widgets'
