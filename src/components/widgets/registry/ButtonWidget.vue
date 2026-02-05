@@ -1,34 +1,15 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
 import IconText from '@/components/ui/IconText.vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
+import { useButtonWidget } from '@/composables/useButtonWidget'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
 
-const { primaryColor, borderRadius } = useGlobalStyles()
-
-const isFullWidth = computed(() => props.widget.styles.widthMode !== 'auto')
-
-const wrapperStyles = computed(() => ({
-  padding: props.widget.styles.padding,
-  margin: props.widget.styles.margin,
-  textAlign: props.widget.styles.textAlign || 'center',
-}))
-
-const buttonStyles = computed(() => ({
-  backgroundColor: props.widget.styles.backgroundColor || primaryColor.value,
-  color: props.widget.styles.color || '#ffffff',
-  fontSize: props.widget.styles.fontSize,
-  fontWeight: props.widget.styles.fontWeight,
-  borderRadius: props.widget.styles.borderRadius || borderRadius.value,
-  boxShadow: props.widget.styles.boxShadow,
-  letterSpacing: props.widget.styles.letterSpacing,
-  textTransform: props.widget.styles.textTransform,
-}))
+const { isFullWidth, wrapperStyles, buttonStyles, iconSize } = useButtonWidget(toRef(props, 'widget'))
 
 const href = computed(() => {
   const { action, phone, href } = props.widget.content
@@ -42,14 +23,8 @@ const href = computed(() => {
   }
 })
 
-// Icon props
 const icon = computed(() => props.widget.content.icon || '')
 const iconPosition = computed(() => props.widget.content.iconPosition || 'start')
-const iconSize = computed(() => {
-  const fontSizeStr = props.widget.styles.fontSize || '16px'
-  const fontSize = Number.parseFloat(fontSizeStr)
-  return Math.round(fontSize * 1.1)
-})
 </script>
 
 <template>
@@ -74,9 +49,6 @@ const iconSize = computed(() => {
 </template>
 
 <style scoped>
-.button-widget {
-}
-
 .widget-button {
   display: inline-block;
   padding: 12px 24px;
