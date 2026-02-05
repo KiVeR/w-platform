@@ -77,6 +77,50 @@ const LAYOUT_RULES = `
 6. **Maximum 2 columns**: Since Kreo targets mobile screens (smartphone width), NEVER use more than 2 columns in a row. 3+ columns are too narrow and render poorly on mobile. If you need to display 3+ items, stack them vertically or use 2 rows of 2 columns.
 `
 
+const FONT_GUIDELINES = `
+## Typography & Font System (CRITICAL)
+
+Kreo loads Google Fonts dynamically. You MUST only use fonts from this approved list — other fonts will NOT render.
+
+### Available Fonts
+
+**Body fonts (fontFamily):** DM Sans, Source Sans Pro, Open Sans, Work Sans, Karla, Fira Sans, Outfit, Nunito, Lato, Poppins, Montserrat, Raleway, Lora, Merriweather
+
+**Display/heading fonts (headingFontFamily):** Playfair Display, DM Serif Display, Cormorant Garamond, Fraunces, Oswald, Bebas Neue, Archivo Black, Montserrat, Poppins, Raleway
+
+**System fonts (no loading needed):** Georgia, Inter
+
+### globalStyles Font Properties
+
+- \`fontFamily\`: Applied to all body text (text, button, click-to-call, badge, testimonial widgets)
+- \`headingFontFamily\`: Applied to title widgets. Falls back to fontFamily if not set.
+- **Always set BOTH** fontFamily and headingFontFamily in globalStyles for a distinctive design.
+
+### Recommended Font Pairings
+
+Choose a pairing that matches the sector and personality. Use a DIFFERENT pairing for each design.
+
+| headingFontFamily | fontFamily | Best for |
+|-------------------|------------|----------|
+| Playfair Display, serif | Source Sans Pro, sans-serif | Elegant, editorial |
+| Montserrat, sans-serif | Lora, serif | Modern, warm |
+| Oswald, sans-serif | Open Sans, sans-serif | Bold, impactful |
+| DM Serif Display, serif | DM Sans, sans-serif | Refined, contemporary |
+| Bebas Neue, sans-serif | Karla, sans-serif | Bold, playful |
+| Cormorant Garamond, serif | Fira Sans, sans-serif | Luxurious, high contrast |
+| Archivo Black, sans-serif | Work Sans, sans-serif | Bold, modern |
+| Fraunces, serif | Outfit, sans-serif | Original, warm |
+| Poppins, sans-serif | Merriweather, serif | Modern, readable |
+| Raleway, sans-serif | Nunito, sans-serif | Playful, friendly |
+
+### Font Rules
+
+- **NEVER default to Inter** — it makes every design look generic
+- **NEVER use fonts not in the list above** — they won't render
+- Always include the CSS fallback category: \`"Playfair Display, serif"\`, \`"DM Sans, sans-serif"\`
+- Pair a display font (serif or bold sans) for headings with a readable font for body
+`
+
 const OUTPUT_FORMAT = `
 ## Output Format
 
@@ -89,7 +133,8 @@ Return a valid JSON DesignDocument with this exact structure:
     "backgroundColor": "#ffffff",
     "textColor": "#1e293b",
     "primaryColor": "#3b82f6",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "DM Sans, sans-serif",
+    "headingFontFamily": "DM Serif Display, serif",
     "contentPadding": "16px",
     "widgetGap": "12px"
   },
@@ -132,7 +177,8 @@ Je crée une landing page chaleureuse pour un restaurant avec un titre doré, un
     "backgroundColor": "#fefce8",
     "textColor": "#1c1917",
     "primaryColor": "#ca8a04",
-    "fontFamily": "Georgia, serif",
+    "fontFamily": "Source Sans Pro, sans-serif",
+    "headingFontFamily": "Playfair Display, serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -192,7 +238,9 @@ Je crée une mise en page deux colonnes avec une image produit à gauche et un t
   "globalStyles": {
     "backgroundColor": "#ffffff",
     "textColor": "#374151",
-    "primaryColor": "#3b82f6"
+    "primaryColor": "#3b82f6",
+    "fontFamily": "Lora, serif",
+    "headingFontFamily": "Montserrat, sans-serif"
   },
   "widgets": [
     {
@@ -264,7 +312,9 @@ Je crée un formulaire de contact élégant avec des champs nom, email et messag
   "globalStyles": {
     "backgroundColor": "#f8fafc",
     "textColor": "#1e293b",
-    "primaryColor": "#0ea5e9"
+    "primaryColor": "#0ea5e9",
+    "fontFamily": "Merriweather, serif",
+    "headingFontFamily": "Poppins, sans-serif"
   },
   "widgets": [
     {
@@ -337,7 +387,8 @@ Je crée une section galerie photos avec un titre, une description invitante et 
     "backgroundColor": "#faf9f6",
     "textColor": "#1c1917",
     "primaryColor": "#92400e",
-    "fontFamily": "Georgia, serif",
+    "fontFamily": "DM Sans, sans-serif",
+    "headingFontFamily": "Cormorant Garamond, serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -387,7 +438,8 @@ Je crée une section d'inscription newsletter avec un titre accrocheur, une desc
     "backgroundColor": "#f0f9ff",
     "textColor": "#0c4a6e",
     "primaryColor": "#0284c7",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "Nunito, sans-serif",
+    "headingFontFamily": "Raleway, sans-serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -440,7 +492,8 @@ Je crée une landing page gaming avec fond sombre, couleurs néon vibrantes, et 
     "backgroundColor": "#0f0f1a",
     "textColor": "#e2e8f0",
     "primaryColor": "#8b5cf6",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "Karla, sans-serif",
+    "headingFontFamily": "Bebas Neue, sans-serif",
     "contentPadding": "16px",
     "widgetGap": "16px"
   },
@@ -528,7 +581,8 @@ Je crée une page de génération de leads avec le formulaire en hero, suivi des
     "backgroundColor": "#faf5f0",
     "textColor": "#292524",
     "primaryColor": "#b45309",
-    "fontFamily": "Georgia, serif",
+    "fontFamily": "Outfit, sans-serif",
+    "headingFontFamily": "Fraunces, serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -613,7 +667,8 @@ Je crée une page fitness avec un layout asymétrique 40/60 pour mettre en valeu
     "backgroundColor": "#ffffff",
     "textColor": "#18181b",
     "primaryColor": "#dc2626",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "Work Sans, sans-serif",
+    "headingFontFamily": "Archivo Black, sans-serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -678,7 +733,8 @@ Je crée une page consulting minimaliste avec une palette monochrome et beaucoup
     "backgroundColor": "#ffffff",
     "textColor": "#171717",
     "primaryColor": "#171717",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "Open Sans, sans-serif",
+    "headingFontFamily": "Montserrat, sans-serif",
     "contentPadding": "24px",
     "widgetGap": "16px"
   },
@@ -771,7 +827,8 @@ Je crée une page storytelling avec structure problème → agitation → soluti
     "backgroundColor": "#f0fdf4",
     "textColor": "#14532d",
     "primaryColor": "#16a34a",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "DM Sans, sans-serif",
+    "headingFontFamily": "DM Serif Display, serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -884,7 +941,8 @@ Je crée une LP avec tous les éléments critiques above the fold : headline cou
     "backgroundColor": "#ffffff",
     "textColor": "#1e293b",
     "primaryColor": "#dc2626",
-    "fontFamily": "Inter, sans-serif",
+    "fontFamily": "Open Sans, sans-serif",
+    "headingFontFamily": "Oswald, sans-serif",
     "contentPadding": "16px"
   },
   "widgets": [
@@ -982,6 +1040,8 @@ ${WIDGET_DEFINITIONS}
 
 ${LAYOUT_RULES}
 
+${FONT_GUIDELINES}
+
 ${DESIGN_TOKEN_CONSTRAINTS}
 
 ${OUTPUT_FORMAT}
@@ -994,8 +1054,9 @@ ${FEW_SHOT_EXAMPLES}
 2. **Choose appropriate widgets**: Select widgets that best match the requested content
 3. **Create a cohesive design**: Use consistent colors, spacing, and typography
 4. **Follow layout rules**: Especially row/column nesting rules
-5. **Be creative but practical**: Generate realistic, usable designs
-6. **French text with MANDATORY accents (CRITICAL)**:
+5. **Typography**: Always set BOTH \`fontFamily\` and \`headingFontFamily\` in globalStyles. Choose a distinctive pairing from the approved font list — never default to Inter. Use contrasting styles (e.g. serif headings + sans-serif body).
+6. **Be creative but practical**: Generate realistic, usable designs
+7. **French text with MANDATORY accents (CRITICAL)**:
    - ALL user-facing text MUST be in French WITH correct accents
    - NEVER output French words without their accents - this is treated as an error
    - Required accent characters: é, è, ê, ë, à, â, ù, û, ô, î, ï, ç
@@ -1005,10 +1066,10 @@ ${FEW_SHOT_EXAMPLES}
    - ❌ INVALID: "Decouvrir", "Reserver", "Demarrer", "a partir de", "deja", "specialites"
    - ✅ VALID: "Découvrir", "Réserver", "Démarrer", "à partir de", "déjà", "spécialités"
    - Exception: Preserve brand names and English slogans exactly as provided in the brief
-7. **Accessibility**: Always include alt text for images
-8. **Image handling**: NEVER invent or hallucinate image URLs. If the brief provides real image URLs, use them. Otherwise, use an empty src with a descriptive alt text: \`{ "src": "", "alt": "Description détaillée de l'image attendue" }\`. Never use placeholder services (placehold.co) or stock photo sites (unsplash.com).
-9. **No emojis - Use Lucide icons**: NEVER use emojis anywhere in the design. For icon widgets, use Lucide icon names (PascalCase strings like "Star", "Phone", "Mail", "Heart", "Check", "Shield", "Award", "Target", "Users", "ShoppingCart", "CreditCard", "MapPin", "Clock", "Calendar", "Gift", "Truck", "Zap", "Leaf", "ThumbsUp", "MessageCircle", "Play", "Download", "ArrowRight"). The ONLY exception is effectImage in effect widgets where emojis create the particle effect.
-10. **Conversion & engagement**: Design every page with a clear conversion goal. Apply these principles:
+8. **Accessibility**: Always include alt text for images
+9. **Image handling**: NEVER invent or hallucinate image URLs. If the brief provides real image URLs, use them. Otherwise, use an empty src with a descriptive alt text: \`{ "src": "", "alt": "Description détaillée de l'image attendue" }\`. Never use placeholder services (placehold.co) or stock photo sites (unsplash.com).
+10. **No emojis - Use Lucide icons**: NEVER use emojis anywhere in the design. For icon widgets, use Lucide icon names (PascalCase strings like "Star", "Phone", "Mail", "Heart", "Check", "Shield", "Award", "Target", "Users", "ShoppingCart", "CreditCard", "MapPin", "Clock", "Calendar", "Gift", "Truck", "Zap", "Leaf", "ThumbsUp", "MessageCircle", "Play", "Download", "ArrowRight"). The ONLY exception is effectImage in effect widgets where emojis create the particle effect.
+11. **Conversion & engagement**: Design every page with a clear conversion goal. Apply these principles:
     - Define ONE primary action (visit store, call, fill form, download app) and make it the most prominent CTA
     - **CTA placement depends on the page structure**:
       - Funnel pages: CTA first (above fold) + repeat at bottom
@@ -1022,7 +1083,7 @@ ${FEW_SHOT_EXAMPLES}
     - Add social proof where possible (user counts, testimonials, ratings)
     - Keep the conversion funnel tight: don't link away to external sites unless that IS the conversion goal
     - Every section should support the main conversion objective — remove anything that doesn't
-11. **Gallery widget**: Always provide 4-6 images with descriptive alt text and captions. Place the gallery inside a section with a title and description above it. Use galleryButtonText as the section label matching the page context (e.g. "Nos réalisations", "Galerie photos"). Use square placeholder images (600x600).
+12. **Gallery widget**: Always provide 4-6 images with descriptive alt text and captions. Place the gallery inside a section with a title and description above it. Use galleryButtonText as the section label matching the page context (e.g. "Nos réalisations", "Galerie photos"). Use square placeholder images (600x600).
 13. **No Placeholder Images (CRITICAL)**:
     - NEVER use placeholder images from placehold.co, placeholder.com, or similar services in production designs
     - Either use real image URLs provided in the brief, or leave src empty with a descriptive alt text
@@ -1069,7 +1130,7 @@ ${FEW_SHOT_EXAMPLES}
     - Can user identify the value proposition in <3 seconds? → Headline visible
     - Can user take action without scrolling? → CTA visible
     - Is there supporting context? → Subheadline OR visual OR urgency present
-12. **Color Contrast (CRITICAL)**: Ensure all text is readable against its background:
+18. **Color Contrast (CRITICAL)**: Ensure all text is readable against its background:
     - On LIGHT backgrounds (#ffffff to #e0e0e0): use DARK text (#000000 to #4a4a4a)
     - On DARK backgrounds (#000000 to #3a3a3a): use LIGHT text (#ffffff to #e0e0e0)
     - NEVER use light/medium colors (pastels, gold, beige) for text on light backgrounds

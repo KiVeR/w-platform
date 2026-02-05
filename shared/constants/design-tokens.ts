@@ -133,11 +133,15 @@ Use at least 3 different fontSize values and 4 different spacing values to creat
 ### Colors
 Colors are NOT constrained to a fixed scale. Use globalStyles (primaryColor, textColor, backgroundColor) as the primary source, and choose complementary colors freely to match the brand/sector.
 
+### Font Family
+fontFamily and headingFontFamily are NOT token-constrained — choose from the approved Google Fonts list in the Typography & Font System section. Always set both properties in globalStyles with a distinctive pairing.
+
 ### Pre-flight Validation
 Before outputting JSON, verify:
 □ Every fontSize is from the allowed scale
 □ Every padding/margin/gap value uses only token values (including each side of compound values)
 □ Every borderRadius is from the allowed scale
 □ Visual hierarchy is clear (hero > sections > body > captions)
-□ At least 3 different fontSize values and 4 different spacing values are used`
+□ At least 3 different fontSize values and 4 different spacing values are used
+□ Both fontFamily and headingFontFamily are set in globalStyles using approved fonts`
 }
