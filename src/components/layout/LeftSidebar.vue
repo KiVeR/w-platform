@@ -123,7 +123,10 @@ onUnmounted(() => {
           @keydown="(e) => handleNavKeydown(e, index)"
         >
           <component :is="item.icon" :size="20" />
-          <span class="rail-tooltip">{{ item.label }}</span>
+          <span class="rail-tooltip">
+            {{ item.label }}
+            <kbd class="tooltip-shortcut">⌘{{ item.shortcut }}</kbd>
+          </span>
         </button>
       </div>
     </nav>
@@ -293,6 +296,16 @@ onUnmounted(() => {
 .rail-btn:focus-visible .rail-tooltip {
   opacity: 1;
   visibility: visible;
+}
+
+.tooltip-shortcut {
+  margin-left: 8px;
+  padding: 2px 5px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  font-size: 10px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  opacity: 0.8;
 }
 
 /* Content Panel */
