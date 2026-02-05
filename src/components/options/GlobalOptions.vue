@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { UserPalette } from '#shared/schemas/palette.schema'
-import type { Palette } from '@/config/palettes'
 import { ChevronDown, RotateCcw, Save } from 'lucide-vue-next'
 import { ref } from 'vue'
 import ConfirmPaletteChangeModal from '@/components/ui/ConfirmPaletteChangeModal.vue'
 import SavePaletteModal from '@/components/ui/SavePaletteModal.vue'
 import { usePalettes } from '@/composables/usePalettes'
+import { getFontOptions } from '@/config/fonts'
 import { useEditorStore } from '@/stores/editor'
 import OptionColorPicker from './shared/OptionColorPicker.vue'
 import OptionGroup from './shared/OptionGroup.vue'
@@ -45,16 +44,7 @@ const expandedSections = ref({
   seo: false,
 })
 
-const fontOptions = [
-  { value: 'Inter, system-ui, sans-serif', label: 'Inter' },
-  { value: 'Roboto, sans-serif', label: 'Roboto' },
-  { value: 'Open Sans, sans-serif', label: 'Open Sans' },
-  { value: 'Montserrat, sans-serif', label: 'Montserrat' },
-  { value: 'Poppins, sans-serif', label: 'Poppins' },
-  { value: 'Lato, sans-serif', label: 'Lato' },
-  { value: 'Georgia, serif', label: 'Georgia' },
-  { value: 'Playfair Display, serif', label: 'Playfair Display' },
-]
+const fontOptions = getFontOptions()
 
 function toggleSection(section: keyof typeof expandedSections.value) {
   expandedSections.value[section] = !expandedSections.value[section]
@@ -64,22 +54,6 @@ function parsePixelValue(value: string | undefined, fallback: number): number {
   if (!value)
     return fallback
   return Number.parseInt(value.replace('px', ''), 10) || fallback
-}
-
-function handlePaletteSelect(palette: Palette | UserPalette) {
-  selectPalette(palette)
-}
-
-function handlePaletteRename(id: string, newLabel: string) {
-  renamePalette(id, newLabel)
-}
-
-function handlePaletteDelete(id: string) {
-  deleteUserPalette(id)
-}
-
-function handleSaveModalConfirm(label: string) {
-  saveAsNewPalette(label)
 }
 
 function handleConfirmModalSaveFirst() {
@@ -107,9 +81,9 @@ function handleConfirmModalSaveFirst() {
             :selected-palette="selectedPalette"
             :user-palettes="userPalettes"
             :preset-palettes="presetPalettes"
-            @select="handlePaletteSelect"
-            @rename="handlePaletteRename"
-            @delete="handlePaletteDelete"
+            @select="selectPalette"
+            @rename="renamePalette"
+            @delete="deleteUserPalette"
             @create="openSaveModal"
           />
         </OptionGroup>
@@ -289,7 +263,7 @@ function handleConfirmModalSaveFirst() {
     <SavePaletteModal
       v-if="showSaveModal"
       :current-colors="currentColors"
-      @save="handleSaveModalConfirm"
+      @save="saveAsNewPalette"
       @cancel="closeSaveModal"
     />
 

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { DesignDocument } from '@/types/widget'
 import { computed } from 'vue'
+import { useGlobalStyles } from '@/composables/useGlobalStyles'
+import { useGoogleFonts } from '@/composables/useGoogleFonts'
 import { useEditorStore } from '@/stores/editor'
 import { useWidgetsStore } from '@/stores/widgets'
 import { isWidgetConfigured } from '@/utils/widgetConfig'
@@ -12,6 +14,9 @@ const props = defineProps<{
 
 const widgetsStore = useWidgetsStore()
 const editorStore = useEditorStore()
+const { fontFamily, headingFontFamily } = useGlobalStyles()
+
+useGoogleFonts(fontFamily, headingFontFamily)
 
 // Use prop design if provided, otherwise fall back to stores
 const configuredWidgets = computed(() => {
@@ -30,6 +35,7 @@ const globalStyles = computed(() => {
     :style="{
       backgroundColor: globalStyles.backgroundColor,
       color: globalStyles.textColor,
+      fontFamily: globalStyles.fontFamily,
     }"
   >
     <PreviewRenderer

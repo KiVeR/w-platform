@@ -31,6 +31,7 @@ const quoteStyle = computed(() => ({
   color: props.widget.styles.color || textColor.value,
   fontSize: props.widget.styles.fontSize || '16px',
   fontStyle: 'italic' as const,
+  fontFamily: props.widget.styles.fontFamily,
   lineHeight: '1.6',
 }))
 

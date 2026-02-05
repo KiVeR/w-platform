@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { WidgetType } from '@/types/widget'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import draggable from 'vuedraggable'
 import { useGlobalStyles } from '@/composables/useGlobalStyles'
+import { loadFont, useGoogleFonts } from '@/composables/useGoogleFonts'
 import { useEditorStore } from '@/stores/editor'
 import { usePresetsStore } from '@/stores/presets'
 import { useSelectionStore } from '@/stores/selection'
@@ -13,7 +14,17 @@ const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
 const editorStore = useEditorStore()
 const presetsStore = usePresetsStore()
-const { widgetGap, fontFamily, baseFontSize } = useGlobalStyles()
+const { widgetGap, fontFamily, headingFontFamily, baseFontSize } = useGlobalStyles()
+
+// Load global fonts dynamically
+useGoogleFonts(fontFamily, headingFontFamily)
+
+// Load per-widget custom fonts
+watch(
+  () => widgetsStore.sortedItems.map(w => w.styles.fontFamily).filter(Boolean),
+  fontFamilies => fontFamilies.forEach(f => loadFont(f!)),
+  { immediate: true },
+)
 
 const isDragOver = ref(false)
 

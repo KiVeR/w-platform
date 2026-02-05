@@ -2,6 +2,7 @@
 import type { Widget } from '@/types/widget'
 import { DESIGN_TOKENS, LETTER_SPACING_LABELS } from '#shared/constants/design-tokens'
 import { computed } from 'vue'
+import { getFontOptions } from '@/config/fonts'
 import { useWidgetsStore } from '@/stores/widgets'
 import ColorPicker from './inputs/ColorPicker.vue'
 import ColorPickerWithTheme from './inputs/ColorPickerWithTheme.vue'
@@ -18,7 +19,7 @@ function updateStyle(key: string, value: string | undefined) {
 }
 
 // Widget type groups for conditional rendering
-const TYPOGRAPHY_WIDGETS = ['title', 'text', 'button', 'click-to-call']
+const TYPOGRAPHY_WIDGETS = ['title', 'text', 'button', 'click-to-call', 'testimonial', 'badge']
 const BUTTON_WIDGETS = ['button', 'click-to-call']
 const SHADOW_WIDGETS = ['button', 'click-to-call', 'image', 'row', 'column']
 const OPACITY_WIDGETS = ['image', 'icon', 'separator', 'spacer']
@@ -51,6 +52,7 @@ const opacities = [
   { value: '0.75', label: '75%' },
   { value: '1', label: '100%' },
 ]
+const fontOptions = getFontOptions()
 const letterSpacings = DESIGN_TOKENS.letterSpacing
 </script>
 
@@ -73,6 +75,23 @@ const letterSpacings = DESIGN_TOKENS.letterSpacing
         theme-color-type="primary"
         @update:value="updateStyle('backgroundColor', $event)"
       />
+    </div>
+
+    <!-- Font Family (for title, text, button, testimonial, badge) -->
+    <div v-if="hasTypographyStyles" class="option-group">
+      <label class="option-label">Police</label>
+      <select
+        class="option-select"
+        :value="widget.styles.fontFamily || ''"
+        @change="updateStyle('fontFamily', ($event.target as HTMLSelectElement).value || undefined)"
+      >
+        <option value="">
+          Police globale
+        </option>
+        <option v-for="font in fontOptions" :key="font.value" :value="font.value">
+          {{ font.label }}
+        </option>
+      </select>
     </div>
 
     <!-- Font Size (for title, text, button) -->

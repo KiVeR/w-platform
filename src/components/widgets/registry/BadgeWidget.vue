@@ -27,6 +27,7 @@ const badgeStyle = computed(() => {
     borderRadius: styles.borderRadius || '9999px',
     fontSize: styles.fontSize || '12px',
     fontWeight: styles.fontWeight || '600',
+    fontFamily: styles.fontFamily,
     textTransform: styles.textTransform || 'uppercase',
     letterSpacing: '0.05em',
     lineHeight: '1.4',
@@ -91,9 +92,5 @@ const badgeStyle = computed(() => {
 
 .placeholder-text {
   font-size: 14px;
-}
-
-.badge {
-  /* Static display, no hover effects */
 }
 </style>
