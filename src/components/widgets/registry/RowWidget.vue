@@ -33,6 +33,16 @@ const rowStyle = computed(() => ({
   margin: props.widget.styles.margin,
   minHeight: props.readonly ? 'auto' : '60px',
   boxShadow: props.widget.styles.boxShadow,
+  backgroundColor: props.widget.styles.backgroundColor,
+  borderRadius: props.widget.styles.borderRadius,
+  backgroundImage: props.widget.styles.backgroundImage,
+  backgroundSize: props.widget.styles.backgroundSize,
+  backgroundPosition: props.widget.styles.backgroundPosition,
+  backgroundRepeat: 'no-repeat' as const,
+  borderLeft: props.widget.styles.borderLeft,
+  borderRight: props.widget.styles.borderRight,
+  borderTop: props.widget.styles.borderTop,
+  borderBottom: props.widget.styles.borderBottom,
 }))
 
 // En mode preview, filtrer les colonnes vides (sans enfants configures)

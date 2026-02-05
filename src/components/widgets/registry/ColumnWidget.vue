@@ -36,9 +36,18 @@ const columnStyle = computed(() => {
     flex: width === 'auto' ? '1' : `0 0 calc(${width} - 16px)`,
     minWidth: '80px',
     padding: props.widget.styles.padding || '8px',
+    margin: props.widget.styles.margin,
     backgroundColor: props.widget.styles.backgroundColor,
     borderRadius: props.widget.styles.borderRadius,
     boxShadow: props.widget.styles.boxShadow,
+    backgroundImage: props.widget.styles.backgroundImage,
+    backgroundSize: props.widget.styles.backgroundSize,
+    backgroundPosition: props.widget.styles.backgroundPosition,
+    backgroundRepeat: 'no-repeat' as const,
+    borderLeft: props.widget.styles.borderLeft,
+    borderRight: props.widget.styles.borderRight,
+    borderTop: props.widget.styles.borderTop,
+    borderBottom: props.widget.styles.borderBottom,
   }
 })
 
