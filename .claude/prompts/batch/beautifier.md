@@ -78,6 +78,8 @@ Before finishing, verify: does this LP have at least ONE distinctive visual choi
 - An unusual column ratio
 - A bold, sector-specific color accent
 - A dramatic spacing choice for emphasis
+- A **column with accent border** (`borderLeft: "4px solid ..."`) for testimonials or callouts
+- A **row with background image** (`backgroundImage: "url(...)"`, `backgroundSize: "cover"`) for an immersive hero
 
 If not, add one within your 15-change budget.
 
@@ -102,6 +104,7 @@ Move beyond flat colors to create depth.
 - Use subtle gradients (5-10% color shift max)
 - Layer backgrounds (section bg slightly different from page bg)
 - Add colored shadows under CTAs: `box-shadow: 0 4px 12px rgba(PRIMARY_COLOR, 0.25)`
+- Use **accent borders** on columns: `borderLeft: "3px solid #primaryColor"` for testimonial cards, featured content, or highlighted sections (also supports borderRight/borderTop/borderBottom — multiple sides can be combined)
 
 **Constraints:**
 - Keep brand colors recognizable (max 15% hue shift)

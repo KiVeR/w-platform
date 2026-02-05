@@ -27,8 +27,8 @@ const WIDGET_DEFINITIONS = `
 - **link-image**: Clickable image. Required: linkImageSrc, linkImageHref, linkImageAlt
 
 ### Layout Widgets
-- **row**: Horizontal container. ONLY accepts 'column' as children. Use for multi-column layouts.
-- **column**: Vertical container inside a row. Cannot contain row or column. Set columnWidth (e.g., '50%', '33%')
+- **row**: Horizontal container. ONLY accepts 'column' as children. Use for multi-column layouts. Supports: backgroundImage (url(...)), backgroundSize, backgroundPosition for hero sections; backgroundColor, borderRadius, boxShadow for section styling; borderLeft/borderRight/borderTop/borderBottom for accent borders (e.g., "3px solid #d4a041").
+- **column**: Vertical container inside a row. Cannot contain row or column. Set columnWidth (e.g., '50%', '33%'). Supports same styling as row: backgroundImage for hero overlays, backgroundColor + borderRadius + boxShadow for card effects, per-side borders for accent lines.
 - **form**: Form container. Cannot contain nested forms. Properties: successMessage, emailNotify, emailTo
 - **form-field**: Input field inside form. Required: fieldType, label. Types: text, email, tel, textarea, select, checkbox
 
@@ -981,6 +981,66 @@ Je crée une LP avec tous les éléments critiques above the fold : headline cou
       "order": 3,
       "content": { "text": "Obtenir mon code -30%", "action": "link", "href": "/promo", "icon": "Gift", "iconPosition": "start" },
       "styles": { "backgroundColor": "#dc2626", "color": "#ffffff", "padding": "16px 32px", "margin": "0 auto 16px", "borderRadius": "8px", "fontSize": "18px", "fontWeight": "700" }
+    }
+  ]
+}
+
+### Example 12: Container Styling (Background Image + Accent Border)
+User: "Create a luxury spa section with a hero background and testimonial card"
+
+Response:
+Je crée une section spa avec un hero plein écran utilisant une image de fond sur le row, et une carte témoignage avec bordure d'accent dorée.
+---JSON---
+{
+  "version": "1.0",
+  "globalStyles": {
+    "backgroundColor": "#faf8f5",
+    "textColor": "#292524",
+    "primaryColor": "#92400e",
+    "fontFamily": "DM Sans, sans-serif",
+    "headingFontFamily": "Cormorant Garamond, serif",
+    "contentPadding": "16px"
+  },
+  "widgets": [
+    {
+      "id": "widget_1",
+      "type": "row",
+      "order": 0,
+      "content": { "gap": "16px", "align": "center" },
+      "styles": { "backgroundImage": "url(https://example.com/spa-hero.jpg)", "backgroundSize": "cover", "backgroundPosition": "center", "padding": "48px 16px", "borderRadius": "0" },
+      "children": [
+        {
+          "id": "widget_2",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "100%" },
+          "styles": {},
+          "children": [
+            { "id": "widget_3", "type": "title", "order": 0, "content": { "text": "Évadez-vous" }, "styles": { "fontSize": "48px", "textAlign": "center", "color": "#ffffff", "fontWeight": "400", "letterSpacing": "-0.02em" } },
+            { "id": "widget_4", "type": "text", "order": 1, "content": { "text": "Soins sur mesure dans un cadre d'exception" }, "styles": { "textAlign": "center", "color": "#ffffff", "fontSize": "18px" } },
+            { "id": "widget_5", "type": "button", "order": 2, "content": { "text": "Réserver mon soin découverte à 49€", "action": "link", "href": "/booking" }, "styles": { "backgroundColor": "#92400e", "color": "#ffffff", "padding": "16px 32px", "margin": "16px auto", "borderRadius": "8px" } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "widget_6",
+      "type": "row",
+      "order": 1,
+      "content": { "gap": "16px" },
+      "styles": { "padding": "32px 16px" },
+      "children": [
+        {
+          "id": "widget_7",
+          "type": "column",
+          "order": 0,
+          "content": { "columnWidth": "100%" },
+          "styles": { "backgroundColor": "#ffffff", "padding": "24px", "borderRadius": "12px", "boxShadow": "0 2px 8px rgba(0,0,0,0.08)", "borderLeft": "4px solid #92400e" },
+          "children": [
+            { "id": "widget_8", "type": "testimonial", "order": 0, "content": { "text": "Massage aux pierres chaudes exceptionnel. 1h30 de pure détente, je n'avais pas été aussi relaxée depuis des mois.", "author": "Marie-Claire D., Lyon", "rating": 5 }, "styles": {} }
+          ]
+        }
+      ]
     }
   ]
 }

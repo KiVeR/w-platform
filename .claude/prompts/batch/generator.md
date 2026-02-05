@@ -93,13 +93,22 @@ These fonts are loaded dynamically via Google Fonts. You MUST only use fonts fro
 - Use `borderColor` subtly to define card edges in light themes
 - Set `opacity` on secondary elements to create visual hierarchy
 
+### Container Styling (Row/Column)
+
+Row and column widgets support advanced styling for richer designs:
+- **Background images**: `backgroundImage: "url(https://...)"` with `backgroundSize: "cover"` and `backgroundPosition: "center"` — ideal for hero sections with overlaid text
+- **Card effects**: Combine `backgroundColor` + `borderRadius` + `boxShadow` on columns for card-style layouts
+- **Accent borders**: `borderLeft: "3px solid #d4a041"` (or borderRight/borderTop/borderBottom) — great for testimonial cards, highlighted sections, or feature callouts. Multiple sides can be styled independently.
+
 ### The "Memorable Detail" Rule
 
 Each LP MUST have at least ONE distinctive visual choice that makes it stand out:
 - A striking dark hero section with light typography
+- A **hero row with background image** (`backgroundImage: "url(...)"`) and overlaid text
 - An unusual column ratio (e.g., narrow text + wide image)
 - A bold color combination specific to the sector
 - A section with dramatically different padding for emphasis
+- A **column with accent border** (`borderLeft: "4px solid #primaryColor"`) for testimonials or featured content
 
 ## Step 1: Read design guidelines
 Read these two files:
