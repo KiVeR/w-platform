@@ -49,6 +49,58 @@ These common mistakes make all LPs look identical. DO NOT:
 - ❌ **Flat design**: Add depth with shadows, subtle gradients, layered backgrounds
 - ❌ **Equal columns only**: Try asymmetric layouts (30/70, 40/60) for visual interest
 
+## Design Identity (MANDATORY — Avoid Generic AI Aesthetics)
+
+Every LP MUST have a distinctive visual identity. Generic, cookie-cutter designs are unacceptable.
+
+### Typography: Choose Distinctive Fonts
+
+Set `fontFamily` and `headingFontFamily` in `globalStyles` using Google Fonts. **NEVER default to Inter, Roboto, Arial, or system fonts.** Pick a pairing that matches the sector and style profile:
+
+| Display (headings) | Body (text) | Best for profiles |
+|---------------------|-------------|-------------------|
+| Playfair Display, serif | Source Sans Pro, sans-serif | elegant, minimal |
+| Montserrat, sans-serif | Lora, serif | modern |
+| Oswald, sans-serif | Open Sans, sans-serif | bold |
+| DM Serif Display, serif | DM Sans, sans-serif | elegant, modern |
+| Bebas Neue, sans-serif | Karla, sans-serif | bold, playful |
+| Cormorant Garamond, serif | Fira Sans, sans-serif | elegant |
+| Archivo Black, sans-serif | Work Sans, sans-serif | bold, modern |
+| Fraunces, serif | Outfit, sans-serif | playful, elegant |
+| Poppins, sans-serif | Merriweather, serif | modern, minimal |
+| Raleway, sans-serif | Nunito, sans-serif | playful, modern |
+
+These fonts are loaded dynamically via Google Fonts. You MUST only use fonts from this table — other fonts will not render. Choose a DIFFERENT pairing for each LP. Match the pairing to the sector's personality.
+
+### Color: Commit to a Bold Palette
+
+- One **dominant color** with sharp accents outperforms a timid, evenly-distributed palette
+- Use `backgroundColor` variations across sections to create depth (e.g., white → light tint → white → dark section)
+- CTAs should use a contrasting accent color, not the same as the dominant
+- Dark sections (dark bg + light text) create dramatic contrast — use at least one per LP
+
+### Spatial Composition: Create Visual Rhythm
+
+- **Asymmetric columns**: Use 30/70 or 40/60 splits instead of always 50/50
+- **Generous negative space**: Don't cram content — use 32px or 48px section padding
+- **Density contrast**: Alternate between spacious sections and compact content blocks
+- Vary spacing deliberately: tight grouping (8px gap) for related items, generous gaps (32px+) between sections
+
+### Depth & Polish
+
+- Use `boxShadow` on cards and featured elements (not just flat rectangles)
+- Use `letterSpacing: "0.05em"` on uppercase text (`textTransform: "uppercase"`)
+- Use `borderColor` subtly to define card edges in light themes
+- Set `opacity` on secondary elements to create visual hierarchy
+
+### The "Memorable Detail" Rule
+
+Each LP MUST have at least ONE distinctive visual choice that makes it stand out:
+- A striking dark hero section with light typography
+- An unusual column ratio (e.g., narrow text + wide image)
+- A bold color combination specific to the sector
+- A section with dramatically different padding for emphasis
+
 ## Step 1: Read design guidelines
 Read these two files:
 - `server/services/ai/prompts/design-generation.ts`

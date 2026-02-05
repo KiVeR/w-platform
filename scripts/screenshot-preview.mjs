@@ -72,6 +72,10 @@ try {
   }
   await page.waitForTimeout(2000)
 
+  // Wait for Google Fonts to finish loading
+  await page.evaluate(() => document.fonts.ready)
+  await page.waitForTimeout(500)
+
   // Screenshot the preview frame with scrolling support
   const frame = page.locator('.preview-mode, .mobile-frame, .center-canvas').first()
 

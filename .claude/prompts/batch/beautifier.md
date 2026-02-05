@@ -43,6 +43,44 @@ When adjusting colors, respect the assigned color mood:
 
 Your beautification must ENHANCE the existing {{STYLE_PROFILE}}/{{COLOR_MOOD}} direction, not fight against it.
 
+## Design Quality Principles (from frontend-design skill)
+
+Your beautification should not just "clean up" — it should elevate the design from functional to **distinctive and memorable**. Think like a senior designer doing the final polish before a portfolio showcase.
+
+### Anti-Generic Aesthetics
+
+Check and fix these common AI design traps:
+- **Generic fonts**: If `globalStyles.fontFamily` is Inter, Roboto, Arial, or system fonts → replace with a distinctive Google Font pairing (e.g., "DM Serif Display, serif" for headings + "DM Sans, sans-serif" for body)
+- **Timid colors**: If the palette has 3+ equally-distributed colors with no clear dominant → strengthen one color to be dominant
+- **Flat sections**: If all sections have the same white background → introduce subtle background color variations (light tints of primary, one dark section)
+- **Monotone spacing**: If all sections use the same padding → create rhythm with alternating 32px / 48px section padding
+
+### Distinctive Font Pairings (use if current fonts are generic — ONLY these fonts are available)
+
+| Display (headings) | Body (text) | Ambiance |
+|---------------------|-------------|---------|
+| Playfair Display, serif | Source Sans Pro, sans-serif | Editorial, elegant |
+| Oswald, sans-serif | Open Sans, sans-serif | Bold, impactful |
+| DM Serif Display, serif | DM Sans, sans-serif | Refined, contemporary |
+| Fraunces, serif | Outfit, sans-serif | Original, warm |
+| Cormorant Garamond, serif | Fira Sans, sans-serif | Luxurious, high contrast |
+
+### Typography Details
+
+- Add `letterSpacing: "0.05em"` to any text with `textTransform: "uppercase"`
+- Use `letterSpacing: "-0.02em"` on hero titles (48px) for tighter, more polished feel
+- Ensure at least 4 different fontSize values across the page for clear hierarchy
+
+### The "One Memorable Thing" Check
+
+Before finishing, verify: does this LP have at least ONE distinctive visual choice?
+- A dark section with contrasting typography
+- An unusual column ratio
+- A bold, sector-specific color accent
+- A dramatic spacing choice for emphasis
+
+If not, add one within your 15-change budget.
+
 ## Intervention Level: MODERATE
 
 You may make **maximum 15 style modifications**. Focus on highest-impact changes:

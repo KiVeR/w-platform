@@ -11,48 +11,58 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 
 | Widget souhaité | Contexte / Use case | Demandes | Date |
 |----------------|---------------------|----------|------|
-| Hero-image | Widget hero avec overlay texte integre pour sections d'accroche | 13 | 2026-02-03 |
-| Pricing card | Widget carte de prix structuree (ancien prix / nouveau prix / CTA) pour offres et forfaits | 12 | 2026-02-02 |
-| Rating/stars | Note produit avec etoiles pour preuve sociale (avis clients, temoignages) et note agregee (4.8/5 sur 234 avis) | 8 | 2026-02-02 |
-| Accordion/FAQ | Widget accordeon pour FAQ et questions frequentes | 6 | 2026-02-02 |
-| Trust badges | Badges de confiance/garantie (paiement securise, satisfait ou rembourse, certifications) pour LP e-commerce et services | 5 | 2026-02-02 |
-| Stock-indicator | Widget indicateur de stock restant dynamique pour urgence (Plus que X a ce prix) | 5 | 2026-02-03 |
-| Counter/KPI | Widget compteur / chiffre cle pour afficher des metriques d'impact et preuve sociale | 5 | 2026-02-02 |
+| Pricing card | Widget carte de prix structuree (ancien prix / nouveau prix / CTA) pour offres et forfaits | 17 | 2026-02-04 |
+| Hero-image | Widget hero avec overlay texte integre pour sections d'accroche | 16 | 2026-02-03 |
+| Rating/stars | Note produit avec etoiles pour preuve sociale (avis clients, temoignages) et note agregee (4.8/5 sur 234 avis) | 10 | 2026-02-04 |
+| Trust badges | Badges de confiance/garantie (paiement securise, satisfait ou rembourse, certifications) pour LP e-commerce et services | 10 | 2026-02-04 |
+| Stock-indicator | Widget indicateur de stock restant dynamique pour urgence (Plus que X a ce prix) | 8 | 2026-02-04 |
+| Accordion/FAQ | Widget accordeon pour FAQ et questions frequentes | 7 | 2026-02-02 |
+| Counter/KPI | Widget compteur / chiffre cle pour afficher des metriques d'impact et preuve sociale | 6 | 2026-02-04 |
+| Social-proof-counter | Widget pour afficher nombre d'avis Google, note moyenne, nombre de clients servis | 6 | 2026-02-04 |
+| Logo widget | Widget logo/brand-header SVG/PNG dedie pour afficher l'identite visuelle en en-tete | 5 | 2026-02-04 |
+| Progress stepper | Widget etapes/progression pour parcours utilisateur ou processus d'inscription | 5 | 2026-02-04 |
+| Comparison table | Tableau comparatif pour forfaits ou offres cote a cote avec economie visuelle | 4 | 2026-02-02 |
 | Hours/Schedule | Widget horaires d'ouverture structure pour commerces locaux | 4 | 2026-02-03 |
 | Sticky-CTA | Widget CTA flottant visible au scroll sur mobile | 4 | 2026-02-03 |
 | Logo-grid | Grille de logos marques/partenaires pour crédibilité B2B | 3 | 2026-02-03 |
-| Progress stepper | Widget etapes/progression pour parcours utilisateur ou processus d'inscription | 3 | 2026-02-02 |
-| Social-proof-counter | Widget pour afficher nombre d'avis Google, note moyenne, nombre de clients servis | 3 | 2026-02-04 |
+| Price-comparison | Widget comparateur avant/apres prix pour promos type -5% | 3 | 2026-02-04 |
+| Timeline | Widget chronologie/frise temporelle pour afficher des etapes datees avec connecteurs visuels | 3 | 2026-02-04 |
+| Before-after | Widget comparaison avant/apres avec slider pour montrer des transformations | 2 | 2026-02-02 |
+| Card | Widget carte avec overlay texte sur image pour compositions sophistiquees | 2 | 2026-02-03 |
+| Decorative-divider | Separateurs decoratifs illustres (vagues, feuilles) pour transitions organiques | 2 | 2026-02-04 |
+| Decorative-shape | Formes geometriques decoratives (cercles, blobs) pour interet visuel | 2 | 2026-02-03 |
+| Feature-grid / Icon-grid | Grille 3-4 avantages equilibree sans bricolage row/column avec variantes de style | 2 | 2026-02-03 |
+| Ingredient-list | Widget liste d'ingredients structuree avec icones (base, proteine, toppings) | 2 | 2026-02-04 |
+| Pricing table | Tableau de prix avec ancien prix barre / nouveau prix pour menus et offres promo | 2 | 2026-02-02 |
+| Radio-group | Widget groupe de boutons radio visuels pour choix exclusif dans formulaires | 2 | 2026-02-02 |
 | Reviews-carousel | Widget carrousel d'avis clients avec systeme de notation integre | 2 | 2026-02-04 |
 | Team / About | Widget presentation equipe ou gerant avec photo pour commerces de proximite | 2 | 2026-02-04 |
-| Card | Widget carte avec overlay texte sur image pour compositions sophistiquees | 2 | 2026-02-03 |
-| Comparison table | Tableau comparatif pour forfaits ou offres cote a cote avec economie visuelle | 2 | 2026-02-02 |
-| Radio-group | Widget groupe de boutons radio visuels pour choix exclusif dans formulaires | 2 | 2026-02-02 |
-| Decorative-divider | Separateurs decoratifs illustres (vagues, feuilles) pour transitions organiques | 2 | 2026-02-04 |
-| Before-after | Widget comparaison avant/apres avec slider pour montrer des transformations | 2 | 2026-02-02 |
-| Pricing table | Tableau de prix avec ancien prix barre / nouveau prix pour menus et offres promo | 2 | 2026-02-02 |
-| Feature-grid / Icon-grid | Grille 3-4 avantages equilibree sans bricolage row/column avec variantes de style | 2 | 2026-02-03 |
-| Logo widget | Widget logo/brand-header SVG/PNG dedie pour afficher l'identite visuelle en en-tete | 2 | 2026-02-02 |
-| Decorative-shape | Formes geometriques decoratives (cercles, blobs) pour interet visuel | 2 | 2026-02-03 |
-| Coupon container | Widget dédié coupon avec bordure pointillée, fond blanc, regroupant titre promo + barcode + conditions | 1 | 2026-02-02 |
-| Consentement RGPD | Checkbox CGU/RGPD obligatoire pour formulaires collectant des donnees personnelles | 1 | 2026-02-02 |
-| Gallery grid | Galerie photo en grille (pas slider) pour montrer ambiance d'un lieu | 1 | 2026-02-02 |
-| Carousel | Widget carrousel dedie pour collections ou produits | 1 | 2026-02-02 |
-| Code input | Champ de saisie de code (promo, jeu) avec validation | 1 | 2026-02-02 |
 | Animation/Lottie | Widget animation Lottie pour micro-interactions et illustrations animees | 1 | 2026-02-02 |
-| Timeline | Widget chronologie/frise temporelle pour afficher des etapes datees | 1 | 2026-02-02 |
-| Itinerary | Widget parcours jour par jour pour secteur voyage/croisiere | 1 | 2026-02-03 |
-| Ingredient-list | Widget liste d'ingredients INCI structuree pour cosmetique | 1 | 2026-02-03 |
-| Webcam-embed | Widget flux video en direct ou embed webcam | 1 | 2026-02-03 |
-| Artisan-profile | Widget profil artisan avec photo, prenom et specialite | 1 | 2026-02-03 |
-| File-upload | Widget upload de fichiers/photos pour formulaires de devis | 1 | 2026-02-03 |
 | App-store-buttons | Boutons App Store et Google Play natifs avec images officielles | 1 | 2026-02-03 |
-| Guarantee-badge | Badge de garantie visuel (satisfait ou rembourse, retrait gratuit) | 1 | 2026-02-03 |
+| Artisan-profile | Widget profil artisan avec photo, prenom et specialite | 1 | 2026-02-03 |
+| Blockquote | Widget citation editorial avec grande quote mark typographique decorative pour temoignages magazine | 1 | 2026-02-05 |
+| Carousel | Widget carrousel dedie pour collections ou produits | 1 | 2026-02-02 |
 | Carte-interactive | Carte avec points cliquables pour visualiser les producteurs/partenaires | 1 | 2026-02-03 |
-| Texture-overlay | Appliquer des textures subtiles (papier kraft, grain, tissu lin) sur les sections | 1 | 2026-02-04 |
+| Code input | Champ de saisie de code (promo, jeu) avec validation | 1 | 2026-02-02 |
+| Confetti/celebration | Widget effet confetti/celebration dedie (pas juste effect avec emoji) | 1 | 2026-02-04 |
+| Consentement RGPD | Checkbox CGU/RGPD obligatoire pour formulaires collectant des donnees personnelles | 1 | 2026-02-02 |
+| Counter-live | Compteur anime de participants en temps reel pour jeux-concours | 1 | 2026-02-04 |
+| Coupon container | Widget dédié coupon avec bordure pointillée, fond blanc, regroupant titre promo + barcode + conditions | 1 | 2026-02-02 |
+| Date-picker | Widget selecteur de date natif pour formulaires de RDV | 1 | 2026-02-04 |
+| File-upload | Widget upload de fichiers/photos pour formulaires de devis | 1 | 2026-02-03 |
+| Gallery grid | Galerie photo en grille (pas slider) pour montrer ambiance d'un lieu | 1 | 2026-02-02 |
+| Guarantee-badge | Badge de garantie visuel (satisfait ou rembourse, retrait gratuit) | 1 | 2026-02-03 |
+| Icon-card | Widget combine icone + fond circulaire/carre + titre + description en un seul widget atomique | 1 | 2026-02-05 |
 | Icon-decorated | Widget icone avec fond circulaire/carre colore integre pour traitement graphique coherent | 1 | 2026-02-04 |
 | Illustration-abstract | Widget compositions graphiques vectorielles dynamiques (formes, lignes) avec couleurs de la palette | 1 | 2026-02-04 |
+| Itinerary | Widget parcours jour par jour pour secteur voyage/croisiere | 1 | 2026-02-03 |
+| Loyalty-card | Widget carte de fidelite avec code-barres integre et solde de points | 1 | 2026-02-04 |
+| Marquee / bandeau defilant | Bandeau defilant horizontal pour arguments cles (promo, livraison, avantages) | 1 | 2026-02-05 |
+| Popup-trigger | Widget pour declencher un popup apres soumission de formulaire | 1 | 2026-02-04 |
+| Probability-indicator | Indicateur visuel de chances de gain (1 chance sur 50) | 1 | 2026-02-04 |
 | Section-container | Widget conteneur avec fond colore pour regrouper visuellement des blocs thematiques | 1 | 2026-02-04 |
+| Texture-overlay | Appliquer des textures subtiles (papier kraft, grain, tissu lin) sur les sections | 1 | 2026-02-04 |
+| Webcam-embed | Widget flux video en direct ou embed webcam | 1 | 2026-02-03 |
 
 ### ✅ Implémentés
 
@@ -71,93 +81,118 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 | Widget | Option souhaitée | Contexte / Use case | Demandes | Date |
 |--------|-----------------|---------------------|----------|------|
 | testimonial | slider/carrousel multi-temoignages | Afficher plusieurs temoignages en carrousel plutot qu'un seul | 17 | 2026-02-04 |
+| form | bouton submit integre et configurable | Le formulaire n'a pas de bouton submit visible configurable dans le JSON | 13 | 2026-02-02 |
+| slider | caption / title par slide | Titre, legende ou texte overlay par image du slider | 13 | 2026-02-04 |
 | button | border / outline / ghost style | Variante bouton outline sans fond pour CTA secondaires | 11 | 2026-02-02 |
-| countdown | unitLabels | Afficher les labels des unites temporelles (jours, heures, min, sec) | 10 | 2026-02-03 |
+| row/column | backgroundGradient | Fond en degrade lineaire/radial pour headers et sections premium | 11 | 2026-02-03 |
 | badge | variant (urgency, outline, gradient) | Variantes visuelles pour badges promo | 10 | 2026-02-03 |
-| slider | caption / title par slide | Titre, legende ou texte overlay par image du slider | 10 | 2026-02-02 |
-| image | overlay text (texte superpose sur image) | Hero et sections visuelles necessitent du texte par-dessus une image | 9 | 2026-02-02 |
-| button | subtext / micro-copy sous le bouton | Texte complementaire sous le CTA (ex: 'Livraison offerte', 'Sans engagement') | 9 | 2026-02-02 |
-| row | responsive layout / breakpoint / stackOnMobile | Empilement automatique des colonnes sur mobile | 7 | 2026-02-02 |
+| button | subtext / micro-copy sous le bouton | Texte complementaire sous le CTA (ex: 'Livraison offerte', 'Sans engagement') | 10 | 2026-02-02 |
+| countdown | unitLabels | Afficher les labels des unites temporelles (jours, heures, min, sec) | 10 | 2026-02-03 |
+| image | overlay text (texte superpose sur image) | Hero et sections visuelles necessitent du texte par-dessus une image | 10 | 2026-02-02 |
+| row | responsive layout / breakpoint / stackOnMobile | Empilement automatique des colonnes sur mobile | 9 | 2026-02-04 |
+| countdown | stockMode / quantite limitee | Afficher "Plus que X places/items" en plus de la date limite | 7 | 2026-02-04 |
+| flipcard | textOverlay / contenu texte sur image | Texte superpose sur les faces du flipcard (ex: -40% sur face arriere, instant gagnant texte) | 7 | 2026-02-04 |
+| testimonial | avatarUrl / clientPhoto | Photo du client pour humaniser les temoignages | 7 | 2026-02-04 |
+| row/column | backgroundImage | Image de fond sur conteneurs | 6 | 2026-02-03 |
 | row/column | boxShadow | Ombres portees sur conteneurs et boutons pour effet carte | 6 | 2026-02-02 |
-| form | bouton submit integre et configurable | Le formulaire n'a pas de bouton submit visible configurable dans le JSON | 6 | 2026-02-02 |
-| row/column | backgroundGradient | Fond en degrade lineaire/radial pour headers et sections premium | 6 | 2026-02-03 |
-| countdown | stockMode / quantite limitee | Afficher "Plus que X places/items" en plus de la date limite | 5 | 2026-02-04 |
-| globalStyles | fontFamilySecondary | Permettre le contraste typographique serif/sans-serif pour hierarchie visuelle | 4 | 2026-02-04 |
+| button | sticky (CTA visible au scroll) | CTA principal reste visible pendant le scroll sur mobile | 5 | 2026-02-04 |
+| row/column | border-left / border individuel par cote | Accents editoriaux asymetriques sur testimonials et cards (ligne laterale, bordure top) | 5 | 2026-02-05 |
+| testimonial | source/lien verifie (Google, TripAdvisor) | Credibiliser les avis avec source verifiable et logo plateforme | 5 | 2026-02-03 |
+| countdown | style/theme variants | Variantes de style (compact, inline, cards) pour integration harmonieuse | 4 | 2026-02-04 |
 | form-field | options pour select (tableau d'objets label/value) | Le champ select n'accepte que des strings, pas de paires label/value | 4 | 2026-02-02 |
+| gallery | columns (2, 3, 4) / galleryLayout | Flexibilite du nombre de colonnes et mode d'affichage pour la galerie | 4 | 2026-02-04 |
+| globalStyles | fontFamilySecondary | Permettre le contraste typographique serif/sans-serif pour hierarchie visuelle | 4 | 2026-02-04 |
 | globalStyles | shadowPresets (subtle/medium/elevated) | Presets d'ombres coherents plutot que valeurs CSS manuelles | 4 | 2026-02-04 |
+| testimonial | notes variees (pas que 5 etoiles) | Varier les notes des temoignages (4, 4.5, 5) pour credibilite | 4 | 2026-02-04 |
+| badge | position (overlay sur image) | Positionner le badge en overlay sur image (top-left, top-right) | 3 | 2026-02-04 |
+| badge | pulse/animated | Animation pulse/glow pour attirer l'attention | 3 | 2026-02-03 |
+| button | max-width | Controler la largeur max du bouton independamment du container pour eviter CTA pleine largeur | 3 | 2026-02-05 |
+| countdown | colorScheme (light/dark/custom) | Simplifier la configuration des couleurs du countdown | 3 | 2026-02-04 |
+| flipcard | flipcardAltFront/Back | Attributs alt pour accessibilite et description IA des images | 3 | 2026-02-04 |
+| form-field | fieldType: date natif | Le type date avec date picker au lieu de champ texte | 3 | 2026-02-02 |
+| gallery | placeholderFallback | Image placeholder sectorielle quand src est vide | 3 | 2026-02-04 |
 | row/column | elevation/boxShadow | Ombres portees pour effet carte | 3 | 2026-02-03 |
 | separator | variant (gradient, wave) | Variantes decoratives pour separateurs | 3 | 2026-02-03 |
-| button | sticky (CTA visible au scroll) | CTA principal reste visible pendant le scroll sur mobile | 3 | 2026-02-02 |
-| form-field | fieldType: date natif | Le type date avec date picker au lieu de champ texte | 3 | 2026-02-02 |
-| testimonial | source/lien verifie (Google, TripAdvisor) | Credibiliser les avis avec source verifiable et logo plateforme | 3 | 2026-02-03 |
-| flipcard | textOverlay / contenu texte sur image | Texte superpose sur les faces du flipcard (ex: -40% sur face arriere) | 3 | 2026-02-02 |
-| gallery | columns (2, 3, 4) | Flexibilite du nombre de colonnes pour la galerie | 2 | 2026-02-04 |
-| countdown | colorScheme (light/dark/custom) | Simplifier la configuration des couleurs du countdown | 2 | 2026-02-04 |
-| flipcard | flipcardAltFront/Back | Attributs alt pour accessibilite et description IA des images | 2 | 2026-02-04 |
 | badge | icon/iconLeft | Icone integree dans le badge | 2 | 2026-02-03 |
-| badge | pulse/animated | Animation pulse/glow pour attirer l'attention | 2 | 2026-02-03 |
+| click-to-call | hidePhoneNumber | Masquer le numero brut et afficher uniquement le label du bouton | 2 | 2026-02-02 |
+| effect | trigger | Declencheur d'effet (on load, on scroll, on click) | 2 | 2026-02-04 |
+| globalStyles | accentColor | Couleur d'accent secondaire dans la palette | 2 | 2026-02-03 |
 | testimonial | beforeAfterImages | Photos avant/apres pour prouver resultats | 2 | 2026-02-03 |
 | testimonial | companyLogo | Logo entreprise pour temoignages B2B | 2 | 2026-02-03 |
-| testimonial | avatarUrl / clientPhoto | Photo du client pour humaniser les temoignages | 2 | 2026-02-04 |
-| click-to-call | hidePhoneNumber | Masquer le numero brut et afficher uniquement le label du bouton | 2 | 2026-02-02 |
 | text/title | textTransform (uppercase/lowercase/capitalize) | Transformation de casse dans les styles de texte et titres | 2 | 2026-02-02 |
-| gallery | placeholderFallback | Image placeholder sectorielle quand src est vide | 2 | 2026-02-04 |
-| form-field (checkbox) | Masquer le label pour éviter doublon label/texte checkbox | Le label et le texte checkbox affichent la même chose | 1 | 2026-02-02 |
-| image | Propriété backgroundImage / mode background | Superposer du texte sur une image de fond (slogan sur clémentines) | 1 | 2026-02-02 |
-| text | textDecoration (line-through, underline) | Afficher un prix barre visuellement pour les promos | 1 | 2026-02-02 |
-| text | Texte riche inline (gras, italique, barre dans un meme paragraphe) | Ancien prix barre + nouveau prix en gras dans le meme bloc | 1 | 2026-02-02 |
+| video | thumbnailImage | Image de preview/couverture quand video vide ou avant lecture | 2 | 2026-02-04 |
+| badge | gradient fill | Traitement degrade diagonal pour badges premium | 1 | 2026-02-04 |
+| badge | position sticky/fixed | Badge fixe en haut du viewport lors du scroll pour maintenir l'urgence visible | 1 | 2026-02-05 |
+| badge | sous-texte secondaire | Texte secondaire sous le badge (ex: 'au lieu de 14,50€' directement dans le badge) | 1 | 2026-02-05 |
 | button | action: submit (soumettre formulaire parent) | Bouton CTA hors formulaire doit pouvoir soumettre le form | 1 | 2026-02-02 |
-| form | submitButtonStyles (personnalisation style bouton submit) | Couleur, border-radius du bouton submit ne correspondent pas au design | 1 | 2026-02-02 |
-| form | Ancre/id HTML pour navigation interne | Liens #formulaire ne fonctionnent pas sans id sur le widget form | 1 | 2026-02-02 |
-| image | objectFit (cover vs contain) | Controler le recadrage de l'image hero | 1 | 2026-02-02 |
-| form-field | fieldType=address avec autocompletion | Pas de champ adresse dedie, utilisation d'un champ text generique | 1 | 2026-02-02 |
-| row/column | gradient background | Fond en degrade lineaire pour sections hero et premium | 1 | 2026-02-02 |
-| social | platform pinterest | Pinterest non disponible dans les plateformes du widget social | 1 | 2026-02-02 |
-| social | platform spotify | Spotify non disponible dans les plateformes du widget social | 1 | 2026-02-02 |
-| scratch | scratchCallToAction (texte CTA sur overlay) | Impossible d'afficher un texte incitatif sur l'overlay du scratch | 1 | 2026-02-02 |
-| form-field | fieldType: radio (boutons radio visuels) | Le type radio n'est pas supporte, seulement select pour choix exclusif | 1 | 2026-02-02 |
-| testimonial | source/lien (Google, TripAdvisor) | Credibiliser les avis avec source verifiable | 1 | 2026-02-03 |
-| testimonial | date du voyage/achat | Contextualiser le temoignage dans le temps | 1 | 2026-02-03 |
+| button | badge (micro-badge au-dessus) | Afficher un petit badge au-dessus du bouton ('Gratuit', 'Nouveau') | 1 | 2026-02-04 |
+| button | glow shadow preset | BoxShadow colore assorti au backgroundColor pour rendu premium sans config manuelle | 1 | 2026-02-05 |
+| button | scroll-to / ancrage | Bouton CTA avec navigation interne vers une ancre de la page | 1 | 2026-02-05 |
+| column | variant (flat/elevated/outlined) | Styles predefinis pour les cartes/colonnes sans configuration manuelle | 1 | 2026-02-04 |
+| countdown | displayStyle (compact/detailed) | Choix entre affichage compact ou detaille du compte a rebours | 1 | 2026-02-03 |
+| countdown | dynamique base sur date visite | Date relative a la visite plutot que date fixe pour urgence credible | 1 | 2026-02-04 |
 | countdown | goalProgress | Afficher la progression vers un objectif | 1 | 2026-02-03 |
 | countdown | offerText | Afficher l'offre associee directement dans le widget | 1 | 2026-02-03 |
+| countdown | onExpire (action) | Definir une action quand le compte a rebours atteint zero (masquer form, afficher message) | 1 | 2026-02-04 |
+| countdown | style alternatif (inline, compact, fond transparent) | Variantes de style pour integration harmonieuse dans differentes palettes | 1 | 2026-02-04 |
+| countdown | urgencyText | Message d'urgence personnalise sous le timer | 1 | 2026-02-04 |
+| effect | backgroundColor | Couleur de fond de la zone d'effet | 1 | 2026-02-03 |
+| effect | confetti customColors | Couleurs personnalisables pour particules confetti | 1 | 2026-02-04 |
 | effect | customImages | Utiliser des images custom au lieu d'emojis pour confetti/effet | 1 | 2026-02-03 |
 | effect | trigger | Declencheur d'effet (on load, on scroll, on click) | 1 | 2026-02-03 |
-| effect | backgroundColor | Couleur de fond de la zone d'effet | 1 | 2026-02-03 |
-| gallery | logoMode | Afficher des logos plutot que des photos | 1 | 2026-02-03 |
+| flipcard | requireFormSubmit | Bloquer le jeu flipcard jusqu'a inscription | 1 | 2026-02-04 |
+| form | Ancre/id HTML pour navigation interne | Liens #formulaire ne fonctionnent pas sans id sur le widget form | 1 | 2026-02-02 |
+| form | submitButtonStyles (personnalisation style bouton submit) | Couleur, border-radius du bouton submit ne correspondent pas au design | 1 | 2026-02-02 |
+| form-field | autocomplete address | Autocompletion pour champ adresse | 1 | 2026-02-03 |
+| form-field | dateFormat | Specifier le format de date attendu dans le champ | 1 | 2026-02-03 |
+| form-field | fieldType: radio (boutons radio visuels) | Le type radio n'est pas supporte, seulement select pour choix exclusif | 1 | 2026-02-02 |
+| form-field | fieldType=address avec autocompletion | Pas de champ adresse dedie, utilisation d'un champ text generique | 1 | 2026-02-02 |
+| form-field | inputMask | Masques de saisie pour telephone, code postal | 1 | 2026-02-03 |
+| form-field | multiselect | Permettre de selectionner plusieurs options dans un champ select | 1 | 2026-02-04 |
+| form-field | number (fieldType) | Champ numerique avec validation pour kilometrage, quantite, etc. | 1 | 2026-02-03 |
+| form-field | radioGroup | Groupe de boutons radio visuels | 1 | 2026-02-03 |
+| form-field | selectPlaceholder | Option de placeholder pour champ select "Selectionnez une option" | 1 | 2026-02-04 |
+| form-field | time (type natif) | Champ heure pour reservation | 1 | 2026-02-03 |
+| form-field (checkbox) | Masquer le label pour éviter doublon label/texte checkbox | Le label et le texte checkbox affichent la même chose | 1 | 2026-02-02 |
+| form-field select | grouped options | Grouper les options par categorie (zone geographique) | 1 | 2026-02-03 |
 | gallery | badgeOverlay | Badge en overlay sur chaque image | 1 | 2026-02-03 |
 | gallery | imageDescription | Description longue par image | 1 | 2026-02-03 |
-| form-field | time (type natif) | Champ heure pour reservation | 1 | 2026-02-03 |
-| form-field | radioGroup | Groupe de boutons radio visuels | 1 | 2026-02-03 |
-| form-field | autocomplete address | Autocompletion pour champ adresse | 1 | 2026-02-03 |
-| form-field | inputMask | Masques de saisie pour telephone, code postal | 1 | 2026-02-03 |
-| video | thumbnail | Image de preview avant lecture | 1 | 2026-02-03 |
-| separator | spacing | Espacement integre au separateur | 1 | 2026-02-03 |
-| row/column | backgroundImage | Image de fond sur conteneurs | 1 | 2026-02-03 |
-| globalStyles | accentColor | Couleur d'accent secondaire dans la palette | 1 | 2026-02-03 |
-| globalStyles | secondaryColor/tertiaryColor | Palettes complexes multi-couleurs | 1 | 2026-02-03 |
-| slider | dots/pagination indicator | Le slider hero ne montre pas de dots ou indicateurs de pagination | 1 | 2026-02-03 |
-| slider | comparisonMode (before/after) | Mode comparaison avant/apres avec curseur glissant | 1 | 2026-02-03 |
-| testimonial | avatarShape | Option forme de l'avatar (cercle, carre, arrondi) | 1 | 2026-02-03 |
-| form-field | dateFormat | Specifier le format de date attendu dans le champ | 1 | 2026-02-03 |
-| form-field | number (fieldType) | Champ numerique avec validation pour kilometrage, quantite, etc. | 1 | 2026-02-03 |
-| countdown | displayStyle (compact/detailed) | Choix entre affichage compact ou detaille du compte a rebours | 1 | 2026-02-03 |
+| gallery | logoMode | Afficher des logos plutot que des photos | 1 | 2026-02-03 |
 | gallery | provenance/source metadata | Associer producteur/lieu/description a chaque image | 1 | 2026-02-03 |
-| form-field select | grouped options | Grouper les options par categorie (zone geographique) | 1 | 2026-02-03 |
-| text | style citation | Mise en forme automatique verbatims (guillemets, italique, attribution) | 1 | 2026-02-03 |
 | globalStyles | fontFamily moderne | Support Google Fonts ou familles typographiques variees | 1 | 2026-02-03 |
-| text | line-height | Controle de l'interligne pour ameliorer la lisibilite sur mobile | 1 | 2026-02-04 |
-| testimonial | avatarUrl placeholder auto | Generation automatique d'avatar placeholder quand pas d'image fournie | 1 | 2026-02-04 |
-| column | variant (flat/elevated/outlined) | Styles predefinis pour les cartes/colonnes sans configuration manuelle | 1 | 2026-02-04 |
-| icon | size (sm/md/lg) | Tailles standardisees pour icones plutot que valeurs pixel manuelles | 1 | 2026-02-04 |
-| countdown | onExpire (action) | Definir une action quand le compte a rebours atteint zero (masquer form, afficher message) | 1 | 2026-02-04 |
+| globalStyles | gold/dore tokens | Couleur doree dans les tokens pour palettes premium | 1 | 2026-02-04 |
+| globalStyles | ocean/marine blues | Variantes bleu ocean/marine plus profondes et moins corporate | 1 | 2026-02-04 |
+| globalStyles | secondaryColor/tertiaryColor | Palettes complexes multi-couleurs | 1 | 2026-02-03 |
 | globalStyles | shadowColor | Personnaliser la teinte des ombres (ombres colorees vs grises neutres) | 1 | 2026-02-04 |
+| globalStyles | verticalRhythm | Definir des multiples d'espacement coherents | 1 | 2026-02-04 |
 | icon | iconStyle (outline/filled/hand-drawn) | Choix entre variantes d'icones pour adapter au style de la LP | 1 | 2026-02-04 |
+| icon | size (sm/md/lg) | Tailles standardisees pour icones plutot que valeurs pixel manuelles | 1 | 2026-02-04 |
+| image | objectFit (cover vs contain) | Controler le recadrage de l'image hero | 1 | 2026-02-02 |
+| image | Propriété backgroundImage / mode background | Superposer du texte sur une image de fond (slogan sur clémentines) | 1 | 2026-02-02 |
 | row | layout vertical/horizontal selon breakpoint | Option pour basculer automatiquement entre layout horizontal et vertical selon viewport | 1 | 2026-02-04 |
-| countdown | style alternatif (inline, compact, fond transparent) | Variantes de style pour integration harmonieuse dans differentes palettes | 1 | 2026-02-04 |
-| countdown | dynamique base sur date visite | Date relative a la visite plutot que date fixe pour urgence credible | 1 | 2026-02-04 |
+| row/column | gradient background | Fond en degrade lineaire pour sections hero et premium | 1 | 2026-02-02 |
+| scratch | scratchCallToAction (texte CTA sur overlay) | Impossible d'afficher un texte incitatif sur l'overlay du scratch | 1 | 2026-02-02 |
+| scratch | scratchRevealText | Option pour afficher un texte/code promo revele plutot qu'une image | 1 | 2026-02-04 |
+| separator | spacing | Espacement integre au separateur | 1 | 2026-02-03 |
+| slider | comparisonMode (before/after) | Mode comparaison avant/apres avec curseur glissant | 1 | 2026-02-03 |
+| slider | dots/pagination indicator | Le slider hero ne montre pas de dots ou indicateurs de pagination | 1 | 2026-02-03 |
+| slider | sliderOverlayText | Texte explicatif superpose sur chaque slide | 1 | 2026-02-04 |
+| social | platform pinterest | Pinterest non disponible dans les plateformes du widget social | 1 | 2026-02-02 |
+| social | platform spotify | Spotify non disponible dans les plateformes du widget social | 1 | 2026-02-02 |
+| store-locator | storeLocatorFilters | Filtrer les magasins par services (drive, bio, boucherie) | 1 | 2026-02-04 |
+| testimonial | avatarShape | Option forme de l'avatar (cercle, carre, arrondi) | 1 | 2026-02-03 |
+| testimonial | avatarUrl placeholder auto | Generation automatique d'avatar placeholder quand pas d'image fournie | 1 | 2026-02-04 |
+| testimonial | date du voyage/achat | Contextualiser le temoignage dans le temps | 1 | 2026-02-03 |
+| testimonial | fontColor / quoteColor | Controler la couleur du texte citation vs auteur pour fonds sombres | 1 | 2026-02-05 |
 | testimonial | notes variees (pas que 5 etoiles) | Varier les notes des temoignages (4, 4.5, 5) pour credibilite | 1 | 2026-02-04 |
-| badge | gradient fill | Traitement degrade diagonal pour badges premium | 1 | 2026-02-04 |
-| form-field | selectPlaceholder | Option de placeholder pour champ select "Selectionnez une option" | 1 | 2026-02-04 |
+| testimonial | resume agrege | Afficher un resume agrege (ex: '4.6/5 sur 2300 avis') en plus des temoignages individuels | 1 | 2026-02-05 |
+| testimonial | source/lien (Google, TripAdvisor) | Credibiliser les avis avec source verifiable | 1 | 2026-02-03 |
+| text | line-height | Controle de l'interligne pour ameliorer la lisibilite sur mobile | 1 | 2026-02-04 |
+| text | style citation | Mise en forme automatique verbatims (guillemets, italique, attribution) | 1 | 2026-02-03 |
+| text | textDecoration (line-through, underline) | Afficher un prix barre visuellement pour les promos | 1 | 2026-02-02 |
+| text | Texte riche inline (gras, italique, barre dans un meme paragraphe) | Ancien prix barre + nouveau prix en gras dans le meme bloc | 1 | 2026-02-02 |
+| video | thumbnail | Image de preview avant lecture | 1 | 2026-02-03 |
+| video | validation URL placeholder | Detection des URLs placeholder/invalides (rickroll etc.) avant publication | 1 | 2026-02-05 |
 
 ### ✅ Implémentées
 
@@ -183,60 +218,65 @@ Ce fichier est mis à jour automatiquement après chaque `/generate-lp` et `/imp
 
 | Limitation | Contexte / Use case | Demandes | Date |
 |-----------|---------------------|----------|------|
-| Images placeholder sans remplacement automatique | Toutes les images generees sont des placeholders gris, detruisant la credibilite du rendu | 18 | 2026-02-02 |
+| Images placeholder sans remplacement automatique | Toutes les images generees sont des placeholders gris, detruisant la credibilite du rendu | 30 | 2026-02-04 |
+| Bouton submit du form non personnalisable | Le formulaire n'a pas de bouton submit configurable (texte, couleur, icone) — CTA hors form requis | 15 | 2026-02-02 |
+| Pas de section pleine largeur avec fond distinct | Impossible de creer des bandes de couleur pleine largeur, le contentPadding global s'applique partout | 15 | 2026-02-02 |
 | Testimonial carousel impossible | Le widget testimonial ne permet qu'un seul temoignage, pas de slider | 15 | 2026-02-03 |
-| Pas de section pleine largeur avec fond distinct | Impossible de creer des bandes de couleur pleine largeur, le contentPadding global s'applique partout | 13 | 2026-02-02 |
 | Pas d'overlay texte sur images slider | Les slides n'ont pas de caption, titre ou CTA superpose | 11 | 2026-02-03 |
-| Pas de texte riche inline / text-decoration | Impossible de styler des portions de texte differemment (prix barre + prix normal) dans un meme widget | 10 | 2026-02-02 |
-| Bouton submit du form non personnalisable | Le formulaire n'a pas de bouton submit configurable (texte, couleur, icone) — CTA hors form requis | 10 | 2026-02-02 |
-| Pas de gradient sur backgrounds (row, column, globalStyles) | Les fonds sont limites aux aplats de couleur, impossible de creer des degrades | 6 | 2026-02-04 |
-| Une seule fontFamily globale | Empeche le contraste typographique titre/corps caracterisant les designs premium | 4 | 2026-02-04 |
+| Pas de texte riche inline / text-decoration | Impossible de styler des portions de texte differemment (prix barre + prix normal) dans un meme widget | 11 | 2026-02-04 |
+| Script screenshot-preview.mjs timeout | Le script de screenshot echoue avec timeout sur le bouton Apercu | 11 | 2026-02-02 |
+| Compositions image+texte superposees impossibles | Pas de possibilite de creer hero avec texte overlay ni card avec texte sur image | 9 | 2026-02-03 |
+| Pas de gradient sur backgrounds (row, column, globalStyles) | Les fonds sont limites aux aplats de couleur, impossible de creer des degrades | 9 | 2026-02-04 |
 | Pas de compteur dynamique | Les chiffres cles et compteurs de lots restants sont des titres statiques sans animation | 7 | 2026-02-02 |
+| Row widget sans breakpoint responsive | Pas de stacked layout automatique sur viewport etroit, grille 2x2 reste crampee | 6 | 2026-02-02 |
+| Flipcard ne supporte pas texte overlay sur images | Le widget flipcard ne permet que des images, pas de texte superpose (-40% sur face arriere), instant gagnant texte impossible | 5 | 2026-02-04 |
 | Pas d'ancres internes fonctionnelles | Les liens #section et #formulaire ne fonctionnent pas dans le systeme de widgets | 5 | 2026-02-02 |
-| Pas d'affichage conditionnel de widgets | Impossible de montrer/cacher des widgets selon une condition (ex: apres soumission formulaire) | 4 | 2026-02-02 |
-| Flipcard ne supporte pas texte overlay sur images | Le widget flipcard ne permet que des images, pas de texte superpose (-40% sur face arriere) | 3 | 2026-02-04 |
-| Pas de tableau de comparaison responsive | Impossible de creer un tableau comparatif de prix natif | 3 | 2026-02-03 |
-| Compositions image+texte superposees impossibles | Pas de possibilite de creer hero avec texte overlay ni card avec texte sur image | 2 | 2026-02-03 |
+| Pas d'affichage conditionnel de widgets | Impossible de montrer/cacher des widgets selon une condition (ex: apres soumission formulaire, flipcard apres inscription) | 5 | 2026-02-04 |
+| Gallery sans fallback visuel quand images vides | La galerie affiche des placeholders vides au lieu d'images sectorielles de remplacement | 4 | 2026-02-04 |
 | Pas de tokens CSS/design system | Valeurs arbitraires pour spacing, shadows - conduit a incohérences et harmonie difficile | 4 | 2026-02-04 |
-| Gallery sans fallback visuel quand images vides | La galerie affiche des placeholders vides au lieu d'images sectorielles de remplacement | 3 | 2026-02-04 |
+| Une seule fontFamily globale | Empeche le contraste typographique titre/corps caracterisant les designs premium | 4 | 2026-02-04 |
+| Video placeholder disgracieux | Le widget video sans URL valide affiche un placeholder peu engageant au lieu de se masquer | 4 | 2026-02-04 |
+| Pas de tableau de comparaison responsive | Impossible de creer un tableau comparatif de prix natif | 3 | 2026-02-03 |
+| Token JWT expire pour screenshots | Le script Playwright echoue avec token expire lors des captures automatisees | 3 | 2026-02-03 |
 | Countdown ne supporte qu'une date cible (pas de plage) | Impossible d'afficher une periode (du 1er au 15 avril), seulement une deadline | 2 | 2026-02-04 |
-| Testimonial notes decimales (4.5) non supportees | Les notes sont entieres uniquement, pas de demi-etoiles pour credibilite | 2 | 2026-02-04 |
 | Effet widget avec emojis inapproprie premium | L'effet sparkle/confetti utilise des emojis qui degradent le positionnement luxe | 2 | 2026-02-03 |
-| Scratch widget sans champ code prealable | Impossible de conditionner le scratch a une saisie de code, pas de liaison avec un formulaire | 2 | 2026-02-02 |
-| Scratch non conditionnable | Impossible de lier le scratch a une soumission de formulaire prealable | 2 | 2026-02-03 |
 | Flipcard limite aux images (pas de texte) | Le widget flipcard ne supporte que des images front/back, pas de contenu texte riche | 2 | 2026-02-02 |
-| Video placeholder non remplacable | Les videos YouTube placeholder ne peuvent pas etre configurees avec de vraies URLs | 2 | 2026-02-03 |
+| Icones Lucide esthetiquement limitees | Le style lineaire uniforme des icones Lucide ne permet pas de hierarchie visuelle ou personnalite graphique distincte | 2 | 2026-02-05 |
 | Pas de jauge de progression visuelle | Impossible de creer une barre de progression vers un objectif de campagne | 2 | 2026-02-03 |
-| Pas de conteneur générique avec fond | Bloc coupon et bloc adresse simulés avec backgroundColor sur chaque widget individuel | 1 | 2026-02-02 |
-| Superposition texte/image impossible | Slogan devrait être superposé sur image clémentines, pas de position absolute | 1 | 2026-02-02 |
-| Bouton isolé du bloc parent | Le bouton "S'Y RENDRE" ne peut pas être visuellement inclus dans le bloc adresse vert | 1 | 2026-02-02 |
-| Bouton CTA hors formulaire ne peut pas soumettre le form | Le bouton place apres le formulaire pointe vers une ancre au lieu de soumettre | 1 | 2026-02-02 |
-| Pas de widget hero/banner (image fond + texte overlay) | Hero = image separee + titre en dessous au lieu d'un vrai hero composite | 1 | 2026-02-02 |
-| Row widget sans breakpoint responsive | Pas de stacked layout automatique sur viewport etroit, grille 2x2 reste crampee | 1 | 2026-02-02 |
-| Separator avec marges fragiles (pas de width %) | Marges horizontales en px, une propriete width en % serait plus intuitive | 1 | 2026-02-02 |
-| Icones sociales non centrees | Widget social ignore textAlign: center dans les styles | 1 | 2026-02-02 |
-| Symbole EUR au lieu de € | Le contenu genere utilise 'EUR' au lieu du symbole € naturel pour le public francais | 1 | 2026-02-02 |
-| Script screenshot-preview.mjs timeout | Le script de screenshot echoue avec timeout sur le bouton Apercu | 4 | 2026-02-02 |
 | Rate limiting bloque les screenshots | Les captures d'ecran automatisees sont bloquees par le rate limiting | 2 | 2026-02-02 |
+| Scratch non conditionnable | Impossible de lier le scratch a une soumission de formulaire prealable | 2 | 2026-02-03 |
+| Scratch widget sans champ code prealable | Impossible de conditionner le scratch a une saisie de code, pas de liaison avec un formulaire | 2 | 2026-02-02 |
+| Testimonial notes decimales (4.5) non supportees | Les notes sont entieres uniquement, pas de demi-etoiles pour credibilite | 2 | 2026-02-04 |
+| Timeline construction manuelle | Pas de widget timeline natif, construction avec rows/columns sans connecteurs visuels | 2 | 2026-02-04 |
+| Video placeholder non remplacable | Les videos YouTube placeholder ne peuvent pas etre configurees avec de vraies URLs | 2 | 2026-02-03 |
+| Bouton CTA hors formulaire ne peut pas soumettre le form | Le bouton place apres le formulaire pointe vers une ancre au lieu de soumettre | 1 | 2026-02-02 |
+| Bouton isolé du bloc parent | Le bouton "S'Y RENDRE" ne peut pas être visuellement inclus dans le bloc adresse vert | 1 | 2026-02-02 |
+| BoxShadow sur column non supporte par schema | Le boxShadow ajoute sur les columns des engagements n'est pas valide par le schema de styles | 1 | 2026-02-03 |
 | Countdown sans labels d'unites | Le countdown affiche uniquement les chiffres sans "jours/heures/min/sec" | 1 | 2026-02-03 |
-| Form-fields sans masques de saisie | Pas de validation format telephone, code postal en temps reel | 1 | 2026-02-03 |
-| Map single marker | Le widget map ne supporte qu'un seul marqueur, pas de multi-sites | 1 | 2026-02-03 |
-| Token JWT expire pour screenshots | Le script Playwright echoue avec token expire lors des captures automatisees | 1 | 2026-02-03 |
-| Row background gradient non supporte | Les widgets row ne supportent pas les backgrounds avec gradients CSS | 1 | 2026-02-03 |
+| Date-range picker absent | Pas de champ date-range pour selection de plage de dates | 1 | 2026-02-03 |
 | Drive widget geocodage manuel | L'ajout de stores au widget drive requiert lat/lng manuels, pas de geocodage automatique par adresse | 1 | 2026-02-03 |
 | Event linking entre widgets absent | Impossible de declencher un effet (confetti) apres action sur un autre widget (scratch) | 1 | 2026-02-03 |
+| Flipcard vide sans placeholder informatif | Le widget flipcard sans images se rend comme un bloc vide sans indication pour l'utilisateur | 1 | 2026-02-05 |
 | Form-field number sans validation | Le champ kilometrage devrait etre numerique avec validation, pas un champ text generique | 1 | 2026-02-03 |
-| Date-range picker absent | Pas de champ date-range pour selection de plage de dates | 1 | 2026-02-03 |
-| BoxShadow sur column non supporte par schema | Le boxShadow ajoute sur les columns des engagements n'est pas valide par le schema de styles | 1 | 2026-02-03 |
-| Store-locator sans carte visuelle integree | Le store-locator affiche une liste textuelle mais pas de carte Google Maps pour visualiser les points de vente | 1 | 2026-02-03 |
-| Pas de systeme de theme coherent | Chaque widget definit ses couleurs individuellement, difficile d'avoir une harmonie raffinee | 1 | 2026-02-03 |
-| Separateurs decoratifs impossibles | Les separateurs sont uniquement des lignes, pas de vagues, courbes ou elements graphiques | 1 | 2026-02-03 |
+| Form-fields sans masques de saisie | Pas de validation format telephone, code postal en temps reel | 1 | 2026-02-03 |
 | Gallery sans mode thumbnail grid | La galerie necessite un clic pour voir les images, pas de mode grille visible directement | 1 | 2026-02-04 |
-| Masques organiques sur images impossibles | Pas de support pour images avec blob shapes, cercles ou formes libres | 1 | 2026-02-04 |
-| Illustrations SVG custom impossibles | Impossible d'integrer des illustrations vectorielles personnalisees, limite aux icones Lucide | 1 | 2026-02-04 |
 | Grille rigide row/column empeche asymetrie | Le systeme 50/50 empeche les compositions asymetriques dynamiques qui creent de l'interet visuel | 1 | 2026-02-04 |
-| Slider logos affiche 1 image a la fois | Le slider n'affiche qu'une seule image, inadapte pour section "partenaires/clients" qui necessite plusieurs logos simultanement | 1 | 2026-02-04 |
+| Icones sociales non centrees | Widget social ignore textAlign: center dans les styles | 1 | 2026-02-02 |
+| Illustrations SVG custom impossibles | Impossible d'integrer des illustrations vectorielles personnalisees, limite aux icones Lucide | 1 | 2026-02-04 |
 | Images SVG dynamiques liees a primaryColor impossibles | Les illustrations ne peuvent pas adapter leurs couleurs a la palette de la LP | 1 | 2026-02-04 |
+| Map single marker | Le widget map ne supporte qu'un seul marqueur, pas de multi-sites | 1 | 2026-02-03 |
+| Masques organiques sur images impossibles | Pas de support pour images avec blob shapes, cercles ou formes libres | 1 | 2026-02-04 |
+| Micro-animations impossibles (fade-in, hover states) | Pas de possibilite d'ajouter des micro-animations au scroll qui sont standard en mode premium | 1 | 2026-02-05 |
+| Pas de conteneur générique avec fond | Bloc coupon et bloc adresse simulés avec backgroundColor sur chaque widget individuel | 1 | 2026-02-02 |
+| Pas de systeme de theme coherent | Chaque widget definit ses couleurs individuellement, difficile d'avoir une harmonie raffinee | 1 | 2026-02-03 |
+| Pas de widget hero/banner (image fond + texte overlay) | Hero = image separee + titre en dessous au lieu d'un vrai hero composite | 1 | 2026-02-02 |
+| Row background gradient non supporte | Les widgets row ne supportent pas les backgrounds avec gradients CSS | 1 | 2026-02-03 |
+| Separateurs decoratifs impossibles | Les separateurs sont uniquement des lignes, pas de vagues, courbes ou elements graphiques | 1 | 2026-02-03 |
+| Separator avec marges fragiles (pas de width %) | Marges horizontales en px, une propriete width en % serait plus intuitive | 1 | 2026-02-02 |
+| Slider logos affiche 1 image a la fois | Le slider n'affiche qu'une seule image, inadapte pour section "partenaires/clients" qui necessite plusieurs logos simultanement | 1 | 2026-02-04 |
+| Store-locator sans carte visuelle integree | Le store-locator affiche une liste textuelle mais pas de carte Google Maps pour visualiser les points de vente | 1 | 2026-02-03 |
+| Superposition texte/image impossible | Slogan devrait être superposé sur image clémentines, pas de position absolute | 1 | 2026-02-02 |
+| Symbole EUR au lieu de € | Le contenu genere utilise 'EUR' au lieu du symbole € naturel pour le public francais | 1 | 2026-02-02 |
 
 ### ✅ Résolues
 
