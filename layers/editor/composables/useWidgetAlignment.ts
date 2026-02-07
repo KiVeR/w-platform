@@ -1,6 +1,3 @@
-import type { ComputedRef } from 'vue'
-import { computed, unref } from 'vue'
-
 export type Alignment = 'left' | 'center' | 'right'
 export type WidthMode = 'auto' | 'full'
 
@@ -53,7 +50,7 @@ export function useWidgetAlignment(
   const wrapperStyles = computed(() => {
     if (mode === 'flex') {
       if (widthMode.value === 'full') {
-        return { display: 'flex', justifyContent: 'stretch', width: '100%' }
+        return { display: 'flex', justifyContent: 'flex-start', width: '100%' }
       }
       return { display: 'flex', justifyContent: JUSTIFY_MAP[alignment.value], width: '100%' }
     }
