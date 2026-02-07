@@ -6946,6 +6946,7 @@ __metadata:
     openai: "npm:^6.16.0"
     pinia: "npm:^3.0.4"
     prisma: "npm:6.19.2"
+    rollup-plugin-visualizer: "npm:^6.0.5"
     tailwindcss: "npm:^4.0.0"
     tsx: "npm:^4.21.0"
     typescript: "npm:~5.8.0"
