@@ -1,11 +1,6 @@
 import type { AIChatRequest, AIImageInput, AIQuotaResponse, AIStreamChunk } from '#shared/types/ai'
 import type { DesignDocument } from '@/types/widget'
 import { toRaw } from 'vue'
-import { useAIChatStore } from '@/stores/aiChat'
-import { useAuthStore } from '@/stores/auth'
-import { useEditorStore } from '@/stores/editor'
-import { useHistoryStore } from '@/stores/history'
-import { useWidgetsStore } from '@/stores/widgets'
 
 /**
  * Composable for AI chat functionality
@@ -18,21 +13,18 @@ import { useWidgetsStore } from '@/stores/widgets'
  */
 export function useAIChat() {
   const chatStore = useAIChatStore()
-  const authStore = useAuthStore()
   const editorStore = useEditorStore()
   const historyStore = useHistoryStore()
   const widgetsStore = useWidgetsStore()
+  const config = useEditorConfig()
+  const api = useEditorApi()
 
   /**
    * Fetch current quota from API
    */
   async function fetchQuota(): Promise<void> {
     try {
-      const response = await $fetch<AIQuotaResponse>('/api/v1/ai/quota', {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      })
+      const response = await api.get<AIQuotaResponse>('/ai/quota')
       chatStore.setQuota(response.quota)
     }
     catch (error) {
@@ -66,12 +58,15 @@ export function useAIChat() {
     }
 
     try {
-      // Make SSE request
-      const response = await fetch('/api/v1/ai/chat', {
+      // Make SSE request using native fetch (not $fetch) for streaming support
+      const token = config.getAuthToken()
+      const url = `${config.apiBaseUrl}/ai/chat`
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authStore.accessToken}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(request),
       })

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { SaveStatus as BaseSaveStatus } from '@/composables/useAutoSave'
 import { Check, Cloud, CloudOff, Loader2, Plus } from 'lucide-vue-next'
 import { computed } from 'vue'
 
+type SaveStatus = 'idle' | 'pending' | 'saving' | 'saved' | 'error'
 export type UnifiedStatus = 'idle' | 'dirty' | 'pending' | 'saving' | 'saved' | 'error' | 'first-save'
 
 const props = defineProps<{
-  status: BaseSaveStatus
+  status: SaveStatus
   isDirty: boolean
   needsFirstSave: boolean
   lastSyncedAt: Date | null

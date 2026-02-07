@@ -1,14 +1,10 @@
-import { navigateTo } from '#app'
-import { getContentTypeSlug } from '#shared/utils/content'
 import { storeToRefs } from 'pinia'
-import { useContentStore } from '@/stores/content'
-import { useEditorStore } from '@/stores/editor'
-import { useVersionHistoryStore } from '@/stores/versionHistory'
 
 export function useVersionHistory() {
   const store = useVersionHistoryStore()
   const editorStore = useEditorStore()
   const contentStore = useContentStore()
+  const config = useEditorConfig()
 
   const {
     versions,
@@ -25,14 +21,12 @@ export function useVersionHistory() {
   /**
    * Navigate to history page
    */
-  async function navigateToHistory(): Promise<void> {
+  function navigateToHistory(): void {
     const contentId = contentStore.id
-    const type = contentStore.type
-
-    if (!contentId || !type)
+    if (!contentId)
       return
 
-    navigateTo(`/${getContentTypeSlug(type)}/${contentId}/history`)
+    config.onNavigateToHistory?.(contentId)
   }
 
   /**
@@ -40,12 +34,10 @@ export function useVersionHistory() {
    */
   function navigateToEditor(): void {
     const contentId = contentStore.id
-    const type = contentStore.type
-
-    if (!contentId || !type)
+    if (!contentId)
       return
 
-    navigateTo(`/${getContentTypeSlug(type)}/${contentId}`)
+    config.onNavigateToEditor?.(contentId)
   }
 
   /**

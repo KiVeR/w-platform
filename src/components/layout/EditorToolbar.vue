@@ -1,19 +1,13 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import type { EditorMode } from '@/stores/ui'
 import { Code, Eye, History, Pencil, X } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import BreadcrumbNav from '@/components/layout/BreadcrumbNav.vue'
 import CreateLandingPageModal from '@/components/ui/CreateLandingPageModal.vue'
 import SaveStatus from '@/components/ui/SaveStatus.vue'
-import { useAutoSave } from '@/composables/useAutoSave'
-import { useVersionHistory } from '@/composables/useVersionHistory'
-import { contentApi } from '@/services/api/contentApi'
-import { useContentStore } from '@/stores/content'
-import { useEditorStore } from '@/stores/editor'
-import { useUIStore } from '@/stores/ui'
 
 const router = useRouter()
+const contentApi = useContentApi()
 const uiStore = useUIStore()
 const editorStore = useEditorStore()
 const contentStore = useContentStore()

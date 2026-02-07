@@ -1,11 +1,6 @@
-import type { RateLimitInfo, VersionDetail, VersionSummary } from '@/services/api/contentVersionApi'
+import type { RateLimitInfo, VersionDetail, VersionSummary } from '../services/contentVersionApi'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { contentVersionApi } from '@/services/api/contentVersionApi'
-import { useContentStore } from '@/stores/content'
-import { useEditorStore } from '@/stores/editor'
-import { useUIStore } from '@/stores/ui'
-import { useWidgetsStore } from '@/stores/widgets'
 
 const PAGE_SIZE = 10
 const CACHE_MAX_SIZE = 5
@@ -29,6 +24,8 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   const versionCache = new Map<number, VersionDetail>()
 
   const isActive = computed(() => uiStore.isHistoryMode)
+
+  const contentVersionApi = useContentVersionApi()
 
   // Get current content ID from content store
   function getContentId(): number | null {
