@@ -40,7 +40,7 @@ export function provideEditorConfig(config: EditorConfig): void {
  * Throws if no config was provided by the consuming app.
  */
 export function useEditorConfig(): EditorConfig {
-  const config = inject(EDITOR_CONFIG_KEY)
+  const config = inject(EDITOR_CONFIG_KEY, undefined)
   if (!config) {
     throw new Error(
       '[KreoEditor] Missing editor config. '

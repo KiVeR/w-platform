@@ -25,7 +25,15 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
   const isActive = computed(() => uiStore.isHistoryMode)
 
-  const contentVersionApi = useContentVersionApi()
+  // Lazy init: useContentVersionApi() calls useEditorApi() → useEditorConfig() → inject()
+  // which fails if the store is instantiated before provideEditorConfig() runs.
+  let _contentVersionApi: ReturnType<typeof useContentVersionApi> | null = null
+  function getContentVersionApi() {
+    if (!_contentVersionApi) {
+      _contentVersionApi = useContentVersionApi()
+    }
+    return _contentVersionApi
+  }
 
   // Get current content ID from content store
   function getContentId(): number | null {
@@ -42,7 +50,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     versions.value = []
 
     try {
-      const response = await contentVersionApi.getVersions(
+      const response = await getContentVersionApi().getVersions(
         contentId,
         { page: 1, pageSize: PAGE_SIZE },
       )
@@ -68,7 +76,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     currentPage.value++
 
     try {
-      const response = await contentVersionApi.getVersions(
+      const response = await getContentVersionApi().getVersions(
         contentId,
         { page: currentPage.value, pageSize: PAGE_SIZE },
       )
@@ -97,7 +105,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     isLoadingVersion.value = true
 
     try {
-      const response = await contentVersionApi.getVersion(
+      const response = await getContentVersionApi().getVersion(
         contentId,
         versionId,
       )
@@ -126,7 +134,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     isRestoring.value = true
 
     try {
-      const response = await contentVersionApi.restoreVersion(
+      const response = await getContentVersionApi().restoreVersion(
         contentId,
         versionId,
       )

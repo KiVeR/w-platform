@@ -4,7 +4,17 @@ export function useVersionHistory() {
   const store = useVersionHistoryStore()
   const editorStore = useEditorStore()
   const contentStore = useContentStore()
-  const config = useEditorConfig()
+
+  // Lazy: useEditorConfig() uses inject() which cannot read a provide() from the
+  // same component. The editor layout calls both provideEditorConfig() and
+  // useVersionHistory(), so we defer the inject to first actual use.
+  let _config: ReturnType<typeof useEditorConfig> | null = null
+  function getConfig() {
+    if (!_config) {
+      _config = useEditorConfig()
+    }
+    return _config
+  }
 
   const {
     versions,
@@ -26,7 +36,7 @@ export function useVersionHistory() {
     if (!contentId)
       return
 
-    config.onNavigateToHistory?.(contentId)
+    getConfig().onNavigateToHistory?.(contentId)
   }
 
   /**
@@ -37,7 +47,7 @@ export function useVersionHistory() {
     if (!contentId)
       return
 
-    config.onNavigateToEditor?.(contentId)
+    getConfig().onNavigateToEditor?.(contentId)
   }
 
   /**
