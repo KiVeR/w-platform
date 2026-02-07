@@ -32,8 +32,19 @@ const children = computed({
 
 const columnStyle = computed(() => {
   const width = props.widget.content.columnWidth || 'auto'
+
+  // Convert percentage widths to flex-grow ratios so gap is handled automatically
+  let flex = '1'
+  if (width !== 'auto') {
+    const pct = Number.parseFloat(width)
+    if (!Number.isNaN(pct))
+      flex = `${pct} 1 0%`
+    else
+      flex = '1'
+  }
+
   return {
-    flex: width === 'auto' ? '1' : `0 0 calc(${width} - 16px)`,
+    flex,
     minWidth: '80px',
     padding: props.widget.styles.padding || '8px',
     margin: props.widget.styles.margin,
