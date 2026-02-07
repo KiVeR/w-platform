@@ -1,6 +1,4 @@
-import type { Ref } from 'vue'
 import type { WidgetType } from '@/types/widget'
-import { computed, ref, watch } from 'vue'
 import {
   getContentSchemaForWidget,
   getContentValidationErrors,

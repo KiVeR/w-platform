@@ -1,4 +1,3 @@
-import { watch } from 'vue'
 import { FONT_CATALOG, SYSTEM_FONTS } from '@/config/fonts'
 
 const loadedFonts = new Set<string>()

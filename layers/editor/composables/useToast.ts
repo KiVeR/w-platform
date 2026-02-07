@@ -1,6 +1,3 @@
-import type { Component, Ref } from 'vue'
-import { ref } from 'vue'
-
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
 export interface ToastAction {

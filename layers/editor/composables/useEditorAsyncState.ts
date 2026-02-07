@@ -1,6 +1,3 @@
-import type { Ref } from 'vue'
-import { ref, shallowRef } from 'vue'
-
 export interface AsyncState<T> {
   /** The data returned by the async function */
   data: Ref<T | null>

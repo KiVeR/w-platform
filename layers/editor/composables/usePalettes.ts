@@ -1,8 +1,6 @@
 import type { UserPalette } from '#shared/schemas/palette.schema'
 import type { Palette } from '@/config/palettes'
-import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { getPaletteByName, palettes } from '@/config/palettes'
-import { userPalettesService } from '@/services/persistence/userPalettes'
 import { colorHash, isDarkColor } from '@/utils/color'
 
 // Singleton state for cross-component sync

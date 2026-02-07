@@ -1,5 +1,3 @@
-import type { ComputedRef } from 'vue'
-
 const BORDER_SIDES = ['borderLeft', 'borderRight', 'borderTop', 'borderBottom'] as const
 
 const borderSideChips = [

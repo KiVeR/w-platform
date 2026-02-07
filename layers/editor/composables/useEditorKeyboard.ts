@@ -1,5 +1,3 @@
-import { onKeyStroke } from '@vueuse/core'
-
 /**
  * Composable for handling editor keyboard shortcuts.
  * Only active in designer mode.

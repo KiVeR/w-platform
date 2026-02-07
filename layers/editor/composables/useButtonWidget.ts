@@ -1,7 +1,4 @@
-import type { ComputedRef, Ref } from 'vue'
 import type { Widget } from '@/types/widget'
-import { computed, toValue } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 export function useButtonWidget(widget: Ref<Widget> | ComputedRef<Widget>) {
   const { primaryColor, borderRadius } = useGlobalStyles()

@@ -1,6 +1,4 @@
-import type { Component } from 'vue'
 import { ICON_CATEGORIES, POPULAR_ICONS } from '#shared/constants/lucide-categories'
-import { computed, ref, watch } from 'vue'
 import { getLucideIcon, searchIcons } from '@/utils/lucide-icons'
 
 export function useIconSearch() {

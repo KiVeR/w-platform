@@ -1,6 +1,3 @@
-import type { InjectionKey } from 'vue'
-import { inject, provide } from 'vue'
-
 export interface EditorConfigFeatures {
   ai?: boolean
   history?: boolean

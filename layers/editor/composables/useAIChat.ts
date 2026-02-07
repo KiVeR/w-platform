@@ -1,6 +1,5 @@
 import type { AIChatRequest, AIImageInput, AIQuotaResponse, AIStreamChunk } from '#shared/types/ai'
 import type { DesignDocument } from '@/types/widget'
-import { toRaw } from 'vue'
 
 /**
  * Composable for AI chat functionality

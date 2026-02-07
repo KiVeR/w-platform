@@ -1,6 +1,4 @@
 import type { DesignDocument } from '@/types/widget'
-import { ref } from 'vue'
-import { localStorageService } from '@/services/persistence/localStorage'
 
 export interface RecoveryData {
   design: DesignDocument

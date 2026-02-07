@@ -1,5 +1,3 @@
-import { storeToRefs } from 'pinia'
-
 export function useVersionHistory() {
   const store = useVersionHistoryStore()
   const editorStore = useEditorStore()
