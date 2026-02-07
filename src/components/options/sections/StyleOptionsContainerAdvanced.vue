@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed, ref } from 'vue'
-import { useContainerBorders } from '@/composables/useContainerBorders'
 import ColorPicker from '../inputs/ColorPicker.vue'
 import OptionInput from '../shared/OptionInput.vue'
 import OptionSelect from '../shared/OptionSelect.vue'

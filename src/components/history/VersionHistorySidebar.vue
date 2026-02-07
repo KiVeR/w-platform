@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { History, RotateCcw } from 'lucide-vue-next'
 import { ref } from 'vue'
-import { useVersionHistory } from '@/composables/useVersionHistory'
 import RestoreConfirmModal from './RestoreConfirmModal.vue'
 import VersionList from './VersionList.vue'
 

@@ -4,7 +4,6 @@ import { Check, Expand, Pencil } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import MobileFrame from '@/components/canvas/MobileFrame.vue'
 import PreviewContent from '@/components/canvas/PreviewContent.vue'
-import { useAIChat } from '@/composables/useAIChat'
 
 const props = defineProps<{
   design: unknown // DesignDocument

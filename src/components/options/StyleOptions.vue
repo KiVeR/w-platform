@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
-import { useWidgetsStore } from '@/stores/widgets'
 import ColorPicker from './inputs/ColorPicker.vue'
 import ColorPickerWithTheme from './inputs/ColorPickerWithTheme.vue'
 import StyleOptionsAlignment from './sections/StyleOptionsAlignment.vue'

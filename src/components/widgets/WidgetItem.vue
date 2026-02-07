@@ -30,7 +30,6 @@ import {
   Timer,
 } from 'lucide-vue-next'
 import { ref } from 'vue'
-import { useWidgetsStore } from '@/stores/widgets'
 
 const props = withDefaults(defineProps<{
   config: WidgetConfig

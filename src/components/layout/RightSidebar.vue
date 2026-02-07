@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import type { OptionsTab } from '@/stores/ui'
 import { computed, ref, watch } from 'vue'
 import VersionHistorySidebar from '@/components/history/VersionHistorySidebar.vue'
 import GlobalOptions from '@/components/options/GlobalOptions.vue'
 import OptionsPanel from '@/components/options/OptionsPanel.vue'
-import { useSelectionStore } from '@/stores/selection'
-import { useUIStore } from '@/stores/ui'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()

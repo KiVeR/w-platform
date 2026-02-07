@@ -3,7 +3,6 @@ import DesignerMode from '@/components/modes/DesignerMode.vue'
 import ExpertMode from '@/components/modes/ExpertMode.vue'
 import HistoryMode from '@/components/modes/HistoryMode.vue'
 import PreviewMode from '@/components/modes/PreviewMode.vue'
-import { useUIStore } from '@/stores/ui'
 
 const uiStore = useUIStore()
 </script>

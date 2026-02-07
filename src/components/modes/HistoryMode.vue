@@ -4,7 +4,6 @@ import { computed } from 'vue'
 import MobileFrame from '@/components/canvas/MobileFrame.vue'
 import PreviewContent from '@/components/canvas/PreviewContent.vue'
 import HistoryBanner from '@/components/history/HistoryBanner.vue'
-import { useVersionHistory } from '@/composables/useVersionHistory'
 
 const { selectedVersion, isLoading, isLoadingVersion } = useVersionHistory()
 

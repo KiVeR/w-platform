@@ -33,8 +33,6 @@ import TextWidget from '@/components/widgets/registry/TextWidget.vue'
 import TitleWidget from '@/components/widgets/registry/TitleWidget.vue'
 // Media widgets
 import VideoWidget from '@/components/widgets/registry/VideoWidget.vue'
-import { useSelectionStore } from '@/stores/selection'
-import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
   widget: Widget

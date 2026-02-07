@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useEditorStore } from '@/stores/editor'
-import { useWidgetsStore } from '@/stores/widgets'
 
 const editorStore = useEditorStore()
 const widgetsStore = useWidgetsStore()

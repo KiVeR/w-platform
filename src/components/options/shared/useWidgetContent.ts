@@ -1,5 +1,4 @@
 import type { Widget, WidgetContent } from '@/types/widget'
-import { useWidgetsStore } from '@/stores/widgets'
 
 export function useWidgetContent(widget: Widget) {
   const widgetsStore = useWidgetsStore()

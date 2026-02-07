@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { RecoveryData } from '@/composables/useRecovery'
 import { AlertTriangle, Clock, FileText } from 'lucide-vue-next'
 
 defineProps<{

@@ -6,11 +6,7 @@ import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
 import RightSidebar from '@/components/layout/RightSidebar.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
-import { useVersionHistory } from '@/composables/useVersionHistory'
 import { useAuthStore } from '@/stores/auth'
-import { useContentStore } from '@/stores/content'
-import { useSelectionStore } from '@/stores/selection'
-import { useUIStore } from '@/stores/ui'
 
 // Provide editor config for the layer — Kreo standalone wiring
 const authStore = useAuthStore()

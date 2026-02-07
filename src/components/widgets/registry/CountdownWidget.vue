@@ -2,7 +2,6 @@
 import type { Widget } from '@/types/widget'
 import { Timer } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   widget: Widget

@@ -2,7 +2,6 @@
 import type { FormFieldType, Widget } from '@/types/widget'
 import { GripVertical } from 'lucide-vue-next'
 import { computed } from 'vue'
-import { useWidgetsStore } from '@/stores/widgets'
 import { generateFieldName } from '@/utils/form'
 
 const props = defineProps<{

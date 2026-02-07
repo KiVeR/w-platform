@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed, ref, watch } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
-import { useWidgetsStore } from '@/stores/widgets'
 
 const props = defineProps<{
   widget: Widget

@@ -2,7 +2,6 @@
 import type { Widget } from '@/types/widget'
 import { computed, toRef } from 'vue'
 import IconText from '@/components/ui/IconText.vue'
-import { useButtonWidget } from '@/composables/useButtonWidget'
 
 const props = defineProps<{
   widget: Widget

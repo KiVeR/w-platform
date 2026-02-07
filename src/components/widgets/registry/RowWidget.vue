@@ -2,8 +2,6 @@
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'
-import { useSelectionStore } from '@/stores/selection'
-import { useWidgetsStore } from '@/stores/widgets'
 import { hasConfiguredChildren } from '@/utils/widgetConfig'
 import ColumnWidget from './ColumnWidget.vue'
 

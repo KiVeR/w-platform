@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { PreviewDevice } from '@/stores/ui'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const props = withDefaults(defineProps<{

@@ -2,7 +2,6 @@
 import type { Widget } from '@/types/widget'
 import { Tag } from 'lucide-vue-next'
 import { computed } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   widget: Widget

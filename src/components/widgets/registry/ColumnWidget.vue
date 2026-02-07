@@ -5,8 +5,6 @@ import draggable from 'vuedraggable'
 import PreviewRenderer from '@/components/canvas/PreviewRenderer.vue'
 import WidgetRendererInner from '@/components/canvas/WidgetRendererInner.vue'
 import { canAcceptChild } from '@/config/widgets'
-import { useSelectionStore } from '@/stores/selection'
-import { useWidgetsStore } from '@/stores/widgets'
 import { isWidgetConfigured } from '@/utils/widgetConfig'
 
 const props = defineProps<{

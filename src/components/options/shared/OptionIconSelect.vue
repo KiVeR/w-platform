@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ChevronDown, Search, Star, X } from 'lucide-vue-next'
 import { ref, watch } from 'vue'
-import { useIconSearch } from '@/composables/useIconSearch'
 
 defineProps<{
   modelValue?: string

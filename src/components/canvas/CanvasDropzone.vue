@@ -2,12 +2,6 @@
 import type { WidgetType } from '@/types/widget'
 import { computed, ref, watch } from 'vue'
 import draggable from 'vuedraggable'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
-import { loadFont, useGoogleFonts } from '@/composables/useGoogleFonts'
-import { useEditorStore } from '@/stores/editor'
-import { usePresetsStore } from '@/stores/presets'
-import { useSelectionStore } from '@/stores/selection'
-import { useWidgetsStore } from '@/stores/widgets'
 import WidgetRenderer from './WidgetRenderer.vue'
 
 const widgetsStore = useWidgetsStore()

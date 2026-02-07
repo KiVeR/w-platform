@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   colorType: 'primary' | 'secondary'

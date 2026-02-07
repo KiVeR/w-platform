@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import CanvasDropzone from '@/components/canvas/CanvasDropzone.vue'
 import MobileFrame from '@/components/canvas/MobileFrame.vue'
-import { useEditorKeyboard } from '@/composables/useEditorKeyboard'
 
 // Initialize keyboard shortcuts for designer mode
 useEditorKeyboard()

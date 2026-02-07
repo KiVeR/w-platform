@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import { generateContentName } from '#shared/utils/content'
-import { resetRenameToastState } from '@/composables/useAutoSave'
-import { useContentStore } from '@/stores/content'
-import { useEditorStore } from '@/stores/editor'
-import { useWidgetsStore } from '@/stores/widgets'
 
 definePageMeta({
   title: 'Nouvelle Landing Page',

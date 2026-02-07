@@ -2,7 +2,6 @@
 import type { SectionPreset } from '@/types/preset'
 import { GripVertical } from 'lucide-vue-next'
 import { ref } from 'vue'
-import { usePresetsStore } from '@/stores/presets'
 
 const props = defineProps<{
   section: SectionPreset

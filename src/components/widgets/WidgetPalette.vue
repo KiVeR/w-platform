@@ -4,7 +4,6 @@ import { Search, Sparkles } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 import AIChatPanel from '@/components/ai/AIChatPanel.vue'
 import { widgetCategories, widgetConfigs } from '@/config/widgets'
-import { useAIChatStore } from '@/stores/aiChat'
 import WidgetItem from './WidgetItem.vue'
 
 const props = defineProps<{

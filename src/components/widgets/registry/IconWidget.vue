@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { computed } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
 import { getLucideIcon } from '@/utils/lucide-icons'
 
 const props = defineProps<{

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useGlobalStyles } from '@/composables/useGlobalStyles'
 
 const props = defineProps<{
   value: string | undefined

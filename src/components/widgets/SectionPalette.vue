@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Widget } from '@/types/widget'
 import { Image, LayoutGrid, MessageSquare, MousePointer, Sparkles, Target, Trophy, Users } from 'lucide-vue-next'
-import { useWidgetsStore } from '@/stores/widgets'
 
 const widgetsStore = useWidgetsStore()
 

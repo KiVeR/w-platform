@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { TemplateCategory, TemplatePreset } from '@/types/preset'
 import { computed, ref, watch } from 'vue'
-import { usePresetsStore } from '@/stores/presets'
 import ApplyTemplateModal from './ApplyTemplateModal.vue'
 import TemplateCard from './TemplateCard.vue'
 

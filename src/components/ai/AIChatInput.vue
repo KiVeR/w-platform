@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Paperclip, Send, X } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
-import { useAIChat } from '@/composables/useAIChat'
 
 const { store, sendMessage, attachImage, removeImage } = useAIChat()
 
