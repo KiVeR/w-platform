@@ -39,4 +39,4 @@ pnpm dev:api
 
 ## Documentation
 
-Voir [MIGRATION-PLATFORM.md](../MIGRATION-PLATFORM.md) pour le plan complet de migration.
+Voir [MIGRATION-PLATFORM.md](../../MIGRATION-PLATFORM.md) pour le plan complet de migration.
