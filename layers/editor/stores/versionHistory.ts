@@ -1,7 +1,3 @@
-import type { RateLimitInfo, VersionDetail, VersionSummary } from '../services/contentVersionApi'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-
 const PAGE_SIZE = 10
 const CACHE_MAX_SIZE = 5
 

@@ -1,6 +1,4 @@
 import type { DesignDocument, GlobalStyles } from '@/types/widget'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 const defaultDesign: DesignDocument = {
   version: '1.0',

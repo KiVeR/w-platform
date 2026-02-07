@@ -1,9 +1,6 @@
 import type { Widget, WidgetContent, WidgetStyles, WidgetType } from '@/types/widget'
-import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import { computed, ref } from 'vue'
 import { getWidgetConfig } from '@/config/widgets'
-import { useEditorStore } from './editor'
 
 export const useWidgetsStore = defineStore('widgets', () => {
   const editorStore = useEditorStore()

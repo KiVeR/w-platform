@@ -1,6 +1,4 @@
 import type { ContentType } from '#shared/types/content'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 export type EditorMode = 'designer' | 'preview' | 'expert' | 'history'
 export type PreviewDevice = 'mobile' | 'tablet' | 'desktop'

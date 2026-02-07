@@ -1,6 +1,4 @@
 import type { SectionPreset, TemplatePreset } from '@/types/preset'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 import {
   getSectionById as getSectionByIdFromConfig,
   getSectionsByCategory,

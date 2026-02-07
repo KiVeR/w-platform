@@ -1,8 +1,6 @@
 import type { PageStatusType } from '#shared/constants/status'
 import type { Content, ContentType } from '#shared/types/content'
 import { isEditorAvailable } from '#shared/types/content'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 export const useContentStore = defineStore('content', () => {
   // State

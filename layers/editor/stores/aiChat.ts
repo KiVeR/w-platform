@@ -1,7 +1,5 @@
 import type { AIChatMessage, AIImageInput, AIQuotaInfo } from '#shared/types/ai'
 import type { DesignDocument } from '@/types/widget'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 const MAX_CONVERSATION_LENGTH = 20
 

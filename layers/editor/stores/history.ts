@@ -1,6 +1,4 @@
 import type { DesignDocument } from '@/types/widget'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 
 const MAX_HISTORY = 50
 
@@ -33,22 +31,14 @@ export const useHistoryStore = defineStore('history', () => {
     if (!canUndo.value)
       return null
 
-    const previous = past.value.pop()
-    if (previous) {
-      return previous
-    }
-    return null
+    return past.value.pop() ?? null
   }
 
   function redo(): DesignDocument | null {
     if (!canRedo.value)
       return null
 
-    const next = future.value.pop()
-    if (next) {
-      return next
-    }
-    return null
+    return future.value.pop() ?? null
   }
 
   function pushToFuture(design: DesignDocument) {

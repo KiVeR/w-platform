@@ -1,7 +1,3 @@
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-import { useWidgetsStore } from './widgets'
-
 export const useSelectionStore = defineStore('selection', () => {
   const widgetsStore = useWidgetsStore()
 
