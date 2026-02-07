@@ -3,7 +3,7 @@ import type { WidgetCategory } from '@/types/widget'
 import { Search, Sparkles } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 import AIChatPanel from '@/components/ai/AIChatPanel.vue'
-import { getWidgetsByCategory, widgetCategories, widgetConfigs } from '@/config/widgets'
+import { widgetCategories, widgetConfigs } from '@/config/widgets'
 import { useAIChatStore } from '@/stores/aiChat'
 import WidgetItem from './WidgetItem.vue'
 
@@ -15,9 +15,14 @@ const aiChatStore = useAIChatStore()
 
 const activeFilter = ref<WidgetCategory | 'all'>('all')
 
+// Widgets disponibles dans la palette (column exclu — créé uniquement via le "+" dans un row)
+const paletteWidgets = computed(() =>
+  widgetConfigs.filter(w => w.type !== 'column'),
+)
+
 // Filtrer les widgets par recherche ET par filtre de catégorie
 const filteredWidgets = computed(() => {
-  let widgets = widgetConfigs
+  let widgets = paletteWidgets.value
 
   // Filtrer par catégorie si un filtre est actif
   if (activeFilter.value !== 'all') {
@@ -38,9 +43,10 @@ const filteredWidgets = computed(() => {
 
 // Compter les widgets par catégorie
 const categoryCounts = computed(() => {
-  const counts: Record<string, number> = { all: widgetConfigs.length }
+  const all = paletteWidgets.value
+  const counts: Record<string, number> = { all: all.length }
   widgetCategories.forEach((cat) => {
-    counts[cat.id] = getWidgetsByCategory(cat.id).length
+    counts[cat.id] = all.filter(w => w.category === cat.id).length
   })
   return counts
 })
