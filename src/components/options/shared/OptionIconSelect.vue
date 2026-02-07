@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { Component } from 'vue'
-import { ICON_CATEGORIES, POPULAR_ICONS } from '#shared/constants/lucide-categories'
 import { ChevronDown, Search, Star, X } from 'lucide-vue-next'
-import { computed, ref, watch } from 'vue'
-import { getLucideIcon, searchIcons } from '@/utils/lucide-icons'
+import { ref, watch } from 'vue'
+import { useIconSearch } from '@/composables/useIconSearch'
 
 defineProps<{
   modelValue?: string
@@ -14,69 +12,27 @@ const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
+const {
+  searchQuery,
+  activeCategory,
+  allCategories,
+  activeCategoryLabel,
+  isSearching,
+  displayedIcons,
+  getCachedIcon,
+  selectCategory,
+  clearSearch,
+  resetState,
+} = useIconSearch()
+
 const isExpanded = ref(false)
-const searchQuery = ref('')
-const activeCategory = ref<string | null>(null)
 const showCategoryMenu = ref(false)
-const iconCache = new Map<string, Component | null>()
-
-// All categories including "Populaires"
-const allCategories = computed(() => [
-  { id: null, label: 'Populaires', count: POPULAR_ICONS.length },
-  ...ICON_CATEGORIES.map(cat => ({
-    id: cat.id,
-    label: cat.label,
-    count: cat.icons.length,
-  })),
-])
-
-// Current category label
-const activeCategoryLabel = computed(() => {
-  if (activeCategory.value === null)
-    return 'Populaires'
-  const cat = ICON_CATEGORIES.find(c => c.id === activeCategory.value)
-  return cat?.label || 'Populaires'
-})
-
-// Search mode detection
-const isSearching = computed(() => searchQuery.value.length >= 2)
-
-// Search results when typing
-const searchResults = computed(() => {
-  if (!searchQuery.value || searchQuery.value.length < 2) {
-    return []
-  }
-  return searchIcons(searchQuery.value, 50)
-})
-
-// Icons to display in expanded view
-const displayedIcons = computed(() => {
-  // Search mode
-  if (searchQuery.value.length >= 2) {
-    return searchResults.value
-  }
-  // Category mode
-  if (activeCategory.value) {
-    const category = ICON_CATEGORIES.find(c => c.id === activeCategory.value)
-    return category?.icons || []
-  }
-  // Default: popular icons
-  return [...POPULAR_ICONS]
-})
-
-function getCachedIcon(name: string): Component | null {
-  if (!iconCache.has(name)) {
-    iconCache.set(name, getLucideIcon(name))
-  }
-  return iconCache.get(name) || null
-}
 
 function selectIcon(iconName: string) {
   emit('update:modelValue', iconName)
   isExpanded.value = false
-  searchQuery.value = ''
-  activeCategory.value = null
   showCategoryMenu.value = false
+  resetState()
 }
 
 function clearIcon() {
@@ -86,39 +42,31 @@ function clearIcon() {
 function toggleExpanded() {
   isExpanded.value = !isExpanded.value
   if (!isExpanded.value) {
-    searchQuery.value = ''
-    activeCategory.value = null
     showCategoryMenu.value = false
+    resetState()
   }
-}
-
-function selectCategory(categoryId: string | null) {
-  activeCategory.value = categoryId
-  showCategoryMenu.value = false
-  searchQuery.value = ''
 }
 
 function toggleCategoryMenu() {
   showCategoryMenu.value = !showCategoryMenu.value
 }
 
-function clearSearch() {
-  searchQuery.value = ''
+function handleSelectCategory(categoryId: string | null) {
+  selectCategory(categoryId)
+  showCategoryMenu.value = false
 }
 
 // Reset when closing
 watch(isExpanded, (val) => {
   if (!val) {
-    searchQuery.value = ''
-    activeCategory.value = null
     showCategoryMenu.value = false
+    resetState()
   }
 })
 
-// Reset category when searching
+// Hide category menu when searching
 watch(searchQuery, (val) => {
   if (val.length >= 2) {
-    activeCategory.value = null
     showCategoryMenu.value = false
   }
 })
@@ -214,7 +162,7 @@ watch(searchQuery, (val) => {
             type="button"
             role="option"
             :aria-selected="activeCategory === cat.id"
-            @click.stop="selectCategory(cat.id)"
+            @click.stop="handleSelectCategory(cat.id)"
           >
             <span class="category-label">{{ cat.label }}</span>
             <span class="icon-count">{{ cat.count }}</span>
