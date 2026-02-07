@@ -1,0 +1,7 @@
+{
+  "name": "@kreo/editor-layer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./nuxt.config.ts"
+}

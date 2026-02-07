@@ -44,7 +44,7 @@ export interface UseAsyncStateOptions<T> {
  * console.log(data.value)
  * ```
  */
-export function useAsyncState<T, Args extends unknown[] = unknown[]>(
+export function useEditorAsyncState<T, Args extends unknown[] = unknown[]>(
   asyncFn: (...args: Args) => Promise<T>,
   options: UseAsyncStateOptions<T> = {},
 ): AsyncState<T> & { execute: (...args: Args) => Promise<T | null> } {

@@ -3,7 +3,6 @@ import type { Palette } from '@/config/palettes'
 import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { getPaletteByName, palettes } from '@/config/palettes'
 import { userPalettesService } from '@/services/persistence/userPalettes'
-import { useEditorStore } from '@/stores/editor'
 import { colorHash, isDarkColor } from '@/utils/color'
 
 // Singleton state for cross-component sync

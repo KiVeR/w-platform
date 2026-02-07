@@ -1,5 +1,4 @@
 import { computed } from 'vue'
-import { useEditorStore } from '@/stores/editor'
 
 export function useGlobalStyles() {
   const editorStore = useEditorStore()

@@ -1,6 +1,4 @@
 import { onKeyStroke } from '@vueuse/core'
-import { useSelectionStore } from '@/stores/selection'
-import { useUIStore } from '@/stores/ui'
 
 /**
  * Composable for handling editor keyboard shortcuts.
