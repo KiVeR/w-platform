@@ -1,38 +1,64 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { computed, ref } from 'vue'
 
 const mockGetVersions = vi.fn()
 const mockGetVersion = vi.fn()
 const mockRestoreVersion = vi.fn()
 
-// Mock the composable used by the store
-vi.mock('#imports', async (importOriginal) => {
-  const original = await importOriginal<Record<string, unknown>>()
-  return {
-    ...original,
-    useContentVersionApi: () => ({
-      getVersions: mockGetVersions,
-      getVersion: mockGetVersion,
-      restoreVersion: mockRestoreVersion,
-    }),
-    useEditorConfig: () => ({
-      apiBaseUrl: '/api/v1',
-      getAuthToken: () => 'test-token',
-    }),
-    useEditorApi: () => ({
-      get: vi.fn(),
-      post: vi.fn(),
-      put: vi.fn(),
-      patch: vi.fn(),
-      delete: vi.fn(),
-    }),
-    useUIStore: vi.fn(() => ({
-      isHistoryMode: false,
-      enterHistoryMode: vi.fn(),
-      exitHistoryMode: vi.fn(),
-    })),
-  }
-})
+// Stub auto-imported composables/stores used by the versionHistory store.
+// In Nuxt runtime these are auto-imported; in Vitest they must be globals.
+vi.stubGlobal('defineStore', (await import('pinia')).defineStore)
+
+vi.stubGlobal('useContentVersionApi', () => ({
+  getVersions: mockGetVersions,
+  getVersion: mockGetVersion,
+  restoreVersion: mockRestoreVersion,
+}))
+
+vi.stubGlobal('useEditorConfig', () => ({
+  apiBaseUrl: '/api/v1',
+  getAuthToken: () => 'test-token',
+}))
+
+vi.stubGlobal('useEditorApi', () => ({
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  patch: vi.fn(),
+  delete: vi.fn(),
+}))
+
+// Stub Vue APIs that stores use without import
+vi.stubGlobal('ref', ref)
+vi.stubGlobal('computed', computed)
+
+// Stub Pinia stores used by versionHistory store
+const mockEditorStore = {
+  isDirty: false,
+  setDesign: vi.fn(),
+  markAsSaved: vi.fn(),
+}
+vi.stubGlobal('useEditorStore', () => mockEditorStore)
+
+const mockWidgetsStore = {
+  setWidgets: vi.fn(),
+}
+vi.stubGlobal('useWidgetsStore', () => mockWidgetsStore)
+
+const mockUIStore = {
+  isHistoryMode: false,
+  enterHistoryMode: vi.fn(),
+  exitHistoryMode: vi.fn(),
+}
+vi.stubGlobal('useUIStore', () => mockUIStore)
+
+// Import content store first, then stub it as global (versionHistory uses it via auto-import)
+const { useContentStore } = await import('~~/layers/editor/stores/content')
+vi.stubGlobal('useContentStore', useContentStore)
+
+// Import versionHistory AFTER all its auto-import deps are stubbed
+const { useVersionHistoryStore } = await import('~~/layers/editor/stores/versionHistory')
 
 describe('useVersionHistory', () => {
   beforeEach(() => {
@@ -53,11 +79,9 @@ describe('useVersionHistory', () => {
 
       mockGetVersions.mockResolvedValue(mockResponse)
 
-      const { useContentStore } = await import('@/stores/content')
       const contentStore = useContentStore()
       contentStore.id = 1
 
-      const { useVersionHistoryStore } = await import('@/stores/versionHistory')
       const store = useVersionHistoryStore()
 
       await store.loadVersions()
@@ -81,11 +105,9 @@ describe('useVersionHistory', () => {
 
       mockGetVersion.mockResolvedValue(mockVersionDetail)
 
-      const { useContentStore } = await import('@/stores/content')
       const contentStore = useContentStore()
       contentStore.id = 1
 
-      const { useVersionHistoryStore } = await import('@/stores/versionHistory')
       const store = useVersionHistoryStore()
 
       await store.selectVersion(1)

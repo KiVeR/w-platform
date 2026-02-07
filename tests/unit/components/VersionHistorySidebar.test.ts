@@ -37,23 +37,23 @@ const mockNavigateToHistory = vi.fn()
 const mockNavigateToEditor = vi.fn()
 const mockClearCache = vi.fn()
 
-vi.mock('@/composables/useVersionHistory', () => ({
-  useVersionHistory: () => ({
-    versions: mockVersions,
-    selectedVersion: mockSelectedVersion,
-    isLoading: mockIsLoading,
-    isRestoring: mockIsRestoring,
-    isActive: ref(true),
-    hasMore: mockHasMore,
-    loadMore: mockLoadMore,
-    selectVersion: mockSelectVersion,
-    restoreVersion: mockRestoreVersion,
-    exitHistoryMode: mockExitHistoryMode,
-    enterHistoryMode: mockEnterHistoryMode,
-    navigateToHistory: mockNavigateToHistory,
-    navigateToEditor: mockNavigateToEditor,
-    clearCache: mockClearCache,
-  }),
+// useVersionHistory is auto-imported by Nuxt at runtime.
+// In Vitest (no Nuxt plugin), we stub it globally so the Vue component can find it.
+vi.stubGlobal('useVersionHistory', () => ({
+  versions: mockVersions,
+  selectedVersion: mockSelectedVersion,
+  isLoading: mockIsLoading,
+  isRestoring: mockIsRestoring,
+  isActive: ref(true),
+  hasMore: mockHasMore,
+  loadMore: mockLoadMore,
+  selectVersion: mockSelectVersion,
+  restoreVersion: mockRestoreVersion,
+  exitHistoryMode: mockExitHistoryMode,
+  enterHistoryMode: mockEnterHistoryMode,
+  navigateToHistory: mockNavigateToHistory,
+  navigateToEditor: mockNavigateToEditor,
+  clearCache: mockClearCache,
 }))
 
 describe('versionHistorySidebar', () => {
