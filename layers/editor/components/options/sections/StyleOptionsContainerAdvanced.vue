@@ -191,7 +191,32 @@ function getBackgroundImageUrl(): string {
 .option-range {
   flex: 1;
   cursor: pointer;
-  accent-color: var(--color-primary);
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-200);
+  appearance: none;
+}
+
+.option-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.option-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.option-range:focus {
+  outline: none;
+}
+
+.option-range:focus::-webkit-slider-thumb {
+  box-shadow: var(--focus-ring);
 }
 
 .range-value {
