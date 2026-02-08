@@ -10,7 +10,7 @@ import {
   sectionPresets,
   templateCategories,
   templatePresets,
-} from '@/config/presets'
+} from '../config/presets'
 import { useEditorStore } from './editor'
 import { useWidgetsStore } from './widgets'
 
