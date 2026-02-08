@@ -1,5 +1,5 @@
 import type { ContentType } from '#shared/types/content'
-import type { DesignDocument } from '@/types/widget'
+import type { DesignDocument } from '../types/widget'
 
 export interface CreateContentRequest {
   type: ContentType

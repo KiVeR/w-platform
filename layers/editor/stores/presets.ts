@@ -1,4 +1,4 @@
-import type { SectionPreset, TemplatePreset } from '@/types/preset'
+import type { SectionPreset, TemplatePreset } from '../types/preset'
 import {
   getSectionById as getSectionByIdFromConfig,
   getSectionsByCategory,

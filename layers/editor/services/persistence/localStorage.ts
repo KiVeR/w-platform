@@ -1,4 +1,4 @@
-import type { DesignDocument } from '@/types/widget'
+import type { DesignDocument } from '../../types/widget'
 
 const STORAGE_PREFIX = 'lpe_'
 const BACKUP_KEY = (id: number) => `${STORAGE_PREFIX}backup_${id}`

@@ -1,4 +1,4 @@
-import type { DesignDocument } from '@/types/widget'
+import type { DesignDocument } from '../types/widget'
 
 // =============================================================================
 // TYPES

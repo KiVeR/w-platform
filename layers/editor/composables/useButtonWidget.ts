@@ -1,4 +1,4 @@
-import type { Widget } from '@/types/widget'
+import type { Widget } from '../types/widget'
 
 export function useButtonWidget(widget: Ref<Widget> | ComputedRef<Widget>) {
   const { primaryColor, borderRadius } = useGlobalStyles()

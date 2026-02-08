@@ -1,5 +1,5 @@
 import type { AIChatRequest, AIImageInput, AIQuotaResponse, AIStreamChunk } from '#shared/types/ai'
-import type { DesignDocument } from '@/types/widget'
+import type { DesignDocument } from '../types/widget'
 
 /**
  * Composable for AI chat functionality
