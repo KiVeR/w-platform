@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import VersionHistorySidebar from '@/components/history/VersionHistorySidebar.vue'
-import GlobalOptions from '@/components/options/GlobalOptions.vue'
-import OptionsPanel from '@/components/options/OptionsPanel.vue'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
