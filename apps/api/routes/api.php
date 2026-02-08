@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CampaignsController;
+use App\Http\Controllers\Api\InterestGroupsController;
+use App\Http\Controllers\Api\PartnerPricingsController;
+use App\Http\Controllers\Api\PartnersController;
+use App\Http\Controllers\Api\ShopsController;
+use App\Http\Controllers\Api\UsersController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => response()->json([
@@ -16,7 +22,21 @@ Route::prefix('auth')->group(function (): void {
     Route::post('/refresh', [AuthController::class, 'refresh']);
 });
 
-Route::middleware(['auth:api', 'active'])->prefix('auth')->group(function (): void {
-    Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware(['auth:api', 'active'])->group(function (): void {
+    Route::prefix('auth')->group(function (): void {
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+    });
+
+    Route::apiResource('partners', PartnersController::class);
+    Route::apiResource('shops', ShopsController::class);
+    Route::apiResource('users', UsersController::class);
+
+    Route::get('interest-groups', [InterestGroupsController::class, 'index']);
+    Route::apiResource('partner-pricings', PartnerPricingsController::class);
+    Route::apiResource('campaigns', CampaignsController::class);
+    Route::post('campaigns/{campaign}/estimate', [CampaignsController::class, 'estimate']);
+    Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
+    Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
+    Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
 });

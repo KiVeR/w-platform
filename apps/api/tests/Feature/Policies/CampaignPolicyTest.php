@@ -1,0 +1,121 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\Campaign;
+use App\Models\Partner;
+use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function (): void {
+    $this->seed(RolesAndPermissionsSeeder::class);
+});
+
+// --- viewAny ---
+
+it('allows admin to viewAny campaigns', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    expect($admin->can('viewAny', Campaign::class))->toBeTrue();
+});
+
+it('allows partner role to viewAny campaigns', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+
+    expect($user->can('viewAny', Campaign::class))->toBeTrue();
+});
+
+it('allows merchant role to viewAny campaigns', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('merchant');
+
+    expect($user->can('viewAny', Campaign::class))->toBeTrue();
+});
+
+it('denies employee to viewAny campaigns', function (): void {
+    $user = User::factory()->create();
+    $user->assignRole('employee');
+
+    expect($user->can('viewAny', Campaign::class))->toBeFalse();
+});
+
+// --- view ---
+
+it('allows admin to view any campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->create();
+
+    expect($admin->can('view', $campaign))->toBeTrue();
+});
+
+it('allows user to view own partner campaign', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    $campaign = Campaign::factory()->forPartner($partner)->create();
+
+    expect($user->can('view', $campaign))->toBeTrue();
+});
+
+it('denies user from viewing another partner campaign', function (): void {
+    $partner1 = Partner::factory()->create();
+    $partner2 = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner1)->create();
+    $user->assignRole('partner');
+    $campaign = Campaign::factory()->forPartner($partner2)->create();
+
+    expect($user->can('view', $campaign))->toBeFalse();
+});
+
+// --- create ---
+
+it('allows admin to create campaigns', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    expect($admin->can('create', Campaign::class))->toBeTrue();
+});
+
+it('allows partner user to create campaigns', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+
+    expect($user->can('create', Campaign::class))->toBeTrue();
+});
+
+it('denies user without partner to create campaigns', function (): void {
+    $user = User::factory()->create();
+    $user->assignRole('merchant');
+
+    expect($user->can('create', Campaign::class))->toBeFalse();
+});
+
+// --- update ---
+
+it('allows user to update own partner campaign', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    $campaign = Campaign::factory()->forPartner($partner)->create();
+
+    expect($user->can('update', $campaign))->toBeTrue();
+});
+
+it('denies user from updating another partner campaign', function (): void {
+    $partner1 = Partner::factory()->create();
+    $partner2 = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner1)->create();
+    $user->assignRole('partner');
+    $campaign = Campaign::factory()->forPartner($partner2)->create();
+
+    expect($user->can('update', $campaign))->toBeFalse();
+});

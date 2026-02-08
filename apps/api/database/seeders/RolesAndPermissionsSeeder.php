@@ -22,6 +22,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage users',
             'view campaigns',
             'manage campaigns',
+            'view shops',
+            'manage shops',
         ];
 
         foreach ($permissions as $permission) {
@@ -32,10 +34,21 @@ class RolesAndPermissionsSeeder extends Seeder
             ->givePermissionTo(Permission::where('guard_name', 'api')->get());
 
         Role::findOrCreate('partner', 'api')
-            ->givePermissionTo(['view partners', 'view users', 'view campaigns', 'manage campaigns']);
+            ->givePermissionTo([
+                'view partners',
+                'view users',
+                'view campaigns',
+                'manage campaigns',
+                'view shops',
+                'manage shops',
+            ]);
 
         Role::findOrCreate('merchant', 'api')
-            ->givePermissionTo(['view campaigns', 'manage campaigns']);
+            ->givePermissionTo([
+                'view campaigns',
+                'manage campaigns',
+                'view shops',
+            ]);
 
         Role::findOrCreate('employee', 'api');
     }

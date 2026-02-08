@@ -21,8 +21,10 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'partner_id' => $this->partner_id,
             'is_active' => $this->is_active,
+            'created_at' => $this->created_at,
             'roles' => $this->getRoleNames(),
             'permissions' => $this->getAllPermissions()->pluck('name'),
+            'partner' => new PartnerResource($this->whenLoaded('partner')),
         ];
     }
 }
