@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 
 // Mock components
-vi.mock('@/components/history/VersionList.vue', () => ({
+vi.mock('@@/layers/editor/components/history/VersionList.vue', () => ({
   default: {
     name: 'VersionList',
     template: '<div class="mock-version-list"><slot /></div>',
@@ -12,7 +12,7 @@ vi.mock('@/components/history/VersionList.vue', () => ({
   },
 }))
 
-vi.mock('@/components/history/RestoreConfirmModal.vue', () => ({
+vi.mock('@@/layers/editor/components/history/RestoreConfirmModal.vue', () => ({
   default: {
     name: 'RestoreConfirmModal',
     template: '<div class="mock-restore-modal"><slot /></div>',
@@ -69,14 +69,14 @@ describe('versionHistorySidebar', () => {
   })
 
   it('renders the sidebar', async () => {
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
+    const VersionHistorySidebar = (await import('@@/layers/editor/components/history/VersionHistorySidebar.vue')).default
     const wrapper = mount(VersionHistorySidebar)
 
     expect(wrapper.find('.version-history-sidebar').exists()).toBe(true)
   })
 
   it('has correct ARIA attributes', async () => {
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
+    const VersionHistorySidebar = (await import('@@/layers/editor/components/history/VersionHistorySidebar.vue')).default
     const wrapper = mount(VersionHistorySidebar)
 
     const sidebar = wrapper.find('.version-history-sidebar')
@@ -85,7 +85,7 @@ describe('versionHistorySidebar', () => {
   })
 
   it('displays correct title', async () => {
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
+    const VersionHistorySidebar = (await import('@@/layers/editor/components/history/VersionHistorySidebar.vue')).default
     const wrapper = mount(VersionHistorySidebar)
 
     expect(wrapper.find('.header-title h2').text()).toBe('Historique')
@@ -102,7 +102,7 @@ describe('versionHistorySidebar', () => {
       design: { widgets: [], globalStyles: {} },
     }
 
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
+    const VersionHistorySidebar = (await import('@@/layers/editor/components/history/VersionHistorySidebar.vue')).default
     const wrapper = mount(VersionHistorySidebar)
 
     expect(wrapper.find('.btn-restore').exists()).toBe(true)
@@ -120,7 +120,7 @@ describe('versionHistorySidebar', () => {
       design: { widgets: [], globalStyles: {} },
     }
 
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
+    const VersionHistorySidebar = (await import('@@/layers/editor/components/history/VersionHistorySidebar.vue')).default
     const wrapper = mount(VersionHistorySidebar)
 
     expect(wrapper.find('.current-notice').exists()).toBe(true)
@@ -138,7 +138,7 @@ describe('versionHistorySidebar', () => {
     }
     mockIsRestoring.value = true
 
-    const VersionHistorySidebar = (await import('@/components/history/VersionHistorySidebar.vue')).default
+    const VersionHistorySidebar = (await import('@@/layers/editor/components/history/VersionHistorySidebar.vue')).default
     const wrapper = mount(VersionHistorySidebar)
 
     const restoreBtn = wrapper.find('.btn-restore')
