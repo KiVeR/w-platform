@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import { MessageSquareQuote } from 'lucide-vue-next'
 import { computed } from 'vue'
 

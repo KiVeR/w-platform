@@ -1,5 +1,3 @@
-import type { Widget } from '../types/widget'
-
 /**
  * Determine si un widget est configure (a du contenu utile a afficher).
  * Les widgets non configures sont masques en mode apercu.

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import { Hand, Link, Ticket } from 'lucide-vue-next'
 import { computed } from 'vue'
 

@@ -1,5 +1,4 @@
 import type { AIChatMessage, AIImageInput, AIQuotaInfo } from '#shared/types/ai'
-import type { DesignDocument } from '../types/widget'
 
 const MAX_CONVERSATION_LENGTH = 20
 

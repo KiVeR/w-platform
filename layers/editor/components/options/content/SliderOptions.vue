@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { GalleryImage, Widget } from '../../types/widget'
 import { X } from 'lucide-vue-next'
 import OptionCheckbox from '../shared/OptionCheckbox.vue'
 import OptionColorPicker from '../shared/OptionColorPicker.vue'

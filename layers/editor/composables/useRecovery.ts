@@ -1,5 +1,3 @@
-import type { DesignDocument } from '../types/widget'
-
 export interface RecoveryData {
   design: DesignDocument
   savedAt: string

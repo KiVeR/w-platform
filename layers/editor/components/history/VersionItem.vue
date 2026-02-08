@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { VersionSummary } from '../../services/contentVersionApi'
 import { Clock, Layers } from 'lucide-vue-next'
 import { computed } from 'vue'
 

@@ -1,5 +1,3 @@
-import type { DesignDocument } from '../../types/widget'
-
 const STORAGE_PREFIX = 'lpe_'
 const BACKUP_KEY = (id: number) => `${STORAGE_PREFIX}backup_${id}`
 const META_KEY = (id: number) => `${STORAGE_PREFIX}meta_${id}`

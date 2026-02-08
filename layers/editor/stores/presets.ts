@@ -1,4 +1,3 @@
-import type { SectionPreset, TemplatePreset } from '../types/preset'
 import {
   getSectionById as getSectionByIdFromConfig,
   getSectionsByCategory,
@@ -11,8 +10,6 @@ import {
   templateCategories,
   templatePresets,
 } from '../config/presets'
-import { useEditorStore } from './editor'
-import { useWidgetsStore } from './widgets'
 
 export const usePresetsStore = defineStore('presets', () => {
   const editorStore = useEditorStore()

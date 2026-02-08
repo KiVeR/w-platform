@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { TemplatePreset } from '../types/preset'
 import { AlertTriangle, X } from 'lucide-vue-next'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 

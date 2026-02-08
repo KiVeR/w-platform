@@ -29,6 +29,7 @@ export default defineNuxtConfig({
       'services/**',
       'config/**',
       'utils/**',
+      'types/**',
     ],
   },
 

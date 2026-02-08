@@ -1,5 +1,3 @@
-import type { WidgetCategory, WidgetConfig, WidgetType } from '../types/widget'
-
 export const widgetConfigs: WidgetConfig[] = [
   // ==================== CONTENU ====================
   {

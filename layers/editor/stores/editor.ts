@@ -1,5 +1,3 @@
-import type { DesignDocument, GlobalStyles } from '../types/widget'
-
 const defaultDesign: DesignDocument = {
   version: '1.0',
   globalStyles: {

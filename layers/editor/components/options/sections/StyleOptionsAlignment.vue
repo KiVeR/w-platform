@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
-
 defineProps<{
   widget: Widget
   isButtonWidget: boolean

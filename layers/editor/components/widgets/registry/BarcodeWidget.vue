@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import { AlertTriangle, BarChart3, ScanBarcode } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
 

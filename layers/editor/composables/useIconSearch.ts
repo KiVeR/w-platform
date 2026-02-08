@@ -1,5 +1,4 @@
 import { ICON_CATEGORIES, POPULAR_ICONS } from '#shared/constants/lucide-categories'
-import { getLucideIcon, searchIcons } from '../utils/lucide-icons'
 
 export function useIconSearch() {
   const searchQuery = ref('')

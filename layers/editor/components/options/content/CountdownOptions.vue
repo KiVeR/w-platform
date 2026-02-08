@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import OptionCheckbox from '../shared/OptionCheckbox.vue'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionInput from '../shared/OptionInput.vue'

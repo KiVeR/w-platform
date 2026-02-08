@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { SocialLink, SocialPlatform, Widget } from '../../types/widget'
 import { computed } from 'vue'
 
 const props = defineProps<{

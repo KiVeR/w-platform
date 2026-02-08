@@ -1,7 +1,4 @@
 import type { UserPalette } from '#shared/schemas/palette.schema'
-import type { Palette } from '../config/palettes'
-import { getPaletteByName, palettes } from '../config/palettes'
-import { colorHash, isDarkColor } from '../utils/color'
 
 // Singleton state for cross-component sync
 const userPalettes = shallowRef<UserPalette[]>([])

@@ -1,5 +1,3 @@
-import type { DesignDocument } from '../types/widget'
-
 const MAX_HISTORY = 50
 
 export const useHistoryStore = defineStore('history', () => {

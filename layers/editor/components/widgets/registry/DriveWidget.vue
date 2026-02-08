@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import { Car, MapPin, Phone } from 'lucide-vue-next'
 import { computed } from 'vue'
 

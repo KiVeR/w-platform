@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { WidgetType } from '../types/widget'
 import { computed, ref, watch } from 'vue'
 import draggable from 'vuedraggable'
 

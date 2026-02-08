@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget, WidgetType } from '../../types/widget'
 import { ClipboardList } from 'lucide-vue-next'
 import { computed } from 'vue'
 import draggable from 'vuedraggable'

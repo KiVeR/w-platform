@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import type { Widget, WidgetType } from '../types/widget'
 import { computed, defineAsyncComponent } from 'vue'
 
 const props = defineProps<{

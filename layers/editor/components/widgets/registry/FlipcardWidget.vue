@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import { computed, ref } from 'vue'
 
 const props = defineProps<{

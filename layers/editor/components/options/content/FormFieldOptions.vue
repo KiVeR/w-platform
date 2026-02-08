@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { FormFieldType, SelectOption, Widget } from '../../types/widget'
 import { computed } from 'vue'
 import OptionCheckbox from '../shared/OptionCheckbox.vue'
 import OptionGroup from '../shared/OptionGroup.vue'

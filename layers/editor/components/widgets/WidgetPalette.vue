@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { WidgetCategory } from '../types/widget'
 import { Search, Sparkles } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { SocialLink, SocialPlatform, Widget } from '../../types/widget'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionInput from '../shared/OptionInput.vue'
 import OptionSelect from '../shared/OptionSelect.vue'

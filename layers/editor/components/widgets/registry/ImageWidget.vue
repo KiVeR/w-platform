@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import { ImagePlus } from 'lucide-vue-next'
 
 defineProps<{

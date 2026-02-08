@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { SectionPreset } from '../types/preset'
 import { GripVertical } from 'lucide-vue-next'
 import { ref } from 'vue'
 

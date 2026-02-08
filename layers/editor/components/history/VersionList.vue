@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { VersionSummary } from '../../services/contentVersionApi'
 import { History } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
 

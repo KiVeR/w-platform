@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { DesignDocument } from '../types/widget'
 import { Check, Expand, Pencil } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 

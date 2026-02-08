@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Widget } from '../../types/widget'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionSlider from '../shared/OptionSlider.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'

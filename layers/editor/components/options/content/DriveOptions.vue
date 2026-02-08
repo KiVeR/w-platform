@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { StoreLocation, Widget } from '../../types/widget'
 import { X } from 'lucide-vue-next'
 import OptionColorPicker from '../shared/OptionColorPicker.vue'
 import OptionGroup from '../shared/OptionGroup.vue'

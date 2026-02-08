@@ -1,4 +1,3 @@
-import type { WidgetType } from '../types/widget'
 import {
   getContentSchemaForWidget,
   getContentValidationErrors,

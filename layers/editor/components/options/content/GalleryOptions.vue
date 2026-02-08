@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { GalleryImage, Widget } from '../../types/widget'
 import { X } from 'lucide-vue-next'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionInput from '../shared/OptionInput.vue'

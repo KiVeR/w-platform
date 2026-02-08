@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { WidgetConfig } from '../types/widget'
 import {
   AlignLeft,
   Badge,

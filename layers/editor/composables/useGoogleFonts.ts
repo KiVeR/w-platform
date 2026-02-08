@@ -1,5 +1,3 @@
-import { FONT_CATALOG, SYSTEM_FONTS } from '../config/fonts'
-
 const loadedFonts = new Set<string>()
 
 /** Extract font name from a CSS fontFamily value (e.g. "Playfair Display, serif" → "Playfair Display") */
