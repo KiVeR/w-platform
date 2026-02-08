@@ -1,4 +1,4 @@
-import { FONT_CATALOG, SYSTEM_FONTS } from '@/config/fonts'
+import { FONT_CATALOG, SYSTEM_FONTS } from '../config/fonts'
 
 const loadedFonts = new Set<string>()
 
