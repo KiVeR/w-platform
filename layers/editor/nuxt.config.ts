@@ -10,11 +10,10 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
-  // Editor design tokens and animations
-  css: [
-    join(currentDir, './assets/css/tokens.css'),
-    join(currentDir, './assets/css/animations.css'),
-  ],
+  // Note: tokens.css and animations.css are NOT loaded here.
+  // The consuming app must @import them AFTER @import "tailwindcss"
+  // to ensure Kreo design tokens override Tailwind v4 defaults
+  // (--font-sans, --text-*, --radius-*, --shadow-*, --color-neutral-*).
 
   // Alias — shared/ lives at the repo root, not inside the layer
   alias: {
