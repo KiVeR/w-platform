@@ -4,8 +4,6 @@ import { FileStack, LayoutGrid, Rows3, Search, Sparkles, X } from 'lucide-vue-ne
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import KreoLogo from '@/components/icons/KreoLogo.vue'
 import TemplatePalette from '@/components/templates/TemplatePalette.vue'
-import SectionPalette from '@/components/widgets/SectionPalette.vue'
-import WidgetPalette from '@/components/widgets/WidgetPalette.vue'
 
 type Tab = 'widgets' | 'templates' | 'sections' | 'effects'
 

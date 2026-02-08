@@ -1,36 +1,34 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import type { Widget, WidgetType } from '@/types/widget'
-// Phase 1 widgets - Urgence & Social Proof
-import BadgeWidget from '@/components/widgets/registry/BadgeWidget.vue'
-// Wellpack widgets
-import BarcodeWidget from '@/components/widgets/registry/BarcodeWidget.vue'
-import ButtonWidget from '@/components/widgets/registry/ButtonWidget.vue'
-import ClickToCallWidget from '@/components/widgets/registry/ClickToCallWidget.vue'
-import CountdownWidget from '@/components/widgets/registry/CountdownWidget.vue'
-import DriveWidget from '@/components/widgets/registry/DriveWidget.vue'
-import EffectWidget from '@/components/widgets/registry/EffectWidget.vue'
-import FlipcardWidget from '@/components/widgets/registry/FlipcardWidget.vue'
-import FormFieldWidget from '@/components/widgets/registry/FormFieldWidget.vue'
-import FormWidget from '@/components/widgets/registry/FormWidget.vue'
-// Advanced widgets
-import GalleryWidget from '@/components/widgets/registry/GalleryWidget.vue'
-import IconWidget from '@/components/widgets/registry/IconWidget.vue'
-import ImageWidget from '@/components/widgets/registry/ImageWidget.vue'
-import LinkImageWidget from '@/components/widgets/registry/LinkImageWidget.vue'
-import MapWidget from '@/components/widgets/registry/MapWidget.vue'
-import RowWidget from '@/components/widgets/registry/RowWidget.vue'
-import ScratchWidget from '@/components/widgets/registry/ScratchWidget.vue'
-import SeparatorWidget from '@/components/widgets/registry/SeparatorWidget.vue'
-import SliderWidget from '@/components/widgets/registry/SliderWidget.vue'
-import SocialWidget from '@/components/widgets/registry/SocialWidget.vue'
-import SpacerWidget from '@/components/widgets/registry/SpacerWidget.vue'
-import StoreLocatorWidget from '@/components/widgets/registry/StoreLocatorWidget.vue'
-import TestimonialWidget from '@/components/widgets/registry/TestimonialWidget.vue'
-import TextWidget from '@/components/widgets/registry/TextWidget.vue'
-import TitleWidget from '@/components/widgets/registry/TitleWidget.vue'
-// Media widgets
-import VideoWidget from '@/components/widgets/registry/VideoWidget.vue'
+import {
+  BadgeWidget,
+  BarcodeWidget,
+  ButtonWidget,
+  ClickToCallWidget,
+  CountdownWidget,
+  DriveWidget,
+  EffectWidget,
+  FlipcardWidget,
+  FormFieldWidget,
+  FormWidget,
+  GalleryWidget,
+  IconWidget,
+  ImageWidget,
+  LinkImageWidget,
+  MapWidget,
+  RowWidget,
+  ScratchWidget,
+  SeparatorWidget,
+  SliderWidget,
+  SocialWidget,
+  SpacerWidget,
+  StoreLocatorWidget,
+  TestimonialWidget,
+  TextWidget,
+  TitleWidget,
+  VideoWidget,
+} from '#components'
 
 defineProps<{
   widget: Widget
