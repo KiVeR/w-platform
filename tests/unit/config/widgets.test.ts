@@ -1,6 +1,6 @@
-import type { WidgetType } from '@/types/widget'
+import type { WidgetType } from '@@/layers/editor/types/widget'
+import { canAcceptChild, getAllowedChildrenFor, getWidgetConfig } from '@@/layers/editor/config/widgets'
 import { describe, expect, it } from 'vitest'
-import { canAcceptChild, getAllowedChildrenFor, getWidgetConfig } from '@/config/widgets'
 
 describe('canAcceptChild', () => {
   describe('row widget', () => {

@@ -4,7 +4,6 @@ import { STATUS_COLORS, STATUS_LABELS } from '#shared/constants/status'
 import { CONTENT_TYPE_EMOJI, CONTENT_TYPE_LABELS, isEditorAvailable } from '#shared/types/content'
 import { getContentTypeSlug } from '#shared/utils/content'
 import { Star, Trash2 } from 'lucide-vue-next'
-import { formatRelativeTime } from '@/utils/formatters'
 
 const props = defineProps<{
   content: ContentListItem
