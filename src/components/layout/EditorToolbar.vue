@@ -3,8 +3,6 @@ import type { Component } from 'vue'
 import { Code, Eye, History, Pencil, X } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import BreadcrumbNav from '@/components/layout/BreadcrumbNav.vue'
-import CreateLandingPageModal from '@/components/ui/CreateLandingPageModal.vue'
-import SaveStatus from '@/components/ui/SaveStatus.vue'
 
 const router = useRouter()
 const contentApi = useContentApi()

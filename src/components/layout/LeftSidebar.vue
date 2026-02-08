@@ -2,7 +2,6 @@
 import type { Component } from 'vue'
 import { FileStack, LayoutGrid, Rows3, Search, Sparkles, X } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import KreoLogo from '@/components/icons/KreoLogo.vue'
 
 type Tab = 'widgets' | 'templates' | 'sections' | 'effects'
 

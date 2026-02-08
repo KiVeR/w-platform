@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import ContentOptions from './ContentOptions.vue'
-import StyleOptions from './StyleOptions.vue'
-
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
 </script>

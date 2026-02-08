@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import { getLucideIcon } from '@/utils/lucide-icons'
 
 const props = withDefaults(defineProps<{
   icon?: string

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import ToastNotification from './ToastNotification.vue'
-
 const { toasts, remove } = useToast()
 </script>
 

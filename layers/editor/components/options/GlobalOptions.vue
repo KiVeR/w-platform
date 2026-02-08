@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import { ChevronDown, RotateCcw, Save } from 'lucide-vue-next'
 import { ref } from 'vue'
-import ConfirmPaletteChangeModal from '@/components/ui/ConfirmPaletteChangeModal.vue'
-import SavePaletteModal from '@/components/ui/SavePaletteModal.vue'
-import OptionColorPicker from './shared/OptionColorPicker.vue'
-import OptionGroup from './shared/OptionGroup.vue'
-import OptionInput from './shared/OptionInput.vue'
-import OptionSelect from './shared/OptionSelect.vue'
-import OptionSlider from './shared/OptionSlider.vue'
-import OptionTextarea from './shared/OptionTextarea.vue'
-import PaletteDropdown from './shared/PaletteDropdown.vue'
 
 const editorStore = useEditorStore()
 
