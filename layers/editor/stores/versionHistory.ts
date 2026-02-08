@@ -1,0 +1,193 @@
+const PAGE_SIZE = 10
+const CACHE_MAX_SIZE = 5
+
+export const useVersionHistoryStore = defineStore('versionHistory', () => {
+  const editorStore = useEditorStore()
+  const widgetsStore = useWidgetsStore()
+  const uiStore = useUIStore()
+  const contentStore = useContentStore()
+
+  const versions = ref<VersionSummary[]>([])
+  const selectedVersion = ref<VersionDetail | null>(null)
+  const isLoading = ref(false)
+  const isLoadingVersion = ref(false)
+  const isRestoring = ref(false)
+  const hasMore = ref(true)
+  const currentPage = ref(1)
+  const total = ref(0)
+  const rateLimit = ref<RateLimitInfo | null>(null)
+
+  const versionCache = new Map<number, VersionDetail>()
+
+  const isActive = computed(() => uiStore.isHistoryMode)
+
+  // Lazy init: useContentVersionApi() calls useEditorApi() → useEditorConfig() → inject()
+  // which fails if the store is instantiated before provideEditorConfig() runs.
+  let _contentVersionApi: ReturnType<typeof useContentVersionApi> | null = null
+  function getContentVersionApi() {
+    if (!_contentVersionApi) {
+      _contentVersionApi = useContentVersionApi()
+    }
+    return _contentVersionApi
+  }
+
+  // Get current content ID from content store
+  function getContentId(): number | null {
+    return contentStore.id
+  }
+
+  async function loadVersions(): Promise<void> {
+    const contentId = getContentId()
+    if (!contentId)
+      return
+
+    isLoading.value = true
+    currentPage.value = 1
+    versions.value = []
+
+    try {
+      const response = await getContentVersionApi().getVersions(
+        contentId,
+        { page: 1, pageSize: PAGE_SIZE },
+      )
+
+      if (response) {
+        versions.value = response.versions
+        total.value = response.pagination.total
+        hasMore.value = response.pagination.page < response.pagination.totalPages
+        rateLimit.value = response.rateLimit
+      }
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
+
+  async function loadMore(): Promise<void> {
+    const contentId = getContentId()
+    if (!contentId || isLoading.value || !hasMore.value)
+      return
+
+    isLoading.value = true
+    currentPage.value++
+
+    try {
+      const response = await getContentVersionApi().getVersions(
+        contentId,
+        { page: currentPage.value, pageSize: PAGE_SIZE },
+      )
+
+      if (response) {
+        versions.value = [...versions.value, ...response.versions]
+        hasMore.value = response.pagination.page < response.pagination.totalPages
+        rateLimit.value = response.rateLimit
+      }
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
+
+  async function selectVersion(versionId: number): Promise<void> {
+    const contentId = getContentId()
+    if (!contentId)
+      return
+
+    if (versionCache.has(versionId)) {
+      selectedVersion.value = versionCache.get(versionId)!
+      return
+    }
+
+    isLoadingVersion.value = true
+
+    try {
+      const response = await getContentVersionApi().getVersion(
+        contentId,
+        versionId,
+      )
+
+      if (response) {
+        if (versionCache.size >= CACHE_MAX_SIZE) {
+          const firstKey = versionCache.keys().next().value
+          if (firstKey !== undefined) {
+            versionCache.delete(firstKey)
+          }
+        }
+        versionCache.set(versionId, response)
+        selectedVersion.value = response
+      }
+    }
+    finally {
+      isLoadingVersion.value = false
+    }
+  }
+
+  async function restoreVersion(versionId: number): Promise<boolean> {
+    const contentId = getContentId()
+    if (!contentId)
+      return false
+
+    isRestoring.value = true
+
+    try {
+      const response = await getContentVersionApi().restoreVersion(
+        contentId,
+        versionId,
+      )
+
+      if (response && selectedVersion.value) {
+        editorStore.setDesign(selectedVersion.value.design)
+        widgetsStore.setWidgets(selectedVersion.value.design.widgets)
+        editorStore.markAsSaved()
+        rateLimit.value = response.rateLimit
+        loadVersions()
+        return true
+      }
+
+      console.error('Failed to restore version')
+      return false
+    }
+    finally {
+      isRestoring.value = false
+      versionCache.clear()
+      exitHistoryMode()
+    }
+  }
+
+  async function enterHistoryMode(): Promise<void> {
+    uiStore.enterHistoryMode()
+    await loadVersions()
+    if (versions.value.length > 0) {
+      await selectVersion(versions.value[0].id)
+    }
+  }
+
+  function exitHistoryMode(): void {
+    selectedVersion.value = null
+    uiStore.exitHistoryMode()
+  }
+
+  function clearCache(): void {
+    versionCache.clear()
+  }
+
+  return {
+    versions,
+    selectedVersion,
+    isLoading,
+    isLoadingVersion,
+    isRestoring,
+    isActive,
+    hasMore,
+    total,
+    rateLimit,
+
+    loadVersions,
+    loadMore,
+    selectVersion,
+    restoreVersion,
+    enterHistoryMode,
+    exitHistoryMode,
+    clearCache,
+  }
+})

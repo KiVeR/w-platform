@@ -1,5 +1,5 @@
+import { generateFieldName } from '@@/layers/editor/utils/form'
 import { describe, expect, it } from 'vitest'
-import { generateFieldName } from '@/utils/form'
 
 describe('generateFieldName', () => {
   it('converts label to snake_case', () => {

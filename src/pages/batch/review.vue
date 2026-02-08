@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Check, ChevronDown, ChevronUp, Eye, Loader2, Send } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
-import { useToast } from '@/composables/useToast'
 
 definePageMeta({
   title: 'Batch Review',

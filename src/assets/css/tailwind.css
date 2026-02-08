@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "../../styles/tokens.css";
-@import "../../styles/animations.css";
+@import "../../../layers/editor/assets/css/tokens.css";
+@import "../../../layers/editor/assets/css/animations.css";
 
 * {
   box-sizing: border-box;

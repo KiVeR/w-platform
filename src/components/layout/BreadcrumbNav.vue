@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ChevronRight, Home } from 'lucide-vue-next'
 import { ref } from 'vue'
-import EditableTitle from './EditableTitle.vue'
 
 defineProps<{
   contentTitle: string

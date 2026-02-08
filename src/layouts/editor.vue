@@ -1,14 +1,43 @@
 <script setup lang="ts">
+import { getContentTypeSlug } from '#shared/utils/content'
 import { onBeforeUnmount, onMounted } from 'vue'
-import CenterCanvas from '@/components/layout/CenterCanvas.vue'
 import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
-import RightSidebar from '@/components/layout/RightSidebar.vue'
-import ToastContainer from '@/components/ui/ToastContainer.vue'
-import { useVersionHistory } from '@/composables/useVersionHistory'
-import { useContentStore } from '@/stores/content'
-import { useSelectionStore } from '@/stores/selection'
-import { useUIStore } from '@/stores/ui'
+import { useAuthStore } from '@/stores/auth'
+
+// Provide editor config for the layer — Kreo standalone wiring
+const authStore = useAuthStore()
+const router = useRouter()
+
+provideEditorConfig({
+  apiBaseUrl: '/api/v1',
+  getAuthToken: () => authStore.accessToken,
+  refreshToken: async () => {
+    const success = await authStore.refresh()
+    return success ? authStore.accessToken : null
+  },
+  onContentCreated: (id: number) => {
+    const type = useContentStore().type || 'landing-page'
+    router.replace(`/${getContentTypeSlug(type)}/${id}`)
+  },
+  onNavigateToHistory: (contentId: number) => {
+    const type = useContentStore().type || 'landing-page'
+    navigateTo(`/${getContentTypeSlug(type)}/${contentId}/history`)
+  },
+  onNavigateToEditor: (contentId: number) => {
+    const type = useContentStore().type || 'landing-page'
+    navigateTo(`/${getContentTypeSlug(type)}/${contentId}`)
+  },
+  onAuthFailure: () => {
+    authStore.clearAuth()
+    router.push('/login')
+  },
+  features: {
+    ai: true,
+    history: true,
+    templates: true,
+  },
+})
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()

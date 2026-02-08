@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
-import KreoLogoFull from '@/components/icons/KreoLogoFull.vue'
 import { useAuthStore } from '@/stores/auth'
 
 definePageMeta({

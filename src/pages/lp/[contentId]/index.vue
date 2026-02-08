@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { PageStatusType } from '#shared/constants/status'
-import type { DesignDocument } from '@/types/widget'
 import { useApi } from '@/composables/useApi'
-import { useContentStore } from '@/stores/content'
-import { useEditorStore } from '@/stores/editor'
-import { useWidgetsStore } from '@/stores/widgets'
 
 interface ContentDesignResponse {
   id: number

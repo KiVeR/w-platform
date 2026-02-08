@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest'
 import {
   getSectionById,
   getSectionsByCategory,
@@ -10,7 +9,8 @@ import {
   sectionPresets,
   templateCategories,
   templatePresets,
-} from '@/config/presets'
+} from '@@/layers/editor/config/presets'
+import { describe, expect, it } from 'vitest'
 
 // =============================================================================
 // Template Presets Tests

@@ -1,23 +1,64 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { computed, ref } from 'vue'
 
-// Mock the API used by the store
-vi.mock('@/services/api/contentVersionApi', () => ({
-  contentVersionApi: {
-    getVersions: vi.fn(),
-    getVersion: vi.fn(),
-    restoreVersion: vi.fn(),
-  },
+const mockGetVersions = vi.fn()
+const mockGetVersion = vi.fn()
+const mockRestoreVersion = vi.fn()
+
+// Stub auto-imported composables/stores used by the versionHistory store.
+// In Nuxt runtime these are auto-imported; in Vitest they must be globals.
+vi.stubGlobal('defineStore', (await import('pinia')).defineStore)
+
+vi.stubGlobal('useContentVersionApi', () => ({
+  getVersions: mockGetVersions,
+  getVersion: mockGetVersion,
+  restoreVersion: mockRestoreVersion,
 }))
 
-// Mock the UI store
-vi.mock('@/stores/ui', () => ({
-  useUIStore: vi.fn(() => ({
-    isHistoryMode: false,
-    enterHistoryMode: vi.fn(),
-    exitHistoryMode: vi.fn(),
-  })),
+vi.stubGlobal('useEditorConfig', () => ({
+  apiBaseUrl: '/api/v1',
+  getAuthToken: () => 'test-token',
 }))
+
+vi.stubGlobal('useEditorApi', () => ({
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  patch: vi.fn(),
+  delete: vi.fn(),
+}))
+
+// Stub Vue APIs that stores use without import
+vi.stubGlobal('ref', ref)
+vi.stubGlobal('computed', computed)
+
+// Stub Pinia stores used by versionHistory store
+const mockEditorStore = {
+  isDirty: false,
+  setDesign: vi.fn(),
+  markAsSaved: vi.fn(),
+}
+vi.stubGlobal('useEditorStore', () => mockEditorStore)
+
+const mockWidgetsStore = {
+  setWidgets: vi.fn(),
+}
+vi.stubGlobal('useWidgetsStore', () => mockWidgetsStore)
+
+const mockUIStore = {
+  isHistoryMode: false,
+  enterHistoryMode: vi.fn(),
+  exitHistoryMode: vi.fn(),
+}
+vi.stubGlobal('useUIStore', () => mockUIStore)
+
+// Import content store first, then stub it as global (versionHistory uses it via auto-import)
+const { useContentStore } = await import('~~/layers/editor/stores/content')
+vi.stubGlobal('useContentStore', useContentStore)
+
+// Import versionHistory AFTER all its auto-import deps are stubbed
+const { useVersionHistoryStore } = await import('~~/layers/editor/stores/versionHistory')
 
 describe('useVersionHistory', () => {
   beforeEach(() => {
@@ -36,20 +77,16 @@ describe('useVersionHistory', () => {
         rateLimit: { remaining: 10, limit: 10, resetAt: '2026-01-01T00:00:00Z' },
       }
 
-      const { contentVersionApi } = await import('@/services/api/contentVersionApi')
-      vi.mocked(contentVersionApi.getVersions).mockResolvedValue(mockResponse)
+      mockGetVersions.mockResolvedValue(mockResponse)
 
-      // Set up content store with an ID
-      const { useContentStore } = await import('@/stores/content')
       const contentStore = useContentStore()
       contentStore.id = 1
 
-      const { useVersionHistoryStore } = await import('@/stores/versionHistory')
       const store = useVersionHistoryStore()
 
       await store.loadVersions()
 
-      expect(contentVersionApi.getVersions).toHaveBeenCalledWith(1, expect.objectContaining({ page: 1 }))
+      expect(mockGetVersions).toHaveBeenCalledWith(1, expect.objectContaining({ page: 1 }))
       expect(store.versions).toEqual(mockResponse.versions)
       expect(store.total).toBe(2)
     })
@@ -66,19 +103,16 @@ describe('useVersionHistory', () => {
         design: { globalStyles: {}, widgets: [] },
       }
 
-      const { contentVersionApi } = await import('@/services/api/contentVersionApi')
-      vi.mocked(contentVersionApi.getVersion).mockResolvedValue(mockVersionDetail)
+      mockGetVersion.mockResolvedValue(mockVersionDetail)
 
-      const { useContentStore } = await import('@/stores/content')
       const contentStore = useContentStore()
       contentStore.id = 1
 
-      const { useVersionHistoryStore } = await import('@/stores/versionHistory')
       const store = useVersionHistoryStore()
 
       await store.selectVersion(1)
 
-      expect(contentVersionApi.getVersion).toHaveBeenCalledWith(1, 1)
+      expect(mockGetVersion).toHaveBeenCalledWith(1, 1)
       expect(store.selectedVersion).toEqual(mockVersionDetail)
     })
   })
