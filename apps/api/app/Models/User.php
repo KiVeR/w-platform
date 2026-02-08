@@ -5,40 +5,66 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements OAuthenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
         'email',
         'password',
+        'google_id',
+        'partner_id',
+        'is_active',
     ];
 
-    /**
-     * @var list<string>
-     */
+    /** @var list<string> */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
-    /**
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->firstname} {$this->lastname}";
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active;
+    }
+
+    /** @return BelongsTo<Partner, $this> */
+    public function partner(): BelongsTo
+    {
+        return $this->belongsTo(Partner::class);
+    }
+
+    /** @param Builder<User> $query */
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('is_active', true);
     }
 }
