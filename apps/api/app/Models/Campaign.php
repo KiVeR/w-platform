@@ -8,6 +8,7 @@ use App\Enums\CampaignChannel;
 use App\Enums\CampaignStatus;
 use App\Enums\CampaignType;
 use Database\Factories\CampaignFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -92,5 +93,30 @@ class Campaign extends Model
         return $this->belongsToMany(InterestGroup::class, 'campaign_interest_group')
             ->withPivot(['index', 'operator'])
             ->withTimestamps();
+    }
+
+    /** @param Builder<Campaign> $query */
+    public function scopeForUser(Builder $query, User $user): void
+    {
+        if (! $user->hasRole('admin')) {
+            $query->where('partner_id', $user->partner_id);
+        }
+    }
+
+    public function getTargetingVolume(): int
+    {
+        $targeting = $this->targeting;
+
+        if (! is_array($targeting) || ! isset($targeting['geo']['postcodes']) || ! is_array($targeting['geo']['postcodes'])) {
+            return 0;
+        }
+
+        $volume = 0;
+
+        foreach ($targeting['geo']['postcodes'] as $postcode) {
+            $volume += (int) ($postcode['volume'] ?? 0);
+        }
+
+        return $volume;
     }
 }

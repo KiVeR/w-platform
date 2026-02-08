@@ -12,7 +12,6 @@ use App\Models\Partner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
-use Symfony\Component\HttpFoundation\Response;
 
 class PartnersController extends Controller
 {
@@ -66,6 +65,6 @@ class PartnersController extends Controller
 
         $partner->delete();
 
-        return new JsonResponse(['message' => 'Partner deleted.'], Response::HTTP_OK);
+        return new JsonResponse(['message' => 'Partner deleted.']);
     }
 }

@@ -22,13 +22,7 @@ class UsersController extends Controller
         /** @var User $currentUser */
         $currentUser = auth()->user();
 
-        $query = User::query();
-
-        if (! $currentUser->hasRole('admin')) {
-            $query->where('partner_id', $currentUser->partner_id);
-        }
-
-        $users = QueryBuilder::for($query)
+        $users = QueryBuilder::for(User::forUser($currentUser))
             ->allowedFilters(['partner_id', 'email', 'is_active'])
             ->allowedSorts(['firstname', 'email', 'created_at'])
             ->allowedIncludes(['partner'])

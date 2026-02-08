@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\CampaignStatus;
 use App\Models\Campaign;
 use App\Models\Partner;
 use App\Models\User;
@@ -118,4 +119,76 @@ it('denies user from updating another partner campaign', function (): void {
     $campaign = Campaign::factory()->forPartner($partner2)->create();
 
     expect($user->can('update', $campaign))->toBeFalse();
+});
+
+it('denies update on sent campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->sent()->create();
+
+    expect($admin->can('update', $campaign))->toBeFalse();
+});
+
+it('denies update on sending campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->create(['status' => CampaignStatus::SENDING]);
+
+    expect($admin->can('update', $campaign))->toBeFalse();
+});
+
+// --- delete ---
+
+it('denies delete on sending campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->create(['status' => CampaignStatus::SENDING]);
+
+    expect($admin->can('delete', $campaign))->toBeFalse();
+});
+
+// --- send ---
+
+it('allows user to send own partner campaign', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    $campaign = Campaign::factory()->forPartner($partner)->create();
+
+    expect($user->can('send', $campaign))->toBeTrue();
+});
+
+it('denies send on sent campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->sent()->create();
+
+    expect($admin->can('send', $campaign))->toBeFalse();
+});
+
+it('denies send on sending campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->create(['status' => CampaignStatus::SENDING]);
+
+    expect($admin->can('send', $campaign))->toBeFalse();
+});
+
+// --- cancel ---
+
+it('allows user to cancel own partner campaign', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    $campaign = Campaign::factory()->forPartner($partner)->create();
+
+    expect($user->can('cancel', $campaign))->toBeTrue();
+});
+
+it('denies cancel on sent campaign', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $campaign = Campaign::factory()->sent()->create();
+
+    expect($admin->can('cancel', $campaign))->toBeFalse();
 });

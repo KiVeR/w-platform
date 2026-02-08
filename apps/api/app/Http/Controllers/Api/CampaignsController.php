@@ -27,13 +27,7 @@ class CampaignsController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $query = Campaign::query();
-
-        if (! $user->hasRole('admin')) {
-            $query->where('partner_id', $user->partner_id);
-        }
-
-        $campaigns = QueryBuilder::for($query)
+        $campaigns = QueryBuilder::for(Campaign::forUser($user))
             ->allowedFilters(['partner_id', 'type', 'status', 'channel'])
             ->allowedSorts(['name', 'scheduled_at', 'created_at'])
             ->allowedIncludes(['partner', 'creator', 'interestGroups'])
@@ -75,10 +69,6 @@ class CampaignsController extends Controller
 
     public function update(UpdateCampaignRequest $request, Campaign $campaign): CampaignResource
     {
-        if ($campaign->status === CampaignStatus::SENT || $campaign->status === CampaignStatus::SENDING) {
-            abort(403, 'Cannot update a campaign that is sent or sending.');
-        }
-
         $this->authorize('update', $campaign);
 
         $campaign->update($request->validated());
@@ -88,10 +78,6 @@ class CampaignsController extends Controller
 
     public function destroy(Campaign $campaign): JsonResponse
     {
-        if ($campaign->status === CampaignStatus::SENDING) {
-            abort(403, 'Cannot delete a campaign that is currently sending.');
-        }
-
         $this->authorize('delete', $campaign);
 
         $campaign->delete();
@@ -103,15 +89,7 @@ class CampaignsController extends Controller
     {
         $this->authorize('update', $campaign);
 
-        $volume = 0;
-        $targeting = $campaign->targeting;
-
-        if (is_array($targeting) && isset($targeting['geo']['postcodes']) && is_array($targeting['geo']['postcodes'])) {
-            foreach ($targeting['geo']['postcodes'] as $postcode) {
-                $volume += (int) ($postcode['volume'] ?? 0);
-            }
-        }
-
+        $volume = $campaign->getTargetingVolume();
         $useCi = $campaign->interestGroups()->exists();
 
         if ($volume > 0 && $campaign->partner_id !== null) {
@@ -138,14 +116,8 @@ class CampaignsController extends Controller
     {
         $this->authorize('update', $campaign);
 
-        if (! $campaign->message || ! $campaign->sender) {
-            return new JsonResponse(
-                ['message' => 'Campaign must have a message and sender before scheduling.', 'errors' => array_filter([
-                    'message' => ! $campaign->message ? ['Message is required.'] : null,
-                    'sender' => ! $campaign->sender ? ['Sender is required.'] : null,
-                ])],
-                422,
-            );
+        if ($error = $this->ensureReadyToSend($campaign)) {
+            return $error;
         }
 
         $campaign->update([
@@ -158,20 +130,10 @@ class CampaignsController extends Controller
 
     public function send(Campaign $campaign, CampaignSenderInterface $sender, PricingService $pricingService): CampaignResource|JsonResponse
     {
-        $this->authorize('update', $campaign);
+        $this->authorize('send', $campaign);
 
-        if ($campaign->status === CampaignStatus::SENT || $campaign->status === CampaignStatus::SENDING) {
-            abort(403, 'Campaign has already been sent or is sending.');
-        }
-
-        if (! $campaign->message || ! $campaign->sender) {
-            return new JsonResponse(
-                ['message' => 'Campaign must have a message and sender.', 'errors' => array_filter([
-                    'message' => ! $campaign->message ? ['Message is required.'] : null,
-                    'sender' => ! $campaign->sender ? ['Sender is required.'] : null,
-                ])],
-                422,
-            );
+        if ($error = $this->ensureReadyToSend($campaign)) {
+            return $error;
         }
 
         if (! $campaign->volume_estimated || $campaign->volume_estimated <= 0) {
@@ -184,11 +146,18 @@ class CampaignsController extends Controller
         $useCi = $campaign->interestGroups()->exists();
         /** @var int $partnerId */
         $partnerId = $campaign->partner_id;
-        $estimate = $pricingService->calculate($partnerId, $campaign->volume_estimated, $useCi);
+
+        try {
+            $estimate = $pricingService->calculate($partnerId, $campaign->volume_estimated, $useCi);
+        } catch (\RuntimeException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 422);
+        }
 
         $result = $sender->send($campaign);
 
         if (! $result->success) {
+            $campaign->update(['status' => CampaignStatus::FAILED]);
+
             return new JsonResponse(['error' => $result->error], 502);
         }
 
@@ -204,16 +173,27 @@ class CampaignsController extends Controller
 
     public function cancel(Campaign $campaign): CampaignResource
     {
-        $this->authorize('update', $campaign);
-
-        if ($campaign->status === CampaignStatus::SENT) {
-            abort(403, 'Cannot cancel a campaign that has already been sent.');
-        }
+        $this->authorize('cancel', $campaign);
 
         $campaign->update([
             'status' => CampaignStatus::CANCELLED,
         ]);
 
         return new CampaignResource($campaign->fresh());
+    }
+
+    private function ensureReadyToSend(Campaign $campaign): ?JsonResponse
+    {
+        if (! $campaign->message || ! $campaign->sender) {
+            return new JsonResponse(
+                ['message' => 'Campaign must have a message and sender.', 'errors' => array_filter([
+                    'message' => ! $campaign->message ? ['Message is required.'] : null,
+                    'sender' => ! $campaign->sender ? ['Sender is required.'] : null,
+                ])],
+                422,
+            );
+        }
+
+        return null;
     }
 }

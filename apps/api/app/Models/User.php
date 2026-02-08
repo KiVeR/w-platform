@@ -70,6 +70,14 @@ class User extends Authenticatable implements OAuthenticatable
     }
 
     /** @param Builder<User> $query */
+    public function scopeForUser(Builder $query, self $user): void
+    {
+        if (! $user->hasRole('admin')) {
+            $query->where('partner_id', $user->partner_id);
+        }
+    }
+
+    /** @param Builder<User> $query */
     public function scopeActive(Builder $query): void
     {
         $query->where('is_active', true);

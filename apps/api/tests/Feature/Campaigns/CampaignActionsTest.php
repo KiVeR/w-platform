@@ -325,7 +325,7 @@ it('handles sender failure gracefully', function (): void {
         ->assertJsonPath('error', 'API timeout');
 
     $campaign->refresh();
-    expect($campaign->status)->toBe(CampaignStatus::DRAFT);
+    expect($campaign->status)->toBe(CampaignStatus::FAILED);
 });
 
 it('denies send on another partner campaign', function (): void {

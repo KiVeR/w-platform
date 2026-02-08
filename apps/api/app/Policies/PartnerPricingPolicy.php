@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\PartnerPricing;
 use App\Models\User;
 
 class PartnerPricingPolicy
@@ -13,7 +14,7 @@ class PartnerPricingPolicy
         return $user->hasRole('admin');
     }
 
-    public function view(User $user): bool
+    public function view(User $user, PartnerPricing $partnerPricing): bool
     {
         return $user->hasRole('admin');
     }
@@ -23,12 +24,12 @@ class PartnerPricingPolicy
         return $user->hasRole('admin');
     }
 
-    public function update(User $user): bool
+    public function update(User $user, PartnerPricing $partnerPricing): bool
     {
         return $user->hasRole('admin');
     }
 
-    public function delete(User $user): bool
+    public function delete(User $user, PartnerPricing $partnerPricing): bool
     {
         return $user->hasRole('admin');
     }

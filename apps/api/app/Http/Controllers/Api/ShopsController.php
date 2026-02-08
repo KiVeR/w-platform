@@ -23,13 +23,7 @@ class ShopsController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $query = Shop::query();
-
-        if (! $user->hasRole('admin')) {
-            $query->where('partner_id', $user->partner_id);
-        }
-
-        $shops = QueryBuilder::for($query)
+        $shops = QueryBuilder::for(Shop::forUser($user))
             ->allowedFilters(['partner_id', 'city', 'is_active'])
             ->allowedSorts(['name', 'city', 'created_at'])
             ->allowedIncludes(['partner'])
@@ -49,10 +43,9 @@ class ShopsController extends Controller
             $data['partner_id'] = $user->partner_id;
         }
 
-        $shop = new Shop($data);
-        $this->authorize('create', $shop);
+        $this->authorize('create', Shop::class);
 
-        $shop->save();
+        $shop = Shop::create($data);
 
         return new ShopResource($shop);
     }

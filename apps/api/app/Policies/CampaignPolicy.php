@@ -29,7 +29,7 @@ class CampaignPolicy
 
     public function update(User $user, Campaign $campaign): bool
     {
-        if ($campaign->status === CampaignStatus::SENT || $campaign->status === CampaignStatus::SENDING) {
+        if (in_array($campaign->status, [CampaignStatus::SENT, CampaignStatus::SENDING, CampaignStatus::FAILED], true)) {
             return false;
         }
 
@@ -49,7 +49,7 @@ class CampaignPolicy
 
     public function send(User $user, Campaign $campaign): bool
     {
-        if ($campaign->status === CampaignStatus::SENT || $campaign->status === CampaignStatus::SENDING) {
+        if (in_array($campaign->status, [CampaignStatus::SENT, CampaignStatus::SENDING, CampaignStatus::FAILED], true)) {
             return false;
         }
 
