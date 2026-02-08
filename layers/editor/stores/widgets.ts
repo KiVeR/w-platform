@@ -1,6 +1,6 @@
 import type { Widget, WidgetContent, WidgetStyles, WidgetType } from '../types/widget'
 import { v4 as uuidv4 } from 'uuid'
-import { getWidgetConfig } from '@/config/widgets'
+import { getWidgetConfig } from '../config/widgets'
 
 export const useWidgetsStore = defineStore('widgets', () => {
   const editorStore = useEditorStore()
