@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { AIChatMessage } from '#shared/types/ai'
 import { computed } from 'vue'
-import AIDesignPreview from './AIDesignPreview.vue'
 
 const props = defineProps<{
   message: AIChatMessage

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { VersionSummary } from '@/services/api/contentVersionApi'
+import type { VersionSummary } from '../../services/contentVersionApi'
 import { History } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
-import VersionItem from './VersionItem.vue'
 
 const props = defineProps<{
   versions: VersionSummary[]

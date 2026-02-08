@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import DesignerMode from '@/components/modes/DesignerMode.vue'
-import ExpertMode from '@/components/modes/ExpertMode.vue'
-import HistoryMode from '@/components/modes/HistoryMode.vue'
-import PreviewMode from '@/components/modes/PreviewMode.vue'
-
 const uiStore = useUIStore()
 </script>
 

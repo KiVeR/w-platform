@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { VersionSummary } from '@/services/api/contentVersionApi'
+import type { VersionSummary } from '../../services/contentVersionApi'
 import { Clock, Layers } from 'lucide-vue-next'
 import { computed } from 'vue'
-import { formatRelativeTime } from '@/utils/formatters'
 
 const props = defineProps<{
   version: VersionSummary

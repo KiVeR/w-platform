@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { X } from 'lucide-vue-next'
 import { onMounted, ref, watch } from 'vue'
-import AIChatInput from './AIChatInput.vue'
-import AIChatMessage from './AIChatMessage.vue'
 
 const { store, fetchQuota } = useAIChat()
 

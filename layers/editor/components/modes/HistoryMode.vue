@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { History } from 'lucide-vue-next'
 import { computed } from 'vue'
-import HistoryBanner from '@/components/history/HistoryBanner.vue'
 
 const { selectedVersion, isLoading, isLoadingVersion } = useVersionHistory()
 

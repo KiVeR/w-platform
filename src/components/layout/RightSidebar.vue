@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import VersionHistorySidebar from '@/components/history/VersionHistorySidebar.vue'
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()

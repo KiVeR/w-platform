@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { TemplateCategory, TemplatePreset } from '@/types/preset'
+import type { TemplateCategory, TemplatePreset } from '../types/preset'
 import { computed, ref, watch } from 'vue'
-import ApplyTemplateModal from './ApplyTemplateModal.vue'
-import TemplateCard from './TemplateCard.vue'
 
 const props = defineProps<{
   searchQuery?: string

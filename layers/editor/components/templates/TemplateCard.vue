@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TemplatePreset } from '@/types/preset'
+import type { TemplatePreset } from '../types/preset'
 
 const props = defineProps<{
   template: TemplatePreset
