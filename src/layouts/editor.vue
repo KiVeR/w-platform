@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { getContentTypeSlug } from '#shared/utils/content'
 import { onBeforeUnmount, onMounted } from 'vue'
-import CenterCanvas from '@/components/layout/CenterCanvas.vue'
 import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
-import RightSidebar from '@/components/layout/RightSidebar.vue'
 import { useAuthStore } from '@/stores/auth'
 
 // Provide editor config for the layer — Kreo standalone wiring
