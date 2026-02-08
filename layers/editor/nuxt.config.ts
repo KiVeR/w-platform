@@ -10,6 +10,12 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
+  // Editor design tokens and animations
+  css: [
+    join(currentDir, './assets/css/tokens.css'),
+    join(currentDir, './assets/css/animations.css'),
+  ],
+
   // Alias — shared/ lives at the repo root, not inside the layer
   alias: {
     '#shared': resolve(currentDir, '../../shared'),
