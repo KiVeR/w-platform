@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { ArrowLeft, Monitor, Smartphone, Tablet } from 'lucide-vue-next'
-import MobileFrame from '@/components/canvas/MobileFrame.vue'
-import PreviewContent from '@/components/canvas/PreviewContent.vue'
 
 const uiStore = useUIStore()
 

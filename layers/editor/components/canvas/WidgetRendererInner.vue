@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import type { Widget, WidgetType } from '@/types/widget'
+import type { Widget, WidgetType } from '../types/widget'
 import {
   BadgeWidget,
   BarcodeWidget,

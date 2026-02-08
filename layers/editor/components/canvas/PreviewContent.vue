@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { DesignDocument } from '@/types/widget'
+import type { DesignDocument } from '../types/widget'
 import { computed } from 'vue'
-import { isWidgetConfigured } from '@/utils/widgetConfig'
-import PreviewRenderer from './PreviewRenderer.vue'
 
 const props = defineProps<{
   design?: DesignDocument

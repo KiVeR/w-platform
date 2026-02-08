@@ -2,8 +2,6 @@
 import type { DesignDocument } from '@/types/widget'
 import { Check, Expand, Pencil } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
-import MobileFrame from '@/components/canvas/MobileFrame.vue'
-import PreviewContent from '@/components/canvas/PreviewContent.vue'
 
 const props = defineProps<{
   design: unknown // DesignDocument
