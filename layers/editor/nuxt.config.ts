@@ -21,13 +21,15 @@ export default defineNuxtConfig({
     '#shared': resolve(currentDir, '../../shared'),
   },
 
-  // Auto-import composables, stores, constants, and services
+  // Auto-import composables, stores, constants, services, config, and utils
   imports: {
     dirs: [
       'composables/**',
       'stores/**',
       'constants/**',
       'services/**',
+      'config/**',
+      'utils/**',
     ],
   },
 
