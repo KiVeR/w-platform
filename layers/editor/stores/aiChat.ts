@@ -1,6 +1,26 @@
 import type { AIChatMessage, AIImageInput, AIQuotaInfo } from '#shared/types/ai'
 
 const MAX_CONVERSATION_LENGTH = 20
+const JSON_SEPARATOR = '---JSON---'
+
+/**
+ * Extract the human-readable description text from a stream response,
+ * stripping the JSON design payload that follows the separator.
+ */
+function extractDescriptionText(text: string): string {
+  const sepIndex = text.indexOf(JSON_SEPARATOR)
+  if (sepIndex !== -1)
+    return text.slice(0, sepIndex).trim()
+
+  const braceIndex = text.indexOf('\n{')
+  if (braceIndex !== -1)
+    return text.slice(0, braceIndex).trim()
+
+  if (text.trimStart().startsWith('{'))
+    return ''
+
+  return text
+}
 
 export const useAIChatStore = defineStore('aiChat', () => {
   // State
@@ -20,22 +40,7 @@ export const useAIChatStore = defineStore('aiChat', () => {
   )
   const lastGeneratedDesign = computed(() => lastAssistantMessage.value?.design as DesignDocument | undefined)
 
-  // Extract only the text description (before ---JSON--- or first {)
-  const JSON_SEPARATOR = '---JSON---'
-  const displayStreamText = computed(() => {
-    const text = currentStreamText.value
-    const sepIndex = text.indexOf(JSON_SEPARATOR)
-    if (sepIndex !== -1)
-      return text.slice(0, sepIndex).trim()
-    // Fallback: cut at first { that looks like JSON start
-    const braceIndex = text.indexOf('\n{')
-    if (braceIndex !== -1)
-      return text.slice(0, braceIndex).trim()
-    // If stream starts with {, it's all JSON
-    if (text.trimStart().startsWith('{'))
-      return ''
-    return text
-  })
+  const displayStreamText = computed(() => extractDescriptionText(currentStreamText.value))
 
   const isGeneratingDesign = computed(() => {
     if (!isStreaming.value)
@@ -90,25 +95,10 @@ export const useAIChatStore = defineStore('aiChat', () => {
   }
 
   function completeAssistantMessage(design?: DesignDocument) {
-    // Extract only the description text, not the JSON
-    const fullText = currentStreamText.value
-    const sepIndex = fullText.indexOf(JSON_SEPARATOR)
-    let content = fullText
-    if (sepIndex !== -1) {
-      content = fullText.slice(0, sepIndex).trim()
-    }
-    else {
-      const braceIndex = fullText.indexOf('\n{')
-      if (braceIndex !== -1)
-        content = fullText.slice(0, braceIndex).trim()
-      else if (fullText.trimStart().startsWith('{'))
-        content = ''
-    }
-
     const message: AIChatMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
       role: 'assistant',
-      content,
+      content: extractDescriptionText(currentStreamText.value),
       design,
       createdAt: new Date(),
     }
@@ -144,7 +134,7 @@ export const useAIChatStore = defineStore('aiChat', () => {
 
   function getConversationHistory(): AIChatMessage[] {
     // Return messages for context (excluding current streaming)
-    return messages.value.slice(-10) // Last 10 messages for context
+    return messages.value.slice(-MAX_CONVERSATION_LENGTH)
   }
 
   return {

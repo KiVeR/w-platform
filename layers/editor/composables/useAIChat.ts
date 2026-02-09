@@ -37,21 +37,19 @@ export function useAIChat() {
     if (!chatStore.canSend || !prompt.trim())
       return
 
-    // Add user message to conversation
     chatStore.addUserMessage(prompt, image)
     chatStore.startAssistantMessage()
-
-    // Clear pending image after sending
     chatStore.setPendingImage(null)
 
-    // Build request
+    const contentStore = useContentStore()
+
     const request: AIChatRequest = {
       prompt,
       image,
       conversationHistory: chatStore.getConversationHistory().slice(0, -1), // Exclude the message we just added
       context: {
         currentWidgets: editorStore.design?.widgets?.length ?? 0,
-        contentType: 'landing-page', // TODO: Get from current content context
+        contentType: contentStore.type || 'landing-page',
       },
     }
 
@@ -164,19 +162,15 @@ export function useAIChat() {
   }
 
   /**
-   * Apply a generated design to the current document
-   * Integrates with history store for undo support
+   * Apply a generated design to the current document with undo support
    */
   function applyDesign(design: DesignDocument): void {
-    // Save current state for undo (use toRaw to avoid structuredClone issues with Vue proxies)
+    // toRaw avoids structuredClone issues with Vue proxies
     if (editorStore.design) {
       historyStore.pushState(toRaw(editorStore.design))
     }
 
-    // Apply the new design to editor store
     editorStore.setDesign(design)
-
-    // Sync widgets with the widgets store
     widgetsStore.setWidgets(design.widgets || [])
   }
 
@@ -201,16 +195,11 @@ export function useAIChat() {
     return new Promise((resolve) => {
       const reader = new FileReader()
       reader.onload = () => {
-        const result = reader.result as string
-        // Extract base64 data without the data URL prefix
-        const base64Data = result.split(',')[1]
-
-        const image: AIImageInput = {
+        const base64Data = (reader.result as string).split(',')[1]
+        resolve({
           data: base64Data,
           mimeType: file.type as AIImageInput['mimeType'],
-        }
-
-        resolve(image)
+        })
       }
       reader.onerror = () => {
         chatStore.setError('Erreur lors de la lecture du fichier')
@@ -220,9 +209,6 @@ export function useAIChat() {
     })
   }
 
-  /**
-   * Set a pending image for the next message
-   */
   async function attachImage(file: File): Promise<void> {
     const image = await prepareImage(file)
     if (image) {
@@ -230,9 +216,6 @@ export function useAIChat() {
     }
   }
 
-  /**
-   * Remove the pending image
-   */
   function removeImage(): void {
     chatStore.setPendingImage(null)
   }

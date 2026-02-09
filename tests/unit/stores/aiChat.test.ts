@@ -401,15 +401,15 @@ describe('useAIChatStore', () => {
       expect(history).toHaveLength(5)
     })
 
-    it('returns only the last 10 messages when more than 10 exist', () => {
+    it('returns only the last 20 messages when more than 20 exist', () => {
       const store = useAIChatStore()
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 25; i++) {
         store.addUserMessage(`Message ${i}`)
       }
       const history = store.getConversationHistory()
-      expect(history).toHaveLength(10)
+      expect(history).toHaveLength(20)
       expect(history[0].content).toBe('Message 5')
-      expect(history[9].content).toBe('Message 14')
+      expect(history[19].content).toBe('Message 24')
     })
   })
 
