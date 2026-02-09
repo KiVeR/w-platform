@@ -201,7 +201,7 @@ it('denies schedule on another partner campaign', function (): void {
 // ==================== SEND ====================
 
 it('sends a campaign via the default driver', function (): void {
-    $partner = Partner::factory()->create();
+    $partner = Partner::factory()->create(['euro_credits' => '1000.00']);
     $user = User::factory()->forPartner($partner)->create();
     $user->assignRole('partner');
     Passport::actingAs($user);
@@ -231,7 +231,7 @@ it('sends a campaign via the default driver', function (): void {
         ->assertJsonPath('data.status', 'sending');
 
     $campaign->refresh();
-    expect($campaign->trigger_campaign_uuid)->toBe('test-uuid-123');
+    expect($campaign->external_id)->toBe('test-uuid-123');
 });
 
 it('rejects send without message', function (): void {
@@ -299,7 +299,7 @@ it('rejects send on already sent campaign', function (): void {
 });
 
 it('handles sender failure gracefully', function (): void {
-    $partner = Partner::factory()->create();
+    $partner = Partner::factory()->create(['euro_credits' => '1000.00']);
     $user = User::factory()->forPartner($partner)->create();
     $user->assignRole('partner');
     Passport::actingAs($user);
@@ -396,4 +396,40 @@ it('denies cancel on another partner campaign', function (): void {
     $campaign = Campaign::factory()->forPartner($partner2)->create();
 
     $this->postJson("/api/campaigns/{$campaign->id}/cancel")->assertForbidden();
+});
+
+// ==================== RSMS.CO VALIDATION ====================
+
+it('rejects send with rsms.co domain in message', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
+        'message' => 'Visit rsms.co/promo',
+        'sender' => 'WELLPACK',
+        'volume_estimated' => 500,
+    ]);
+
+    $this->postJson("/api/campaigns/{$campaign->id}/send")
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.message.0', 'The domain rsms.co is not allowed.');
+});
+
+it('rejects schedule with rsms.co domain in message', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
+        'message' => 'Click rsms.co/offer',
+        'sender' => 'WELLPACK',
+    ]);
+
+    $this->postJson("/api/campaigns/{$campaign->id}/schedule", [
+        'scheduled_at' => now()->addDay()->format('Y-m-d H:i:s'),
+    ])->assertUnprocessable()
+        ->assertJsonPath('errors.message.0', 'The domain rsms.co is not allowed.');
 });

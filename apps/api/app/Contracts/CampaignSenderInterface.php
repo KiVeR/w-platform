@@ -10,4 +10,6 @@ use App\Models\Campaign;
 interface CampaignSenderInterface
 {
     public function send(Campaign $campaign): SendResult;
+
+    public function estimateVolume(Campaign $campaign): int;
 }

@@ -23,7 +23,7 @@ class PartnerResource extends JsonResource
             'city' => $this->city,
             'zip_code' => $this->zip_code,
             'logo_url' => $this->logo_url,
-            'sms_credits' => $this->sms_credits,
+            'euro_credits' => $this->euro_credits,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'users_count' => $this->whenCounted('users'),

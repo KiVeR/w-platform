@@ -39,4 +39,6 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
     Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
+    Route::get('campaigns/{campaign}/stats', [CampaignsController::class, 'stats']);
+    Route::get('campaigns/{campaign}/export', [CampaignsController::class, 'export']);
 });

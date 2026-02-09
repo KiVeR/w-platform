@@ -25,6 +25,7 @@ class CampaignFactory extends Factory
             'type' => CampaignType::PROSPECTION,
             'channel' => CampaignChannel::SMS,
             'status' => CampaignStatus::DRAFT,
+            'is_demo' => false,
             'name' => fake()->sentence(3),
             'targeting' => null,
             'volume_estimated' => 0,
@@ -72,6 +73,13 @@ class CampaignFactory extends Factory
         return $this->state(fn (array $attributes): array => [
             'status' => CampaignStatus::SENT,
             'sent_at' => now(),
+        ]);
+    }
+
+    public function demo(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_demo' => true,
         ]);
     }
 

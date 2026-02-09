@@ -20,7 +20,7 @@ class StorePartnerRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:255'],
             'zip_code' => ['nullable', 'string', 'max:10'],
             'logo_url' => ['nullable', 'url', 'max:255'],
-            'sms_credits' => ['nullable', 'integer', 'min:0'],
+            'euro_credits' => ['nullable', 'numeric', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }

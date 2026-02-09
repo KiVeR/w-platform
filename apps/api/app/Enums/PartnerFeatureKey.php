@@ -22,6 +22,9 @@ enum PartnerFeatureKey: string
     case LOCATION_GEOLOC = 'location_geoloc';
     case LOCATION_IRIS = 'location_iris';
 
+    // Demo
+    case DEMO_MODE = 'demo_mode';
+
     // Analytics
     case ANALYTICS_PROSPECTION = 'analytics_prospection';
     case ANALYTICS_FIDELISATION = 'analytics_fidelisation';

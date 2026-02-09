@@ -8,6 +8,7 @@ use App\Enums\PartnerFeatureKey;
 use Database\Factories\PartnerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,7 +28,8 @@ class Partner extends Model
         'city',
         'zip_code',
         'logo_url',
-        'sms_credits',
+        'euro_credits',
+        'router_id',
     ];
 
     /** @return array<string, string> */
@@ -35,8 +37,14 @@ class Partner extends Model
     {
         return [
             'is_active' => 'boolean',
-            'sms_credits' => 'integer',
+            'euro_credits' => 'decimal:2',
         ];
+    }
+
+    /** @return BelongsTo<Router, $this> */
+    public function router(): BelongsTo
+    {
+        return $this->belongsTo(Router::class);
     }
 
     /** @return HasMany<User, $this> */

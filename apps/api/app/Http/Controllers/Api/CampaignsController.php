@@ -5,17 +5,24 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Contracts\CampaignSenderInterface;
+use App\Contracts\CampaignStatsProviderInterface;
 use App\Enums\CampaignStatus;
+use App\Exceptions\InsufficientCreditsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Campaign\ScheduleCampaignRequest;
 use App\Http\Requests\Campaign\StoreCampaignRequest;
 use App\Http\Requests\Campaign\UpdateCampaignRequest;
 use App\Http\Resources\CampaignResource;
+use App\Http\Resources\CampaignStatsResource;
 use App\Models\Campaign;
 use App\Models\User;
+use App\Services\CampaignExportService;
+use App\Services\CampaignSending\StopSmsService;
+use App\Services\CreditService;
 use App\Services\PricingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CampaignsController extends Controller
@@ -76,9 +83,15 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    public function destroy(Campaign $campaign): JsonResponse
+    public function destroy(Campaign $campaign, CreditService $creditService): JsonResponse
     {
         $this->authorize('delete', $campaign);
+
+        if (! $campaign->is_demo && $campaign->total_price > 0
+            && in_array($campaign->status, [CampaignStatus::SCHEDULED, CampaignStatus::SENDING], true)
+            && $campaign->partner) {
+            $creditService->refund($campaign->partner, (float) $campaign->total_price);
+        }
 
         $campaign->delete();
 
@@ -112,12 +125,23 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    public function schedule(ScheduleCampaignRequest $request, Campaign $campaign): CampaignResource|JsonResponse
+    public function schedule(ScheduleCampaignRequest $request, Campaign $campaign, StopSmsService $stopSmsService, CreditService $creditService): CampaignResource|JsonResponse
     {
         $this->authorize('update', $campaign);
 
-        if ($error = $this->ensureReadyToSend($campaign)) {
+        if ($error = $this->ensureReadyToSend($campaign, $stopSmsService)) {
             return $error;
+        }
+
+        if (! $campaign->is_demo && $campaign->total_price > 0 && $campaign->partner) {
+            try {
+                $creditService->deduct($campaign->partner, (float) $campaign->total_price);
+            } catch (InsufficientCreditsException $e) {
+                return new JsonResponse([
+                    'message' => $e->getMessage(),
+                    'errors' => ['euro_credits' => ["Required: {$e->required}€, available: {$e->available}€"]],
+                ], 422);
+            }
         }
 
         $campaign->update([
@@ -128,11 +152,11 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    public function send(Campaign $campaign, CampaignSenderInterface $sender, PricingService $pricingService): CampaignResource|JsonResponse
+    public function send(Campaign $campaign, CampaignSenderInterface $sender, PricingService $pricingService, StopSmsService $stopSmsService, CreditService $creditService): CampaignResource|JsonResponse
     {
         $this->authorize('send', $campaign);
 
-        if ($error = $this->ensureReadyToSend($campaign)) {
+        if ($error = $this->ensureReadyToSend($campaign, $stopSmsService)) {
             return $error;
         }
 
@@ -153,10 +177,28 @@ class CampaignsController extends Controller
             return new JsonResponse(['error' => $e->getMessage()], 422);
         }
 
+        if (! $campaign->is_demo && $estimate->totalPrice > 0 && $campaign->partner) {
+            try {
+                $creditService->deduct($campaign->partner, $estimate->totalPrice);
+            } catch (InsufficientCreditsException $e) {
+                return new JsonResponse([
+                    'message' => $e->getMessage(),
+                    'errors' => ['euro_credits' => ["Required: {$e->required}€, available: {$e->available}€"]],
+                ], 422);
+            }
+        }
+
         $result = $sender->send($campaign);
 
         if (! $result->success) {
-            $campaign->update(['status' => CampaignStatus::FAILED]);
+            if (! $campaign->is_demo && $estimate->totalPrice > 0 && $campaign->partner) {
+                $creditService->refund($campaign->partner, $estimate->totalPrice);
+            }
+
+            $campaign->update([
+                'status' => CampaignStatus::FAILED,
+                'error_message' => $result->error,
+            ]);
 
             return new JsonResponse(['error' => $result->error], 502);
         }
@@ -165,15 +207,21 @@ class CampaignsController extends Controller
             'status' => CampaignStatus::SENDING,
             'unit_price' => $estimate->unitPrice,
             'total_price' => $estimate->totalPrice,
-            'trigger_campaign_uuid' => $result->externalId,
+            'external_id' => $result->externalId,
         ]);
 
         return new CampaignResource($campaign->fresh());
     }
 
-    public function cancel(Campaign $campaign): CampaignResource
+    public function cancel(Campaign $campaign, CreditService $creditService): CampaignResource
     {
         $this->authorize('cancel', $campaign);
+
+        if (! $campaign->is_demo && $campaign->total_price > 0
+            && in_array($campaign->status, [CampaignStatus::SCHEDULED, CampaignStatus::SENDING], true)
+            && $campaign->partner) {
+            $creditService->refund($campaign->partner, (float) $campaign->total_price);
+        }
 
         $campaign->update([
             'status' => CampaignStatus::CANCELLED,
@@ -182,7 +230,54 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    private function ensureReadyToSend(Campaign $campaign): ?JsonResponse
+    public function export(Campaign $campaign, CampaignExportService $exportService): Response|JsonResponse
+    {
+        $this->authorize('view', $campaign);
+
+        if ($campaign->status !== CampaignStatus::SENT) {
+            return new JsonResponse(['message' => 'Only sent campaigns can be exported.'], 422);
+        }
+
+        $csv = $exportService->generateCsv($campaign);
+        $filename = $exportService->getFilename($campaign);
+
+        return response($csv, 200)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
+    }
+
+    public function stats(Campaign $campaign, CampaignStatsProviderInterface $statsProvider): CampaignStatsResource|JsonResponse
+    {
+        $this->authorize('view', $campaign);
+
+        if ($campaign->status !== CampaignStatus::SENT) {
+            return new JsonResponse(['message' => 'Stats only available for sent campaigns.'], 422);
+        }
+
+        if (! $campaign->sent_at) {
+            return new JsonResponse(['message' => 'Stats not yet available.', 'available_at' => null], 422);
+        }
+
+        $delayHours = (int) config('campaign-sending.notifications.stats_delay_hours', 72);
+        $availableAt = $campaign->sent_at->addHours($delayHours);
+
+        if (now()->lt($availableAt)) {
+            return new JsonResponse([
+                'message' => 'Stats not yet available.',
+                'available_at' => $availableAt->toIso8601String(),
+            ], 422);
+        }
+
+        $stats = $statsProvider->getStats($campaign);
+
+        if (! $stats) {
+            return new JsonResponse(['message' => 'Stats retrieval failed.'], 503);
+        }
+
+        return new CampaignStatsResource($stats);
+    }
+
+    private function ensureReadyToSend(Campaign $campaign, StopSmsService $stopSmsService): ?JsonResponse
     {
         if (! $campaign->message || ! $campaign->sender) {
             return new JsonResponse(
@@ -190,6 +285,13 @@ class CampaignsController extends Controller
                     'message' => ! $campaign->message ? ['Message is required.'] : null,
                     'sender' => ! $campaign->sender ? ['Sender is required.'] : null,
                 ])],
+                422,
+            );
+        }
+
+        if ($stopSmsService->containsBlockedDomain($campaign->message)) {
+            return new JsonResponse(
+                ['message' => 'Message contains a blocked domain.', 'errors' => ['message' => ['The domain rsms.co is not allowed.']]],
                 422,
             );
         }
