@@ -1,0 +1,38 @@
+{
+  "name": "dashboard",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "nuxt typecheck",
+    "typecheck": "nuxt typecheck",
+    "generate:types": "openapi-typescript http://localhost:8000/docs/api.json -o app/types/api.d.ts"
+  },
+  "dependencies": {
+    "@nuxtjs/i18n": "^10.2.3",
+    "@pinia/nuxt": "^0.11.3",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.563.0",
+    "nuxt": "^4.3.1",
+    "pinia": "^3.0.4",
+    "tailwind-merge": "^3.4.0",
+    "vue": "^3.5.27",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^4.0.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^20.5.3",
+    "shadcn-nuxt": "^2.4.3",
+    "tailwindcss": "^4.1.18",
+    "vitest": "^4.0.18"
+  }
+}

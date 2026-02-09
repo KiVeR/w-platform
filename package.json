@@ -4,6 +4,10 @@
   "scripts": {
     "dev:dashboard": "pnpm --filter dashboard dev",
     "build:dashboard": "pnpm --filter dashboard build",
+    "test:dashboard": "pnpm --filter dashboard test",
+    "lint:dashboard": "pnpm --filter dashboard lint",
+    "typecheck:dashboard": "pnpm --filter dashboard typecheck",
+    "generate:types": "pnpm --filter dashboard generate:types",
     "dev:api": "cd apps/api && php artisan serve"
   }
 }
