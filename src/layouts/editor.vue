@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getContentTypeSlug } from '#shared/utils/content'
-import { onBeforeUnmount, onMounted } from 'vue'
 import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -8,10 +7,15 @@ import { useAuthStore } from '@/stores/auth'
 // Provide editor config for the layer — Kreo standalone wiring
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
-provideEditorConfig({
+// Read schema UUID from route query if provided (e.g. ?schemaUuid=xxx)
+const schemaUuid = computed(() => (route.query.schemaUuid as string) || undefined)
+
+const editorConfig: EditorConfig = {
   apiBaseUrl: '/api/v1',
   getAuthToken: () => authStore.accessToken,
+  // theme: { primaryColor: '#3b82f6' }, // Uncomment to test theme override
   refreshToken: async () => {
     const success = await authStore.refresh()
     return success ? authStore.accessToken : null
@@ -36,8 +40,20 @@ provideEditorConfig({
     ai: true,
     history: true,
     templates: true,
+    variables: true,
   },
-})
+  variables: schemaUuid.value ? { schemaUuid: schemaUuid.value } : undefined,
+}
+provideEditorConfig(editorConfig)
+
+// Initialize editor theme (applies CSS variables based on config.theme)
+useEditorTheme(editorConfig)
+
+// Initialize variable schema if configured
+const { initialize: initVariables } = useVariableSchema()
+if (schemaUuid.value) {
+  initVariables({ schemaUuid: schemaUuid.value })
+}
 
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()

@@ -6,6 +6,7 @@ interface ContentDesignResponse {
   id: number
   title: string
   status: PageStatusType
+  variableSchemaUuid?: string | null
   design: DesignDocument
   updatedAt: string
 }
@@ -42,7 +43,13 @@ async function loadContent(): Promise<void> {
       type: 'landing-page',
       title: data.title,
       status: data.status,
+      variableSchemaUuid: data.variableSchemaUuid ?? null,
     })
+
+    // Auto-initialize variable schema from DB if not already set via query param
+    if (data.variableSchemaUuid && !route.query.schemaUuid) {
+      useVariableSchema().initialize({ schemaUuid: data.variableSchemaUuid })
+    }
   }
   catch (error: unknown) {
     const err = error as { statusCode?: number, message?: string }
