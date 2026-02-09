@@ -30,6 +30,11 @@ class WepakClient
         return $this->post('/sendsmsjson.php', $payload, $this->timeout);
     }
 
+    public function getStats(string $campaignId): WepakResponse
+    {
+        return $this->post('/statcampagne.php', ['id_campagne' => $campaignId], 10);
+    }
+
     /** @param array<string, mixed> $payload */
     public function estimateVolume(array $payload): WepakResponse
     {

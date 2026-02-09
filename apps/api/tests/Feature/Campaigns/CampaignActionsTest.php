@@ -201,7 +201,7 @@ it('denies schedule on another partner campaign', function (): void {
 // ==================== SEND ====================
 
 it('sends a campaign via the default driver', function (): void {
-    $partner = Partner::factory()->create();
+    $partner = Partner::factory()->create(['euro_credits' => '1000.00']);
     $user = User::factory()->forPartner($partner)->create();
     $user->assignRole('partner');
     Passport::actingAs($user);
@@ -299,7 +299,7 @@ it('rejects send on already sent campaign', function (): void {
 });
 
 it('handles sender failure gracefully', function (): void {
-    $partner = Partner::factory()->create();
+    $partner = Partner::factory()->create(['euro_credits' => '1000.00']);
     $user = User::factory()->forPartner($partner)->create();
     $user->assignRole('partner');
     Passport::actingAs($user);

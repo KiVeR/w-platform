@@ -35,7 +35,7 @@ it('can create a partner with all fields', function (): void {
         'city' => 'Paris',
         'zip_code' => '75001',
         'logo_url' => 'https://example.com/logo.png',
-        'sms_credits' => 5000,
+        'euro_credits' => '500.00',
     ]);
 
     expect($partner)
@@ -45,7 +45,7 @@ it('can create a partner with all fields', function (): void {
         ->city->toBe('Paris')
         ->zip_code->toBe('75001')
         ->logo_url->toBe('https://example.com/logo.png')
-        ->sms_credits->toBe(5000);
+        ->euro_credits->toBe('500.00');
 });
 
 it('has many users', function (): void {
@@ -107,8 +107,8 @@ it('casts is_active as boolean', function (): void {
     expect($partner->is_active)->toBeTrue()->toBeBool();
 });
 
-it('casts sms_credits as integer', function (): void {
-    $partner = Partner::factory()->create(['sms_credits' => 100]);
+it('casts euro_credits as decimal', function (): void {
+    $partner = Partner::factory()->create(['euro_credits' => '100.50']);
 
-    expect($partner->sms_credits)->toBe(100)->toBeInt();
+    expect($partner->euro_credits)->toBe('100.50')->toBeString();
 });

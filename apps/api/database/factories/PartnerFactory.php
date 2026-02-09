@@ -18,7 +18,7 @@ class PartnerFactory extends Factory
             'name' => fake()->company(),
             'code' => fake()->unique()->lexify('????'),
             'is_active' => true,
-            'sms_credits' => 0,
+            'euro_credits' => '0.00',
         ];
     }
 }

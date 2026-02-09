@@ -40,6 +40,24 @@ class WepakPayloadBuilder
     }
 
     /**
+     * Build payload for demo mode (/smsenvoi.php with query=send_test).
+     * Sends to additional_phone (or partner phone as fallback), no targeting.
+     *
+     * @return array<string, mixed>
+     */
+    public function buildDemoPayload(Campaign $campaign): array
+    {
+        return [
+            'query' => 'send_test',
+            'numero_commercant' => $campaign->additional_phone ?? $campaign->partner?->phone,
+            'content' => $campaign->message ?? '',
+            'senderlabel' => $campaign->sender ?? '',
+            'idrouteur' => $this->getRouterId($campaign),
+            'idcampagne' => $campaign->id,
+        ];
+    }
+
+    /**
      * Build payload for fidelisation campaign (/sendsmsjson.php).
      *
      * @param  list<array{phone: string, prenom?: string}>  $recipients

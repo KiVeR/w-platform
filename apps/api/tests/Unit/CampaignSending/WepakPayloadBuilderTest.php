@@ -190,6 +190,73 @@ it('guesses location type from code length', function (): void {
         ->and($payload['liste_cp_dept'][2]['type'])->toBe('iris');
 });
 
+// ==================== DEMO PAYLOAD ====================
+
+it('builds demo payload with query send_test', function (): void {
+    $partner = Partner::factory()->create(['phone' => '+33600000000']);
+    $user = User::factory()->forPartner($partner)->create();
+
+    $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
+        'message' => 'Test Demo',
+        'sender' => 'BRAND',
+    ]);
+
+    $payload = $this->builder->buildDemoPayload($campaign);
+
+    expect($payload['query'])->toBe('send_test')
+        ->and($payload['content'])->toBe('Test Demo')
+        ->and($payload['senderlabel'])->toBe('BRAND')
+        ->and($payload['idcampagne'])->toBe($campaign->id);
+});
+
+it('builds demo payload with additional_phone', function (): void {
+    $partner = Partner::factory()->create(['phone' => '+33600000000']);
+    $user = User::factory()->forPartner($partner)->create();
+
+    $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
+        'message' => 'Test',
+        'sender' => 'BRAND',
+        'additional_phone' => '+33611111111',
+    ]);
+
+    $payload = $this->builder->buildDemoPayload($campaign);
+
+    expect($payload['numero_commercant'])->toBe('+33611111111');
+});
+
+it('builds demo payload with fallback to partner phone', function (): void {
+    $partner = Partner::factory()->create(['phone' => '+33600000000']);
+    $user = User::factory()->forPartner($partner)->create();
+
+    $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
+        'message' => 'Test',
+        'sender' => 'BRAND',
+        'additional_phone' => null,
+    ]);
+
+    $payload = $this->builder->buildDemoPayload($campaign);
+
+    expect($payload['numero_commercant'])->toBe('+33600000000');
+});
+
+it('builds demo payload without targeting fields', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+
+    $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
+        'message' => 'Test',
+        'sender' => 'BRAND',
+    ]);
+
+    $payload = $this->builder->buildDemoPayload($campaign);
+
+    expect($payload)->not->toHaveKey('volume')
+        ->and($payload)->not->toHaveKey('liste_cp_dept')
+        ->and($payload)->not->toHaveKey('genre')
+        ->and($payload)->not->toHaveKey('age_min')
+        ->and($payload)->not->toHaveKey('age_max');
+});
+
 it('detects double sms', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();

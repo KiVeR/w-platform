@@ -20,8 +20,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property CampaignChannel $channel
  * @property CampaignStatus $status
  * @property array<string, mixed>|null $targeting
+ * @property bool $is_demo
+ * @property string|null $additional_phone
  * @property int|null $volume_estimated
  * @property int|null $partner_id
+ * @property float|null $total_price
+ * @property \Illuminate\Support\Carbon|null $sent_at
  */
 class Campaign extends Model
 {
@@ -40,12 +44,14 @@ class Campaign extends Model
         'type',
         'channel',
         'status',
+        'is_demo',
         'name',
         'targeting',
         'volume_estimated',
         'volume_sent',
         'message',
         'sender',
+        'additional_phone',
         'sms_count',
         'short_url',
         'scheduled_at',
@@ -67,6 +73,7 @@ class Campaign extends Model
             'type' => CampaignType::class,
             'channel' => CampaignChannel::class,
             'status' => CampaignStatus::class,
+            'is_demo' => 'boolean',
             'targeting' => 'array',
             'volume_estimated' => 'integer',
             'volume_sent' => 'integer',

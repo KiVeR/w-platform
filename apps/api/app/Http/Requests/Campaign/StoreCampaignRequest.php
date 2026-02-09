@@ -32,6 +32,8 @@ class StoreCampaignRequest extends FormRequest
             'targeting.geo.postcodes.*.code' => ['required_with:targeting.geo.postcodes', 'string'],
             'targeting.geo.postcodes.*.volume' => ['nullable', 'integer', 'min:0'],
             'scheduled_at' => ['nullable', 'date', 'after:now'],
+            'is_demo' => ['sometimes', 'boolean'],
+            'additional_phone' => ['nullable', 'string', 'max:20'],
         ];
 
         if ($user->hasRole('admin')) {

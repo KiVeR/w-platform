@@ -9,6 +9,7 @@ use App\Enums\CampaignStatus;
 use App\Models\Campaign;
 use App\Notifications\CampaignFailedNotification;
 use App\Notifications\CampaignSentNotification;
+use App\Services\CreditService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -55,6 +56,13 @@ class ProcessCampaignSendingJob implements ShouldQueue
                 'status' => CampaignStatus::FAILED,
                 'error_message' => $result->error,
             ]);
+
+            if (! $this->campaign->is_demo && $this->campaign->total_price > 0 && $this->campaign->partner) {
+                app(CreditService::class)->refund(
+                    $this->campaign->partner,
+                    (float) $this->campaign->total_price,
+                );
+            }
 
             Log::error('Campaign sending failed', [
                 'campaign_id' => $this->campaign->id,

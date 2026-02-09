@@ -53,7 +53,9 @@ class WepakDriver implements CampaignSenderInterface
 
     protected function sendProspection(Campaign $campaign): SendResult
     {
-        $payload = $this->payloadBuilder->buildProspectionPayload($campaign);
+        $payload = $campaign->is_demo
+            ? $this->payloadBuilder->buildDemoPayload($campaign)
+            : $this->payloadBuilder->buildProspectionPayload($campaign);
         $response = $this->client->sendProspection($payload);
 
         if (! $response->success) {

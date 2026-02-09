@@ -28,7 +28,7 @@ class Partner extends Model
         'city',
         'zip_code',
         'logo_url',
-        'sms_credits',
+        'euro_credits',
         'router_id',
     ];
 
@@ -37,7 +37,7 @@ class Partner extends Model
     {
         return [
             'is_active' => 'boolean',
-            'sms_credits' => 'integer',
+            'euro_credits' => 'decimal:2',
         ];
     }
 

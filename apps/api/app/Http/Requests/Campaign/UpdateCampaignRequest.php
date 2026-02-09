@@ -25,6 +25,8 @@ class UpdateCampaignRequest extends FormRequest
             'targeting.age_max' => ['nullable', 'integer', 'min:0'],
             'targeting.geo' => ['nullable', 'array'],
             'scheduled_at' => ['nullable', 'date', 'after:now'],
+            'is_demo' => ['sometimes', 'boolean'],
+            'additional_phone' => ['nullable', 'string', 'max:20'],
         ];
     }
 }
