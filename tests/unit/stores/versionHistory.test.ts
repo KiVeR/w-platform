@@ -5,7 +5,6 @@ import { computed, ref } from 'vue'
 import { createVersionDetail, createVersionsResponse, createVersionSummary } from '../../helpers/factories'
 import { stubContentVersionApi } from '../../helpers/stubs'
 
-// Re-stub Nuxt auto-imports (unstubGlobals restores after each test)
 vi.stubGlobal('ref', ref)
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('defineStore', defineStore)
@@ -24,18 +23,25 @@ const versionApi = stubContentVersionApi()
 
 const { useVersionHistoryStore } = await import('#editor/stores/versionHistory')
 
-/** Create a store with its API already wired up. */
+const mockRestoreResponse = { rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } }
+
 function createStore() {
   const store = useVersionHistoryStore()
   store.setApi(versionApi)
   return store
 }
 
+async function setupRestore(store: ReturnType<typeof useVersionHistoryStore>) {
+  const detail = createVersionDetail({ id: 5 })
+  versionApi.getVersion.mockResolvedValue(detail)
+  versionApi.restoreVersion.mockResolvedValue(mockRestoreResponse)
+  versionApi.getVersions.mockResolvedValue(createVersionsResponse())
+  await store.selectVersion(5)
+  return detail
+}
+
 describe('useVersionHistoryStore', () => {
   beforeEach(() => {
-    vi.stubGlobal('ref', ref)
-    vi.stubGlobal('computed', computed)
-    vi.stubGlobal('defineStore', defineStore)
     setActivePinia(createPinia())
     mockContentStore.id = 1
     mockUIStore.isHistoryMode = false
@@ -50,28 +56,12 @@ describe('useVersionHistoryStore', () => {
   })
 
   describe('initial state', () => {
-    it('has empty versions array', () => {
+    it('has expected defaults', () => {
       const store = useVersionHistoryStore()
       expect(store.versions).toEqual([])
-    })
-
-    it('has selectedVersion null', () => {
-      const store = useVersionHistoryStore()
       expect(store.selectedVersion).toBeNull()
-    })
-
-    it('has isLoading false', () => {
-      const store = useVersionHistoryStore()
       expect(store.isLoading).toBe(false)
-    })
-
-    it('has isLoadingVersion false', () => {
-      const store = useVersionHistoryStore()
       expect(store.isLoadingVersion).toBe(false)
-    })
-
-    it('has isRestoring false', () => {
-      const store = useVersionHistoryStore()
       expect(store.isRestoring).toBe(false)
     })
   })
@@ -83,7 +73,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       expect(versionApi.getVersions).toHaveBeenCalledWith(1, { page: 1, pageSize: 10 })
     })
@@ -93,7 +82,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       expect(versionApi.getVersions).not.toHaveBeenCalled()
     })
@@ -106,7 +94,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       expect(store.versions).toEqual(response.versions)
       expect(store.total).toBe(25)
@@ -122,7 +109,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       expect(store.hasMore).toBe(false)
     })
@@ -141,7 +127,6 @@ describe('useVersionHistoryStore', () => {
 
       resolvePromise!(createVersionsResponse())
       await promise
-      await flushPromises()
 
       expect(store.isLoading).toBe(false)
     })
@@ -151,7 +136,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions().catch(() => {})
-      await flushPromises()
 
       expect(store.isLoading).toBe(false)
     })
@@ -166,7 +150,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       const secondResponse = createVersionsResponse({
         versions: [createVersionSummary({ id: 10 })],
@@ -175,7 +158,6 @@ describe('useVersionHistoryStore', () => {
       versionApi.getVersions.mockResolvedValue(secondResponse)
 
       await store.loadMore()
-      await flushPromises()
 
       expect(versionApi.getVersions).toHaveBeenCalledWith(1, { page: 2, pageSize: 10 })
     })
@@ -190,7 +172,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       const secondVersions = [createVersionSummary({ id: 3 })]
       const secondResponse = createVersionsResponse({
@@ -200,7 +181,6 @@ describe('useVersionHistoryStore', () => {
       versionApi.getVersions.mockResolvedValue(secondResponse)
 
       await store.loadMore()
-      await flushPromises()
 
       expect(store.versions).toHaveLength(3)
       expect(store.versions[0].id).toBe(1)
@@ -215,19 +195,14 @@ describe('useVersionHistoryStore', () => {
       versionApi.getVersions.mockReturnValue(pendingFirst)
 
       const store = createStore()
-      // Start loadVersions to set isLoading=true
       const promise = store.loadVersions()
 
-      // Try to loadMore while isLoading
       await store.loadMore()
-      await flushPromises()
 
-      // getVersions was called once for loadVersions, not again for loadMore
       expect(versionApi.getVersions).toHaveBeenCalledTimes(1)
 
       resolveFirst!(createVersionsResponse())
       await promise
-      await flushPromises()
     })
 
     it('skips if hasMore is false', async () => {
@@ -238,11 +213,9 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       versionApi.getVersions.mockClear()
       await store.loadMore()
-      await flushPromises()
 
       expect(versionApi.getVersions).not.toHaveBeenCalled()
     })
@@ -255,12 +228,10 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       versionApi.getVersions.mockRejectedValue(new Error('network error'))
 
       await store.loadMore().catch(() => {})
-      await flushPromises()
 
       expect(store.isLoading).toBe(false)
     })
@@ -273,7 +244,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.selectVersion(42)
-      await flushPromises()
 
       expect(versionApi.getVersion).toHaveBeenCalledWith(1, 42)
       expect(store.selectedVersion).toEqual(detail)
@@ -284,15 +254,11 @@ describe('useVersionHistoryStore', () => {
       versionApi.getVersion.mockResolvedValue(detail)
 
       const store = createStore()
-      // First call populates cache
       await store.selectVersion(7)
-      await flushPromises()
 
       versionApi.getVersion.mockClear()
 
-      // Second call should hit cache
       await store.selectVersion(7)
-      await flushPromises()
 
       expect(versionApi.getVersion).not.toHaveBeenCalled()
       expect(store.selectedVersion).toEqual(detail)
@@ -301,36 +267,28 @@ describe('useVersionHistoryStore', () => {
     it('evicts oldest cache entry when cache size >= 5', async () => {
       const store = createStore()
 
-      // Fill cache with 5 entries (ids 1-5)
       for (let i = 1; i <= 5; i++) {
         const detail = createVersionDetail({ id: i })
         versionApi.getVersion.mockResolvedValue(detail)
         await store.selectVersion(i)
-        await flushPromises()
       }
 
       versionApi.getVersion.mockClear()
 
-      // Add 6th entry, should evict id=1
       const detail6 = createVersionDetail({ id: 6 })
       versionApi.getVersion.mockResolvedValue(detail6)
       await store.selectVersion(6)
-      await flushPromises()
 
       versionApi.getVersion.mockClear()
 
-      // id=1 should no longer be cached, requires API call
       const detail1 = createVersionDetail({ id: 1 })
       versionApi.getVersion.mockResolvedValue(detail1)
       await store.selectVersion(1)
-      await flushPromises()
 
       expect(versionApi.getVersion).toHaveBeenCalledWith(1, 1)
 
-      // id=3 should still be cached (eviction only removed id=1, then id=2)
       versionApi.getVersion.mockClear()
       await store.selectVersion(3)
-      await flushPromises()
 
       expect(versionApi.getVersion).not.toHaveBeenCalled()
     })
@@ -338,108 +296,69 @@ describe('useVersionHistoryStore', () => {
 
   describe('restoreVersion', () => {
     it('calls restoreVersion API', async () => {
-      const detail = createVersionDetail({ id: 5 })
-      versionApi.getVersion.mockResolvedValue(detail)
-      versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
-      versionApi.getVersions.mockResolvedValue(createVersionsResponse())
-
       const store = createStore()
-      await store.selectVersion(5)
-      await flushPromises()
+      await setupRestore(store)
 
       await store.restoreVersion(5)
-      await flushPromises()
 
       expect(versionApi.restoreVersion).toHaveBeenCalledWith(1, 5)
     })
 
     it('updates editorStore.setDesign and widgetsStore.setWidgets', async () => {
-      const detail = createVersionDetail({ id: 5 })
-      versionApi.getVersion.mockResolvedValue(detail)
-      versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
-      versionApi.getVersions.mockResolvedValue(createVersionsResponse())
-
       const store = createStore()
-      await store.selectVersion(5)
-      await flushPromises()
+      const detail = await setupRestore(store)
 
       await store.restoreVersion(5)
-      await flushPromises()
 
       expect(mockEditorStore.setDesign).toHaveBeenCalledWith(detail.design)
       expect(mockWidgetsStore.setWidgets).toHaveBeenCalledWith(detail.design.widgets)
     })
 
     it('calls markAsSaved after restoring', async () => {
-      const detail = createVersionDetail({ id: 5 })
-      versionApi.getVersion.mockResolvedValue(detail)
-      versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
-      versionApi.getVersions.mockResolvedValue(createVersionsResponse())
-
       const store = createStore()
-      await store.selectVersion(5)
-      await flushPromises()
+      await setupRestore(store)
 
       await store.restoreVersion(5)
-      await flushPromises()
 
       expect(mockEditorStore.markAsSaved).toHaveBeenCalled()
     })
 
     it('reloads versions after successful restore', async () => {
-      const detail = createVersionDetail({ id: 5 })
-      versionApi.getVersion.mockResolvedValue(detail)
-      versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
-      versionApi.getVersions.mockResolvedValue(createVersionsResponse())
-
       const store = createStore()
-      await store.selectVersion(5)
-      await flushPromises()
+      await setupRestore(store)
 
       versionApi.getVersions.mockClear()
 
       await store.restoreVersion(5)
+      // loadVersions is fire-and-forget, flush its microtask
       await flushPromises()
 
-      // loadVersions is called (fire-and-forget) after successful restore
       expect(versionApi.getVersions).toHaveBeenCalled()
     })
 
     it('returns false when response is truthy but selectedVersion is null', async () => {
-      versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
+      versionApi.restoreVersion.mockResolvedValue(mockRestoreResponse)
 
       const store = createStore()
-      // Do not select a version, selectedVersion remains null
       const result = await store.restoreVersion(5)
-      await flushPromises()
 
       expect(result).toBe(false)
       expect(mockEditorStore.setDesign).not.toHaveBeenCalled()
     })
 
     it('clears cache and exits history mode in finally block', async () => {
-      const detail = createVersionDetail({ id: 5 })
-      versionApi.getVersion.mockResolvedValue(detail)
-      versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
-      versionApi.getVersions.mockResolvedValue(createVersionsResponse())
-
       const store = createStore()
-      await store.selectVersion(5)
-      await flushPromises()
+      await setupRestore(store)
 
       await store.restoreVersion(5)
-      await flushPromises()
 
-      // Exit history mode clears selectedVersion and calls uiStore.exitHistoryMode
       expect(store.selectedVersion).toBeNull()
       expect(mockUIStore.exitHistoryMode).toHaveBeenCalled()
 
-      // Cache was cleared: next selectVersion should call API
       versionApi.getVersion.mockClear()
       const freshDetail = createVersionDetail({ id: 5 })
       versionApi.getVersion.mockResolvedValue(freshDetail)
       await store.selectVersion(5)
-      await flushPromises()
 
       expect(versionApi.getVersion).toHaveBeenCalledWith(1, 5)
     })
@@ -449,7 +368,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = useVersionHistoryStore()
       const result = await store.restoreVersion(5)
-      await flushPromises()
 
       expect(result).toBe(false)
       expect(versionApi.restoreVersion).not.toHaveBeenCalled()
@@ -468,7 +386,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.enterHistoryMode()
-      await flushPromises()
 
       expect(mockUIStore.enterHistoryMode).toHaveBeenCalled()
       expect(versionApi.getVersions).toHaveBeenCalled()
@@ -484,7 +401,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.selectVersion(3)
-      await flushPromises()
 
       expect(store.selectedVersion).not.toBeNull()
 
@@ -502,17 +418,14 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.selectVersion(8)
-      await flushPromises()
 
       versionApi.getVersion.mockClear()
 
-      // Without clearCache, the cache would be used
       store.clearCache()
 
       const freshDetail = createVersionDetail({ id: 8 })
       versionApi.getVersion.mockResolvedValue(freshDetail)
       await store.selectVersion(8)
-      await flushPromises()
 
       expect(versionApi.getVersion).toHaveBeenCalledWith(1, 8)
     })
@@ -547,7 +460,6 @@ describe('useVersionHistoryStore', () => {
 
       const store = createStore()
       await store.loadVersions()
-      await flushPromises()
 
       expect(versionApi.getVersions).toHaveBeenCalled()
     })

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getContentTypeSlug } from '#shared/utils/content'
+import { useEventListener } from '@vueuse/core'
 import EditorToolbar from '@/components/layout/EditorToolbar.vue'
 import LeftSidebar from '@/components/layout/LeftSidebar.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -68,24 +69,15 @@ function handleKeydown(event: KeyboardEvent): void {
     }
   }
 
-  // Escape to exit history mode
-  if (event.key === 'Escape' && isHistoryActive.value) {
-    navigateToEditor()
-  }
-
-  // Escape to exit preview mode
-  if (event.key === 'Escape' && uiStore.isPreviewMode) {
-    uiStore.setMode('designer')
+  if (event.key === 'Escape') {
+    if (isHistoryActive.value)
+      navigateToEditor()
+    else if (uiStore.isPreviewMode)
+      uiStore.setMode('designer')
   }
 }
 
-onMounted(() => {
-  document.addEventListener('keydown', handleKeydown)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('keydown', handleKeydown)
-})
+useEventListener(document, 'keydown', handleKeydown)
 
 function handleShellClick(event: MouseEvent) {
   // Only in designer mode

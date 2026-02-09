@@ -35,13 +35,8 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     return _contentVersionApi
   }
 
-  // Get current content ID from content store
-  function getContentId(): number | null {
-    return contentStore.id
-  }
-
   async function loadVersions(): Promise<void> {
-    const contentId = getContentId()
+    const contentId = contentStore.id
     if (!contentId)
       return
 
@@ -68,7 +63,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function loadMore(): Promise<void> {
-    const contentId = getContentId()
+    const contentId = contentStore.id
     if (!contentId || isLoading.value || !hasMore.value)
       return
 
@@ -93,7 +88,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function selectVersion(versionId: number): Promise<void> {
-    const contentId = getContentId()
+    const contentId = contentStore.id
     if (!contentId)
       return
 
@@ -112,10 +107,8 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
       if (response) {
         if (versionCache.size >= CACHE_MAX_SIZE) {
-          const firstKey = versionCache.keys().next().value
-          if (firstKey !== undefined) {
-            versionCache.delete(firstKey)
-          }
+          const firstKey = versionCache.keys().next().value!
+          versionCache.delete(firstKey)
         }
         versionCache.set(versionId, response)
         selectedVersion.value = response
@@ -127,7 +120,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
   }
 
   async function restoreVersion(versionId: number): Promise<boolean> {
-    const contentId = getContentId()
+    const contentId = contentStore.id
     if (!contentId)
       return false
 
@@ -148,7 +141,6 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
         return true
       }
 
-      console.error('Failed to restore version')
       return false
     }
     finally {
