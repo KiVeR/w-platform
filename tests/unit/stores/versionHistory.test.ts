@@ -24,6 +24,13 @@ const versionApi = stubContentVersionApi()
 
 const { useVersionHistoryStore } = await import('#editor/stores/versionHistory')
 
+/** Create a store with its API already wired up. */
+function createStore() {
+  const store = useVersionHistoryStore()
+  store.setApi(versionApi)
+  return store
+}
+
 describe('useVersionHistoryStore', () => {
   beforeEach(() => {
     vi.stubGlobal('ref', ref)
@@ -74,7 +81,7 @@ describe('useVersionHistoryStore', () => {
       const response = createVersionsResponse()
       versionApi.getVersions.mockResolvedValue(response)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -84,7 +91,7 @@ describe('useVersionHistoryStore', () => {
     it('does nothing when contentId is null', async () => {
       mockContentStore.id = null
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -97,7 +104,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockResolvedValue(response)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -113,7 +120,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockResolvedValue(response)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -127,7 +134,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockReturnValue(pending)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       const promise = store.loadVersions()
 
       expect(store.isLoading).toBe(true)
@@ -142,7 +149,7 @@ describe('useVersionHistoryStore', () => {
     it('resets isLoading on error', async () => {
       versionApi.getVersions.mockRejectedValue(new Error('network error'))
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions().catch(() => {})
       await flushPromises()
 
@@ -157,7 +164,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockResolvedValue(firstResponse)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -181,7 +188,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockResolvedValue(firstResponse)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -207,7 +214,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockReturnValue(pendingFirst)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       // Start loadVersions to set isLoading=true
       const promise = store.loadVersions()
 
@@ -229,7 +236,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockResolvedValue(response)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -246,7 +253,7 @@ describe('useVersionHistoryStore', () => {
       })
       versionApi.getVersions.mockResolvedValue(firstResponse)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
@@ -264,7 +271,7 @@ describe('useVersionHistoryStore', () => {
       const detail = createVersionDetail({ id: 42 })
       versionApi.getVersion.mockResolvedValue(detail)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(42)
       await flushPromises()
 
@@ -276,7 +283,7 @@ describe('useVersionHistoryStore', () => {
       const detail = createVersionDetail({ id: 7 })
       versionApi.getVersion.mockResolvedValue(detail)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       // First call populates cache
       await store.selectVersion(7)
       await flushPromises()
@@ -292,7 +299,7 @@ describe('useVersionHistoryStore', () => {
     })
 
     it('evicts oldest cache entry when cache size >= 5', async () => {
-      const store = useVersionHistoryStore()
+      const store = createStore()
 
       // Fill cache with 5 entries (ids 1-5)
       for (let i = 1; i <= 5; i++) {
@@ -336,7 +343,7 @@ describe('useVersionHistoryStore', () => {
       versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
       versionApi.getVersions.mockResolvedValue(createVersionsResponse())
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(5)
       await flushPromises()
 
@@ -352,7 +359,7 @@ describe('useVersionHistoryStore', () => {
       versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
       versionApi.getVersions.mockResolvedValue(createVersionsResponse())
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(5)
       await flushPromises()
 
@@ -369,7 +376,7 @@ describe('useVersionHistoryStore', () => {
       versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
       versionApi.getVersions.mockResolvedValue(createVersionsResponse())
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(5)
       await flushPromises()
 
@@ -385,7 +392,7 @@ describe('useVersionHistoryStore', () => {
       versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
       versionApi.getVersions.mockResolvedValue(createVersionsResponse())
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(5)
       await flushPromises()
 
@@ -401,7 +408,7 @@ describe('useVersionHistoryStore', () => {
     it('returns false when response is truthy but selectedVersion is null', async () => {
       versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       // Do not select a version, selectedVersion remains null
       const result = await store.restoreVersion(5)
       await flushPromises()
@@ -416,7 +423,7 @@ describe('useVersionHistoryStore', () => {
       versionApi.restoreVersion.mockResolvedValue({ rateLimit: { remaining: 49, limit: 60, resetAt: '2025-01-15T11:00:00Z' } })
       versionApi.getVersions.mockResolvedValue(createVersionsResponse())
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(5)
       await flushPromises()
 
@@ -459,7 +466,7 @@ describe('useVersionHistoryStore', () => {
       const detail = createVersionDetail({ id: 10 })
       versionApi.getVersion.mockResolvedValue(detail)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.enterHistoryMode()
       await flushPromises()
 
@@ -475,7 +482,7 @@ describe('useVersionHistoryStore', () => {
       const detail = createVersionDetail({ id: 3 })
       versionApi.getVersion.mockResolvedValue(detail)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(3)
       await flushPromises()
 
@@ -493,7 +500,7 @@ describe('useVersionHistoryStore', () => {
       const detail = createVersionDetail({ id: 8 })
       versionApi.getVersion.mockResolvedValue(detail)
 
-      const store = useVersionHistoryStore()
+      const store = createStore()
       await store.selectVersion(8)
       await flushPromises()
 
@@ -525,32 +532,24 @@ describe('useVersionHistoryStore', () => {
     })
   })
 
-  describe('lazy init of _contentVersionApi', () => {
-    it('initializes contentVersionApi on first API call only', async () => {
-      const useContentVersionApiSpy = vi.fn(() => versionApi)
-      vi.stubGlobal('useContentVersionApi', useContentVersionApiSpy)
+  describe('setApi', () => {
+    it('throws when API actions are called without setApi()', async () => {
+      const store = useVersionHistoryStore()
 
-      // Create a fresh store to reset the lazy init
-      setActivePinia(createPinia())
+      await expect(store.loadVersions()).rejects.toThrow(
+        '[versionHistory] API not initialized',
+      )
+    })
+
+    it('works after setApi() is called', async () => {
       const response = createVersionsResponse()
       versionApi.getVersions.mockResolvedValue(response)
 
-      const store = useVersionHistoryStore()
-
-      // First call initializes
-      await store.loadVersions()
-      await flushPromises()
-      const callCount = useContentVersionApiSpy.mock.calls.length
-
-      // Second call should not re-initialize
-      versionApi.getVersions.mockResolvedValue(createVersionsResponse())
+      const store = createStore()
       await store.loadVersions()
       await flushPromises()
 
-      expect(useContentVersionApiSpy.mock.calls.length).toBe(callCount)
-
-      // Restore the original stub
-      vi.stubGlobal('useContentVersionApi', () => versionApi)
+      expect(versionApi.getVersions).toHaveBeenCalled()
     })
   })
 })

@@ -52,7 +52,7 @@ useEditorTheme(editorConfig)
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
 const contentStore = useContentStore()
-const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory()
+const { navigateToHistory, navigateToEditor, isActive: isHistoryActive } = useVersionHistory(editorConfig)
 
 function handleKeydown(event: KeyboardEvent): void {
   // Ctrl+H / Cmd+H to toggle version history

@@ -83,6 +83,7 @@ describe('useVersionHistory', () => {
       contentStore.id = 1
 
       const store = useVersionHistoryStore()
+      store.setApi({ getVersions: mockGetVersions, getVersion: mockGetVersion, restoreVersion: mockRestoreVersion })
 
       await store.loadVersions()
 
@@ -109,6 +110,7 @@ describe('useVersionHistory', () => {
       contentStore.id = 1
 
       const store = useVersionHistoryStore()
+      store.setApi({ getVersions: mockGetVersions, getVersion: mockGetVersion, restoreVersion: mockRestoreVersion })
 
       await store.selectVersion(1)
 

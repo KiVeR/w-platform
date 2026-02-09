@@ -21,12 +21,16 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
 
   const isActive = computed(() => uiStore.isHistoryMode)
 
-  // Lazy init: useContentVersionApi() calls useEditorApi() → useEditorConfig() → inject()
-  // which fails if the store is instantiated before provideEditorConfig() runs.
-  let _contentVersionApi: ReturnType<typeof useContentVersionApi> | null = null
+  // The API client is injected by useVersionHistory() at setup time.
+  // Pinia actions run outside Vue's setup() scope, so inject() cannot be
+  // called lazily from within store actions.
+  let _contentVersionApi: ContentVersionApi | null = null
+  function setApi(api: ContentVersionApi) {
+    _contentVersionApi = api
+  }
   function getContentVersionApi() {
     if (!_contentVersionApi) {
-      _contentVersionApi = useContentVersionApi()
+      throw new Error('[versionHistory] API not initialized. Call useVersionHistory() first.')
     }
     return _contentVersionApi
   }
@@ -182,6 +186,7 @@ export const useVersionHistoryStore = defineStore('versionHistory', () => {
     total,
     rateLimit,
 
+    setApi,
     loadVersions,
     loadMore,
     selectVersion,
