@@ -13,6 +13,7 @@ use App\Http\Requests\Campaign\UpdateCampaignRequest;
 use App\Http\Resources\CampaignResource;
 use App\Models\Campaign;
 use App\Models\User;
+use App\Services\CampaignSending\StopSmsService;
 use App\Services\PricingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -156,7 +157,10 @@ class CampaignsController extends Controller
         $result = $sender->send($campaign);
 
         if (! $result->success) {
-            $campaign->update(['status' => CampaignStatus::FAILED]);
+            $campaign->update([
+                'status' => CampaignStatus::FAILED,
+                'error_message' => $result->error,
+            ]);
 
             return new JsonResponse(['error' => $result->error], 502);
         }
@@ -165,7 +169,7 @@ class CampaignsController extends Controller
             'status' => CampaignStatus::SENDING,
             'unit_price' => $estimate->unitPrice,
             'total_price' => $estimate->totalPrice,
-            'trigger_campaign_uuid' => $result->externalId,
+            'external_id' => $result->externalId,
         ]);
 
         return new CampaignResource($campaign->fresh());
@@ -190,6 +194,15 @@ class CampaignsController extends Controller
                     'message' => ! $campaign->message ? ['Message is required.'] : null,
                     'sender' => ! $campaign->sender ? ['Sender is required.'] : null,
                 ])],
+                422,
+            );
+        }
+
+        $stopSmsService = app(StopSmsService::class);
+
+        if ($stopSmsService->containsBlockedDomain($campaign->message)) {
+            return new JsonResponse(
+                ['message' => 'Message contains a blocked domain.', 'errors' => ['message' => ['The domain rsms.co is not allowed.']]],
                 422,
             );
         }

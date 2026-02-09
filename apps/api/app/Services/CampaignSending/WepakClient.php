@@ -1,0 +1,77 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\CampaignSending;
+
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class WepakClient
+{
+    public function __construct(
+        protected string $baseUrl,
+        protected string $apiKey,
+        protected int $timeout = 3600,
+        protected int $estimateTimeout = 30,
+    ) {}
+
+    /** @param array<string, mixed> $payload */
+    public function sendProspection(array $payload): WepakResponse
+    {
+        return $this->post('/smsenvoi.php', $payload, $this->timeout);
+    }
+
+    /** @param array<string, mixed> $payload */
+    public function sendFidelisation(array $payload): WepakResponse
+    {
+        return $this->post('/sendsmsjson.php', $payload, $this->timeout);
+    }
+
+    /** @param array<string, mixed> $payload */
+    public function estimateVolume(array $payload): WepakResponse
+    {
+        return $this->post('/smsenvoi.php', $payload, $this->estimateTimeout);
+    }
+
+    /** @param array<string, mixed> $payload */
+    protected function post(string $endpoint, array $payload, int $timeout): WepakResponse
+    {
+        $payload['api_key'] = $this->apiKey;
+
+        $url = rtrim($this->baseUrl, '/').$endpoint;
+
+        Log::info('Wepak request', [
+            'endpoint' => $endpoint,
+            'query' => $payload['query'] ?? null,
+        ]);
+
+        try {
+            $response = $this->makeRequest($timeout)->post($url, $payload);
+
+            Log::info('Wepak response', [
+                'endpoint' => $endpoint,
+                'status' => $response->status(),
+            ]);
+
+            return WepakResponse::fromHttpResponse($response);
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::error('Wepak connection error', [
+                'endpoint' => $endpoint,
+                'error' => $e->getMessage(),
+            ]);
+
+            return new WepakResponse(
+                success: false,
+                error: 'Wepak connection error: '.$e->getMessage(),
+            );
+        }
+    }
+
+    protected function makeRequest(int $timeout): PendingRequest
+    {
+        return Http::timeout($timeout)
+            ->acceptJson();
+    }
+}

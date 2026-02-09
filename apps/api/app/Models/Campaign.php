@@ -54,6 +54,9 @@ class Campaign extends Model
         'total_price',
         'fidelisation_file_id',
         'trigger_campaign_uuid',
+        'external_id',
+        'error_message',
+        'stats_notified',
         'adv_operation_id',
     ];
 
@@ -72,6 +75,7 @@ class Campaign extends Model
             'sent_at' => 'datetime',
             'unit_price' => 'float',
             'total_price' => 'float',
+            'stats_notified' => 'boolean',
         ];
     }
 
