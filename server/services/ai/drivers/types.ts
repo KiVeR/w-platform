@@ -57,7 +57,7 @@ export interface AIDriverConfig {
  */
 export interface ClaudeDriverConfig extends AIDriverConfig {
   apiKey: string
-  model?: 'claude-sonnet-4-20250514' | 'claude-opus-4-20250514' | 'claude-3-5-haiku-20241022'
+  model?: 'claude-opus-4-6' | 'claude-sonnet-4-5-20250929' | 'claude-sonnet-4-20250514' | 'claude-opus-4-20250514' | 'claude-haiku-4-5-20251001'
 }
 
 /**

@@ -179,12 +179,14 @@ export class DriverRegistry {
       configured.push({
         id: 'claude',
         name: 'Claude (Anthropic)',
-        defaultModel: 'claude-sonnet-4-20250514',
+        defaultModel: 'claude-sonnet-4-5-20250929',
         supportsVision: true,
         models: [
+          { id: 'claude-opus-4-6', name: 'Claude Opus 4.6', vision: true, contextLength: 200000 },
+          { id: 'claude-sonnet-4-5-20250929', name: 'Claude Sonnet 4.5', vision: true, contextLength: 200000 },
           { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4', vision: true, contextLength: 200000 },
           { id: 'claude-opus-4-20250514', name: 'Claude Opus 4', vision: true, contextLength: 200000 },
-          { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', vision: true, contextLength: 200000 },
+          { id: 'claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', vision: true, contextLength: 200000 },
         ],
       })
     }

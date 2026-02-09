@@ -83,7 +83,6 @@ export class AIGenerationService {
     userId: number,
     userRole: RoleType,
   ): AsyncGenerator<AIStreamChunk> {
-    // Check driver availability
     if (!this.driver) {
       yield {
         type: 'error',
@@ -93,7 +92,6 @@ export class AIGenerationService {
       return
     }
 
-    // Check quota
     const quota = await this.getQuota(userId, userRole)
     if (!quota.canGenerate) {
       yield {
@@ -104,7 +102,6 @@ export class AIGenerationService {
       return
     }
 
-    // Validate image if provided
     if (input.image) {
       const validation = validateImage(input.image.data, input.image.mimeType)
       if (!validation.valid) {
@@ -115,14 +112,12 @@ export class AIGenerationService {
         }
         return
       }
-      // Use cleaned image data
       input.image = validation.image
     }
 
-    // Track usage before generation (optimistic)
+    // Optimistic: track usage before generation, refund if no design produced
     await this.incrementUsage(userId)
 
-    // Stream from driver
     let hasDesign = false
     for await (const chunk of this.driver.streamDesign(input)) {
       if (chunk.type === 'design') {
@@ -131,10 +126,9 @@ export class AIGenerationService {
       yield chunk
     }
 
-    // If no design was generated, we could potentially refund the usage
-    // For MVP, we keep it simple and count all attempts
     if (!hasDesign) {
-      console.warn(`[AI] Generation for user ${userId} did not produce a design`)
+      console.warn(`[AI] Generation for user ${userId} did not produce a design, refunding quota`)
+      await this.decrementUsage(userId)
     }
   }
 
@@ -145,10 +139,7 @@ export class AIGenerationService {
     const limit = AI_QUOTA_BY_ROLE[userRole]
     const periodKey = this.getCurrentPeriodKey()
 
-    // Get current usage from database
     const usage = await this.getUsage(userId, periodKey)
-
-    // Calculate reset date (first day of next month)
     const now = new Date()
     const resetsAt = new Date(now.getFullYear(), now.getMonth() + 1, 1)
 
@@ -175,7 +166,6 @@ export class AIGenerationService {
    */
   private async getUsage(userId: number, periodKey: string): Promise<number> {
     try {
-      // Use Prisma to get usage (auto-imported from server/utils)
       const record = await prisma.aIUsage.findUnique({
         where: {
           userId_periodKey: {
@@ -222,6 +212,30 @@ export class AIGenerationService {
     catch (error) {
       // Log but don't fail the generation
       console.error('[AI] Failed to increment usage:', error)
+    }
+  }
+
+  /**
+   * Decrement usage count for a user (refund on failed generation)
+   */
+  private async decrementUsage(userId: number): Promise<void> {
+    const periodKey = this.getCurrentPeriodKey()
+
+    try {
+      await prisma.aIUsage.update({
+        where: {
+          userId_periodKey: {
+            userId,
+            periodKey,
+          },
+        },
+        data: {
+          count: { decrement: 1 },
+        },
+      })
+    }
+    catch (error) {
+      console.error('[AI] Failed to decrement usage:', error)
     }
   }
 }

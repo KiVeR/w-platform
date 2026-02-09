@@ -5,7 +5,6 @@ import type {
 } from '#shared/types/ai'
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 import type { AIDriver, OpenAICompatibleDriverConfig } from './types'
-import { designDocumentSchema } from '#shared/schemas/design.schema'
 import OpenAI from 'openai'
 import { prepareForOpenAIApi } from '../parsers/image.parser'
 import {
@@ -13,6 +12,7 @@ import {
   buildUserMessage,
   DESIGN_GENERATION_SYSTEM_PROMPT,
 } from '../prompts/design-generation'
+import { parseDesignResponse, validateDesignAndEmitChunk } from '../utils/design-fix'
 
 const DEFAULT_MAX_TOKENS = 8192
 const DEFAULT_TEMPERATURE = 0.7
@@ -47,7 +47,6 @@ export class OpenAICompatibleDriver implements AIDriver {
     this.name = config.providerName || 'OpenAI-Compatible'
     this.model = config.model
 
-    // Initialize OpenAI client with custom configuration
     this.client = new OpenAI({
       apiKey: config.apiKey,
       baseURL: config.baseURL,
@@ -66,7 +65,6 @@ export class OpenAICompatibleDriver implements AIDriver {
   async* streamDesign(input: AIGenerationInput): AsyncGenerator<AIStreamChunk> {
     const messages = this.buildMessages(input)
 
-    // Build request params
     const requestParams: Record<string, unknown> = {
       model: this.model,
       max_tokens: this.config.maxTokens || DEFAULT_MAX_TOKENS,
@@ -107,10 +105,7 @@ export class OpenAICompatibleDriver implements AIDriver {
         }
       }
       yield this.handleError(error)
-      yield {
-        type: 'done',
-        usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
-      }
+      yield { type: 'done', usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 } }
     }
   }
 
@@ -144,29 +139,11 @@ export class OpenAICompatibleDriver implements AIDriver {
       }
     }
 
-    const design = this.parseDesignFromResponse(fullResponse)
+    // Parse, validate, fix contrast, and emit design or error
+    const design = parseDesignResponse(fullResponse, this.name)
 
     if (design) {
-      const parseResult = designDocumentSchema.safeParse(design)
-
-      if (parseResult.success) {
-        yield { type: 'design', content: parseResult.data }
-      }
-      else {
-        const fixedDesign = this.attemptDesignFix(design, parseResult.error.errors)
-        const retryResult = designDocumentSchema.safeParse(fixedDesign)
-
-        if (retryResult.success) {
-          yield { type: 'design', content: retryResult.data }
-        }
-        else {
-          yield {
-            type: 'error',
-            content: `Design validation failed: ${parseResult.error.errors.map(e => e.message).join(', ')}`,
-            code: 'GENERATION_FAILED',
-          }
-        }
-      }
+      yield validateDesignAndEmitChunk(design, this.name)
     }
     else {
       yield { type: 'error', content: 'Failed to parse design from response', code: 'GENERATION_FAILED' }
@@ -180,13 +157,9 @@ export class OpenAICompatibleDriver implements AIDriver {
    */
   private buildMessages(input: AIGenerationInput): ChatCompletionMessageParam[] {
     const messages: ChatCompletionMessageParam[] = [
-      {
-        role: 'system',
-        content: DESIGN_GENERATION_SYSTEM_PROMPT,
-      },
+      { role: 'system', content: DESIGN_GENERATION_SYSTEM_PROMPT },
     ]
 
-    // Add conversation history if present
     if (input.conversationHistory?.length) {
       const contextSummary = buildConversationContext(
         input.conversationHistory.map(m => ({
@@ -204,22 +177,16 @@ export class OpenAICompatibleDriver implements AIDriver {
       }
     }
 
-    // Build current message with optional image
     if (input.image && this.config.supportsVision !== false) {
-      // Multimodal message with image
       messages.push({
         role: 'user',
         content: [
           prepareForOpenAIApi(input.image, this.config.imageDetail || 'auto'),
-          {
-            type: 'text',
-            text: buildUserMessage(input.prompt, true),
-          },
+          { type: 'text', text: buildUserMessage(input.prompt, true) },
         ],
       })
     }
     else {
-      // Text-only message
       messages.push({
         role: 'user',
         content: buildUserMessage(input.prompt, false),
@@ -258,10 +225,9 @@ export class OpenAICompatibleDriver implements AIDriver {
     }
 
     if (error instanceof OpenAI.BadRequestError) {
-      const message = this.normalizeErrorMessage(error)
       return {
         type: 'error',
-        content: message,
+        content: this.normalizeErrorMessage(error),
         code: 'GENERATION_FAILED',
       }
     }
@@ -295,7 +261,6 @@ export class OpenAICompatibleDriver implements AIDriver {
   private normalizeErrorMessage(error: InstanceType<typeof OpenAI.APIError>): string {
     const baseURL = this.config.baseURL || ''
 
-    // Provider-specific error handling
     if (baseURL.includes('groq.com') && error.status === 413) {
       return 'Request too large. Try a smaller image or shorter prompt.'
     }
@@ -304,114 +269,11 @@ export class OpenAICompatibleDriver implements AIDriver {
       return 'Insufficient credits on Together AI.'
     }
 
-    // Content policy violations
     if (error.message?.includes('content_policy')) {
       return 'Content was flagged by safety filters. Please modify your request.'
     }
 
     return error.message || 'Invalid request'
-  }
-
-  /**
-   * Parse design JSON from the response text
-   */
-  private parseDesignFromResponse(response: string): unknown {
-    let jsonStr = response.trim()
-
-    // Remove markdown code blocks if present
-    if (jsonStr.startsWith('```json')) {
-      jsonStr = jsonStr.slice(7)
-    }
-    else if (jsonStr.startsWith('```')) {
-      jsonStr = jsonStr.slice(3)
-    }
-
-    if (jsonStr.endsWith('```')) {
-      jsonStr = jsonStr.slice(0, -3)
-    }
-
-    jsonStr = jsonStr.trim()
-
-    // Find JSON boundaries
-    const startIdx = jsonStr.indexOf('{')
-    const endIdx = jsonStr.lastIndexOf('}')
-
-    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-      jsonStr = jsonStr.slice(startIdx, endIdx + 1)
-    }
-
-    try {
-      return JSON.parse(jsonStr)
-    }
-    catch {
-      console.error('[OpenAI Driver] Failed to parse JSON:', jsonStr.substring(0, 200))
-      return null
-    }
-  }
-
-  /**
-   * Attempt to fix common validation issues
-   */
-  private attemptDesignFix(design: unknown, _errors: unknown[]): unknown {
-    if (!design || typeof design !== 'object')
-      return design
-
-    const doc = design as Record<string, unknown>
-
-    if (!doc.version)
-      doc.version = '1.0'
-
-    if (!doc.globalStyles || typeof doc.globalStyles !== 'object') {
-      doc.globalStyles = {
-        backgroundColor: '#ffffff',
-        textColor: '#1e293b',
-        primaryColor: '#3b82f6',
-      }
-    }
-
-    if (!Array.isArray(doc.widgets)) {
-      doc.widgets = []
-    }
-
-    // Fix widget IDs and orders
-    let idCounter = 1
-    const fixWidgets = (widgets: unknown[]): unknown[] => {
-      return widgets.map((widget, index) => {
-        if (!widget || typeof widget !== 'object')
-          return widget
-
-        const w = widget as Record<string, unknown>
-
-        if (!w.id || typeof w.id !== 'string') {
-          w.id = `widget_${idCounter++}`
-        }
-        else {
-          idCounter++
-        }
-
-        if (typeof w.order !== 'number') {
-          w.order = index
-        }
-
-        if (!w.content || typeof w.content !== 'object') {
-          w.content = {}
-        }
-
-        if (!w.styles || typeof w.styles !== 'object') {
-          w.styles = {}
-        }
-
-        if (Array.isArray(w.children)) {
-          w.children = fixWidgets(w.children)
-        }
-
-        return w
-      })
-    }
-
-    doc.widgets = fixWidgets(doc.widgets as unknown[])
-
-    return doc
   }
 }
 

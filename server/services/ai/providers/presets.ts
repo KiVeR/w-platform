@@ -19,7 +19,6 @@ export const PROVIDER_PRESETS: Record<Exclude<KnownProvider, 'claude'>, Provider
       { id: 'gpt-4o', name: 'GPT-4o', vision: true, contextLength: 128000 },
       { id: 'gpt-4o-mini', name: 'GPT-4o Mini', vision: true, contextLength: 128000 },
       { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', vision: true, contextLength: 128000 },
-      { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', vision: false, contextLength: 16385 },
     ],
   },
 

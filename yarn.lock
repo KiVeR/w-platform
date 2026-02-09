@@ -122,9 +122,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/sdk@npm:^0.71.2":
-  version: 0.71.2
-  resolution: "@anthropic-ai/sdk@npm:0.71.2"
+"@anthropic-ai/sdk@npm:^0.74.0":
+  version: 0.74.0
+  resolution: "@anthropic-ai/sdk@npm:0.74.0"
   dependencies:
     json-schema-to-ts: "npm:^3.1.1"
   peerDependencies:
@@ -134,7 +134,7 @@ __metadata:
       optional: true
   bin:
     anthropic-ai-sdk: bin/cli
-  checksum: 10c0/6561264d2d516b0a2a2f48bba739497b76ec1ef85a5b78deca7900701513ca7cb5317dc4ee8147fc3f734709d364e29e2aaf79b39afe8284b0bf0c0c172f8223
+  checksum: 10c0/723fe922a387a6a66b4f24e3acd73fc14015013f51802c0a3df57a953652b2e74267c8da1cc72d35be366e89fd5b957ff4009a3d7ff3fce1e63d7d5358f86b35
   languageName: node
   linkType: hard
 
@@ -6928,7 +6928,7 @@ __metadata:
   resolution: "kreo@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^7.0.0"
-    "@anthropic-ai/sdk": "npm:^0.71.2"
+    "@anthropic-ai/sdk": "npm:^0.74.0"
     "@nuxt/devtools": "npm:^2.0.0"
     "@nuxt/test-utils": "npm:^3.17.0"
     "@pinia/nuxt": "npm:^0.11.0"
