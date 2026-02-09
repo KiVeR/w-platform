@@ -2,6 +2,8 @@
 import { Check, ChevronDown, ChevronUp, Eye, Loader2, Send } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
 
+useHead({ title: 'Batch Review' })
+
 definePageMeta({
   title: 'Batch Review',
 })

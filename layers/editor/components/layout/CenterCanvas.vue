@@ -6,8 +6,8 @@ const uiStore = useUIStore()
   <main class="center-canvas">
     <DesignerMode v-if="uiStore.mode === 'designer'" />
     <PreviewMode v-else-if="uiStore.mode === 'preview'" />
-    <ExpertMode v-else-if="uiStore.mode === 'expert'" />
-    <HistoryMode v-else-if="uiStore.mode === 'history'" />
+    <LazyExpertMode v-else-if="uiStore.mode === 'expert'" />
+    <LazyHistoryMode v-else-if="uiStore.mode === 'history'" />
   </main>
 </template>
 

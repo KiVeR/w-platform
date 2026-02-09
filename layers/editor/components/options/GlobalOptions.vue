@@ -248,14 +248,14 @@ function handleConfirmModalSaveFirst() {
     </section>
 
     <!-- Modals -->
-    <SavePaletteModal
+    <LazySavePaletteModal
       v-if="showSaveModal"
       :current-colors="currentColors"
       @save="saveAsNewPalette"
       @cancel="closeSaveModal"
     />
 
-    <ConfirmPaletteChangeModal
+    <LazyConfirmPaletteChangeModal
       v-if="showConfirmModal"
       @confirm="confirmPaletteChange"
       @save-first="handleConfirmModalSaveFirst"
@@ -327,8 +327,8 @@ function handleConfirmModalSaveFirst() {
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-3);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.04) 100%);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-warning-500) 8%, transparent) 0%, color-mix(in srgb, var(--color-warning-500) 4%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-warning-500) 20%, transparent);
   border-radius: var(--radius-md);
   animation: fade-in 0.2s ease-out;
 }
@@ -347,7 +347,7 @@ function handleConfirmModalSaveFirst() {
 .modified-indicator {
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  color: #d97706;
+  color: var(--color-warning-600);
 }
 
 .modified-actions {
@@ -379,12 +379,12 @@ function handleConfirmModalSaveFirst() {
 .action-btn-primary {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
+  color: var(--color-surface);
 }
 
 .action-btn-primary:hover {
   background: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
-  color: white;
+  color: var(--color-surface);
 }
 </style>

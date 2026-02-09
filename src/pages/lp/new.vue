@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { generateContentName } from '#shared/utils/content'
 
+useHead({ title: 'Nouvelle Landing Page' })
+
 definePageMeta({
   title: 'Nouvelle Landing Page',
   layout: 'editor',

@@ -13,6 +13,8 @@ import { useApi } from '@/composables/useApi'
 import { useAuthStore } from '@/stores/auth'
 import { useContentsStore } from '@/stores/contents'
 
+useHead({ title: 'Dashboard' })
+
 definePageMeta({
   title: 'Dashboard',
 })

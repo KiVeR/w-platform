@@ -10,6 +10,8 @@ interface ContentDesignResponse {
   updatedAt: string
 }
 
+useHead({ title: 'Éditeur' })
+
 definePageMeta({
   title: 'Éditeur Landing Page',
   layout: 'editor',

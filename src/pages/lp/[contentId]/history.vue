@@ -10,6 +10,8 @@ interface ContentDesignResponse {
   updatedAt: string
 }
 
+useHead({ title: 'Historique' })
+
 definePageMeta({
   title: 'Historique des versions',
   layout: 'editor',

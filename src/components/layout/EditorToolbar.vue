@@ -143,7 +143,7 @@ defineExpose({
       />
     </div>
 
-    <CreateLandingPageModal
+    <LazyCreateLandingPageModal
       v-if="showCreateModal"
       @confirm="handleCreateConfirm"
       @cancel="handleCreateCancel"

@@ -113,7 +113,7 @@ watch(() => props.searchQuery, (query) => {
     </button>
 
     <!-- AI Chat Panel -->
-    <AIChatPanel />
+    <LazyAIChatPanel v-if="aiChatStore.isOpen" />
   </div>
 </template>
 
@@ -157,12 +157,12 @@ watch(() => props.searchQuery, (query) => {
 .filter-tag.active {
   border-color: var(--color-primary-500);
   background: var(--color-primary-500);
-  color: white;
+  color: var(--color-surface);
 }
 
 .filter-tag.active .filter-count {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: color-mix(in srgb, var(--color-surface) 20%, transparent);
+  color: var(--color-surface);
 }
 
 .filter-count {
@@ -217,7 +217,7 @@ watch(() => props.searchQuery, (query) => {
   padding: var(--space-3);
   border: 1px dashed var(--color-primary-300);
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, #fef3c7 100%);
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-warning-100) 100%);
   font-size: var(--text-sm);
   color: var(--color-primary-600);
   cursor: pointer;
@@ -226,9 +226,9 @@ watch(() => props.searchQuery, (query) => {
 
 .ai-assistant-btn:hover {
   border-color: var(--color-primary-500);
-  background: linear-gradient(135deg, var(--color-primary-100) 0%, #fde68a 100%);
+  background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-warning-200) 100%);
   color: var(--color-primary-700);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-info-500) 15%, transparent);
 }
 </style>

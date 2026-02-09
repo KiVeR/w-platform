@@ -7,12 +7,13 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     globals: true,
+    restoreMocks: true,
     include: ['tests/**/*.test.ts'],
     exclude: ['tests/e2e/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['server/**/*.ts', 'src/**/*.ts', 'src/**/*.vue'],
+      include: ['server/**/*.ts', 'src/**/*.ts', 'src/**/*.vue', 'layers/editor/**/*.ts', 'layers/editor/**/*.vue'],
       exclude: [
         'node_modules',
         'tests',
@@ -20,6 +21,7 @@ export default defineConfig({
         '**/*.config.ts',
         '**/types/**',
       ],
+      all: true,
     },
     setupFiles: ['./tests/setup.ts'],
   },
@@ -30,6 +32,7 @@ export default defineConfig({
       '~~': fileURLToPath(new URL('.', import.meta.url)),
       '@@': fileURLToPath(new URL('.', import.meta.url)),
       '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
+      '#editor': fileURLToPath(new URL('./layers/editor', import.meta.url)),
     },
   },
 })

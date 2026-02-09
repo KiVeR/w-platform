@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ArrowLeft, MessageCircle } from 'lucide-vue-next'
 
+useHead({ title: 'Éditeur RCS' })
+
 definePageMeta({
   title: 'Éditeur RCS',
 })

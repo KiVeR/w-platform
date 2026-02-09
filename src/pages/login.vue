@@ -2,6 +2,8 @@
 import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 
+useHead({ title: 'Connexion' })
+
 definePageMeta({
   title: 'Connexion',
 })

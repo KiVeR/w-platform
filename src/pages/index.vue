@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Redirect to editor for now
 // Will be replaced by dashboard after auth implementation
+useHead({ title: 'Kreo', titleTemplate: '' })
+
 definePageMeta({
   title: 'Kreo',
 })

@@ -28,7 +28,7 @@ function setContext(mode: ContextMode) {
 
 <template>
   <!-- History Mode: show version history sidebar -->
-  <VersionHistorySidebar v-if="uiStore.isHistoryMode" />
+  <LazyVersionHistorySidebar v-if="uiStore.isHistoryMode" />
 
   <!-- Normal Mode: show options sidebar -->
   <aside v-else class="right-sidebar">

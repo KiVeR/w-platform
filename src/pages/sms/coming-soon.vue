@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ArrowLeft, Smartphone } from 'lucide-vue-next'
 
+useHead({ title: 'Éditeur SMS' })
+
 definePageMeta({
   title: 'Éditeur SMS',
 })
