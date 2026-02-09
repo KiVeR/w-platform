@@ -10,18 +10,20 @@ vi.stubGlobal('computed', computed)
 // Stub the variable schema store
 const mockMergedPreviewData = ref<Record<string, string>>({})
 const mockAllVariables = ref<Array<{ name: string, type: string }>>([])
+const mockIsAvailable = ref(true)
 
 vi.stubGlobal('useVariableSchemaStore', () => ({
   mergedPreviewData: mockMergedPreviewData.value,
   allVariables: mockAllVariables.value,
+  isAvailable: mockIsAvailable.value,
 }))
 
 // Stub VariableBadge as a simple component
 vi.mock('@@/layers/editor/components/variables/VariableBadge.vue', () => ({
   default: {
     name: 'VariableBadge',
-    template: '<span class="mock-variable-badge">{{ name }}</span>',
-    props: ['name', 'type', 'resolved', 'previewValue'],
+    template: '<span class="mock-variable-badge" :class="{ \'mock-variable-badge--loading\': loading }">{{ name }}</span>',
+    props: ['name', 'type', 'resolved', 'previewValue', 'loading'],
   },
 }))
 
@@ -33,6 +35,7 @@ describe('variableText', () => {
       { name: 'firstName', type: 'recipient' },
       { name: 'nom_magasin', type: 'global' },
     ]
+    mockIsAvailable.value = true
     vi.clearAllMocks()
   })
 
@@ -84,5 +87,13 @@ describe('variableText', () => {
   it('handles undefined text', async () => {
     const wrapper = await mountVariableText({ text: undefined })
     expect(wrapper.text()).toBe('')
+  })
+
+  it('passes loading to badges when schema is not available', async () => {
+    mockIsAvailable.value = false
+    const wrapper = await mountVariableText()
+    const badge = wrapper.find('.mock-variable-badge')
+    expect(badge.exists()).toBe(true)
+    expect(badge.classes()).toContain('mock-variable-badge--loading')
   })
 })

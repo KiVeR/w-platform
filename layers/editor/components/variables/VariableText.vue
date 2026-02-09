@@ -19,6 +19,8 @@ interface Segment {
 
 const store = useVariableSchemaStore()
 
+const schemaLoading = computed(() => !store.isAvailable)
+
 const segments = computed<Segment[]>(() => {
   if (!props.text)
     return []
@@ -62,6 +64,7 @@ function getPreviewValue(name: string): string | undefined {
         :type="getVariableType(segment.value)"
         :resolved="getPreviewValue(segment.value) !== undefined"
         :preview-value="getPreviewValue(segment.value)"
+        :loading="schemaLoading"
       />
     </template>
   </component>

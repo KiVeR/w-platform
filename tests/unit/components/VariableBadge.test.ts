@@ -64,4 +64,19 @@ describe('variableBadge', () => {
     const wrapper = await mountBadge()
     expect(wrapper.element.tagName.toLowerCase()).toBe('span')
   })
+
+  it('applies loading class when loading prop is true', async () => {
+    const wrapper = await mountBadge({ loading: true })
+    expect(wrapper.find('.variable-badge--loading').exists()).toBe(true)
+  })
+
+  it('hides icon when loading', async () => {
+    const wrapper = await mountBadge({ loading: true, type: 'recipient' })
+    expect(wrapper.find('.variable-badge-icon').exists()).toBe(false)
+  })
+
+  it('still shows the variable name when loading', async () => {
+    const wrapper = await mountBadge({ loading: true, name: 'firstName' })
+    expect(wrapper.text()).toContain('firstName')
+  })
 })

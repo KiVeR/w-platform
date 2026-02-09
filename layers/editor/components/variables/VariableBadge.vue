@@ -6,6 +6,7 @@ const props = defineProps<{
   type?: 'global' | 'recipient'
   resolved?: boolean
   previewValue?: string
+  loading?: boolean
 }>()
 
 const tooltipText = computed(() => {
@@ -19,13 +20,17 @@ const tooltipText = computed(() => {
   <span
     class="variable-badge"
     :class="[
-      type ? `variable-badge--${type}` : 'variable-badge--recipient',
-      { 'variable-badge--unresolved': resolved === false },
+      loading
+        ? 'variable-badge--loading'
+        : type ? `variable-badge--${type}` : 'variable-badge--recipient',
+      { 'variable-badge--unresolved': !loading && resolved === false },
     ]"
     :title="tooltipText"
   >
-    <Globe v-if="type === 'global'" :size="12" class="variable-badge-icon" />
-    <User v-else :size="12" class="variable-badge-icon" />
+    <template v-if="!loading">
+      <Globe v-if="type === 'global'" :size="12" class="variable-badge-icon" />
+      <User v-else :size="12" class="variable-badge-icon" />
+    </template>
     <span class="variable-badge-name">{{ name }}</span>
   </span>
 </template>
@@ -61,6 +66,14 @@ const tooltipText = computed(() => {
   background-color: #ffedd5;
   color: #9a3412;
   border: 1px solid #fed7aa;
+}
+
+.variable-badge--loading {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
 }
 
 .variable-badge-icon {
