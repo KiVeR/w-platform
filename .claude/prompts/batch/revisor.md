@@ -3,7 +3,7 @@ You are revising a landing page based on expert consensus.
 ## Design Guidelines (MUST READ)
 Read these files first:
 - `server/services/ai/prompts/design-generation.ts`
-- `src/config/widgets.ts`
+- `layers/editor/config/widgets.ts`
 
 ## Current design
 Read: `{{BATCH_DIR}}/lp-{{BRIEF_ID}}.json`
