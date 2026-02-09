@@ -150,7 +150,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
   background: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--color-surface);
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
@@ -161,7 +161,7 @@ onUnmounted(() => {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  background: #1e293b;
+  background: var(--color-neutral-800);
 }
 
 .slider-image {
@@ -215,7 +215,7 @@ onUnmounted(() => {
   height: 10px;
   border-radius: 50%;
   border: none;
-  background: #cbd5e1;
+  background: var(--color-neutral-300);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -227,26 +227,26 @@ onUnmounted(() => {
 
 .slider-empty {
   padding: 40px 16px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 2px dashed #cbd5e1;
+  background: linear-gradient(135deg, var(--color-neutral-50) 0%, var(--color-neutral-200) 100%);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: 12px;
   text-align: center;
 }
 
 .empty-icon {
-  color: #64748b;
+  color: var(--color-neutral-500);
   margin-bottom: 8px;
 }
 
 .empty-text {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 16px;
   font-weight: 500;
   margin: 0 0 4px 0;
 }
 
 .empty-hint {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 13px;
   margin: 0;
 }

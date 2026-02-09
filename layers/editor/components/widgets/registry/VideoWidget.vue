@@ -125,7 +125,7 @@ const providerName = computed(() => {
   left: 8px;
   z-index: 10;
   background: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--color-surface);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   font-size: 11px;
@@ -143,14 +143,14 @@ const providerName = computed(() => {
 .video-placeholder {
   width: 100%;
   min-height: 180px;
-  background-color: #f1f5f9;
-  border: 2px dashed #cbd5e1;
+  background-color: var(--color-neutral-100);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 
 .placeholder-icon {

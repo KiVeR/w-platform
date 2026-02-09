@@ -45,11 +45,6 @@ async function loadContent(): Promise<void> {
       status: data.status,
       variableSchemaUuid: data.variableSchemaUuid ?? null,
     })
-
-    // Auto-initialize variable schema from DB if not already set via query param
-    if (data.variableSchemaUuid && !route.query.schemaUuid) {
-      useVariableSchema().initialize({ schemaUuid: data.variableSchemaUuid })
-    }
   }
   catch (error: unknown) {
     const err = error as { statusCode?: number, message?: string }
@@ -68,6 +63,7 @@ onMounted(() => {
 onUnmounted(() => {
   editorStore.reset()
   contentStore.reset()
+  useVariableSchemaStore().reset()
 })
 </script>
 

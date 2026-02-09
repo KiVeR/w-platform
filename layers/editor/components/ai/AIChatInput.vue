@@ -144,8 +144,8 @@ defineExpose({ focus, setPrompt })
 <style scoped>
 .ai-input {
   padding: 16px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-top: 1px solid var(--color-neutral-200);
+  background: var(--color-background-subtle);
 }
 
 /* Image preview */
@@ -159,7 +159,7 @@ defineExpose({ focus, setPrompt })
   max-width: 120px;
   max-height: 80px;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-neutral-200);
 }
 
 .ai-input-image-remove {
@@ -169,9 +169,9 @@ defineExpose({ focus, setPrompt })
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #ef4444;
-  color: #ffffff;
-  border: 2px solid #ffffff;
+  background: var(--color-error-500);
+  color: var(--color-surface);
+  border: 2px solid var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,7 +180,7 @@ defineExpose({ focus, setPrompt })
 }
 
 .ai-input-image-remove:hover {
-  background: #dc2626;
+  background: var(--color-error-600);
 }
 
 /* Input row */
@@ -188,16 +188,16 @@ defineExpose({ focus, setPrompt })
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 12px;
   padding: 8px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .ai-input-row:focus-within {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--color-info-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-info-500) 10%, transparent);
 }
 
 .ai-input-file {
@@ -220,12 +220,12 @@ defineExpose({ focus, setPrompt })
 
 .ai-input-attach {
   background: transparent;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .ai-input-attach:hover:not(:disabled) {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
 }
 
 .ai-input-attach:disabled {
@@ -234,17 +234,17 @@ defineExpose({ focus, setPrompt })
 }
 
 .ai-input-send {
-  background: #3b82f6;
-  color: #ffffff;
+  background: var(--color-info-500);
+  color: var(--color-surface);
 }
 
 .ai-input-send:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--color-info-600);
 }
 
 .ai-input-send:disabled {
-  background: #e5e7eb;
-  color: #9ca3af;
+  background: var(--color-neutral-200);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
@@ -259,22 +259,22 @@ defineExpose({ focus, setPrompt })
   padding: 8px 0;
   min-height: 36px;
   max-height: 120px;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .ai-input-textarea::placeholder {
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .ai-input-textarea:disabled {
   background: transparent;
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 /* Help text */
 .ai-input-help {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin: 8px 0 0;
   text-align: center;
 }

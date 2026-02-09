@@ -95,15 +95,15 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  background: #1e293b;
-  color: white;
+  background: var(--color-neutral-800);
+  color: var(--color-surface);
   border-radius: 12px;
   font-size: 11px;
   font-weight: 500;
 }
 
 .badge.config {
-  background: #64748b;
+  background: var(--color-neutral-500);
 }
 
 .scratch-preview {
@@ -153,7 +153,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
   align-items: center;
   gap: 6px;
   background: rgba(255, 255, 255, 0.95);
-  color: #1e293b;
+  color: var(--color-neutral-800);
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -168,7 +168,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
   justify-content: center;
   gap: 4px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-neutral-500);
 }
 
 .link-text {
@@ -181,7 +181,7 @@ const hasImages = computed(() => imageFg.value && imageBg.value)
 .scratch-empty {
   padding: 32px 16px;
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px dashed #f59e0b;
+  border: 2px dashed var(--color-warning-500);
   border-radius: 12px;
   text-align: center;
 }

@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { AlertTriangle, BarChart3, ScanBarcode } from 'lucide-vue-next'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, inject, onMounted, ref, watch } from 'vue'
+import VariableText from '../../variables/VariableText.vue'
 
 const props = defineProps<{
   widget: Widget
   editable?: boolean
 }>()
+
+const { hasVariables: checkHasVariables } = useVariables()
+const resolveText = inject<((text: string) => string) | null>('resolveText', null)
 
 const barcodeImageSrc = ref<string>('')
 const isLoading = ref(false)
@@ -76,11 +80,15 @@ function generateBarcodeUrl(code: string, color: string, type: 'ean13' | 'ean8')
   return `${BWIP_API_URL}?${params.toString()}`
 }
 
-// Vérifie si le code contient une variable (${...})
+// Use the common variable detection pattern
 const hasVariable = computed(() => {
   const code = props.widget.content.barcodeCode || ''
-  return /\$\{[^}]+\}/.test(code)
+  return checkHasVariables(code)
 })
+
+const showVariableBadges = computed(
+  () => !resolveText && hasVariable.value,
+)
 
 // Génération du code barre
 async function generateBarcode() {
@@ -171,7 +179,10 @@ const barcodeTypeLabel = computed(() => {
         <BarChart3 :size="32" />
       </div>
       <p class="variable-code">
-        {{ widget.content.barcodeCode }}
+        <VariableText v-if="showVariableBadges" :text="widget.content.barcodeCode" tag="span" />
+        <template v-else>
+          {{ widget.content.barcodeCode }}
+        </template>
       </p>
       <p class="variable-hint">
         Variable dynamique - Le code barre sera généré lors du rendu
@@ -220,7 +231,7 @@ const barcodeTypeLabel = computed(() => {
 .barcode-container {
   position: relative;
   display: inline-block;
-  background: white;
+  background: var(--color-surface);
   padding: 16px;
   border-radius: var(--radius-lg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -230,8 +241,8 @@ const barcodeTypeLabel = computed(() => {
   position: absolute;
   top: 4px;
   right: 4px;
-  background: #14b8a6;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-surface);
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   font-size: 10px;
@@ -252,8 +263,8 @@ const barcodeTypeLabel = computed(() => {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 2px dashed #cbd5e1;
+  background: linear-gradient(135deg, var(--color-neutral-50) 0%, var(--color-neutral-200) 100%);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
   min-height: 120px;
   text-align: center;
@@ -261,18 +272,18 @@ const barcodeTypeLabel = computed(() => {
 
 .placeholder-icon,
 .variable-icon {
-  color: #64748b;
+  color: var(--color-neutral-500);
   margin-bottom: 8px;
 }
 
 .error-icon {
-  color: #ef4444;
+  color: var(--color-error-500);
   margin-bottom: 8px;
 }
 
 .placeholder-text,
 .variable-code {
-  color: #1e293b;
+  color: var(--color-neutral-800);
   font-size: 14px;
   font-weight: 500;
   margin: 0 0 4px 0;
@@ -280,33 +291,33 @@ const barcodeTypeLabel = computed(() => {
 
 .placeholder-hint,
 .variable-hint {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 12px;
   margin: 0;
 }
 
 .variable-code {
   font-family: monospace;
-  background: #e2e8f0;
+  background: var(--color-neutral-200);
   padding: 4px 12px;
   border-radius: var(--radius-sm);
   margin: 8px 0;
 }
 
 .barcode-error {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border-color: #fca5a5;
+  background: linear-gradient(135deg, var(--color-error-50) 0%, var(--color-error-100) 100%);
+  border-color: var(--color-error-300);
 }
 
 .barcode-error p {
-  color: #dc2626;
+  color: var(--color-error-600);
   font-size: 13px;
   margin: 0;
 }
 
 .barcode-variable {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border-color: #86efac;
+  background: linear-gradient(135deg, var(--color-success-50) 0%, var(--color-success-100) 100%);
+  border-color: var(--color-success-300);
 }
 
 .barcode-loading {
@@ -316,15 +327,15 @@ const barcodeTypeLabel = computed(() => {
   justify-content: center;
   padding: 24px 16px;
   min-height: 120px;
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 13px;
 }
 
 .loading-spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #14b8a6;
+  border: 3px solid var(--color-neutral-200);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 8px;

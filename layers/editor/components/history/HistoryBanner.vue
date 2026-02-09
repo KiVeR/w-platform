@@ -33,7 +33,7 @@ defineProps<{
   left: 0;
   right: 0;
   z-index: 50;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, #fbbf24 0%, var(--color-warning-500) 100%);
   color: #78350f;
   padding: 12px 20px;
   display: flex;
@@ -56,7 +56,7 @@ defineProps<{
 }
 
 .banner-badge {
-  background: rgba(255, 255, 255, 0.3);
+  background: color-mix(in srgb, var(--color-surface) 30%, transparent);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;

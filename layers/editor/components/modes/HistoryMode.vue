@@ -82,7 +82,7 @@ const formattedDate = computed(() => {
 .skeleton-phone {
   width: 200px;
   aspect-ratio: 393 / 852;
-  background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+  background: linear-gradient(90deg, var(--color-neutral-200) 25%, var(--color-neutral-300) 50%, var(--color-neutral-200) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 24px;
@@ -126,7 +126,7 @@ const formattedDate = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
   z-index: 10;
   border-radius: var(--radius-lg);
 }

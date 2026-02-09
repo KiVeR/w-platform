@@ -19,14 +19,7 @@ const data = ref<VariableSchemaListItem[]>([])
 const meta = ref<VariableSchemaListResponse['meta'] | null>(null)
 const localSelected = ref<string | undefined>(props.selectedUuid)
 
-// Lazy API init — useEditorApi() uses inject() which cannot read a provide()
-// from the same component tree level at construction time
-let _api: ReturnType<typeof useEditorApi> | null = null
-function getApi() {
-  if (!_api)
-    _api = useEditorApi()
-  return _api
-}
+const api = useEditorApi()
 
 async function fetchSchemas() {
   isLoading.value = true
@@ -40,7 +33,7 @@ async function fetchSchemas() {
     if (searchQuery.value.trim())
       params['filter[name]'] = searchQuery.value.trim()
 
-    const result = await getApi().get<VariableSchemaListResponse>('/variable-schemas', { params })
+    const result = await api.get<VariableSchemaListResponse>('/variable-schemas', { params })
     data.value = result.data
     meta.value = result.meta
   }

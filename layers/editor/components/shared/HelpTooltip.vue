@@ -73,19 +73,19 @@ onKeyStroke('Escape', close)
   padding: 2px;
   background: none;
   border: none;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted);
   cursor: pointer;
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-sm);
   transition: color 150ms ease;
 }
 
 .help-trigger:hover,
 .help-trigger.active {
-  color: var(--color-info-500, #3b82f6);
+  color: var(--color-info-500);
 }
 
 .help-trigger:focus-visible {
-  outline: 2px solid var(--color-info-500, #3b82f6);
+  outline: 2px solid var(--color-info-500);
   outline-offset: 2px;
 }
 
@@ -96,18 +96,18 @@ onKeyStroke('Escape', close)
   z-index: 50;
   min-width: 200px;
   max-width: 280px;
-  padding: var(--space-2, 8px) var(--space-3, 12px);
-  margin-top: var(--space-1, 4px);
-  background: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #e2e8f0);
-  border-radius: var(--radius-md, 6px);
-  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+  padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .help-description {
-  margin: 0 0 var(--space-2, 8px) 0;
-  font-size: var(--text-xs, 12px);
-  color: var(--color-text-secondary, #64748b);
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 
@@ -117,14 +117,14 @@ onKeyStroke('Escape', close)
 
 .help-hints {
   margin: 0;
-  padding-left: var(--space-4, 16px);
-  font-size: var(--text-xs, 12px);
-  color: var(--color-text-muted, #94a3b8);
+  padding-left: var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
   line-height: 1.5;
 }
 
 .help-hints li {
-  margin-bottom: var(--space-1, 4px);
+  margin-bottom: var(--space-1);
 }
 
 .help-hints li:last-child {

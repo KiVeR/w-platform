@@ -120,11 +120,11 @@ const formattedTime = computed(() => {
 }
 
 .ai-message--user .ai-message-avatar {
-  background: #dbeafe;
+  background: var(--color-info-100);
 }
 
 .ai-message--assistant .ai-message-avatar {
-  background: #fef3c7;
+  background: var(--color-warning-100);
 }
 
 .ai-message-content {
@@ -142,24 +142,24 @@ const formattedTime = computed(() => {
 .ai-message-role {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .ai-message-time {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .ai-message-text {
   font-size: 14px;
   line-height: 1.5;
-  color: #374151;
+  color: var(--color-neutral-600);
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .ai-message--user .ai-message-text {
-  background: #f3f4f6;
+  background: var(--color-neutral-100);
   padding: 12px 16px;
   border-radius: 12px;
   border-top-left-radius: 4px;
@@ -172,7 +172,7 @@ const formattedTime = computed(() => {
 /* Streaming cursor */
 .ai-message-cursor {
   animation: blink 1s step-end infinite;
-  color: #3b82f6;
+  color: var(--color-info-500);
   font-weight: bold;
 }
 
@@ -189,8 +189,8 @@ const formattedTime = computed(() => {
   gap: 10px;
   padding: 12px 16px;
   margin-top: 8px;
-  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
-  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, var(--color-info-50), #f0f9ff);
+  border: 1px solid var(--color-info-200);
   border-radius: 10px;
   animation: message-fade-in 0.3s ease;
 }
@@ -199,8 +199,8 @@ const formattedTime = computed(() => {
   display: block;
   width: 16px;
   height: 16px;
-  border: 2px solid #bfdbfe;
-  border-top-color: #3b82f6;
+  border: 2px solid var(--color-info-200);
+  border-top-color: var(--color-info-500);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -211,7 +211,7 @@ const formattedTime = computed(() => {
 
 .ai-generating-text {
   font-size: 13px;
-  color: #3b82f6;
+  color: var(--color-info-500);
   font-weight: 500;
 }
 
@@ -224,7 +224,7 @@ const formattedTime = computed(() => {
 .ai-message-image img {
   width: 100%;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-neutral-200);
 }
 
 /* Design preview */

@@ -124,15 +124,15 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
 .preview-title {
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-neutral-500);
   text-transform: uppercase;
   margin-bottom: 8px;
   text-align: center;
 }
 
 .store-card {
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-xl);
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -145,18 +145,18 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
 .store-name {
   font-size: 16px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   margin-bottom: 4px;
 }
 
 .store-address {
   font-size: 14px;
-  color: #64748b;
+  color: var(--color-neutral-500);
 }
 
 .store-hours {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   margin-top: 4px;
 }
 
@@ -186,27 +186,27 @@ const btnCallColor = computed(() => props.widget.content.driveBtnCallColor || se
 .more-stores {
   text-align: center;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   margin-top: 8px;
 }
 
 .drive-empty {
   margin-top: 16px;
   padding: 24px 16px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 2px dashed #cbd5e1;
+  background: linear-gradient(135deg, var(--color-neutral-50) 0%, var(--color-neutral-200) 100%);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
 }
 
 .empty-text {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   font-weight: 500;
   margin: 0 0 4px 0;
 }
 
 .empty-hint {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 12px;
   margin: 0;
 }

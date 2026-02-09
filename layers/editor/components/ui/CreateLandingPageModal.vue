@@ -89,7 +89,7 @@ function handleCancel() {
 
 .modal-content {
   position: relative;
-  background-color: white;
+  background-color: var(--color-surface);
   border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 420px;
@@ -109,15 +109,15 @@ function handleCancel() {
   height: 32px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   cursor: pointer;
   border-radius: var(--radius-md);
   transition: all 0.15s;
 }
 
 .modal-close:hover {
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
 }
 
 .modal-icon {
@@ -125,18 +125,18 @@ function handleCancel() {
 }
 
 .icon {
-  color: #3b82f6;
+  color: var(--color-info-500);
 }
 
 h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   margin: 0 0 12px;
 }
 
 .modal-description {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 20px;
@@ -145,22 +145,22 @@ h2 {
 .title-input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-lg);
   font-size: 14px;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   transition: border-color 0.2s, box-shadow 0.2s;
   margin-bottom: 24px;
 }
 
 .title-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--color-info-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-info-500) 10%, transparent);
 }
 
 .title-input::placeholder {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 
 .modal-actions {
@@ -175,14 +175,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #e2e8f0;
+  background-color: var(--color-neutral-200);
 }
 
 .btn-secondary:disabled {
@@ -196,14 +196,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--color-info-500);
+  color: var(--color-surface);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #2563eb;
+  background-color: var(--color-info-600);
 }
 
 .btn-primary:disabled {

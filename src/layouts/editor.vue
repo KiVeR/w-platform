@@ -49,12 +49,6 @@ provideEditorConfig(editorConfig)
 // Initialize editor theme (applies CSS variables based on config.theme)
 useEditorTheme(editorConfig)
 
-// Initialize variable schema if configured
-const { initialize: initVariables } = useVariableSchema()
-if (schemaUuid.value) {
-  initVariables({ schemaUuid: schemaUuid.value })
-}
-
 const uiStore = useUIStore()
 const selectionStore = useSelectionStore()
 const contentStore = useContentStore()
@@ -121,34 +115,37 @@ function handleShellClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div class="app-shell" @click="handleShellClick">
-    <div class="shell-left">
-      <transition name="slide-left">
-        <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
-      </transition>
-    </div>
-
-    <div class="shell-main">
-      <transition name="fade">
-        <EditorToolbar v-if="!uiStore.isPreviewMode" />
-      </transition>
-      <div class="canvas-wrapper" :class="{ 'focus-mode': uiStore.isPreviewMode }">
-        <CenterCanvas />
+  <!-- VariableSchemaInitializer must be a child so inject() can see the provide() above -->
+  <VariableSchemaInitializer :schema-uuid="schemaUuid">
+    <div class="app-shell" @click="handleShellClick">
+      <div class="shell-left">
+        <transition name="slide-left">
+          <LeftSidebar v-if="uiStore.leftSidebarOpen && !uiStore.isHistoryMode" />
+        </transition>
       </div>
+
+      <div class="shell-main">
+        <transition name="fade">
+          <EditorToolbar v-if="!uiStore.isPreviewMode" />
+        </transition>
+        <div class="canvas-wrapper" :class="{ 'focus-mode': uiStore.isPreviewMode }">
+          <CenterCanvas />
+        </div>
+      </div>
+
+      <div class="shell-right">
+        <transition name="slide-right">
+          <RightSidebar v-if="uiStore.rightSidebarOpen" />
+        </transition>
+      </div>
+
+      <!-- Page-specific content (loading overlays, modals) -->
+      <slot />
+
+      <!-- Global toast notifications -->
+      <ToastContainer />
     </div>
-
-    <div class="shell-right">
-      <transition name="slide-right">
-        <RightSidebar v-if="uiStore.rightSidebarOpen" />
-      </transition>
-    </div>
-
-    <!-- Page-specific content (loading overlays, modals) -->
-    <slot />
-
-    <!-- Global toast notifications -->
-    <ToastContainer />
-  </div>
+  </VariableSchemaInitializer>
 </template>
 
 <style scoped>

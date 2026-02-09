@@ -101,8 +101,8 @@ function toggleFlip() {
 
 .badge {
   padding: 4px 10px;
-  background: #1e293b;
-  color: white;
+  background: var(--color-neutral-800);
+  color: var(--color-surface);
   border-radius: 12px;
   font-size: 11px;
   font-weight: 500;
@@ -154,7 +154,7 @@ function toggleFlip() {
   bottom: 8px;
   left: 8px;
   background: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--color-surface);
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 11px;
@@ -168,7 +168,7 @@ function toggleFlip() {
   justify-content: center;
   gap: 4px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-neutral-500);
 }
 
 .link-text {
@@ -181,7 +181,7 @@ function toggleFlip() {
 .flipcard-empty {
   padding: 32px 16px;
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border: 2px dashed #3b82f6;
+  border: 2px dashed var(--color-info-500);
   border-radius: 12px;
   text-align: center;
 }
@@ -199,7 +199,7 @@ function toggleFlip() {
 }
 
 .empty-hint {
-  color: #2563eb;
+  color: var(--color-info-600);
   font-size: 13px;
   margin: 0;
 }

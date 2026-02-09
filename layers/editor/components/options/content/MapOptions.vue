@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OptionGroup from '../shared/OptionGroup.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import OptionSelect from '../shared/OptionSelect.vue'
 import OptionSlider from '../shared/OptionSlider.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
@@ -19,7 +19,7 @@ const styleOptions = [
 <template>
   <div class="options-stack">
     <OptionGroup label="Adresse" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.address"
         placeholder="123 rue Example, Paris"
         @update:model-value="updateContent('address', $event)"

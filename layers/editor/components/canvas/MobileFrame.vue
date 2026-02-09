@@ -197,7 +197,7 @@ onUnmounted(() => {
 .smartphone-screen {
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: var(--color-surface);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -314,6 +314,6 @@ onUnmounted(() => {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: white;
+  background-color: var(--color-surface);
 }
 </style>

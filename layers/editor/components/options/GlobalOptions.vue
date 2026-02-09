@@ -31,6 +31,8 @@ const {
 } = usePalettes()
 
 const variableSchemaStore = useVariableSchemaStore()
+const contentApi = useContentApi()
+const variableSchema = useVariableSchema()
 const variablesEnabled = computed(() => config.features?.variables !== false)
 const showVariablesSection = computed(() => variablesEnabled.value || contentStore.id !== null)
 const showSchemaPickerModal = ref(false)
@@ -44,11 +46,10 @@ async function handleSchemaConfirm(schema: VariableSchemaListItem) {
   if (!contentStore.id)
     return
 
-  const contentApi = useContentApi()
   const result = await contentApi.attachSchema(contentStore.id, schema.id)
   if (result) {
     contentStore.variableSchemaUuid = schema.id
-    await useVariableSchema().initialize({ schemaUuid: schema.id })
+    await variableSchema.initialize({ schemaUuid: schema.id })
   }
 }
 
@@ -56,7 +57,6 @@ async function handleSchemaDetach() {
   if (!contentStore.id)
     return
 
-  const contentApi = useContentApi()
   const result = await contentApi.detachSchema(contentStore.id)
   if (result) {
     contentStore.variableSchemaUuid = null

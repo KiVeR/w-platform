@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OptionGroup from '../shared/OptionGroup.vue'
-import OptionTextarea from '../shared/OptionTextarea.vue'
+import OptionTextareaWithVariables from '../shared/OptionTextareaWithVariables.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
 const props = defineProps<{ widget: Widget }>()
@@ -9,7 +9,7 @@ const { updateContent } = useWidgetContent(props.widget)
 
 <template>
   <OptionGroup label="Texte" required>
-    <OptionTextarea
+    <OptionTextareaWithVariables
       :model-value="widget.content.text"
       placeholder="Entrez le texte"
       :rows="5"

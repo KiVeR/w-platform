@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionIconSelect from '../shared/OptionIconSelect.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import OptionSelect from '../shared/OptionSelect.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
@@ -23,7 +23,7 @@ const iconPositionOptions = [
 <template>
   <div class="options-stack">
     <OptionGroup label="Texte du bouton" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.text"
         placeholder="Cliquez ici"
         @update:model-value="updateContent('text', $event)"
@@ -54,7 +54,7 @@ const iconPositionOptions = [
     </OptionGroup>
 
     <OptionGroup v-if="widget.content.action === 'tel'" label="Numéro de téléphone" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.phone"
         type="tel"
         placeholder="+33123456789"
@@ -63,7 +63,7 @@ const iconPositionOptions = [
     </OptionGroup>
 
     <OptionGroup v-else :label="widget.content.action === 'email' ? 'Email' : 'URL'" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.href"
         :type="widget.content.action === 'email' ? 'email' : 'url'"
         :placeholder="widget.content.action === 'email' ? 'contact@exemple.com' : 'https://exemple.com'"

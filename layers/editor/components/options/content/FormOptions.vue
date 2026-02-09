@@ -2,6 +2,7 @@
 import OptionCheckbox from '../shared/OptionCheckbox.vue'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
 const props = defineProps<{ widget: Widget }>()
@@ -11,7 +12,7 @@ const { updateContent } = useWidgetContent(props.widget)
 <template>
   <div class="options-stack">
     <OptionGroup label="Message de succès">
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.successMessage"
         placeholder="Merci ! Votre message a été envoyé."
         @update:model-value="updateContent('successMessage', $event)"

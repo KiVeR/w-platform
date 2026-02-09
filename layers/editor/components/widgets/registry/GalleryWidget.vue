@@ -83,7 +83,7 @@ const extraCount = computed(() => Math.max(0, images.value.length - 6))
 
 .gallery-count {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-weight: 400;
 }
 
@@ -100,7 +100,7 @@ const extraCount = computed(() => Math.max(0, images.value.length - 6))
   aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
-  background: #f1f5f9;
+  background: var(--color-neutral-100);
 }
 
 .gallery-item img {
@@ -141,8 +141,8 @@ const extraCount = computed(() => Math.max(0, images.value.length - 6))
 /* Empty state */
 .gallery-empty {
   padding: 24px 16px;
-  background: #f8fafc;
-  border: 2px dashed #e2e8f0;
+  background: var(--color-neutral-50);
+  border: 2px dashed var(--color-neutral-200);
   border-radius: 8px;
   text-align: center;
 }
@@ -150,18 +150,18 @@ const extraCount = computed(() => Math.max(0, images.value.length - 6))
 .gallery-empty-icon {
   display: flex;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   margin-bottom: 8px;
 }
 
 .gallery-empty-text {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   margin: 0 0 4px 0;
 }
 
 .gallery-empty-hint {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 12px;
   margin: 0;
 }

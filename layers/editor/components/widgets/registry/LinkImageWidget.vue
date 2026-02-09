@@ -81,7 +81,7 @@ const hasLink = computed(() => !!href.value)
   right: 8px;
   z-index: 10;
   background: #22c55e;
-  color: white;
+  color: var(--color-surface);
   padding: 4px 10px;
   border-radius: var(--radius-xl);
   font-size: 11px;
@@ -89,7 +89,7 @@ const hasLink = computed(() => !!href.value)
 }
 
 .link-badge.no-link {
-  background: #94a3b8;
+  background: var(--color-neutral-400);
 }
 
 .image-link {
@@ -127,7 +127,7 @@ const hasLink = computed(() => !!href.value)
 
 .link-icon {
   font-size: 32px;
-  background: white;
+  background: var(--color-surface);
   padding: 12px;
   border-radius: 50%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -136,10 +136,10 @@ const hasLink = computed(() => !!href.value)
 .link-url {
   margin-top: 8px;
   padding: 6px 12px;
-  background: #f1f5f9;
+  background: var(--color-neutral-100);
   border-radius: var(--radius-md);
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-neutral-500);
 }
 
 .url-text {
@@ -153,8 +153,8 @@ const hasLink = computed(() => !!href.value)
 
 .link-image-empty {
   padding: 32px 16px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 2px dashed #cbd5e1;
+  background: linear-gradient(135deg, var(--color-neutral-50) 0%, var(--color-neutral-200) 100%);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
   text-align: center;
 }
@@ -165,14 +165,14 @@ const hasLink = computed(() => !!href.value)
 }
 
 .empty-text {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 16px;
   font-weight: 500;
   margin: 0 0 4px 0;
 }
 
 .empty-hint {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 13px;
   margin: 0;
 }

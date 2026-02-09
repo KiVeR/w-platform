@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OptionGroup from '../shared/OptionGroup.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
 const props = defineProps<{ widget: Widget }>()
@@ -10,7 +10,7 @@ const { updateContent } = useWidgetContent(props.widget)
 <template>
   <div class="options-stack">
     <OptionGroup label="URL de l'image" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.src"
         type="url"
         placeholder="https://exemple.com/image.jpg"
@@ -19,7 +19,7 @@ const { updateContent } = useWidgetContent(props.widget)
     </OptionGroup>
 
     <OptionGroup label="Texte alternatif">
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.alt"
         placeholder="Description de l'image"
         @update:model-value="updateContent('alt', $event)"

@@ -88,7 +88,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 .store-locator-label {
   font-size: 18px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   margin: 0 0 12px 0;
 }
 
@@ -113,7 +113,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 .stores-preview {
   margin-top: 16px;
   padding: 12px;
-  background: #f8fafc;
+  background: var(--color-neutral-50);
   border-radius: var(--radius-lg);
   text-align: left;
 }
@@ -121,7 +121,7 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 .stores-count {
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-neutral-500);
   text-transform: uppercase;
   margin-bottom: 8px;
 }
@@ -134,26 +134,26 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 
 .store-item {
   padding: 8px;
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-neutral-200);
 }
 
 .store-name {
   font-size: 14px;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--color-neutral-800);
 }
 
 .store-address {
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-neutral-500);
   margin-top: 2px;
 }
 
 .stores-more {
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-style: italic;
   text-align: center;
   padding: 4px;
@@ -162,20 +162,20 @@ const label = computed(() => props.widget.content.storeLocatorLabel || 'Nos maga
 .stores-empty {
   margin-top: 16px;
   padding: 24px 16px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border: 2px dashed #cbd5e1;
+  background: linear-gradient(135deg, var(--color-neutral-50) 0%, var(--color-neutral-200) 100%);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
 }
 
 .empty-text {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   font-weight: 500;
   margin: 0 0 4px 0;
 }
 
 .empty-hint {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 12px;
   margin: 0;
 }

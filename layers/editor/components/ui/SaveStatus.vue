@@ -204,51 +204,51 @@ function handleClick() {
 
 /* States */
 .save-status.idle {
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-500);
 }
 
 .save-status.dirty {
-  background-color: #dbeafe;
-  color: #1d4ed8;
+  background-color: var(--color-info-100);
+  color: var(--color-info-700);
 }
 
 .save-status.dirty:hover {
-  background-color: #bfdbfe;
+  background-color: var(--color-info-200);
 }
 
 .save-status.pending {
-  background-color: #fef3c7;
-  color: #b45309;
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
 }
 
 .save-status.pending:hover {
-  background-color: #fde68a;
+  background-color: var(--color-warning-200);
 }
 
 .save-status.saving {
-  background-color: #dbeafe;
-  color: #1d4ed8;
+  background-color: var(--color-info-100);
+  color: var(--color-info-700);
 }
 
 .save-status.saved {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--color-success-100);
+  color: var(--color-success-700);
 }
 
 .save-status.error {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background-color: var(--color-error-100);
+  color: var(--color-error-700);
   animation: shake 0.3s ease-in-out;
 }
 
 .save-status.error:hover {
-  background-color: #fecaca;
+  background-color: var(--color-error-200);
 }
 
 .save-status.first-save {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-surface);
 }
 
 .save-status.first-save:hover {

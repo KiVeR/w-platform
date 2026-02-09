@@ -149,13 +149,13 @@ function handleKeydown(event: KeyboardEvent): void {
   font-weight: 500;
   cursor: pointer;
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-surface);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-restore:hover:not(:disabled) {
-  background-color: var(--color-primary-dark, #2563eb);
+  background-color: var(--color-primary-dark);
 }
 
 .btn-restore:disabled {
@@ -166,8 +166,8 @@ function handleKeydown(event: KeyboardEvent): void {
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid color-mix(in srgb, var(--color-surface) 30%, transparent);
+  border-top-color: var(--color-surface);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

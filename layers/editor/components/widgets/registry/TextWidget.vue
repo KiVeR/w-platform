@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
+import VariableText from '../../variables/VariableText.vue'
 
 const props = defineProps<{
   widget: Widget
@@ -8,12 +9,26 @@ const props = defineProps<{
 
 const widgetsStore = useWidgetsStore()
 const { fontFamily, lineHeight } = useGlobalStyles()
+const { hasVariables } = useVariables()
+
+const resolveText = inject<((text: string) => string) | null>('resolveText', null)
 
 const textStyles = computed(() => ({
   ...props.widget.styles,
   fontFamily: props.widget.styles.fontFamily || fontFamily.value,
   lineHeight: props.widget.styles.lineHeight || lineHeight.value,
 }))
+
+const displayText = computed(() => {
+  const raw = props.widget.content.text || ''
+  if (resolveText && !props.editable)
+    return resolveText(raw)
+  return raw
+})
+
+const showVariableBadges = computed(
+  () => !resolveText && hasVariables(props.widget.content.text),
+)
 
 const isPlaceholder = computed(() => !props.widget.content.text?.trim())
 const isEditing = ref(false)
@@ -66,7 +81,10 @@ function handleKeydown(event: KeyboardEvent) {
       :class="{ 'is-placeholder': isPlaceholder }"
       @dblclick="startEditing"
     >
-      {{ widget.content.text || 'Texte...' }}
+      <VariableText v-if="showVariableBadges" :text="widget.content.text" tag="span" />
+      <template v-else>
+        {{ displayText || 'Texte...' }}
+      </template>
     </p>
   </div>
 </template>

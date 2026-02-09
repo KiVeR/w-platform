@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionIconSelect from '../shared/OptionIconSelect.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import OptionSelect from '../shared/OptionSelect.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
@@ -17,7 +17,7 @@ const iconPositionOptions = [
 <template>
   <div class="options-stack">
     <OptionGroup label="Texte" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.text"
         placeholder="Appeler"
         @update:model-value="updateContent('text', $event)"
@@ -40,7 +40,7 @@ const iconPositionOptions = [
     </OptionGroup>
 
     <OptionGroup label="Téléphone" required>
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.phone"
         type="tel"
         placeholder="+33123456789"

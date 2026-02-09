@@ -127,7 +127,7 @@ onUnmounted(() => {
 .effect-widget {
   position: relative;
   min-height: 80px;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, var(--color-neutral-800) 0%, var(--color-neutral-700) 100%);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -138,7 +138,7 @@ onUnmounted(() => {
   left: 8px;
   z-index: 10;
   background: rgba(255, 255, 255, 0.9);
-  color: #1e293b;
+  color: var(--color-neutral-800);
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;

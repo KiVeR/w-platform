@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OptionColorPicker from '../shared/OptionColorPicker.vue'
 import OptionGroup from '../shared/OptionGroup.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import OptionSelect from '../shared/OptionSelect.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
@@ -31,18 +31,10 @@ const typeOptions = [
         ? '7-8 chiffres pour EAN-8 (checksum calculé automatiquement)'
         : '12-13 chiffres pour EAN-13 (checksum calculé automatiquement)'"
     >
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.barcodeCode"
         :placeholder="widget.content.barcodeType === 'ean8' ? '12345678' : '1234567890123'"
         @update:model-value="updateContent('barcodeCode', $event)"
-      />
-    </OptionGroup>
-
-    <OptionGroup label="Variable (optionnel)" hint="Utiliser une variable comme ${barcode} pour un code dynamique">
-      <OptionInput
-        :model-value="widget.content.barcodeVariable"
-        placeholder="${barcode}"
-        @update:model-value="updateContent('barcodeVariable', $event)"
       />
     </OptionGroup>
 

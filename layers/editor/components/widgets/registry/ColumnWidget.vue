@@ -128,7 +128,7 @@ function handleDragOver(event: DragEvent): void {
 .column-widget {
   min-height: 60px;
   background: rgba(255, 255, 255, 0.5);
-  border: 1px dashed #e2e8f0;
+  border: 1px dashed var(--color-neutral-200);
   border-radius: var(--radius-sm);
   transition: all 0.2s;
 }

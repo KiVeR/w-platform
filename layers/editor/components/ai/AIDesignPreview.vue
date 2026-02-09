@@ -83,8 +83,8 @@ function handleExpand() {
 
 <style scoped>
 .ai-design-preview {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--color-background-subtle);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -93,7 +93,7 @@ function handleExpand() {
   display: flex;
   justify-content: center;
   padding: 16px;
-  background: #f3f4f6;
+  background: var(--color-neutral-100);
   height: 320px;
   overflow: hidden;
   transition: height 0.3s ease;
@@ -105,13 +105,13 @@ function handleExpand() {
 
 .ai-design-preview-info {
   padding: 12px 16px;
-  border-top: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-top: 1px solid var(--color-neutral-200);
+  background: var(--color-surface);
 }
 
 .ai-design-preview-stats {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 12px;
 }
 
@@ -134,22 +134,22 @@ function handleExpand() {
 }
 
 .ai-design-preview-btn--primary {
-  background: #3b82f6;
-  color: #ffffff;
+  background: var(--color-info-500);
+  color: var(--color-surface);
 }
 
 .ai-design-preview-btn--primary:hover {
-  background: #2563eb;
+  background: var(--color-info-600);
 }
 
 .ai-design-preview-btn--secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #e5e7eb;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  border: 1px solid var(--color-neutral-200);
 }
 
 .ai-design-preview-btn--secondary:hover {
-  background: #e5e7eb;
+  background: var(--color-neutral-200);
 }
 
 .ai-design-preview-hint {
@@ -157,7 +157,7 @@ function handleExpand() {
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin: 12px 0 0;
 }
 </style>

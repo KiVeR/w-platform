@@ -1,6 +1,5 @@
 import type { ContentType } from '#shared/types/content'
 import { VARIABLE_PATTERN } from '../composables/useVariables'
-import { useVariableSchema } from '../composables/useVariableSchema'
 import { useVariableSchemaStore } from '../stores/variableSchema'
 
 export interface CreateContentRequest {
@@ -53,8 +52,11 @@ export interface ContentApi {
  * Scan all widgets in a design to find used variables,
  * then call markUsed / markUnused on the schema.
  * Wrapped in try/catch — this is fire-and-forget, must never break save.
+ *
+ * Accepts the api instance from the caller since this function runs outside
+ * Vue setup scope and cannot call inject()-based composables.
  */
-function syncVariableUsage(design: DesignDocument): void {
+function syncVariableUsage(design: DesignDocument, api: ReturnType<typeof useEditorApi>): void {
   try {
     const store = useVariableSchemaStore()
     if (!store.isAvailable || !store.schema?.uuid)
@@ -77,11 +79,11 @@ function syncVariableUsage(design: DesignDocument): void {
     const unused = [...knownNames].filter(n => !usedNames.has(n))
 
     // Fire-and-forget — non-blocking, non-critical
-    const { markUsed, markUnused } = useVariableSchema()
+    const uuid = store.schema.uuid
     if (used.length > 0)
-      markUsed(used)
+      api.post(`/variable-schemas/${uuid}/mark-used`, { variables: used })
     if (unused.length > 0)
-      markUnused(unused)
+      api.post(`/variable-schemas/${uuid}/mark-unused`, { variables: unused })
   }
   catch {
     // Silently fail — variable sync is non-critical
@@ -133,7 +135,7 @@ export function useContentApi(): ContentApi {
         const result = await api.put<SaveContentDesignResponse>(`/contents/${contentId}/design`, { design })
 
         // After successful save, sync variable usage with the schema
-        syncVariableUsage(design)
+        syncVariableUsage(design, api)
 
         return result
       }

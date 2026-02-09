@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import OptionCheckbox from '../shared/OptionCheckbox.vue'
 import OptionGroup from '../shared/OptionGroup.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
 const props = defineProps<{ widget: Widget }>()
@@ -11,7 +11,7 @@ const { updateContent } = useWidgetContent(props.widget)
 <template>
   <div class="options-stack">
     <OptionGroup label="URL de la vidéo" required hint="YouTube ou Vimeo détecté automatiquement">
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.videoUrl"
         type="url"
         placeholder="https://youtube.com/watch?v=..."

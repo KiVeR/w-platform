@@ -16,6 +16,7 @@
   /* Aliases */
   --color-primary: var(--color-primary-500);
   --color-primary-dark: var(--color-primary-600);
+  --color-primary-light: var(--color-primary-100);
 
   /* ==================== NEUTRAL PALETTE ==================== */
   --color-neutral-50: #f8fafc;
@@ -33,6 +34,7 @@
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
   --color-success-700: #15803d;
@@ -49,6 +51,7 @@
   --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
   --color-error-500: #ef4444;
   --color-error-600: #dc2626;
   --color-error-700: #b91c1c;

@@ -1,7 +1,32 @@
+export interface EditorConfigVariables {
+  schemaUuid?: string
+  schema?: import('../types/variable').VariableSchema
+  previewDataSetKey?: string
+}
+
 export interface EditorConfigFeatures {
   ai?: boolean
   history?: boolean
   templates?: boolean
+  variables?: boolean
+}
+
+export interface EditorThemeLogo {
+  /** URL to the logo image */
+  src: string
+  /** Alt text for accessibility */
+  alt?: string
+  /** Logo height in pixels (default: 28) */
+  height?: number
+}
+
+export interface EditorTheme {
+  /** Main accent color as hex (#rrggbb or #rgb). Default: '#14b8a6' (turquoise). */
+  primaryColor?: string
+  /** Brand logo to display in the editor toolbar */
+  logo?: EditorThemeLogo
+  /** Color mode for the editor UI. Currently only 'light' is supported. */
+  colorMode?: 'light'
 }
 
 export interface EditorConfig {
@@ -20,6 +45,12 @@ export interface EditorConfig {
 
   // Feature flags
   features?: EditorConfigFeatures
+
+  // Editor UI theme customization
+  theme?: EditorTheme
+
+  // Variable schema for dynamic content (landing pages, SMS)
+  variables?: EditorConfigVariables
 }
 
 export const EDITOR_CONFIG_KEY: InjectionKey<EditorConfig> = Symbol('editor-config')

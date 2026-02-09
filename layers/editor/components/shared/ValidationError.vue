@@ -26,10 +26,10 @@ defineProps<{
 .validation-error {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-1, 4px);
-  margin-top: var(--space-1, 4px);
-  font-size: var(--text-xs, 12px);
-  color: var(--color-error-600, #dc2626);
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-error-600);
 }
 
 .error-icon {

@@ -132,14 +132,14 @@ onUnmounted(() => {
 .countdown-placeholder {
   width: 100%;
   min-height: 120px;
-  background-color: #f1f5f9;
-  border: 2px dashed #cbd5e1;
+  background-color: var(--color-neutral-100);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 
 .placeholder-icon {

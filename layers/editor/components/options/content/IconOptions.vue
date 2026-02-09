@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import OptionColorPicker from '../shared/OptionColorPicker.vue'
 import OptionGroup from '../shared/OptionGroup.vue'
 import OptionIconSelect from '../shared/OptionIconSelect.vue'
-import OptionInput from '../shared/OptionInput.vue'
+import OptionInputWithVariables from '../shared/OptionInputWithVariables.vue'
 import OptionSelect from '../shared/OptionSelect.vue'
 import { useWidgetContent } from '../shared/useWidgetContent'
 
@@ -67,7 +67,7 @@ const currentIconComponent = computed(() => getLucideIcon(currentIconName.value)
 
     <!-- Link -->
     <OptionGroup label="Lien (optionnel)">
-      <OptionInput
+      <OptionInputWithVariables
         :model-value="widget.content.href"
         type="url"
         placeholder="https://..."

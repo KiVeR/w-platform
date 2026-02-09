@@ -330,7 +330,7 @@ watch(isOpen, (open) => {
 .create-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  background: rgba(20, 184, 166, 0.05);
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
 }
 
 /* Palette List */
@@ -399,8 +399,8 @@ watch(isOpen, (open) => {
 }
 
 .delete-btn:hover {
-  background: #fef2f2;
-  color: #ef4444;
+  background: var(--color-error-50);
+  color: var(--color-error-500);
 }
 
 /* Rename Input */

@@ -36,7 +36,7 @@ const separatorStyles = computed(() => ({
   border: none;
   border-top-style: solid;
   border-top-width: 1px;
-  border-top-color: #e2e8f0;
+  border-top-color: var(--color-neutral-200);
   margin: 0;
   transition: border-color 0.2s ease;
 }

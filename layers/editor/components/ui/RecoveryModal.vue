@@ -69,7 +69,7 @@ function formatDate(isoString: string): string {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--color-surface);
   border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 420px;
@@ -83,25 +83,25 @@ function formatDate(isoString: string): string {
 }
 
 .warning-icon {
-  color: #f59e0b;
+  color: var(--color-warning-500);
 }
 
 h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   margin: 0 0 12px;
 }
 
 .modal-description {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 20px;
 }
 
 .recovery-info {
-  background-color: #f8fafc;
+  background-color: var(--color-neutral-50);
   border-radius: var(--radius-lg);
   padding: 16px;
   margin-bottom: 24px;
@@ -111,7 +111,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #475569;
+  color: var(--color-neutral-600);
   font-size: 14px;
 }
 
@@ -131,14 +131,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-secondary:hover {
-  background-color: #e2e8f0;
+  background-color: var(--color-neutral-200);
 }
 
 .btn-primary {
@@ -147,13 +147,13 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--color-info-500);
+  color: var(--color-surface);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-primary:hover {
-  background-color: #2563eb;
+  background-color: var(--color-info-600);
 }
 </style>

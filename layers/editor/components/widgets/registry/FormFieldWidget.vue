@@ -131,8 +131,8 @@ function handleRemove() {
   align-items: flex-start;
   gap: 4px;
   padding: 6px 4px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-md);
   transition: all 0.2s;
 }
@@ -158,7 +158,7 @@ function handleRemove() {
 
 .field-handle {
   cursor: grab;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 12px;
   padding: 4px;
   user-select: none;
@@ -177,12 +177,12 @@ function handleRemove() {
   display: block;
   font-size: 13px;
   font-weight: 500;
-  color: #334155;
+  color: var(--color-neutral-700);
   margin-bottom: 6px;
 }
 
 .required-mark {
-  color: #ef4444;
+  color: var(--color-error-500);
   margin-left: 2px;
 }
 
@@ -191,11 +191,11 @@ function handleRemove() {
 .field-select {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-md);
   font-size: 14px;
-  background: #f8fafc;
-  color: #64748b;
+  background: var(--color-neutral-50);
+  color: var(--color-neutral-500);
 }
 
 .field-textarea {
@@ -209,7 +209,7 @@ function handleRemove() {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #475569;
+  color: var(--color-neutral-600);
 }
 
 .field-radio-group {
@@ -222,8 +222,8 @@ function handleRemove() {
   width: 24px;
   height: 24px;
   border: none;
-  background: #fee2e2;
-  color: #ef4444;
+  background: var(--color-error-100);
+  color: var(--color-error-500);
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 16px;
@@ -237,7 +237,7 @@ function handleRemove() {
 }
 
 .field-remove:hover {
-  background: #ef4444;
-  color: white;
+  background: var(--color-error-500);
+  color: var(--color-surface);
 }
 </style>

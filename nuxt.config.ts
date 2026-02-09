@@ -61,6 +61,9 @@ export default defineNuxtConfig({
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-in-production',
     jwtAccessExpiration: process.env.JWT_ACCESS_EXPIRATION || '15m',
     databaseUrl: process.env.DATABASE_URL,
+    triggerApiUrl: process.env.TRIGGER_API_URL || '',
+    triggerApiClientId: process.env.TRIGGER_API_CLIENT_ID || '',
+    triggerApiClientSecret: process.env.TRIGGER_API_CLIENT_SECRET || '',
 
     // Public (exposed to client)
     public: {

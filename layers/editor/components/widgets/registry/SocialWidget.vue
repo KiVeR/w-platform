@@ -203,14 +203,14 @@ function getHref(link: SocialLink) {
 .social-placeholder {
   width: 100%;
   min-height: 120px;
-  background-color: #f1f5f9;
-  border: 2px dashed #cbd5e1;
+  background-color: var(--color-neutral-100);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 
 .placeholder-icons {
@@ -226,8 +226,8 @@ function getHref(link: SocialLink) {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #e2e8f0;
-  color: #94a3b8;
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-400);
   font-size: 12px;
   font-weight: bold;
 }

@@ -92,7 +92,7 @@ function handleCancel() {
 
 .modal-content {
   position: relative;
-  background-color: white;
+  background-color: var(--color-surface);
   border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 480px;
@@ -112,15 +112,15 @@ function handleCancel() {
   height: 32px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   cursor: pointer;
   border-radius: var(--radius-md);
   transition: all 0.15s;
 }
 
 .modal-close:hover {
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
 }
 
 .modal-icon {
@@ -128,18 +128,18 @@ function handleCancel() {
 }
 
 .icon {
-  color: #f59e0b;
+  color: var(--color-warning-500);
 }
 
 h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   margin: 0 0 12px;
 }
 
 .modal-description {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 20px;
@@ -153,7 +153,7 @@ h2 {
   margin-bottom: 24px;
   cursor: pointer;
   font-size: 13px;
-  color: #64748b;
+  color: var(--color-neutral-500);
 }
 
 .checkbox {
@@ -176,14 +176,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-secondary:hover {
-  background-color: #e2e8f0;
+  background-color: var(--color-neutral-200);
 }
 
 .btn-outline {
@@ -192,14 +192,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: white;
+  background-color: var(--color-surface);
   color: var(--color-primary, #14b8a6);
   border: 1px solid var(--color-primary, #14b8a6);
   transition: all 0.2s;
 }
 
 .btn-outline:hover {
-  background-color: rgba(20, 184, 166, 0.05);
+  background-color: color-mix(in srgb, var(--color-primary) 5%, transparent);
 }
 
 .btn-warning {
@@ -208,13 +208,13 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #f59e0b;
-  color: white;
+  background-color: var(--color-warning-500);
+  color: var(--color-surface);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-warning:hover {
-  background-color: #d97706;
+  background-color: var(--color-warning-600);
 }
 </style>

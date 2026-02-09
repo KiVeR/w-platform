@@ -175,11 +175,11 @@ function isFormField(widget: Widget): boolean {
   gap: 4px;
   font-size: 11px;
   font-weight: 600;
-  color: #64748b;
-  background: white;
+  color: var(--color-neutral-500);
+  background: var(--color-surface);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-neutral-200);
 }
 
 .form-fields {
@@ -213,7 +213,7 @@ function isFormField(widget: Widget): boolean {
 
 .add-field-btn:hover {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-surface);
 }
 
 .add-field-btn.small {
@@ -229,7 +229,7 @@ function isFormField(widget: Widget): boolean {
 .submit-preview {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed var(--color-neutral-200);
   text-align: center;
 }
 

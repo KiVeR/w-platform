@@ -136,7 +136,7 @@ function handleCancel() {
 
 .modal-content {
   position: relative;
-  background-color: white;
+  background-color: var(--color-surface);
   border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 420px;
@@ -156,15 +156,15 @@ function handleCancel() {
   height: 32px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   cursor: pointer;
   border-radius: var(--radius-md);
   transition: all 0.15s;
 }
 
 .modal-close:hover {
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
 }
 
 .modal-icon {
@@ -172,18 +172,18 @@ function handleCancel() {
 }
 
 .icon {
-  color: var(--color-primary, #14b8a6);
+  color: var(--color-primary);
 }
 
 h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   margin: 0 0 12px;
 }
 
 .modal-description {
-  color: #64748b;
+  color: var(--color-neutral-500);
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 20px;
@@ -200,37 +200,37 @@ h2 {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-neutral-200);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .label-input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-lg);
   font-size: 14px;
-  color: #1e293b;
+  color: var(--color-neutral-800);
   transition: border-color 0.2s, box-shadow 0.2s;
   margin-bottom: 8px;
 }
 
 .label-input:focus {
   outline: none;
-  border-color: var(--color-primary, #14b8a6);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 .label-input.has-error {
-  border-color: #ef4444;
+  border-color: var(--color-error-500);
 }
 
 .label-input::placeholder {
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 
 .error-message {
-  color: #ef4444;
+  color: var(--color-error-500);
   font-size: 12px;
   text-align: left;
   margin: 0 0 16px;
@@ -249,14 +249,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #e2e8f0;
+  background-color: var(--color-neutral-200);
 }
 
 .btn-secondary:disabled {
@@ -270,14 +270,14 @@ h2 {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background-color: var(--color-primary, #14b8a6);
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
   border: none;
   transition: background-color 0.2s;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-dark, #0d9488);
+  background-color: var(--color-primary-dark);
 }
 
 .btn-primary:disabled {

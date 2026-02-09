@@ -97,7 +97,7 @@ const mapStyleLabel = computed(() => {
   position: relative;
   width: 100%;
   height: 250px;
-  background: #e5e7eb;
+  background: var(--color-neutral-200);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
@@ -107,7 +107,7 @@ const mapStyleLabel = computed(() => {
   top: 8px;
   left: 8px;
   z-index: 10;
-  background: white;
+  background: var(--color-surface);
   color: #1f2937;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
@@ -140,14 +140,14 @@ const mapStyleLabel = computed(() => {
 .map-placeholder {
   width: 100%;
   min-height: 200px;
-  background-color: #f1f5f9;
-  border: 2px dashed #cbd5e1;
+  background-color: var(--color-neutral-100);
+  border: 2px dashed var(--color-neutral-300);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 
 .placeholder-icon {
@@ -179,7 +179,7 @@ const mapStyleLabel = computed(() => {
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--radius-xl);
   font-size: 10px;
   color: #666;
@@ -188,6 +188,6 @@ const mapStyleLabel = computed(() => {
 
 .style-chip.active {
   background: #4caf50;
-  color: white;
+  color: var(--color-surface);
 }
 </style>

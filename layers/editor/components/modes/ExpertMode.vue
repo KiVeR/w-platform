@@ -176,7 +176,7 @@ function copyToClipboard(text: string) {
   width: 100%;
   max-width: 900px;
   height: 100%;
-  background: #1e293b;
+  background: var(--color-neutral-800);
   border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
@@ -185,7 +185,7 @@ function copyToClipboard(text: string) {
 
 .code-tabs {
   display: flex;
-  background: #0f172a;
+  background: var(--color-neutral-900);
   padding: 8px 16px;
   gap: 8px;
 }
@@ -194,7 +194,7 @@ function copyToClipboard(text: string) {
   padding: 8px 16px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -203,20 +203,20 @@ function copyToClipboard(text: string) {
 }
 
 .code-tab:hover {
-  color: #f8fafc;
+  color: var(--color-neutral-50);
 }
 
 .code-tab.active {
-  background: #1e293b;
-  color: #14b8a6;
+  background: var(--color-neutral-800);
+  color: var(--color-primary);
 }
 
 .copy-btn {
   margin-left: auto;
   padding: 8px 16px;
-  border: 1px solid #334155;
+  border: 1px solid var(--color-neutral-700);
   background: transparent;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
   font-size: 14px;
   cursor: pointer;
   border-radius: var(--radius-md);
@@ -224,8 +224,8 @@ function copyToClipboard(text: string) {
 }
 
 .copy-btn:hover {
-  background: #334155;
-  color: #f8fafc;
+  background: var(--color-neutral-700);
+  color: var(--color-neutral-50);
 }
 
 .code-editor {
@@ -239,20 +239,20 @@ function copyToClipboard(text: string) {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 13px;
   line-height: 1.6;
-  color: #e2e8f0;
+  color: var(--color-neutral-200);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
 .code-info {
   padding: 12px 16px;
-  background: #0f172a;
-  border-top: 1px solid #334155;
+  background: var(--color-neutral-900);
+  border-top: 1px solid var(--color-neutral-700);
 }
 
 .info-text {
   margin: 0;
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--color-neutral-400);
 }
 </style>

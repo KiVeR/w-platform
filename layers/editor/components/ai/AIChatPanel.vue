@@ -196,7 +196,7 @@ function handleExampleClick(prompt: string) {
   width: 480px;
   max-width: 100%;
   height: 100%;
-  background: #ffffff;
+  background: var(--color-surface);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
@@ -208,8 +208,8 @@ function handleExampleClick(prompt: string) {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-bottom: 1px solid var(--color-neutral-200);
+  background: var(--color-background-subtle);
 }
 
 .ai-chat-header-content {
@@ -221,13 +221,13 @@ function handleExampleClick(prompt: string) {
 .ai-chat-title {
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .ai-chat-quota {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -240,14 +240,14 @@ function handleExampleClick(prompt: string) {
   border: none;
   background: transparent;
   border-radius: 8px;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .ai-chat-close:hover {
-  background: #e5e7eb;
-  color: #111827;
+  background: var(--color-neutral-200);
+  color: var(--color-text-primary);
 }
 
 /* Messages area */
@@ -279,13 +279,13 @@ function handleExampleClick(prompt: string) {
 .ai-chat-empty-title {
   font-size: 20px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin: 0 0 8px;
 }
 
 .ai-chat-empty-text {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 24px;
   max-width: 320px;
 }
@@ -301,26 +301,26 @@ function handleExampleClick(prompt: string) {
 .ai-chat-examples-label {
   font-size: 12px;
   font-weight: 500;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin: 0;
   text-align: left;
 }
 
 .ai-chat-example {
   padding: 12px 16px;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 8px;
   font-size: 13px;
-  color: #374151;
+  color: var(--color-neutral-600);
   text-align: left;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .ai-chat-example:hover {
-  background: #e5e7eb;
-  border-color: #d1d5db;
+  background: var(--color-neutral-200);
+  border-color: var(--color-neutral-300);
 }
 
 /* Error message */
@@ -330,17 +330,17 @@ function handleExampleClick(prompt: string) {
   justify-content: space-between;
   padding: 12px 16px;
   margin: 0 16px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--color-error-50);
+  border: 1px solid var(--color-error-200);
   border-radius: 8px;
-  color: #dc2626;
+  color: var(--color-error-600);
   font-size: 13px;
 }
 
 .ai-chat-error button {
   background: none;
   border: none;
-  color: #dc2626;
+  color: var(--color-error-600);
   font-size: 18px;
   cursor: pointer;
   padding: 0 4px;

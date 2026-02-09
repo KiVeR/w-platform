@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue'
+import { computed, inject, toRef } from 'vue'
+import VariableText from '../../variables/VariableText.vue'
 
 const props = defineProps<{
   widget: Widget
@@ -7,6 +8,8 @@ const props = defineProps<{
 }>()
 
 const { isFullWidth, wrapperStyles, buttonStyles, iconSize } = useButtonWidget(toRef(props, 'widget'))
+const { hasVariables } = useVariables()
+const resolveText = inject<((text: string) => string) | null>('resolveText', null)
 
 const href = computed(() => {
   const { action, phone, href } = props.widget.content
@@ -19,6 +22,17 @@ const href = computed(() => {
       return href || '#'
   }
 })
+
+const displayText = computed(() => {
+  const raw = props.widget.content.text || ''
+  if (resolveText && !props.editable)
+    return resolveText(raw)
+  return raw
+})
+
+const showVariableBadges = computed(
+  () => !resolveText && hasVariables(props.widget.content.text),
+)
 
 const icon = computed(() => props.widget.content.icon || '')
 const iconPosition = computed(() => props.widget.content.iconPosition || 'start')
@@ -39,7 +53,8 @@ const iconPosition = computed(() => props.widget.content.iconPosition || 'start'
         :icon-size="iconSize"
         gap="8px"
       >
-        {{ widget.content.text || 'Bouton' }}
+        <VariableText v-if="showVariableBadges" :text="widget.content.text" tag="span" />
+        <template v-else>{{ displayText || 'Bouton' }}</template>
       </IconText>
     </a>
   </div>
