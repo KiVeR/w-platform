@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ChevronDown, RotateCcw, Save } from 'lucide-vue-next'
 import { ref } from 'vue'
+import PreviewDataSetSelector from '../variables/PreviewDataSetSelector.vue'
+import SchemaPickerModal from '../variables/SchemaPickerModal.vue'
+import VariableSchemaInfo from '../variables/VariableSchemaInfo.vue'
 
 const editorStore = useEditorStore()
+const contentStore = useContentStore()
+const config = useEditorConfig()
 
 const {
   userPalettes,
@@ -25,10 +30,45 @@ const {
   deleteUserPalette,
 } = usePalettes()
 
+const variableSchemaStore = useVariableSchemaStore()
+const variablesEnabled = computed(() => config.features?.variables !== false)
+const showVariablesSection = computed(() => variablesEnabled.value || contentStore.id !== null)
+const showSchemaPickerModal = ref(false)
+
+function openSchemaPicker() {
+  showSchemaPickerModal.value = true
+}
+
+async function handleSchemaConfirm(schema: VariableSchemaListItem) {
+  showSchemaPickerModal.value = false
+  if (!contentStore.id)
+    return
+
+  const contentApi = useContentApi()
+  const result = await contentApi.attachSchema(contentStore.id, schema.id)
+  if (result) {
+    contentStore.variableSchemaUuid = schema.id
+    await useVariableSchema().initialize({ schemaUuid: schema.id })
+  }
+}
+
+async function handleSchemaDetach() {
+  if (!contentStore.id)
+    return
+
+  const contentApi = useContentApi()
+  const result = await contentApi.detachSchema(contentStore.id)
+  if (result) {
+    contentStore.variableSchemaUuid = null
+    variableSchemaStore.clearSchema()
+  }
+}
+
 const expandedSections = ref({
   colors: true,
   typography: false,
   layout: false,
+  variables: false,
   seo: false,
 })
 
@@ -218,6 +258,26 @@ function handleConfirmModalSaveFirst() {
       </div>
     </section>
 
+    <!-- Section: Variables -->
+    <section v-if="showVariablesSection" class="options-section">
+      <button
+        class="section-header"
+        :aria-expanded="expandedSections.variables"
+        @click="toggleSection('variables')"
+      >
+        <span>Variables</span>
+        <ChevronDown :size="16" :class="{ rotated: !expandedSections.variables }" />
+      </button>
+      <div v-show="expandedSections.variables" class="section-content">
+        <VariableSchemaInfo
+          @attach="openSchemaPicker"
+          @change="openSchemaPicker"
+          @detach="handleSchemaDetach"
+        />
+        <PreviewDataSetSelector />
+      </div>
+    </section>
+
     <!-- Section: SEO -->
     <section class="options-section">
       <button
@@ -260,6 +320,13 @@ function handleConfirmModalSaveFirst() {
       @confirm="confirmPaletteChange"
       @save-first="handleConfirmModalSaveFirst"
       @cancel="cancelPaletteChange"
+    />
+
+    <SchemaPickerModal
+      v-if="showSchemaPickerModal"
+      :current-uuid="contentStore.variableSchemaUuid ?? undefined"
+      @confirm="handleSchemaConfirm"
+      @cancel="showSchemaPickerModal = false"
     />
   </div>
 </template>
