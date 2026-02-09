@@ -19,8 +19,7 @@ class NotifyCampaignStatsCommand extends Command
 
     public function handle(): int
     {
-        /** @var int $delayHours */
-        $delayHours = config('campaign-sending.notifications.stats_delay_hours', 72);
+        $delayHours = (int) config('campaign-sending.notifications.stats_delay_hours', 72);
 
         $campaigns = Campaign::query()
             ->where('status', CampaignStatus::SENT)
@@ -39,10 +38,8 @@ class NotifyCampaignStatsCommand extends Command
         $notified = 0;
 
         foreach ($campaigns as $campaign) {
-            $creator = $campaign->creator;
-
-            if ($creator) {
-                $creator->notify(new CampaignStatsAvailableNotification($campaign));
+            if ($campaign->creator) {
+                $campaign->creator->notify(new CampaignStatsAvailableNotification($campaign));
                 $notified++;
             }
 

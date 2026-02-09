@@ -113,11 +113,11 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    public function schedule(ScheduleCampaignRequest $request, Campaign $campaign): CampaignResource|JsonResponse
+    public function schedule(ScheduleCampaignRequest $request, Campaign $campaign, StopSmsService $stopSmsService): CampaignResource|JsonResponse
     {
         $this->authorize('update', $campaign);
 
-        if ($error = $this->ensureReadyToSend($campaign)) {
+        if ($error = $this->ensureReadyToSend($campaign, $stopSmsService)) {
             return $error;
         }
 
@@ -129,11 +129,11 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    public function send(Campaign $campaign, CampaignSenderInterface $sender, PricingService $pricingService): CampaignResource|JsonResponse
+    public function send(Campaign $campaign, CampaignSenderInterface $sender, PricingService $pricingService, StopSmsService $stopSmsService): CampaignResource|JsonResponse
     {
         $this->authorize('send', $campaign);
 
-        if ($error = $this->ensureReadyToSend($campaign)) {
+        if ($error = $this->ensureReadyToSend($campaign, $stopSmsService)) {
             return $error;
         }
 
@@ -186,7 +186,7 @@ class CampaignsController extends Controller
         return new CampaignResource($campaign->fresh());
     }
 
-    private function ensureReadyToSend(Campaign $campaign): ?JsonResponse
+    private function ensureReadyToSend(Campaign $campaign, StopSmsService $stopSmsService): ?JsonResponse
     {
         if (! $campaign->message || ! $campaign->sender) {
             return new JsonResponse(
@@ -197,8 +197,6 @@ class CampaignsController extends Controller
                 422,
             );
         }
-
-        $stopSmsService = app(StopSmsService::class);
 
         if ($stopSmsService->containsBlockedDomain($campaign->message)) {
             return new JsonResponse(

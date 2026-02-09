@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\CampaignSending;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -56,7 +57,7 @@ class WepakClient
             ]);
 
             return WepakResponse::fromHttpResponse($response);
-        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+        } catch (ConnectionException $e) {
             Log::error('Wepak connection error', [
                 'endpoint' => $endpoint,
                 'error' => $e->getMessage(),

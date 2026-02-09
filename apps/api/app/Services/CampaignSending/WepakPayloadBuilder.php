@@ -20,8 +20,8 @@ class WepakPayloadBuilder
         $payload = [
             'query' => 'calcule_groupe_localite',
             'genre' => $this->mapGender($targeting['gender'] ?? null),
-            'age_min' => $this->mapAge($targeting['age_min'] ?? null, 18),
-            'age_max' => $this->mapAge($targeting['age_max'] ?? null, 75),
+            'age_min' => $this->mapMinAge($targeting['age_min'] ?? null),
+            'age_max' => $this->mapMaxAge($targeting['age_max'] ?? null),
             'liste_cp_dept' => $this->buildLocationList($targeting),
             'volume' => $campaign->volume_estimated ?? 0,
             'is_split_volume' => $this->hasSplitVolume($targeting),
@@ -33,8 +33,7 @@ class WepakPayloadBuilder
             $payload['is_double'] = $this->isDoubleSms($campaign->message ?? '');
             $payload['idrouteur'] = $this->getRouterId($campaign);
 
-            $payload = array_merge($payload, $this->buildBlacklist($targeting));
-            $payload = array_merge($payload, $this->buildInterestGroups($campaign));
+            $payload = [...$payload, ...$this->buildBlacklist($targeting), ...$this->buildInterestGroups($campaign)];
         }
 
         return $payload;
@@ -75,21 +74,14 @@ class WepakPayloadBuilder
         };
     }
 
-    protected function mapAge(?int $age, int $boundary): ?int
+    protected function mapMinAge(?int $age): ?int
     {
-        if ($age === null) {
-            return null;
-        }
+        return ($age !== null && $age > 18) ? $age : null;
+    }
 
-        if ($boundary === 18 && $age <= 18) {
-            return null;
-        }
-
-        if ($boundary === 75 && $age >= 75) {
-            return null;
-        }
-
-        return $age;
+    protected function mapMaxAge(?int $age): ?int
+    {
+        return ($age !== null && $age < 75) ? $age : null;
     }
 
     /**
@@ -120,19 +112,12 @@ class WepakPayloadBuilder
 
     protected function guessLocationType(string $code): string
     {
-        $length = mb_strlen($code);
-
-        if ($length === 5) {
-            return 'cp';
-        }
-        if ($length <= 3) {
-            return 'dept';
-        }
-        if ($length === 9) {
-            return 'iris';
-        }
-
-        return 'cp';
+        return match (mb_strlen($code)) {
+            5 => 'cp',
+            1, 2, 3 => 'dept',
+            9 => 'iris',
+            default => 'cp',
+        };
     }
 
     /** @param array<string, mixed> $targeting */
@@ -161,16 +146,7 @@ class WepakPayloadBuilder
 
     protected function getRouterId(Campaign $campaign): ?int
     {
-        $partner = $campaign->partner;
-
-        if (! $partner) {
-            return null;
-        }
-
-        /** @var \App\Models\Router|null $router */
-        $router = $partner->router;
-
-        return $router?->external_id;
+        return $campaign->partner?->router?->external_id;
     }
 
     /**

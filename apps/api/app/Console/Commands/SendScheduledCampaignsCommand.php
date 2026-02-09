@@ -7,8 +7,8 @@ namespace App\Console\Commands;
 use App\Enums\CampaignStatus;
 use App\Jobs\ProcessCampaignSendingJob;
 use App\Models\Campaign;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 
 class SendScheduledCampaignsCommand extends Command
 {
@@ -37,30 +37,24 @@ class SendScheduledCampaignsCommand extends Command
             return self::SUCCESS;
         }
 
-        $dispatched = 0;
-
         foreach ($campaigns as $campaign) {
             $campaign->update(['status' => CampaignStatus::SENDING]);
             ProcessCampaignSendingJob::dispatch($campaign);
-            $dispatched++;
         }
 
-        $this->info("Dispatched {$dispatched} campaign(s) for sending.");
+        $this->info("Dispatched {$campaigns->count()} campaign(s) for sending.");
 
         return self::SUCCESS;
     }
 
     protected function isWithinSendingWindow(): bool
     {
-        /** @var string $timezone */
-        $timezone = config('campaign-sending.sending.timezone', 'Europe/Paris');
-        /** @var int $start */
-        $start = config('campaign-sending.sending.window_start', 8);
-        /** @var int $end */
-        $end = config('campaign-sending.sending.window_end', 20);
+        $timezone = (string) config('campaign-sending.sending.timezone', 'Europe/Paris');
+        $start = (int) config('campaign-sending.sending.window_start', 8);
+        $end = (int) config('campaign-sending.sending.window_end', 20);
 
-        $now = Carbon::now($timezone);
+        $hour = Carbon::now($timezone)->hour;
 
-        return $now->hour >= $start && $now->hour < $end;
+        return $hour >= $start && $hour < $end;
     }
 }

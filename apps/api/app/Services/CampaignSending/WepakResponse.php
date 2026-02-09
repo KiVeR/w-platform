@@ -29,9 +29,9 @@ readonly class WepakResponse
         /** @var array<string, mixed> $data */
         $data = $response->json() ?? [];
 
-        $idMessage = isset($data['id_message']) ? (int) $data['id_message'] : null;
+        $idMessage = (int) ($data['id_message'] ?? 0);
 
-        if ($idMessage !== null && $idMessage !== 0) {
+        if ($idMessage !== 0) {
             return new self(
                 success: false,
                 error: 'Wepak error (id_message='.$idMessage.')',
