@@ -2,5 +2,62 @@
   "app": {
     "title": "Wellpack Dashboard",
     "description": "Plateforme de gestion des campagnes SMS"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "campaigns": "Campagnes",
+    "shops": "Boutiques",
+    "landingPages": "Landing Pages",
+    "stats": "Statistiques",
+    "settings": "Paramètres",
+    "groups": {
+      "main": "Principal",
+      "analysis": "Analyse",
+      "config": "Configuration"
+    }
+  },
+  "sidebar": {
+    "toggle": "Basculer la barre latérale",
+    "logout": "Se déconnecter"
+  },
+  "header": {
+    "theme": {
+      "label": "Thème d'affichage",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "profile": "Mon profil"
+  },
+  "breadcrumb": {
+    "dashboard": "Dashboard",
+    "campaigns": "Campagnes",
+    "newCampaign": "Nouvelle campagne",
+    "shops": "Boutiques",
+    "landingPages": "Landing Pages",
+    "stats": "Statistiques",
+    "settings": "Paramètres",
+    "users": "Utilisateurs",
+    "partner": "Partenaire"
+  },
+  "error": {
+    "404": {
+      "title": "Page introuvable",
+      "description": "Cette page n'existe pas ou a été déplacée."
+    },
+    "403": {
+      "title": "Accès non autorisé",
+      "description": "Vous n'avez pas les permissions pour accéder à cette page."
+    },
+    "500": {
+      "title": "Erreur serveur",
+      "description": "Une erreur inattendue s'est produite. Réessayez dans quelques instants."
+    },
+    "unknown": {
+      "title": "Erreur",
+      "description": "Une erreur inattendue s'est produite."
+    },
+    "backHome": "Retour au dashboard",
+    "retry": "Réessayer"
   }
 }

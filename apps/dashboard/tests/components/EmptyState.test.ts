@@ -1,16 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { Send } from 'lucide-vue-next'
 import EmptyState from '@/components/shared/EmptyState.vue'
-
-const NuxtLinkStub = {
-  template: '<a :href="to"><slot /></a>',
-  props: ['to'],
-}
+import { NuxtLinkStub } from '../helpers/stubs'
 
 function mountEmptyState(props: Record<string, unknown> = {}) {
   return mount(EmptyState, {
     props: {
-      icon: 'Send',
+      icon: Send,
       title: 'Aucune campagne',
       description: 'Créez votre première campagne SMS.',
       ...props,

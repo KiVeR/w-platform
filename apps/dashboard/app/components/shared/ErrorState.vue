@@ -1,34 +1,33 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import * as icons from 'lucide-vue-next'
+import { type Component, computed } from 'vue'
+import { ServerCrash } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 
+const { t } = useI18n()
+
 const props = withDefaults(defineProps<{
-  icon?: string
+  icon?: Component
   title: string
   description: string
   retryLabel?: string
   backLabel?: string
   backTo?: string
 }>(), {
-  icon: 'ServerCrash',
-  retryLabel: 'Réessayer',
+  icon: () => ServerCrash,
 })
+
+const resolvedRetryLabel = computed(() => props.retryLabel ?? t('error.retry'))
 
 const emit = defineEmits<{
   retry: []
 }>()
-
-const iconComponent = computed(() => {
-  return (icons as Record<string, unknown>)[props.icon] ?? null
-})
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center py-16 text-center">
     <component
-      :is="iconComponent"
-      v-if="iconComponent"
+      :is="icon"
+      v-if="icon"
       class="size-12 text-destructive"
       :stroke-width="1.5"
     />
@@ -42,12 +41,8 @@ const iconComponent = computed(() => {
     </p>
 
     <div class="mt-6 flex gap-3">
-      <Button
-        v-if="retryLabel"
-        variant="outline"
-        @click="emit('retry')"
-      >
-        {{ retryLabel }}
+      <Button @click="emit('retry')">
+        {{ resolvedRetryLabel }}
       </Button>
 
       <NuxtLink v-if="backLabel && backTo" :to="backTo">

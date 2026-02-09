@@ -12,7 +12,7 @@
     "test:watch": "vitest",
     "lint": "nuxt typecheck",
     "typecheck": "nuxt typecheck",
-    "generate:types": "openapi-typescript http://localhost:8000/docs/api.json -o app/types/api.d.ts"
+    "generate:types": "openapi-typescript ${API_URL:-https://platform-api.test}/docs/api.json -o app/types/api.d.ts"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.2.3",
@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.563.0",
     "nuxt": "^4.3.1",
+    "openapi-fetch": "^0.16.0",
     "pinia": "^3.0.4",
     "reka-ui": "^2.8.0",
     "tailwind-merge": "^3.4.0",
@@ -39,6 +40,7 @@
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "^20.5.3",
+    "openapi-typescript": "^7.12.0",
     "shadcn-nuxt": "^2.4.3",
     "tailwindcss": "^4.1.18",
     "vitest": "^4.0.18"

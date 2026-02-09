@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 48" fill="none">
+  <defs>
+    <linearGradient id="gi" x1="0" y1="0" x2="46" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f19700"/>
+      <stop offset="100%" stop-color="#c26300"/>
+    </linearGradient>
+  </defs>
+  <!--
+    "Data Pillars" — 3 bars with continuous diagonal top line.
+    Bar width=12, gap=3.5, V-notch=6.
+    Single diagonal: y = -0.558x + 30 (from (0,30) to (43,6))
+  -->
+  <path d="M0 30 L12 23.3 V46 L6 40 L0 46 Z" fill="url(#gi)"/>
+  <path d="M15.5 21.3 L27.5 14.7 V46 L21.5 40 L15.5 46 Z" fill="url(#gi)"/>
+  <path d="M31 12.7 L43 6 V46 L37 40 L31 46 Z" fill="url(#gi)"/>
+</svg>

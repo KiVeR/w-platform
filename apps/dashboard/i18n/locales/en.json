@@ -2,5 +2,62 @@
   "app": {
     "title": "Wellpack Dashboard",
     "description": "SMS campaign management platform"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "campaigns": "Campaigns",
+    "shops": "Shops",
+    "landingPages": "Landing Pages",
+    "stats": "Statistics",
+    "settings": "Settings",
+    "groups": {
+      "main": "Main",
+      "analysis": "Analysis",
+      "config": "Configuration"
+    }
+  },
+  "sidebar": {
+    "toggle": "Toggle sidebar",
+    "logout": "Log out"
+  },
+  "header": {
+    "theme": {
+      "label": "Display theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "profile": "My profile"
+  },
+  "breadcrumb": {
+    "dashboard": "Dashboard",
+    "campaigns": "Campaigns",
+    "newCampaign": "New campaign",
+    "shops": "Shops",
+    "landingPages": "Landing Pages",
+    "stats": "Statistics",
+    "settings": "Settings",
+    "users": "Users",
+    "partner": "Partner"
+  },
+  "error": {
+    "404": {
+      "title": "Page not found",
+      "description": "This page doesn't exist or has been moved."
+    },
+    "403": {
+      "title": "Access denied",
+      "description": "You don't have permission to access this page."
+    },
+    "500": {
+      "title": "Server error",
+      "description": "An unexpected error occurred. Please try again later."
+    },
+    "unknown": {
+      "title": "Error",
+      "description": "An unexpected error occurred."
+    },
+    "backHome": "Back to dashboard",
+    "retry": "Retry"
   }
 }

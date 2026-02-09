@@ -2,7 +2,7 @@
 
 @theme {
   /* ==================== FONTS ==================== */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
 
   /* ==================== PRIMARY — ORANGE ==================== */
@@ -41,9 +41,9 @@
   /* ==================== SEMANTIC — WARNING ==================== */
   --color-warning-50: oklch(0.987 0.030 95);
   --color-warning-100: oklch(0.960 0.065 95);
-  --color-warning-500: oklch(0.800 0.165 80);
-  --color-warning-600: oklch(0.720 0.160 70);
-  --color-warning-700: oklch(0.630 0.145 60);
+  --color-warning-500: oklch(0.850 0.165 95);
+  --color-warning-600: oklch(0.770 0.160 90);
+  --color-warning-700: oklch(0.680 0.145 85);
 
   /* ==================== SEMANTIC — ERROR ==================== */
   --color-error-50: oklch(0.975 0.020 25);
@@ -64,7 +64,7 @@
   --color-chart-2: oklch(0.623 0.214 259);
   --color-chart-3: oklch(0.723 0.191 149);
   --color-chart-4: oklch(0.720 0.160 330);
-  --color-chart-5: oklch(0.800 0.165 80);
+  --color-chart-5: oklch(0.850 0.165 95);
 
   /* ==================== LAYOUT ==================== */
   --sidebar-width: 240px;
@@ -72,6 +72,43 @@
   --header-height: 56px;
   --content-max-width: 1280px;
   --wizard-max-width: 960px;
+}
+
+/* ==================== SHADCN-VUE → TAILWIND v4 BRIDGE ==================== */
+/* Maps runtime CSS variables (swapped by .dark) to Tailwind's --color-* namespace */
+/* so that utility classes like bg-primary, text-foreground, etc. are generated.  */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 /* ==================== SHADCN-VUE SEMANTIC VARIABLES ==================== */
@@ -84,7 +121,7 @@
   --card-foreground: oklch(0.210 0.006 286);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.210 0.006 286);
-  --primary: oklch(0.750 0.170 70);
+  --primary: oklch(0.680 0.165 60);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.967 0.001 286);
   --secondary-foreground: oklch(0.210 0.006 286);
@@ -96,22 +133,22 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.920 0.004 286);
   --input: oklch(0.920 0.004 286);
-  --ring: oklch(0.750 0.170 70);
-  --chart-1: oklch(0.750 0.170 70);
+  --ring: oklch(0.680 0.165 60);
+  --chart-1: oklch(0.680 0.165 60);
   --chart-2: oklch(0.623 0.214 259);
   --chart-3: oklch(0.723 0.191 149);
   --chart-4: oklch(0.720 0.160 330);
-  --chart-5: oklch(0.800 0.165 80);
+  --chart-5: oklch(0.850 0.165 95);
 
   /* Sidebar */
   --sidebar: oklch(0.967 0.001 286);
   --sidebar-foreground: oklch(0.370 0.013 286);
-  --sidebar-primary: oklch(0.750 0.170 70);
+  --sidebar-primary: oklch(0.680 0.165 60);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.950 0.060 85);
   --sidebar-accent-foreground: oklch(0.600 0.150 55);
   --sidebar-border: oklch(0.920 0.004 286);
-  --sidebar-ring: oklch(0.750 0.170 70);
+  --sidebar-ring: oklch(0.680 0.165 60);
 }
 
 /* Dark mode */
@@ -139,7 +176,7 @@
   --chart-2: oklch(0.623 0.214 259);
   --chart-3: oklch(0.723 0.191 149);
   --chart-4: oklch(0.720 0.160 330);
-  --chart-5: oklch(0.800 0.165 80);
+  --chart-5: oklch(0.850 0.165 95);
 
   --sidebar: oklch(0.210 0.006 286);
   --sidebar-foreground: oklch(0.707 0.015 286);
@@ -157,14 +194,11 @@
 }
 
 body {
-  font-family: var(--font-sans), sans-serif;
-  font-feature-settings: 'cv02' 1, 'cv03' 1, 'cv04' 1;
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background-color: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-[data-tabular-nums] {
-  font-variant-numeric: tabular-nums;
 }
 
 /* ==================== PAGE TRANSITIONS ==================== */

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import * as icons from 'lucide-vue-next'
+import type { Component } from 'vue'
 import { Button } from '@/components/ui/button'
 
-const props = defineProps<{
-  icon: string
+defineProps<{
+  icon?: Component
   title: string
   description: string
   actionLabel?: string
@@ -14,17 +13,13 @@ const props = defineProps<{
 const emit = defineEmits<{
   action: []
 }>()
-
-const iconComponent = computed(() => {
-  return (icons as Record<string, unknown>)[props.icon] ?? null
-})
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center py-16 text-center">
     <component
-      :is="iconComponent"
-      v-if="iconComponent"
+      :is="icon"
+      v-if="icon"
       class="size-12 text-muted-foreground"
       :stroke-width="1.5"
     />

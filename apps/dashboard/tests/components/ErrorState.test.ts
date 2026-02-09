@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ErrorState from '@/components/shared/ErrorState.vue'
+import { NuxtLinkStub, mockUseI18n } from '../helpers/stubs'
 
-const NuxtLinkStub = {
-  template: '<a :href="to"><slot /></a>',
-  props: ['to'],
-}
+beforeEach(() => {
+  mockUseI18n()
+})
 
 function mountErrorState(props: Record<string, unknown> = {}) {
   return mount(ErrorState, {
@@ -34,10 +34,16 @@ describe('ErrorState', () => {
     expect(wrapper.find('svg').exists()).toBe(true)
   })
 
-  it('affiche le bouton retry avec le label par défaut', () => {
+  it('affiche le bouton retry avec le label i18n par défaut', () => {
     const wrapper = mountErrorState()
 
-    expect(wrapper.text()).toContain('Réessayer')
+    expect(wrapper.text()).toContain('error.retry')
+  })
+
+  it('affiche le bouton retry avec un label custom', () => {
+    const wrapper = mountErrorState({ retryLabel: 'Réessayer SVP' })
+
+    expect(wrapper.text()).toContain('Réessayer SVP')
   })
 
   it('émet "retry" au clic sur le bouton retry', async () => {
