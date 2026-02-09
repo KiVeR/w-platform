@@ -19,6 +19,7 @@ export const updateContentSchema = z.object({
     .max(200, 'Titre trop long')
     .optional(),
   status: pageStatusEnum.optional(),
+  variableSchemaUuid: z.string().uuid().nullable().optional(),
 })
 
 export const contentPaginationSchema = z.object({

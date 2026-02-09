@@ -128,10 +128,11 @@ model Content {
   ownerId    Int
   title      String
   status     ContentStatus @default(DRAFT)
-  isFavorite Boolean       @default(false)
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  deletedAt  DateTime?     // Soft delete
+  isFavorite         Boolean       @default(false)
+  variableSchemaUuid String?       // UUID of the trigger-api variable schema (nullable)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  deletedAt          DateTime?     // Soft delete
 
   // Relations
   owner           User             @relation(fields: [ownerId], references: [id])

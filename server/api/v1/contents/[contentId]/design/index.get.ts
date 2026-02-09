@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
     id: content.id,
     title: content.title,
     status: content.status,
+    variableSchemaUuid: content.variableSchemaUuid,
     design: content.landingPageData.design,
     updatedAt: content.updatedAt,
   }

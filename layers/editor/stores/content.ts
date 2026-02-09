@@ -10,6 +10,7 @@ export const useContentStore = defineStore('content', () => {
   const status = ref<PageStatusType>('DRAFT')
   const isLoading = ref(false)
   const error = ref<string | null>(null)
+  const variableSchemaUuid = ref<string | null>(null)
   const createdAt = ref<Date | null>(null)
   const updatedAt = ref<Date | null>(null)
 
@@ -37,6 +38,7 @@ export const useContentStore = defineStore('content', () => {
     type?: ContentType
     title?: string
     status?: PageStatusType
+    variableSchemaUuid?: string | null
   }) {
     if (data.id !== undefined)
       id.value = data.id
@@ -46,6 +48,8 @@ export const useContentStore = defineStore('content', () => {
       title.value = data.title
     if (data.status !== undefined)
       status.value = data.status
+    if (data.variableSchemaUuid !== undefined)
+      variableSchemaUuid.value = data.variableSchemaUuid
   }
 
   function updateTitle(newTitle: string) {
@@ -69,6 +73,7 @@ export const useContentStore = defineStore('content', () => {
     type.value = null
     title.value = ''
     status.value = 'DRAFT'
+    variableSchemaUuid.value = null
     isLoading.value = false
     error.value = null
     createdAt.value = null
@@ -81,6 +86,7 @@ export const useContentStore = defineStore('content', () => {
     type,
     title,
     status,
+    variableSchemaUuid,
     isLoading,
     error,
     createdAt,

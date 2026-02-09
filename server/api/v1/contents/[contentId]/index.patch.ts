@@ -4,6 +4,7 @@ interface UpdateContentResponse {
   id: number
   title: string
   status: string
+  variableSchemaUuid: string | null
   updatedAt: string
 }
 
@@ -33,14 +34,16 @@ export default defineEventHandler(async (event): Promise<UpdateContentResponse> 
     })
   }
 
-  const { title, status } = parsed.data
+  const { title, status, variableSchemaUuid } = parsed.data
 
   // Build update data
-  const updateData: { title?: string, status?: string } = {}
+  const updateData: { title?: string, status?: string, variableSchemaUuid?: string | null } = {}
   if (title !== undefined)
     updateData.title = title.trim()
   if (status !== undefined)
     updateData.status = status
+  if (variableSchemaUuid !== undefined)
+    updateData.variableSchemaUuid = variableSchemaUuid
 
   if (Object.keys(updateData).length === 0) {
     throw createError({
@@ -56,6 +59,7 @@ export default defineEventHandler(async (event): Promise<UpdateContentResponse> 
       id: true,
       title: true,
       status: true,
+      variableSchemaUuid: true,
       updatedAt: true,
     },
   })
@@ -71,6 +75,7 @@ export default defineEventHandler(async (event): Promise<UpdateContentResponse> 
     id: updated.id,
     title: updated.title,
     status: updated.status,
+    variableSchemaUuid: updated.variableSchemaUuid,
     updatedAt: updated.updatedAt.toISOString(),
   }
 })
