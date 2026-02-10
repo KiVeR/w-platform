@@ -12,7 +12,7 @@ Before generating anything, read these files to understand all widget rules, lay
    - Output format (globalStyles + widgets structure)
    - Examples of valid designs
 
-2. **`src/config/widgets.ts`** — Full widget catalog with defaultContent, defaultStyles, required fields, and examples
+2. **`app/config/widgets.ts`** — Full widget catalog with defaultContent, defaultStyles, required fields, and examples
 
 You MUST apply ALL guidelines from these files. They are the source of truth — do not deviate.
 

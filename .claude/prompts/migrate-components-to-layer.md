@@ -20,15 +20,15 @@ Le layer `layers/editor/` contient déjà toute la logique métier :
 
 Tout est auto-importé via le `nuxt.config.ts` du layer (composables, stores, constants, services, config, utils). **Zéro `@/` import dans le layer** — tout utilise des imports relatifs.
 
-**11 fichiers re-export bridge** existent dans `src/` (types, config, utils) — ils re-exportent depuis le layer pour que les composants non encore migrés continuent de fonctionner.
+**11 fichiers re-export bridge** existent dans `app/` (types, config, utils) — ils re-exportent depuis le layer pour que les composants non encore migrés continuent de fonctionner.
 
 ### Ce qui reste : les composants
 
-`src/components/` contient 127 composants Vue. **~105 sont éditeur-pur** et doivent être déplacés dans `layers/editor/components/`. Les ~22 restants sont app-specific et restent dans `src/`.
+`app/components/` contient 127 composants Vue. **~105 sont éditeur-pur** et doivent être déplacés dans `layers/editor/components/`. Les ~22 restants sont app-specific et restent dans `app/`.
 
 ## Ce que tu dois faire
 
-Déplacer les composants éditeur de `src/components/` vers `layers/editor/components/`, en gardant le même arbre de dossiers. Après chaque batch, les re-exports deviennent inutiles pour les composants dans le layer car Nuxt les auto-importe (config `components` dans le layer nuxt.config avec `pathPrefix: false`).
+Déplacer les composants éditeur de `app/components/` vers `layers/editor/components/`, en gardant le même arbre de dossiers. Après chaque batch, les re-exports deviennent inutiles pour les composants dans le layer car Nuxt les auto-importe (config `components` dans le layer nuxt.config avec `pathPrefix: false`).
 
 ### Structure cible
 
@@ -120,10 +120,10 @@ layers/editor/components/
         ├── TitleWidget.vue
         └── VideoWidget.vue
 
-### Composants qui restent dans `src/components/` (APP-SPECIFIC)
+### Composants qui restent dans `app/components/` (APP-SPECIFIC)
 
 ```
-src/components/
+app/components/
 ├── contents/            # 4 fichiers — NuxtLink, content list, app-level
 │   ├── ContentCard.vue
 │   ├── ContentFilterBar.vue
@@ -142,7 +142,7 @@ src/components/
     └── SmsPlaceholder.vue
 ```
 
-**Note sur les composants layout restants dans src/** :
+**Note sur les composants layout restants dans app/** :
 - `EditorToolbar.vue` importe `BreadcrumbNav`, `CreateLandingPageModal`, `SaveStatus`. Quand SaveStatus et CreateLandingPageModal seront dans le layer, ses imports changeront vers des auto-imports Nuxt. Les imports de BreadcrumbNav resteront en `@/components/layout/BreadcrumbNav.vue`.
 - `LeftSidebar.vue` importe `KreoLogo`, `TemplatePalette`, `SectionPalette`, `WidgetPalette`. Quand ces composants seront dans le layer, ils seront auto-importés — les imports explicites devront être supprimés.
 
@@ -154,8 +154,8 @@ src/components/
 Les widgets sont le cœur de l'éditeur. Ils sont tous autonomes (types + composables auto-importés).
 
 **Travail pour chaque fichier :**
-1. `mv src/components/widgets/... layers/editor/components/widgets/...`
-2. Supprimer les imports `from '@/types/widget'` → les types Widget/WidgetType sont utilisés comme props, donc ils seront auto-importés ou les `import type` peuvent rester (les re-exports dans src/types/ fonctionnent toujours)
+1. `mv app/components/widgets/... layers/editor/components/widgets/...`
+2. Supprimer les imports `from '@/types/widget'` → les types Widget/WidgetType sont utilisés comme props, donc ils seront auto-importés ou les `import type` peuvent rester (les re-exports dans app/types/ fonctionnent toujours)
 3. Supprimer les imports `from '@/config/widgets'` → auto-importé par le layer
 4. Supprimer les imports `from '@/utils/...'` → auto-importé par le layer
 5. Remplacer les imports `from '@/components/...'` par des imports relatifs ou laisser Nuxt auto-importer
@@ -184,14 +184,14 @@ Composants utilitaires de l'éditeur.
 Ces 3 fichiers layout sont éditeur-pur. Les déplacer dans `layers/editor/components/layout/`.
 
 ### Batch 7 : Cleanup
-- Mettre à jour les composants restants dans `src/` (EditorToolbar, LeftSidebar, BreadcrumbNav) pour supprimer les imports explicites de composants maintenant auto-importés depuis le layer
-- Supprimer les re-exports bridge dans `src/types/`, `src/config/`, `src/utils/` s'ils ne sont plus utilisés par aucun composant dans src/
+- Mettre à jour les composants restants dans `app/` (EditorToolbar, LeftSidebar, BreadcrumbNav) pour supprimer les imports explicites de composants maintenant auto-importés depuis le layer
+- Supprimer les re-exports bridge dans `app/types/`, `app/config/`, `app/utils/` s'ils ne sont plus utilisés par aucun composant dans app/
 - Vérifier que `grep -r "from '@/components/" layers/editor/` retourne zéro
 
 ## Règles critiques
 
 ### Imports dans le layer
-- **Zéro `@/` import dans les fichiers du layer.** `@/` résout vers le srcDir de l'app consommatrice, pas vers le layer.
+- **Zéro `@/` import dans les fichiers du layer.** `@/` résout vers le `app/` de l'app consommatrice, pas vers le layer.
 - Pour les composants du layer, utiliser l'auto-import Nuxt (ne pas importer les composants frères explicitement) OU des imports relatifs.
 - Pour les types, garder les `import type { Widget } from '../types/widget'` en imports relatifs depuis le layer, OU les supprimer si le contexte permet l'inférence de type.
 
@@ -211,7 +211,7 @@ Cela signifie que **tous les composants dans `layers/editor/components/` sont au
 
 ### Types et les composants
 Les composants Vue qui utilisent `import type { Widget } from '@/types/widget'` dans leur `<script setup>` peuvent :
-1. Garder l'import tel quel — les re-exports dans `src/types/widget.ts` continuent de fonctionner même dans le layer (car `@/` résout vers `src/` de l'app consommatrice qui a les re-exports)
+1. Garder l'import tel quel — les re-exports dans `app/types/widget.ts` continuent de fonctionner même dans le layer (car `@/` résout vers `app/` de l'app consommatrice qui a les re-exports)
 2. OU remplacer par un import relatif : `import type { Widget } from '../../types/widget'` (depuis `layers/editor/components/widgets/registry/`)
 
 **Attention** : la profondeur relative dépend du dossier du composant. La stratégie la plus sûre est de **garder les `@/types/widget` pour l'instant** (les re-exports bridge assurent la compatibilité) et de les nettoyer dans un batch ultérieur.

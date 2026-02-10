@@ -15,10 +15,7 @@ export default defineNuxtConfig({
   // to ensure Kreo design tokens override Tailwind v4 defaults
   // (--font-sans, --text-*, --radius-*, --shadow-*, --color-neutral-*).
 
-  // Alias — shared/ lives at the repo root, not inside the layer
-  alias: {
-    '#shared': resolve(currentDir, '../../shared'),
-  },
+  // #shared alias is provided natively by Nuxt 4 → <rootDir>/shared/
 
   // Auto-import composables, stores, constants, services, config, and utils
   imports: {

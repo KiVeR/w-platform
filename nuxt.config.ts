@@ -24,11 +24,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // Source directory (existing Vue components)
-  srcDir: 'src/',
-
-  // Server directory (explicitly set since srcDir is customized)
-  serverDir: 'server/',
+  // Nuxt 4 auto-detects app/ as srcDir and server/ as serverDir
 
   // Modules
   modules: [
@@ -108,6 +104,6 @@ export default defineNuxtConfig({
 
   // Pinia
   pinia: {
-    storesDirs: ['./src/stores/**'],
+    storesDirs: ['./app/stores/**'],
   },
 })

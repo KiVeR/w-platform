@@ -26,7 +26,7 @@ yarn user:seed    # Seed users
 
 ## Architecture
 
-### Pinia Stores (`src/stores/`)
+### Pinia Stores (`app/stores/`)
 
 | Store | Responsibility |
 |-------|----------------|
@@ -44,12 +44,12 @@ yarn user:seed    # Seed users
 
 ### Widget System
 
-Centralized configuration in `src/config/widgets.ts`:
+Centralized configuration in `app/config/widgets.ts`:
 - Each widget has a `type`, `defaultContent` and `defaultStyles`
 - Container widgets (`row`, `column`, `form`): `canHaveChildren: true` property
 - Parent-child constraints via `allowedChildren` / `disallowedChildren`
 
-Renderer implementations in `src/components/widgets/registry/`.
+Renderer implementations in `app/components/widgets/registry/`.
 
 ### Widget Categories
 
@@ -65,7 +65,7 @@ Renderer implementations in `src/components/widgets/registry/`.
 - Add the type to `WIDGET_TYPES` array in `shared/widgets/definitions.ts`
 - This automatically updates TypeScript types and Zod schemas
 
-**Step 2: Add widget configuration in `src/config/widgets.ts`**
+**Step 2: Add widget configuration in `app/config/widgets.ts`**
 Required properties:
 ```
 type: 'my-widget'
@@ -88,7 +88,7 @@ allowedChildren: ['type1'] OR disallowedChildren: ['type2']
 - Export from `shared/schemas/widgets/index.ts`
 
 **Step 4: Create renderer component**
-- Create `src/components/widgets/registry/MyWidgetWidget.vue`
+- Create `app/components/widgets/registry/MyWidgetWidget.vue`
 - Import and register in `WidgetRenderer.vue`, `WidgetRendererInner.vue`, and `PreviewRenderer.vue`
 - Add icon mapping in `WidgetItem.vue`
 
@@ -154,7 +154,7 @@ Key requirements:
 - `margin-bottom: 8px` on icon (not `gap` on container)
 
 **Step 5: Create options panel (if needed)**
-- Add `src/components/options/content/MyWidgetOptions.vue`
+- Add `app/components/options/content/MyWidgetOptions.vue`
 - Import in `ContentOptions.vue`
 
 **Step 6: Write tests**
@@ -191,7 +191,7 @@ shared/
 └── widgets/     # Widget definitions (SINGLE SOURCE OF TRUTH for types and categories)
 ```
 
-### Key Composables (`src/composables/`)
+### Key Composables (`app/composables/`)
 
 | Composable | Usage |
 |------------|-------|
@@ -214,13 +214,13 @@ shared/
 
 | Alias | Target | Usage |
 |-------|--------|-------|
-| `@/` or `~/` | `src/` | Frontend code |
+| `@/` or `~/` | `app/` | Frontend code |
 | `#shared/` | `shared/` | Shared types, schemas, constants |
 
 ### Import Rules
 
-**Frontend (`src/`)**
-- Use `@/` for imports from `src/`
+**Frontend (`app/`)**
+- Use `@/` for imports from `app/`
 - Use `#shared/` for imports from `shared/`
 - Never use relative paths like `../../shared/` - always use `#shared/`
 
@@ -272,7 +272,7 @@ All exports from `server/utils/` are globally available in server code:
 - ESLint @antfu/eslint-config: single quotes, 2 spaces, no semicolons
 - Vue 3 `<script setup>` with Composition API
 - Pinia stores in composition style (not Options API)
-- `@/` alias for `src/`
+- `@/` alias for `app/`
 - `#shared/` alias for `shared/`
 - Default labels and UI text in French
 - Commits, code comments and technical documentation in English
@@ -297,7 +297,7 @@ const data = await $fetch<MyType>('/api/v1/resource', {
 
 ### Why useApi()?
 
-The `useApi()` composable (`src/composables/useApi.ts`) provides:
+The `useApi()` composable (`app/composables/useApi.ts`) provides:
 - **Automatic Authorization header** from auth store
 - **401 error handling**: attempts token refresh via HttpOnly cookie
 - **Automatic retry** after successful refresh

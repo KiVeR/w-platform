@@ -44,12 +44,12 @@ yarn lint:fix     # ESLint avec auto-fix
 
 ### Stack technologique
 
-- **Frontend** : Vue 3, Nuxt 3, Pinia, TypeScript, Tailwind CSS v4
+- **Frontend** : Vue 3, Nuxt 4, Pinia, TypeScript, Tailwind CSS v4
 - **Backend** : Nitro (serveur Nuxt), Prisma ORM
 - **Validation** : Zod schemas
 - **Auth** : JWT avec refresh token rotation
 
-### Stores Pinia (`src/stores/`)
+### Stores Pinia (`app/stores/`)
 
 | Store | Responsabilité |
 |-------|----------------|
@@ -63,7 +63,7 @@ yarn lint:fix     # ESLint avec auto-fix
 ### Organisation des composants
 
 ```
-src/components/
+app/components/
 ├── canvas/     # Rendu du canvas (MobileFrame, WidgetRenderer, CanvasDropzone)
 ├── layout/     # Structure de l'éditeur (EditorLayout, Toolbar, Sidebars)
 ├── options/    # Panneaux de propriétés (ContentOptions, StyleOptions, GlobalOptions)
@@ -90,7 +90,7 @@ src/components/
 **Étape 1 : Définir le type (Single Source of Truth)**
 - Ajouter le type dans `WIDGET_TYPES` dans `shared/widgets/definitions.ts`
 
-**Étape 2 : Configuration dans `src/config/widgets.ts`**
+**Étape 2 : Configuration dans `app/config/widgets.ts`**
 ```typescript
 {
   type: 'my-widget',
@@ -110,9 +110,9 @@ src/components/
 
 **Étape 3 : Créer le schéma Zod dans `shared/schemas/widgets/`**
 
-**Étape 4 : Créer le composant renderer dans `src/components/widgets/registry/`**
+**Étape 4 : Créer le composant renderer dans `app/components/widgets/registry/`**
 
-**Étape 5 : Créer le panneau d'options (si nécessaire) dans `src/components/options/content/`**
+**Étape 5 : Créer le panneau d'options (si nécessaire) dans `app/components/options/content/`**
 
 **Étape 6 : Écrire les tests dans `tests/unit/`**
 
@@ -314,7 +314,7 @@ interface Widget {
 - **ESLint** : @antfu/eslint-config (single quotes, 2 spaces, no semicolons)
 - **Vue** : `<script setup>` avec Composition API
 - **Pinia** : Stores en style composition
-- **Alias** : `@/` pour `src/`
+- **Alias** : `@/` pour `app/`
 - **UI** : Labels et textes en français
 - **Code** : Commits, commentaires et documentation technique en anglais
 - **Tests** : Chaque fonctionnalité API doit avoir des tests correspondants

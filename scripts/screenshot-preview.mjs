@@ -58,11 +58,14 @@ try {
     await page.waitForTimeout(2000)
   }
 
-  // Switch to preview mode via JS (avoids overlay issues)
+  // Switch to preview mode via Pinia store (avoids overlay issues)
   await page.evaluate(() => {
-    const ui = window.__NUXT__?.pinia?.stores?.ui
-    if (ui)
-      ui.setMode('preview')
+    const pinia = window.__pinia
+    if (pinia) {
+      const ui = pinia._s.get('ui')
+      if (ui)
+        ui.setMode('preview')
+    }
   })
   // Fallback: force click if JS store not available
   await page.waitForTimeout(500)
