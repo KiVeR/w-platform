@@ -96,4 +96,57 @@ class CampaignFactory extends Factory
             'user_id' => $user?->id ?? User::factory(),
         ]);
     }
+
+    public function cancelled(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => CampaignStatus::CANCELLED,
+        ]);
+    }
+
+    public function failed(?string $error = null): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => CampaignStatus::FAILED,
+            'error_message' => $error ?? 'Erreur lors de l\'envoi via le routeur SMS.',
+        ]);
+    }
+
+    public function sending(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => CampaignStatus::SENDING,
+            'scheduled_at' => now(),
+        ]);
+    }
+
+    public function withMessage(string $message): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'message' => $message,
+        ]);
+    }
+
+    public function withTargeting(array $targeting): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'targeting' => $targeting,
+        ]);
+    }
+
+    public function withPricing(float $unitPrice, float $totalPrice): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'unit_price' => $unitPrice,
+            'total_price' => $totalPrice,
+        ]);
+    }
+
+    public function withVolume(int $estimated, int $sent = 0): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'volume_estimated' => $estimated,
+            'volume_sent' => $sent,
+        ]);
+    }
 }
