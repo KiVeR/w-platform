@@ -20,7 +20,6 @@ function handleDragEnd() {
 }
 
 function handleClick() {
-  // Add section to canvas on click
   presetsStore.addSection(props.section)
 }
 
@@ -46,15 +45,11 @@ function handleKeydown(event: KeyboardEvent) {
     @keydown="handleKeydown"
   >
     <div class="drag-handle" aria-hidden="true">
-      <GripVertical :size="16" />
+      <GripVertical :size="14" />
     </div>
 
     <div class="section-thumbnail">
-      <img
-        :src="section.thumbnail"
-        :alt="`Aperçu ${section.name}`"
-        loading="lazy"
-      >
+      <WidgetBlueprintPreview :widgets="section.widgets" compact />
     </div>
 
     <div class="section-info">
@@ -75,17 +70,16 @@ function handleKeydown(event: KeyboardEvent) {
   gap: var(--space-2);
   padding: var(--space-2);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1px solid transparent;
   border-radius: var(--radius-md);
   cursor: grab;
   transition: all var(--transition-fast);
 }
 
 .section-item:hover {
-  border-color: var(--color-primary-400);
-  background-color: var(--color-primary-50);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--color-border);
+  background-color: var(--color-surface-hover);
+  box-shadow: var(--shadow-xs);
 }
 
 .section-item:focus-visible {
@@ -105,21 +99,22 @@ function handleKeydown(event: KeyboardEvent) {
   align-items: center;
   justify-content: center;
   color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.section-item:hover .drag-handle {
+  opacity: 1;
 }
 
 .section-thumbnail {
   flex-shrink: 0;
-  width: 60px;
-  height: 40px;
+  width: 44px;
+  height: 32px;
   border-radius: var(--radius-sm);
   overflow: hidden;
   background-color: var(--color-neutral-100);
-}
-
-.section-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  border: 1px solid var(--color-border);
 }
 
 .section-info {

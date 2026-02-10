@@ -7,11 +7,10 @@ const props = defineProps<{
 
 const presetsStore = usePresetsStore()
 
-const selectedCategory = ref<TemplateCategory | ''>('')
-const expandedTemplateId = ref<string | null>(null)
+const selectedCategory = ref<SectionCategory | ''>('')
 
-const filteredTemplates = computed(() => {
-  return presetsStore.filterTemplates(
+const filteredSections = computed(() => {
+  return presetsStore.filterSections(
     props.searchQuery || '',
     selectedCategory.value || undefined,
   )
@@ -23,30 +22,18 @@ watch(() => props.searchQuery, (query) => {
   }
 })
 
-watch([selectedCategory, () => props.searchQuery], () => {
-  expandedTemplateId.value = null
-})
-
 const resultsText = computed(() => {
-  const count = filteredTemplates.value.length
+  const count = filteredSections.value.length
   if (count === 0)
-    return 'Aucun template trouvé'
+    return 'Aucune section trouvée'
   if (count === 1)
-    return '1 template'
-  return `${count} templates`
+    return '1 section'
+  return `${count} sections`
 })
-
-function handleToggle(templateId: string) {
-  expandedTemplateId.value = expandedTemplateId.value === templateId ? null : templateId
-}
-
-function handleApplyTemplate(template: TemplatePreset) {
-  presetsStore.openApplyModal(template)
-}
 </script>
 
 <template>
-  <div class="template-palette">
+  <div class="section-palette">
     <div class="category-filter">
       <button
         class="category-chip"
@@ -56,7 +43,7 @@ function handleApplyTemplate(template: TemplatePreset) {
         Tous
       </button>
       <button
-        v-for="category in presetsStore.templateCategoryList"
+        v-for="category in presetsStore.sectionCategoryList"
         :key="category.id"
         class="category-chip"
         :class="{ active: selectedCategory === category.id }"
@@ -70,33 +57,22 @@ function handleApplyTemplate(template: TemplatePreset) {
       {{ resultsText }}
     </div>
 
-    <div class="template-list">
-      <TemplateCard
-        v-for="template in filteredTemplates"
-        :key="template.id"
-        :template="template"
-        :expanded="expandedTemplateId === template.id"
-        @apply="handleApplyTemplate"
-        @toggle="handleToggle"
+    <div class="section-list">
+      <SectionItem
+        v-for="section in filteredSections"
+        :key="section.id"
+        :section="section"
       />
     </div>
 
-    <div v-if="filteredTemplates.length === 0" class="empty-state">
-      <p>Aucun template ne correspond à votre recherche.</p>
+    <div v-if="filteredSections.length === 0" class="empty-state">
+      <p>Aucune section ne correspond à votre recherche.</p>
     </div>
-
-    <ApplyTemplateModal
-      v-if="presetsStore.selectedTemplate"
-      :template="presetsStore.selectedTemplate"
-      :is-open="presetsStore.isApplyModalOpen"
-      @confirm="presetsStore.applyTemplate(presetsStore.selectedTemplate)"
-      @cancel="presetsStore.closeApplyModal"
-    />
   </div>
 </template>
 
 <style scoped>
-.template-palette {
+.section-palette {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -135,7 +111,7 @@ function handleApplyTemplate(template: TemplatePreset) {
   color: var(--color-text-muted);
 }
 
-.template-list {
+.section-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
