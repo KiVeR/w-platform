@@ -5,9 +5,12 @@ import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 import ThemeSwitcher from './ThemeSwitcher.vue'
+import PartnerSelector from '@/components/partner/PartnerSelector.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const { toggleSidebar, state } = useSidebar()
+const auth = useAuthStore()
 </script>
 
 <template>
@@ -25,7 +28,8 @@ const { toggleSidebar, state } = useSidebar()
     <Separator orientation="vertical" class="mr-2 !h-4" />
     <AppBreadcrumb />
 
-    <div class="ml-auto flex items-center gap-1">
+    <div class="ml-auto flex items-center gap-2">
+      <PartnerSelector v-if="auth.isAdmin" />
       <ThemeSwitcher />
     </div>
   </header>

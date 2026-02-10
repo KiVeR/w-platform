@@ -40,6 +40,40 @@
     "users": "Utilisateurs",
     "partner": "Partenaire"
   },
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Accédez à votre espace Wellpack",
+    "email": "Email",
+    "emailPlaceholder": "votre{'@'}email.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Votre mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion en cours…",
+    "or": "ou",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "validation": {
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "L'email n'est pas valide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMin": "Le mot de passe doit contenir au moins 6 caractères"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bonjour, {firstname}",
+    "description": "Bienvenue sur votre espace de gestion Wellpack."
+  },
+  "settings": {
+    "title": "Paramètres",
+    "profile": {
+      "title": "Mon profil",
+      "description": "Informations de votre compte.",
+      "firstname": "Prénom",
+      "lastname": "Nom",
+      "email": "Email",
+      "role": "Rôle"
+    }
+  },
   "error": {
     "404": {
       "title": "Page introuvable",
@@ -59,5 +93,68 @@
     },
     "backHome": "Retour au dashboard",
     "retry": "Réessayer"
+  },
+  "partner": {
+    "allPartners": "Tous les partenaires",
+    "search": "Rechercher un partenaire…",
+    "noResults": "Aucun partenaire trouvé"
+  },
+  "campaigns": {
+    "title": "Campagnes",
+    "description": "Gérez vos campagnes SMS",
+    "new": "Nouvelle campagne",
+    "deleteSuccess": "Campagne supprimée",
+    "empty": {
+      "title": "Aucune campagne",
+      "description": "Créez votre première campagne SMS pour toucher vos clients.",
+      "action": "Nouvelle campagne"
+    },
+    "error": {
+      "title": "Impossible de charger les campagnes",
+      "description": "Une erreur est survenue lors du chargement. Veuillez réessayer.",
+      "retry": "Réessayer"
+    },
+    "columns": {
+      "name": "Nom",
+      "type": "Type",
+      "status": "Statut",
+      "volume": "Destinataires",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "filters": {
+      "search": "Rechercher…",
+      "allStatuses": "Tous les statuts",
+      "allTypes": "Tous les types"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "scheduled": "Planifiée",
+      "sending": "En cours",
+      "sent": "Envoyée",
+      "cancelled": "Annulée",
+      "failed": "Échouée"
+    },
+    "type": {
+      "prospection": "Prospection",
+      "fidelisation": "Fidélisation",
+      "comptage": "Comptage"
+    },
+    "actions": {
+      "view": "Voir",
+      "delete": "Supprimer"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer cette campagne ?",
+      "description": "Cette action est irréversible. La campagne \"{name}\" sera supprimée.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page {page} sur {lastPage}",
+      "total": "{total} campagnes"
+    }
   }
 }

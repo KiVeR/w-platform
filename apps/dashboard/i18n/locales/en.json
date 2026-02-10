@@ -40,6 +40,40 @@
     "users": "Users",
     "partner": "Partner"
   },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Access your Wellpack workspace",
+    "email": "Email",
+    "emailPlaceholder": "your{'@'}email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "or": "or",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Email is not valid",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 6 characters"
+    }
+  },
+  "dashboard": {
+    "welcome": "Hello, {firstname}",
+    "description": "Welcome to your Wellpack management workspace."
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": {
+      "title": "My profile",
+      "description": "Your account information.",
+      "firstname": "First name",
+      "lastname": "Last name",
+      "email": "Email",
+      "role": "Role"
+    }
+  },
   "error": {
     "404": {
       "title": "Page not found",
@@ -59,5 +93,68 @@
     },
     "backHome": "Back to dashboard",
     "retry": "Retry"
+  },
+  "partner": {
+    "allPartners": "All partners",
+    "search": "Search a partner…",
+    "noResults": "No partner found"
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "description": "Manage your SMS campaigns",
+    "new": "New campaign",
+    "deleteSuccess": "Campaign deleted",
+    "empty": {
+      "title": "No campaigns",
+      "description": "Create your first SMS campaign to reach your customers.",
+      "action": "New campaign"
+    },
+    "error": {
+      "title": "Unable to load campaigns",
+      "description": "An error occurred while loading. Please try again.",
+      "retry": "Retry"
+    },
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "status": "Status",
+      "volume": "Recipients",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "filters": {
+      "search": "Search…",
+      "allStatuses": "All statuses",
+      "allTypes": "All types"
+    },
+    "status": {
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "sending": "Sending",
+      "sent": "Sent",
+      "cancelled": "Cancelled",
+      "failed": "Failed"
+    },
+    "type": {
+      "prospection": "Prospection",
+      "fidelisation": "Loyalty",
+      "comptage": "Counting"
+    },
+    "actions": {
+      "view": "View",
+      "delete": "Delete"
+    },
+    "deleteConfirm": {
+      "title": "Delete this campaign?",
+      "description": "This action is irreversible. Campaign \"{name}\" will be deleted.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {lastPage}",
+      "total": "{total} campaigns"
+    }
   }
 }

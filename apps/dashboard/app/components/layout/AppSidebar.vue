@@ -31,10 +31,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { useAuthStore } from '@/stores/auth'
+import { usePartnerStore } from '@/stores/partner'
 import AppLogo from './AppLogo.vue'
 
 const { t } = useI18n()
 const route = useRoute()
+const auth = useAuthStore()
+const partner = usePartnerStore()
+
+async function handleLogout() {
+  await auth.logout()
+  await navigateTo('/login')
+}
 
 interface NavItem {
   label: string
@@ -71,16 +81,9 @@ const navGroups = computed<NavGroup[]>(() => [
   },
 ])
 
-function isActive(to: string) {
+function isActive(to: string): boolean {
   if (to === '/') return route.path === '/'
   return route.path.startsWith(to)
-}
-
-// TODO: Replace with real auth store data (D2)
-const user = {
-  name: 'Jean Dupont',
-  email: 'jean@wellpack.fr',
-  initials: 'JD',
 }
 </script>
 
@@ -88,6 +91,13 @@ const user = {
   <Sidebar collapsible="icon">
     <SidebarHeader class="p-4 group-data-[collapsible=icon]:p-2">
       <AppLogo />
+      <Badge
+        v-if="auth.isAdmin && partner.isScoped"
+        variant="secondary"
+        class="mt-1 truncate group-data-[collapsible=icon]:hidden"
+      >
+        {{ partner.currentPartnerName }}
+      </Badge>
     </SidebarHeader>
 
     <SidebarContent>
@@ -120,11 +130,11 @@ const user = {
             <DropdownMenuTrigger as-child>
               <SidebarMenuButton size="lg" class="data-[state=open]:bg-sidebar-accent">
                 <Avatar class="size-8 shrink-0">
-                  <AvatarFallback class="text-xs">{{ user.initials }}</AvatarFallback>
+                  <AvatarFallback class="text-xs">{{ auth.initials }}</AvatarFallback>
                 </Avatar>
                 <div class="flex flex-1 flex-col text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span class="truncate font-medium">{{ user.name }}</span>
-                  <span class="truncate text-xs text-muted-foreground">{{ user.email }}</span>
+                  <span class="truncate font-medium">{{ auth.fullName }}</span>
+                  <span class="truncate text-xs text-muted-foreground">{{ auth.user?.email }}</span>
                 </div>
                 <ChevronsUpDown class="ml-auto size-4 shrink-0 group-data-[collapsible=icon]:hidden" />
               </SidebarMenuButton>
@@ -142,7 +152,7 @@ const user = {
                 </NuxtLink>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem class="text-destructive focus:text-destructive">
+              <DropdownMenuItem class="text-destructive focus:text-destructive" @click="handleLogout">
                 <LogOut class="mr-2 size-4" />
                 {{ t('sidebar.logout') }}
               </DropdownMenuItem>

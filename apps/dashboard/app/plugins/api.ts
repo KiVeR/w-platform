@@ -2,26 +2,34 @@ import createClient from 'openapi-fetch'
 import type { paths } from '@/types/api'
 import { tokenRefreshManager } from '@/services/tokenRefreshManager'
 import { createAuthMiddleware } from '@/services/apiMiddleware'
+import { useAuthStore } from '@/stores/auth'
 
-export default defineNuxtPlugin(() => {
-  const config = useRuntimeConfig()
-  const router = useRouter()
+export default defineNuxtPlugin({
+  name: 'api',
+  setup() {
+    const config = useRuntimeConfig()
+    const router = useRouter()
+    const auth = useAuthStore()
 
-  const client = createClient<paths>({
-    baseUrl: `${config.public.apiUrl}/api`,
-  })
+    const client = createClient<paths>({
+      baseUrl: `${config.public.apiUrl}/api`,
+    })
 
-  const middleware = createAuthMiddleware(
-    () => tokenRefreshManager.getAccessToken(),
-    () => tokenRefreshManager.refreshToken(),
-    () => router.push('/login'),
-  )
+    function handleAuthFailure() {
+      auth.clearAuth()
+      router.push('/login')
+    }
 
-  client.use(middleware)
+    const middleware = createAuthMiddleware(
+      () => tokenRefreshManager.getAccessToken(),
+      () => tokenRefreshManager.refreshToken(),
+      handleAuthFailure,
+    )
 
-  tokenRefreshManager.onRefreshFailure(() => {
-    router.push('/login')
-  })
+    client.use(middleware)
 
-  return { provide: { api: client } }
+    tokenRefreshManager.onRefreshFailure(handleAuthFailure)
+
+    return { provide: { api: client } }
+  },
 })
