@@ -38,9 +38,11 @@ class CampaignResource extends JsonResource
             'sent_at' => $this->sent_at,
             'unit_price' => $this->unit_price,
             'total_price' => $this->total_price,
+            'landing_page_id' => $this->landing_page_id,
             'created_at' => $this->created_at,
             'partner' => new PartnerResource($this->whenLoaded('partner')),
             'creator' => new UserResource($this->whenLoaded('creator')),
+            'landing_page' => new LandingPageResource($this->whenLoaded('landingPage')),
             'interest_groups' => InterestGroupResource::collection($this->whenLoaded('interestGroups')),
         ];
     }

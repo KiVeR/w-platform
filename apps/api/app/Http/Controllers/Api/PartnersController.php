@@ -11,6 +11,7 @@ use App\Http\Resources\PartnerResource;
 use App\Models\Partner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PartnersController extends Controller
@@ -20,7 +21,7 @@ class PartnersController extends Controller
         $this->authorize('viewAny', Partner::class);
 
         $partners = QueryBuilder::for(Partner::class)
-            ->allowedFilters(['name', 'is_active'])
+            ->allowedFilters([AllowedFilter::partial('name'), 'is_active'])
             ->allowedSorts(['name', 'created_at'])
             ->allowedIncludes(['users', 'shops'])
             ->withCount(['users', 'shops'])

@@ -37,7 +37,7 @@ class CampaignsController extends Controller
         $campaigns = QueryBuilder::for(Campaign::forUser($user))
             ->allowedFilters(['partner_id', 'type', 'status', 'channel'])
             ->allowedSorts(['name', 'scheduled_at', 'created_at'])
-            ->allowedIncludes(['partner', 'creator', 'interestGroups'])
+            ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
             ->paginate(15);
 
         return CampaignResource::collection($campaigns);
@@ -68,7 +68,7 @@ class CampaignsController extends Controller
         $this->authorize('view', $campaign);
 
         $campaign = QueryBuilder::for(Campaign::where('id', $campaign->id))
-            ->allowedIncludes(['partner', 'creator', 'interestGroups'])
+            ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
             ->firstOrFail();
 
         return new CampaignResource($campaign);

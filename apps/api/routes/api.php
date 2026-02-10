@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\InterestGroupsController;
+use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\ShopsController;
@@ -41,4 +42,12 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
     Route::get('campaigns/{campaign}/stats', [CampaignsController::class, 'stats']);
     Route::get('campaigns/{campaign}/export', [CampaignsController::class, 'export']);
+
+    Route::apiResource('landing-pages', LandingPagesController::class);
+    Route::get('landing-pages/{landing_page}/design', [LandingPagesController::class, 'design']);
+    Route::put('landing-pages/{landing_page}/design', [LandingPagesController::class, 'saveDesign']);
+
+    Route::get('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'variableSchema']);
+    Route::post('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'attachVariableSchema']);
+    Route::delete('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'detachVariableSchema']);
 });

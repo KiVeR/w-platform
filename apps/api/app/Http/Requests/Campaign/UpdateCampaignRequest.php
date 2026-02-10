@@ -27,6 +27,7 @@ class UpdateCampaignRequest extends FormRequest
             'scheduled_at' => ['nullable', 'date', 'after:now'],
             'is_demo' => ['sometimes', 'boolean'],
             'additional_phone' => ['nullable', 'string', 'max:20'],
+            'landing_page_id' => ['nullable', 'integer', Rule::exists('landing_pages', 'id')->whereNull('deleted_at')],
         ];
     }
 }

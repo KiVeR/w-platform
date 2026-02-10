@@ -71,6 +71,12 @@ class Partner extends Model
         return $this->hasMany(PartnerPricing::class);
     }
 
+    /** @return HasMany<LandingPage, $this> */
+    public function landingPages(): HasMany
+    {
+        return $this->hasMany(LandingPage::class);
+    }
+
     /** @return HasMany<PartnerFeature, $this> */
     public function features(): HasMany
     {

@@ -64,6 +64,7 @@ class Campaign extends Model
         'error_message',
         'stats_notified',
         'adv_operation_id',
+        'landing_page_id',
     ];
 
     /** @return array<string, string> */
@@ -104,6 +105,12 @@ class Campaign extends Model
         return $this->belongsToMany(InterestGroup::class, 'campaign_interest_group')
             ->withPivot(['index', 'operator'])
             ->withTimestamps();
+    }
+
+    /** @return BelongsTo<LandingPage, $this> */
+    public function landingPage(): BelongsTo
+    {
+        return $this->belongsTo(LandingPage::class);
     }
 
     /** @param Builder<Campaign> $query */
