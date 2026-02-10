@@ -8,10 +8,8 @@ const editorStore = useEditorStore()
 const presetsStore = usePresetsStore()
 const { widgetGap, fontFamily, headingFontFamily, baseFontSize } = useGlobalStyles()
 
-// Load global fonts dynamically
 useGoogleFonts(fontFamily, headingFontFamily)
 
-// Load per-widget custom fonts
 watch(
   () => widgetsStore.sortedItems.map(w => w.styles.fontFamily).filter(Boolean),
   fontFamilies => fontFamilies.forEach(f => loadFont(f!)),
@@ -19,6 +17,8 @@ watch(
 )
 
 const isDragOver = ref(false)
+const dropzoneRef = ref<HTMLElement>()
+const dropPosition = useDropPosition()
 
 const widgets = computed({
   get: () => widgetsStore.sortedItems,
@@ -28,27 +28,43 @@ const widgets = computed({
   },
 })
 
-function handleDragOver(event: DragEvent) {
+function handleDragOver(event: DragEvent): void {
   event.preventDefault()
   isDragOver.value = true
-}
 
-function handleDragLeave() {
-  isDragOver.value = false
-}
-
-function handleDrop(event: DragEvent) {
-  event.preventDefault()
-  isDragOver.value = false
-
-  // Check for widget type (from WidgetPalette)
-  const widgetType = event.dataTransfer?.getData('widget-type') as WidgetType
-  if (widgetType) {
-    widgetsStore.addWidget(widgetType)
+  // If cursor is over a child container, let it handle its own drop indicator
+  const target = event.target as HTMLElement
+  if (target.closest('.column-widget') || target.closest('.form-widget')) {
+    dropPosition.reset()
     return
   }
 
-  // Check for section preset (from SectionPalette)
+  const listEl = dropzoneRef.value?.querySelector('.widgets-list') as HTMLElement | null
+  if (listEl) {
+    dropPosition.handleDragOver(event, listEl, ':scope > *')
+  }
+}
+
+function handleDragLeave(event: DragEvent): void {
+  isDragOver.value = false
+  if (dropzoneRef.value) {
+    dropPosition.handleDragLeave(event, dropzoneRef.value)
+  }
+}
+
+function handleDrop(event: DragEvent): void {
+  event.preventDefault()
+  isDragOver.value = false
+
+  // Widget from WidgetPalette
+  const widgetType = event.dataTransfer?.getData('widget-type') as WidgetType
+  if (widgetType) {
+    widgetsStore.addWidget(widgetType, dropPosition.dropIndex.value ?? undefined)
+    dropPosition.reset()
+    return
+  }
+
+  // Section preset from SectionPalette
   const sectionId = event.dataTransfer?.getData('section-preset')
   if (sectionId) {
     const section = presetsStore.getSectionById(sectionId)
@@ -56,14 +72,15 @@ function handleDrop(event: DragEvent) {
       presetsStore.addSection(section)
     }
   }
+
+  dropPosition.reset()
 }
 
-function handleWidgetClick(id: string) {
+function handleWidgetClick(id: string): void {
   selectionStore.select(id)
 }
 
-function handleCanvasClick(event: MouseEvent) {
-  // Deselect when clicking on empty canvas area
+function handleCanvasClick(event: MouseEvent): void {
   if ((event.target as HTMLElement).classList.contains('canvas-dropzone')) {
     selectionStore.deselect()
   }
@@ -72,6 +89,7 @@ function handleCanvasClick(event: MouseEvent) {
 
 <template>
   <div
+    ref="dropzoneRef"
     class="canvas-dropzone"
     :class="{ 'drag-over': isDragOver }"
     :style="{
@@ -119,6 +137,12 @@ function handleCanvasClick(event: MouseEvent) {
         ou cliquez sur un widget dans le panneau gauche
       </p>
     </div>
+
+    <div
+      v-if="dropPosition.isActive.value"
+      class="drop-indicator"
+      :style="{ top: `${dropPosition.indicatorY.value}px` }"
+    />
   </div>
 </template>
 
@@ -181,5 +205,36 @@ function handleCanvasClick(event: MouseEvent) {
 
 :deep(.widget-drag) {
   opacity: 0.9;
+}
+
+.drop-indicator {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  transition: top 0.15s ease;
+}
+
+.drop-indicator::before,
+.drop-indicator::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.drop-indicator::before {
+  left: -4px;
+}
+
+.drop-indicator::after {
+  right: -4px;
 }
 </style>

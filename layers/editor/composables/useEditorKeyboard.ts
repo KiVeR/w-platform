@@ -4,6 +4,7 @@
  */
 export function useEditorKeyboard() {
   const selectionStore = useSelectionStore()
+  const widgetsStore = useWidgetsStore()
   const uiStore = useUIStore()
 
   function isInputFocused(): boolean {
@@ -37,6 +38,23 @@ export function useEditorKeyboard() {
 
     if (selectionStore.hasSelection) {
       e.preventDefault()
+      selectionStore.deselect()
+    }
+  })
+
+  // Delete / Backspace - remove selected widget
+  onKeyStroke(['Delete', 'Backspace'], (e) => {
+    if (!isDesignerMode())
+      return
+    if (isInputFocused())
+      return
+    if (isModalOpen())
+      return
+
+    if (selectionStore.hasSelection) {
+      e.preventDefault()
+      const id = selectionStore.selectedId!
+      widgetsStore.removeWidgetAnywhere(id)
       selectionStore.deselect()
     }
   })

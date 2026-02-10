@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 
 const props = defineProps<{
@@ -15,6 +15,8 @@ const emit = defineEmits<{
 
 const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
+const columnRef = ref<HTMLElement>()
+const dropPosition = useDropPosition()
 
 const children = computed({
   get: () => props.widget.children || [],
@@ -23,35 +25,34 @@ const children = computed({
   },
 })
 
+function computeFlex(width: string): string {
+  if (width === 'auto')
+    return '1'
+
+  const pct = Number.parseFloat(width)
+  return Number.isNaN(pct) ? '1' : `${pct} 1 0%`
+}
+
 const columnStyle = computed(() => {
+  const { styles } = props.widget
   const width = props.widget.content.columnWidth || 'auto'
 
-  // Convert percentage widths to flex-grow ratios so gap is handled automatically
-  let flex = '1'
-  if (width !== 'auto') {
-    const pct = Number.parseFloat(width)
-    if (!Number.isNaN(pct))
-      flex = `${pct} 1 0%`
-    else
-      flex = '1'
-  }
-
   return {
-    flex,
+    flex: computeFlex(width),
     minWidth: '80px',
-    padding: props.widget.styles.padding || '8px',
-    margin: props.widget.styles.margin,
-    backgroundColor: props.widget.styles.backgroundColor,
-    borderRadius: props.widget.styles.borderRadius,
-    boxShadow: props.widget.styles.boxShadow,
-    backgroundImage: props.widget.styles.backgroundImage,
-    backgroundSize: props.widget.styles.backgroundSize,
-    backgroundPosition: props.widget.styles.backgroundPosition,
+    padding: styles.padding || '8px',
+    margin: styles.margin,
+    backgroundColor: styles.backgroundColor,
+    borderRadius: styles.borderRadius,
+    boxShadow: styles.boxShadow,
+    backgroundImage: styles.backgroundImage,
+    backgroundSize: styles.backgroundSize,
+    backgroundPosition: styles.backgroundPosition,
     backgroundRepeat: 'no-repeat' as const,
-    borderLeft: props.widget.styles.borderLeft,
-    borderRight: props.widget.styles.borderRight,
-    borderTop: props.widget.styles.borderTop,
-    borderBottom: props.widget.styles.borderBottom,
+    borderLeft: styles.borderLeft,
+    borderRight: styles.borderRight,
+    borderTop: styles.borderTop,
+    borderBottom: styles.borderBottom,
   }
 })
 
@@ -66,18 +67,30 @@ function handleDrop(event: DragEvent): void {
 
   const widgetType = event.dataTransfer?.getData('widget-type') as WidgetType
   if (widgetType && canAcceptChild('column', widgetType)) {
-    widgetsStore.addChildWidget(props.widget.id, widgetType)
+    widgetsStore.addChildWidget(props.widget.id, widgetType, dropPosition.dropIndex.value ?? undefined)
   }
+  dropPosition.reset()
 }
 
 function handleDragOver(event: DragEvent): void {
   event.preventDefault()
-  event.stopPropagation()
+
+  const contentEl = columnRef.value?.querySelector('.column-content') as HTMLElement | undefined
+  if (contentEl)
+    dropPosition.handleDragOver(event, contentEl, ':scope > *')
+}
+
+function handleDragLeave(event: DragEvent): void {
+  if (!columnRef.value)
+    return
+
+  dropPosition.handleDragLeave(event, columnRef.value)
 }
 </script>
 
 <template>
   <div
+    ref="columnRef"
     class="column-widget"
     :class="{
       'is-selected': isSelected && !readonly,
@@ -86,6 +99,7 @@ function handleDragOver(event: DragEvent): void {
     :style="columnStyle"
     @click.self.stop="emit('click')"
     @dragover="!readonly && handleDragOver($event)"
+    @dragleave="!readonly && handleDragLeave($event)"
     @drop="!readonly && handleDrop($event)"
   >
     <!-- Mode édition : draggable -->
@@ -94,6 +108,7 @@ function handleDragOver(event: DragEvent): void {
       v-model="children"
       item-key="id"
       group="widgets"
+      handle=".inner-widget-handle"
       ghost-class="widget-ghost"
       class="column-content"
     >
@@ -121,11 +136,14 @@ function handleDragOver(event: DragEvent): void {
     <div v-if="!readonly && children.length === 0" class="empty-column">
       <p>Glissez un widget ici</p>
     </div>
+
+    <div v-if="dropPosition.isActive.value" class="drop-indicator" :style="{ top: `${dropPosition.indicatorY.value}px` }" />
   </div>
 </template>
 
 <style scoped>
 .column-widget {
+  position: relative;
   min-height: 60px;
   background: rgba(255, 255, 255, 0.5);
   border: 1px dashed var(--color-neutral-200);
@@ -171,4 +189,30 @@ function handleDragOver(event: DragEvent): void {
   opacity: 0.5;
   background: rgba(20, 184, 166, 0.1);
 }
+
+.drop-indicator {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  transition: top 0.15s ease;
+}
+
+.drop-indicator::before,
+.drop-indicator::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.drop-indicator::before { left: -4px; }
+.drop-indicator::after { right: -4px; }
 </style>

@@ -50,7 +50,7 @@ export const useWidgetsStore = defineStore('widgets', () => {
       styles: { ...config.defaultStyles },
     }
 
-    // Initialiser children pour les containers
+    // Initialize children for container widgets
     if (config.canHaveChildren) {
       widget.children = []
     }
@@ -61,7 +61,7 @@ export const useWidgetsStore = defineStore('widgets', () => {
   function addWidget(type: WidgetType, index?: number) {
     const widget = createWidget(type)
 
-    // Pour les rows, créer 2 colonnes par défaut
+    // Rows start with 2 default columns
     if (type === 'row') {
       widget.children = [
         createWidget('column'),
@@ -120,18 +120,24 @@ export const useWidgetsStore = defineStore('widgets', () => {
     }
   }
 
-  function addChildWidget(parentId: string, type: WidgetType): Widget | null {
+  function addChildWidget(parentId: string, type: WidgetType, index?: number): Widget | null {
     const parent = findWidgetById(parentId)
     if (!parent)
       return null
 
-    const child = createWidget(type)
-    child.order = parent.children?.length || 0
-
     if (!parent.children) {
       parent.children = []
     }
-    parent.children.push(child)
+
+    const child = createWidget(type)
+    child.order = parent.children.length
+
+    if (index !== undefined) {
+      parent.children.splice(index, 0, child)
+    }
+    else {
+      parent.children.push(child)
+    }
 
     editorStore.markAsDirty()
     return child
@@ -147,6 +153,36 @@ export const useWidgetsStore = defineStore('widgets', () => {
       parent.children.splice(index, 1)
       editorStore.markAsDirty()
     }
+  }
+
+  function removeWidgetAnywhere(id: string): boolean {
+    // Try top-level first
+    const topIndex = items.value.findIndex(w => w.id === id)
+    if (topIndex !== -1) {
+      items.value.splice(topIndex, 1)
+      reorderWidgets()
+      editorStore.markAsDirty()
+      return true
+    }
+
+    // Search recursively in children
+    function removeNested(widgets: Widget[]): boolean {
+      for (const w of widgets) {
+        if (!w.children)
+          continue
+        const idx = w.children.findIndex(c => c.id === id)
+        if (idx !== -1) {
+          w.children.splice(idx, 1)
+          editorStore.markAsDirty()
+          return true
+        }
+        if (removeNested(w.children))
+          return true
+      }
+      return false
+    }
+
+    return removeNested(items.value)
   }
 
   function moveWidget(fromIndex: number, toIndex: number) {
@@ -167,13 +203,11 @@ export const useWidgetsStore = defineStore('widgets', () => {
   }
 
   function duplicateWidget(id: string) {
-    const widget = items.value.find(w => w.id === id)
-    if (!widget)
+    const index = items.value.findIndex(w => w.id === id)
+    if (index === -1)
       return
 
-    const index = items.value.findIndex(w => w.id === id)
-    const duplicate = deepCloneWidget(widget)
-
+    const duplicate = deepCloneWidget(items.value[index])
     items.value.splice(index + 1, 0, duplicate)
     reorderWidgets()
     editorStore.markAsDirty()
@@ -227,6 +261,7 @@ export const useWidgetsStore = defineStore('widgets', () => {
     updateWidgetChildren,
     addChildWidget,
     removeChildWidget,
+    removeWidgetAnywhere,
     moveWidget,
     reorderWidgets,
     duplicateWidget,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ClipboardList } from 'lucide-vue-next'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 
 const props = defineProps<{
@@ -12,6 +12,8 @@ const props = defineProps<{
 const widgetsStore = useWidgetsStore()
 const selectionStore = useSelectionStore()
 const { primaryColor, borderRadius } = useGlobalStyles()
+const formRef = ref<HTMLElement>()
+const dropPosition = useDropPosition()
 
 const children = computed({
   get: () => props.widget.children || [],
@@ -51,13 +53,24 @@ function handleDrop(event: DragEvent): void {
 
   const widgetType = event.dataTransfer?.getData('widget-type') as WidgetType
   if (widgetType && canAcceptChild('form', widgetType)) {
-    widgetsStore.addChildWidget(props.widget.id, widgetType)
+    widgetsStore.addChildWidget(props.widget.id, widgetType, dropPosition.dropIndex.value ?? undefined)
   }
+  dropPosition.reset()
 }
 
 function handleDragOver(event: DragEvent): void {
   event.preventDefault()
-  event.stopPropagation()
+
+  const fieldsEl = formRef.value?.querySelector('.form-fields') as HTMLElement | null
+  if (fieldsEl) {
+    dropPosition.handleDragOver(event, fieldsEl, ':scope > *')
+  }
+}
+
+function handleDragLeave(event: DragEvent): void {
+  if (!formRef.value)
+    return
+  dropPosition.handleDragLeave(event, formRef.value)
 }
 
 function isFormField(widget: Widget): boolean {
@@ -67,11 +80,13 @@ function isFormField(widget: Widget): boolean {
 
 <template>
   <form
+    ref="formRef"
     class="form-widget"
     :class="{ 'form-widget--readonly': readonly }"
     :style="formStyle"
     @submit="handleSubmit"
     @dragover="!readonly && handleDragOver($event)"
+    @dragleave="!readonly && handleDragLeave($event)"
     @drop="!readonly && handleDrop($event)"
   >
     <!-- Header badge - seulement en mode édition -->
@@ -85,6 +100,7 @@ function isFormField(widget: Widget): boolean {
       v-model="children"
       item-key="id"
       group="widgets"
+      handle=".inner-widget-handle"
       ghost-class="field-ghost"
       class="form-fields"
     >
@@ -157,6 +173,8 @@ function isFormField(widget: Widget): boolean {
         {{ widget.content.submitText || 'Envoyer' }}
       </button>
     </div>
+
+    <div v-if="dropPosition.isActive.value" class="drop-indicator" :style="{ top: `${dropPosition.indicatorY.value}px` }" />
   </form>
 </template>
 
@@ -267,4 +285,30 @@ function isFormField(widget: Widget): boolean {
   opacity: 0.5;
   background: rgba(20, 184, 166, 0.1);
 }
+
+.drop-indicator {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  transition: top 0.15s ease;
+}
+
+.drop-indicator::before,
+.drop-indicator::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.drop-indicator::before { left: -4px; }
+.drop-indicator::after { right: -4px; }
 </style>
