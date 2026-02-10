@@ -1,6 +1,3 @@
-import type { UserPalette, UserPalettesStorage } from '#shared/schemas/palette.schema'
-import { userPalettesStorageSchema } from '#shared/schemas/palette.schema'
-
 const STORAGE_KEY = 'lpe_user_palettes'
 const MAX_PALETTES = 50
 const CURRENT_VERSION = 1

@@ -1,5 +1,3 @@
-import { ICON_CATEGORIES, POPULAR_ICONS } from '#shared/constants/lucide-categories'
-
 export function useIconSearch() {
   const searchQuery = ref('')
   const activeCategory = ref<string | null>(null)

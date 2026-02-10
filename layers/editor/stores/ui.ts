@@ -1,5 +1,3 @@
-import type { ContentType } from '#shared/types/content'
-
 export type EditorMode = 'designer' | 'preview' | 'expert' | 'history'
 export type PreviewDevice = 'mobile' | 'tablet' | 'desktop'
 export type OptionsTab = 'content' | 'style'

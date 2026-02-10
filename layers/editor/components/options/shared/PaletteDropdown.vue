@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { UserPalette } from '#shared/schemas/palette.schema'
 import { onClickOutside } from '@vueuse/core'
 import { ChevronDown, Plus, X } from 'lucide-vue-next'
 import { computed, nextTick, ref, watch } from 'vue'

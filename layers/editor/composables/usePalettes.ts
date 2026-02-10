@@ -1,5 +1,3 @@
-import type { UserPalette } from '#shared/schemas/palette.schema'
-
 // Singleton state for cross-component sync
 const userPalettes = shallowRef<UserPalette[]>([])
 const showSaveModal = ref(false)

@@ -1,7 +1,3 @@
-import type { ContentType } from '#shared/types/content'
-import { VARIABLE_PATTERN } from '../composables/useVariables'
-import { useVariableSchemaStore } from '../stores/variableSchema'
-
 export interface CreateContentRequest {
   type: ContentType
   title: string

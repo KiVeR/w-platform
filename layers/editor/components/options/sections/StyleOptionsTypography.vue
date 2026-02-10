@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DESIGN_TOKENS, LETTER_SPACING_LABELS } from '#shared/constants/design-tokens'
 import ColorPicker from '../inputs/ColorPicker.vue'
 import ColorPickerWithTheme from '../inputs/ColorPickerWithTheme.vue'
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { BOX_SHADOW_LABELS, DESIGN_TOKENS } from '#shared/constants/design-tokens'
-
 defineProps<{
   modelValue: string | undefined
 }>()

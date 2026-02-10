@@ -1,4 +1,4 @@
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const currentDir = dirname(fileURLToPath(import.meta.url))
@@ -15,9 +15,7 @@ export default defineNuxtConfig({
   // to ensure Kreo design tokens override Tailwind v4 defaults
   // (--font-sans, --text-*, --radius-*, --shadow-*, --color-neutral-*).
 
-  // #shared alias is provided natively by Nuxt 4 → <rootDir>/shared/
-
-  // Auto-import composables, stores, constants, services, config, and utils
+  // Auto-import composables, stores, constants, services, config, utils, types, and schemas
   imports: {
     dirs: [
       'composables/**',
@@ -27,6 +25,7 @@ export default defineNuxtConfig({
       'config/**',
       'utils/**',
       'types/**',
+      'schemas/**',
     ],
   },
 

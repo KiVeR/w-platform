@@ -1,6 +1,11 @@
-import type { PageStatusType } from '#shared/constants/status'
-import type { Content, ContentType } from '#shared/types/content'
-import { isEditorAvailable } from '#shared/types/content'
+interface ContentData {
+  id: number
+  type: ContentType
+  title: string
+  status: PageStatusType
+  createdAt: Date
+  updatedAt: Date
+}
 
 export const useContentStore = defineStore('content', () => {
   // State
@@ -23,7 +28,7 @@ export const useContentStore = defineStore('content', () => {
   const isPlaceholder = computed(() => type.value !== null && !isEditorAvailable(type.value))
 
   // Actions
-  function setContent(content: Content) {
+  function setContent(content: ContentData) {
     id.value = content.id
     type.value = content.type
     title.value = content.title

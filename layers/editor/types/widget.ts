@@ -1,5 +1,59 @@
-// Re-export WidgetType from the single source of truth
-export type { WidgetCategory, WidgetType } from '#shared/widgets/definitions'
+import { z } from 'zod'
+
+// =============================================================================
+// SINGLE SOURCE OF TRUTH - Widget Type Definitions
+// =============================================================================
+
+export const WIDGET_TYPES = [
+  // Base
+  'title',
+  'text',
+  'image',
+  'button',
+  'separator',
+  'spacer',
+  'click-to-call',
+  // Structure
+  'row',
+  'column',
+  // Forms
+  'form',
+  'form-field',
+  // Media
+  'video',
+  'map',
+  'social',
+  'icon',
+  // Wellpack
+  'barcode',
+  'store-locator',
+  'drive',
+  'scratch',
+  'flipcard',
+  // Advanced
+  'gallery',
+  'slider',
+  'link-image',
+  'effect',
+  // Phase 1 - Urgence & Social Proof
+  'countdown',
+  'testimonial',
+  'badge',
+] as const
+
+export const widgetTypeSchema = z.enum(WIDGET_TYPES)
+export type WidgetType = z.infer<typeof widgetTypeSchema>
+
+export const WIDGET_CATEGORIES = [
+  'content',
+  'actions',
+  'layout',
+  'media',
+  'interactive',
+] as const
+
+export const widgetCategorySchema = z.enum(WIDGET_CATEGORIES)
+export type WidgetCategory = z.infer<typeof widgetCategorySchema>
 
 export type FormFieldType
   = | 'text'
@@ -246,8 +300,6 @@ export interface DesignDocument {
   globalStyles: GlobalStyles
   widgets: Widget[]
 }
-
-// WidgetCategory is re-exported from definitions.ts at the top of this file
 
 /**
  * Example configuration for a widget, used for documentation and LLM guidance
