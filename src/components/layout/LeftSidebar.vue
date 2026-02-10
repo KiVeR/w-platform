@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import { FileStack, LayoutGrid, Rows3, Search, Sparkles, X } from 'lucide-vue-next'
+import { FileStack, LayoutGrid, Rows3, Search, X } from 'lucide-vue-next'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
-type Tab = 'widgets' | 'templates' | 'sections' | 'effects'
+type Tab = 'widgets' | 'templates' | 'sections'
 
 interface NavItem {
   id: Tab
   label: string
   icon: Component
   shortcut: string
-  hasSearch: boolean
 }
 
 const activeTab = ref<Tab>('widgets')
@@ -18,19 +17,15 @@ const searchQuery = ref('')
 const searchInputRef = ref<HTMLInputElement | null>(null)
 
 const mainNavItems: NavItem[] = [
-  { id: 'widgets', label: 'Widgets', icon: LayoutGrid, shortcut: '1', hasSearch: true },
-  { id: 'templates', label: 'Modèles', icon: FileStack, shortcut: '2', hasSearch: true },
-  { id: 'sections', label: 'Sections', icon: Rows3, shortcut: '3', hasSearch: false },
-  { id: 'effects', label: 'Effets', icon: Sparkles, shortcut: '4', hasSearch: false },
+  { id: 'widgets', label: 'Widgets', icon: LayoutGrid, shortcut: '1' },
+  { id: 'templates', label: 'Modèles', icon: FileStack, shortcut: '2' },
+  { id: 'sections', label: 'Sections', icon: Rows3, shortcut: '3' },
 ]
 
 const currentNavItem = computed(() =>
   mainNavItems.find(item => item.id === activeTab.value),
 )
 
-const currentTabHasSearch = computed(() => currentNavItem.value?.hasSearch ?? false)
-
-// Clear search when changing tabs
 watch(activeTab, () => {
   searchQuery.value = ''
 })
@@ -75,8 +70,8 @@ function handleGlobalKeydown(e: KeyboardEvent) {
     }
   }
 
-  // "/" for search focus (only if current tab has search)
-  if (e.key === '/' && currentTabHasSearch.value && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+  // "/" for search focus
+  if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
     e.preventDefault()
     focusSearch()
   }
@@ -129,7 +124,7 @@ onUnmounted(() => {
 
     <div class="sidebar-panel">
       <header class="panel-header">
-        <div v-if="currentTabHasSearch" class="panel-search">
+        <div class="panel-search">
           <Search :size="14" class="search-icon" />
           <input
             ref="searchInputRef"
@@ -149,20 +144,12 @@ onUnmounted(() => {
           </button>
           <kbd v-else class="search-shortcut">/</kbd>
         </div>
-        <h2 v-else class="panel-title">
-          {{ currentNavItem?.label }}
-        </h2>
       </header>
 
       <div class="panel-content">
         <WidgetPalette v-if="activeTab === 'widgets'" :search-query="searchQuery" />
         <TemplatePalette v-else-if="activeTab === 'templates'" :search-query="searchQuery" />
-        <SectionPalette v-else-if="activeTab === 'sections'" />
-        <div v-else class="effects-placeholder">
-          <p class="placeholder-text">
-            Effets à venir...
-          </p>
-        </div>
+        <SectionPalette v-else-if="activeTab === 'sections'" :search-query="searchQuery" />
       </div>
     </div>
   </aside>
@@ -321,13 +308,6 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--color-border);
 }
 
-.panel-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text);
-  margin: 0;
-}
-
 /* Panel Search */
 .panel-search {
   flex: 1;
@@ -402,18 +382,5 @@ onUnmounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-}
-
-.effects-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-}
-
-.placeholder-text {
-  color: var(--color-text-muted);
-  font-style: italic;
-  font-size: 13px;
 }
 </style>
