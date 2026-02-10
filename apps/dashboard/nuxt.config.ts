@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@pinia/nuxt',
     '@nuxtjs/i18n',
+    '@vueuse/nuxt',
   ],
 
   css: ['~/assets/css/main.css', 'vue-sonner/style.css', 'leaflet/dist/leaflet.css'],

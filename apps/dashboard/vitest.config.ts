@@ -1,9 +1,15 @@
 import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
 import { resolve } from 'node:path'
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    AutoImport({
+      imports: ['@vueuse/core'],
+    }),
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, './app'),

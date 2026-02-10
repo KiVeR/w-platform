@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { CalendarNextProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
-import { reactiveOmit } from "@vueuse/core"
 import { ChevronRight } from "lucide-vue-next"
 import { CalendarNext, useForwardProps } from "reka-ui"
 import { cn } from "@/lib/utils"

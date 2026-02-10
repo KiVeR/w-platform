@@ -2,7 +2,6 @@
 import type { ProgressRootProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { computed } from "vue"
-import { reactiveOmit } from "@vueuse/core"
 import {
   ProgressIndicator,
   ProgressRoot,
