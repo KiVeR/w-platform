@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { Search, Sparkles } from 'lucide-vue-next'
-import { computed, ref, watch } from 'vue'
+import { Search } from 'lucide-vue-next'
 
 const props = defineProps<{
   searchQuery?: string
 }>()
-
-const aiChatStore = useAIChatStore()
 
 const activeFilter = ref<WidgetCategory | 'all'>('all')
 
@@ -102,18 +99,8 @@ watch(() => props.searchQuery, (query) => {
       </div>
     </div>
 
-    <!-- Bouton IA -->
-    <button
-      class="ai-assistant-btn"
-      title="Ouvrir l'assistant IA"
-      @click="aiChatStore.open()"
-    >
-      <Sparkles :size="16" />
-      <span>Aide-moi à créer...</span>
-    </button>
-
-    <!-- AI Chat Panel -->
-    <LazyAIChatPanel v-if="aiChatStore.isOpen" />
+    <!-- Slot for app-level extensions (e.g., AI assistant button) -->
+    <slot name="footer" />
   </div>
 </template>
 
@@ -205,30 +192,5 @@ watch(() => props.searchQuery, (query) => {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2);
-}
-
-/* AI Assistant Button */
-.ai-assistant-btn {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border: 1px dashed var(--color-primary-300);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-warning-100) 100%);
-  font-size: var(--text-sm);
-  color: var(--color-primary-600);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.ai-assistant-btn:hover {
-  border-color: var(--color-primary-500);
-  background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-warning-200) 100%);
-  color: var(--color-primary-700);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-info-500) 15%, transparent);
 }
 </style>
