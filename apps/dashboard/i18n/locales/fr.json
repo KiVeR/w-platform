@@ -156,5 +156,164 @@
       "page": "Page {page} sur {lastPage}",
       "total": "{total} campagnes"
     }
+  },
+  "wizard": {
+    "title": "Nouvelle campagne",
+    "steps": {
+      "type": "Type",
+      "message": "Message",
+      "targeting": "Ciblage",
+      "landingPage": "Landing Page",
+      "schedule": "Planification",
+      "review": "Récapitulatif"
+    },
+    "type": {
+      "title": "Quel type de campagne ?",
+      "prospection": {
+        "title": "Prospection",
+        "description": "Envoyez un SMS à de nouveaux clients potentiels dans une zone géographique"
+      },
+      "fidelisation": {
+        "title": "Fidélisation",
+        "description": "Envoyez un SMS à vos clients existants"
+      },
+      "comptage": {
+        "title": "Comptage",
+        "description": "Estimez le volume de destinataires dans une zone"
+      },
+      "comingSoon": "Bientôt disponible"
+    },
+    "schedule": {
+      "title": "Quand envoyer la campagne ?",
+      "sendNow": "Envoyer maintenant",
+      "scheduleLater": "Planifier un envoi",
+      "date": "Date d'envoi",
+      "time": "Heure d'envoi",
+      "windowInfo": "Les envois sont effectués entre 8h et 20h (Europe/Paris)",
+      "noSunday": "Les envois ne sont pas autorisés le dimanche",
+      "summary": "Envoi prévu le {date} à {time}"
+    },
+    "review": {
+      "title": "Récapitulatif de la campagne",
+      "sections": {
+        "type": "Type de campagne",
+        "message": "Message SMS",
+        "targeting": "Ciblage géographique",
+        "landingPage": "Landing Page",
+        "schedule": "Planification"
+      },
+      "edit": "Modifier",
+      "incomplete": "À compléter",
+      "checkMessage": "J'ai vérifié le contenu du message",
+      "confirmSend": "Je confirme l'envoi de cette campagne",
+      "testButton": "Envoyer un test",
+      "launchButton": "Lancer la campagne",
+      "confirmDialog": {
+        "title": "Confirmer l'envoi",
+        "description": "Cette action est irréversible. La campagne sera envoyée aux destinataires ciblés.",
+        "confirm": "Confirmer l'envoi",
+        "cancel": "Annuler"
+      },
+      "sendNow": "Envoi immédiat",
+      "noLandingPage": "Aucune landing page",
+      "departments": "départements",
+      "postcodes": "codes postaux",
+      "addressRadius": "{address} ({radius} km)"
+    },
+    "autosave": {
+      "saved": "Brouillon sauvegardé",
+      "saving": "Sauvegarde...",
+      "error": "Erreur de sauvegarde"
+    },
+    "nav": {
+      "back": "Retour",
+      "next": "Suivant",
+      "confirm": "Confirmer"
+    },
+    "estimate": {
+      "title": "Estimation",
+      "type": "Type",
+      "volume": "Volume estimé",
+      "smsCount": "Nombre de SMS",
+      "cost": "Coût estimé",
+      "creditsRemaining": "Crédits restants"
+    },
+    "placeholder": {
+      "title": "Étape en cours de développement",
+      "description": "Cette étape sera disponible prochainement"
+    },
+    "message": {
+      "title": "Composez votre message SMS",
+      "name": "Nom de la campagne",
+      "namePlaceholder": "Ex : Promo été 2026",
+      "sender": "Expéditeur",
+      "senderPlaceholder": "Ex : WELLPACK",
+      "senderHelp": "3 à 11 caractères alphanumériques",
+      "senderInvalid": "Expéditeur invalide",
+      "messageLabel": "Message SMS",
+      "messagePlaceholder": "Saisissez votre message...",
+      "insertVariable": "Insérer une variable",
+      "variables": {
+        "shortUrl": "Lien court",
+        "prenom": "Prénom",
+        "nom": "Nom"
+      },
+      "stopInfo": "La mention STOP sera automatiquement ajoutée à la fin du message",
+      "multiSmsWarning": "Attention : {count} SMS seront envoyés par destinataire",
+      "forbiddenDomain": "Le message contient un domaine interdit",
+      "charCount": "{count}/{max} caractères",
+      "remaining": "{remaining} restants",
+      "smsCount": "{count} SMS",
+      "encoding": "Encodage : {encoding}",
+      "previewEmpty": "Aperçu du message..."
+    },
+    "targeting": {
+      "title": "Ciblage géographique",
+      "methods": {
+        "department": {
+          "title": "Par département",
+          "description": "Sélectionnez un ou plusieurs départements"
+        },
+        "postcode": {
+          "title": "Par code postal",
+          "description": "Saisissez les codes postaux ciblés"
+        },
+        "address": {
+          "title": "Par adresse + rayon",
+          "description": "Définissez un point et un rayon autour"
+        }
+      },
+      "department": {
+        "search": "Rechercher un département...",
+        "noResults": "Aucun département trouvé",
+        "selected": "{count} département(s) sélectionné(s)"
+      },
+      "postcode": {
+        "placeholder": "Code postal (5 chiffres)",
+        "invalid": "Code postal invalide",
+        "duplicate": "Déjà ajouté",
+        "selected": "{count} code(s) postal(aux)"
+      },
+      "address": {
+        "placeholder": "Rechercher une adresse...",
+        "radius": "Rayon",
+        "radiusUnit": "km",
+        "noResults": "Aucune adresse trouvée",
+        "clear": "Effacer"
+      }
+    },
+    "landingPage": {
+      "title": "Landing Page",
+      "withLp": "Associer une Landing Page",
+      "withLpDesc": "Personnalisez l'expérience de vos destinataires",
+      "withoutLp": "Pas de Landing Page",
+      "withoutLpDesc": "Envoyez uniquement un SMS",
+      "empty": {
+        "title": "Aucune Landing Page disponible",
+        "description": "Créez votre première Landing Page pour l'associer à vos campagnes."
+      },
+      "createNew": "Créer une nouvelle Landing Page",
+      "selected": "Sélectionnée"
+    }
   }
 }

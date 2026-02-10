@@ -156,5 +156,164 @@
       "page": "Page {page} of {lastPage}",
       "total": "{total} campaigns"
     }
+  },
+  "wizard": {
+    "title": "New campaign",
+    "steps": {
+      "type": "Type",
+      "message": "Message",
+      "targeting": "Targeting",
+      "landingPage": "Landing Page",
+      "schedule": "Schedule",
+      "review": "Review"
+    },
+    "type": {
+      "title": "What type of campaign?",
+      "prospection": {
+        "title": "Prospection",
+        "description": "Send an SMS to potential new customers in a geographic area"
+      },
+      "fidelisation": {
+        "title": "Loyalty",
+        "description": "Send an SMS to your existing customers"
+      },
+      "comptage": {
+        "title": "Counting",
+        "description": "Estimate the number of recipients in an area"
+      },
+      "comingSoon": "Coming soon"
+    },
+    "schedule": {
+      "title": "When to send the campaign?",
+      "sendNow": "Send now",
+      "scheduleLater": "Schedule a send",
+      "date": "Send date",
+      "time": "Send time",
+      "windowInfo": "Sends are performed between 8am and 8pm (Europe/Paris)",
+      "noSunday": "Sends are not allowed on Sundays",
+      "summary": "Scheduled for {date} at {time}"
+    },
+    "review": {
+      "title": "Campaign summary",
+      "sections": {
+        "type": "Campaign type",
+        "message": "SMS message",
+        "targeting": "Geographic targeting",
+        "landingPage": "Landing Page",
+        "schedule": "Schedule"
+      },
+      "edit": "Edit",
+      "incomplete": "To complete",
+      "checkMessage": "I have verified the message content",
+      "confirmSend": "I confirm the sending of this campaign",
+      "testButton": "Send a test",
+      "launchButton": "Launch campaign",
+      "confirmDialog": {
+        "title": "Confirm sending",
+        "description": "This action is irreversible. The campaign will be sent to targeted recipients.",
+        "confirm": "Confirm sending",
+        "cancel": "Cancel"
+      },
+      "sendNow": "Send immediately",
+      "noLandingPage": "No landing page",
+      "departments": "departments",
+      "postcodes": "postcodes",
+      "addressRadius": "{address} ({radius} km)"
+    },
+    "autosave": {
+      "saved": "Draft saved",
+      "saving": "Saving...",
+      "error": "Save error"
+    },
+    "nav": {
+      "back": "Back",
+      "next": "Next",
+      "confirm": "Confirm"
+    },
+    "estimate": {
+      "title": "Estimate",
+      "type": "Type",
+      "volume": "Estimated volume",
+      "smsCount": "SMS count",
+      "cost": "Estimated cost",
+      "creditsRemaining": "Remaining credits"
+    },
+    "placeholder": {
+      "title": "Step under development",
+      "description": "This step will be available soon"
+    },
+    "message": {
+      "title": "Compose your SMS message",
+      "name": "Campaign name",
+      "namePlaceholder": "E.g.: Summer promo 2026",
+      "sender": "Sender",
+      "senderPlaceholder": "E.g.: WELLPACK",
+      "senderHelp": "3 to 11 alphanumeric characters",
+      "senderInvalid": "Invalid sender",
+      "messageLabel": "SMS message",
+      "messagePlaceholder": "Type your message...",
+      "insertVariable": "Insert variable",
+      "variables": {
+        "shortUrl": "Short link",
+        "prenom": "First name",
+        "nom": "Last name"
+      },
+      "stopInfo": "The STOP mention will be automatically added at the end of the message",
+      "multiSmsWarning": "Warning: {count} SMS will be sent per recipient",
+      "forbiddenDomain": "The message contains a forbidden domain",
+      "charCount": "{count}/{max} characters",
+      "remaining": "{remaining} remaining",
+      "smsCount": "{count} SMS",
+      "encoding": "Encoding: {encoding}",
+      "previewEmpty": "Message preview..."
+    },
+    "targeting": {
+      "title": "Geographic targeting",
+      "methods": {
+        "department": {
+          "title": "By department",
+          "description": "Select one or more departments"
+        },
+        "postcode": {
+          "title": "By postcode",
+          "description": "Enter targeted postcodes"
+        },
+        "address": {
+          "title": "By address + radius",
+          "description": "Define a point and a radius around it"
+        }
+      },
+      "department": {
+        "search": "Search a department...",
+        "noResults": "No department found",
+        "selected": "{count} department(s) selected"
+      },
+      "postcode": {
+        "placeholder": "Postcode (5 digits)",
+        "invalid": "Invalid postcode",
+        "duplicate": "Already added",
+        "selected": "{count} postcode(s)"
+      },
+      "address": {
+        "placeholder": "Search an address...",
+        "radius": "Radius",
+        "radiusUnit": "km",
+        "noResults": "No address found",
+        "clear": "Clear"
+      }
+    },
+    "landingPage": {
+      "title": "Landing Page",
+      "withLp": "Associate a Landing Page",
+      "withLpDesc": "Customize the experience for your recipients",
+      "withoutLp": "No Landing Page",
+      "withoutLpDesc": "Send SMS only",
+      "empty": {
+        "title": "No Landing Page available",
+        "description": "Create your first Landing Page to associate it with your campaigns."
+      },
+      "createNew": "Create a new Landing Page",
+      "selected": "Selected"
+    }
   }
 }

@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
   ],
 
-  css: ['~/assets/css/main.css', 'vue-sonner/style.css'],
+  css: ['~/assets/css/main.css', 'vue-sonner/style.css', 'leaflet/dist/leaflet.css'],
 
   vite: {
     plugins: [tailwindcss()],

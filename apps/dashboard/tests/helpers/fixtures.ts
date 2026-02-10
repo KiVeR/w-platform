@@ -1,3 +1,34 @@
+import type { CampaignDraft, LandingPageRow } from '@/types/campaign'
+
+export const fakeCampaignDraft: CampaignDraft = {
+  type: 'prospection',
+  channel: 'sms',
+  name: '',
+  sender: '',
+  message: '',
+  targeting: { method: 'department', departments: [], postcodes: [], address: null, lat: null, lng: null, radius: null },
+  scheduled_at: null,
+  landing_page_id: null,
+  is_demo: false,
+  additional_phone: null,
+}
+
+export const fakeLandingPage: LandingPageRow = {
+  id: 1,
+  name: 'Promo Été 2026',
+  status: 'published',
+  is_active: true,
+  created_at: '2026-01-15T10:00:00Z',
+}
+
+export function fakeLandingPageList(count = 3): LandingPageRow[] {
+  return Array.from({ length: count }, (_, i) => ({
+    ...fakeLandingPage,
+    id: i + 1,
+    name: `Landing Page ${i + 1}`,
+  }))
+}
+
 export const fakeUser = {
   id: 1,
   firstname: 'Jean',
