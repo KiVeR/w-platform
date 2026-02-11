@@ -191,7 +191,12 @@
       "time": "Heure d'envoi",
       "windowInfo": "Les envois sont effectués entre 8h et 20h (Europe/Paris)",
       "noSunday": "Les envois ne sont pas autorisés le dimanche",
-      "summary": "Envoi prévu le {date} à {time}"
+      "summary": "Envoi prévu le {date} à {time} (Europe/Paris)",
+      "quickPicks": {
+        "tomorrowMorning": "Demain 10h",
+        "nextMonday": "Lundi prochain 10h"
+      },
+      "farFutureWarning": "Cette date est dans plus de 30 jours"
     },
     "review": {
       "title": "Récapitulatif de la campagne",
@@ -200,10 +205,18 @@
         "message": "Message SMS",
         "targeting": "Ciblage géographique",
         "landingPage": "Landing Page",
-        "schedule": "Planification"
+        "schedule": "Planification",
+        "estimation": "Estimation"
       },
       "edit": "Modifier",
       "incomplete": "À compléter",
+      "smsCount": "{count} SMS",
+      "otherItems": "+{count} autres",
+      "radius": "{radius} km",
+      "estimatedVolume": "Volume estimé",
+      "estimatedCost": "Coût estimé",
+      "insufficientCredits": "Crédits insuffisants",
+      "testPhonePlaceholder": "06 XX XX XX XX",
       "checkMessage": "J'ai vérifié le contenu du message",
       "confirmSend": "Je confirme l'envoi de cette campagne",
       "testButton": "Envoyer un test",
@@ -236,11 +249,13 @@
       "volume": "Volume estimé",
       "smsCount": "Nombre de SMS",
       "cost": "Coût estimé",
-      "creditsRemaining": "Crédits restants"
+      "creditsRemaining": "Crédits restants",
+      "insufficientCreditsWarning": "Crédits insuffisants pour cette campagne",
+      "recalculate": "Recalculer"
     },
-    "placeholder": {
-      "title": "Étape en cours de développement",
-      "description": "Cette étape sera disponible prochainement"
+    "stepper": {
+      "valid": "Étape complète",
+      "incomplete": "À compléter"
     },
     "message": {
       "title": "Composez votre message SMS",
@@ -286,13 +301,17 @@
       "department": {
         "search": "Rechercher un département...",
         "noResults": "Aucun département trouvé",
-        "selected": "{count} département(s) sélectionné(s)"
+        "selected": "{count} département(s) sélectionné(s)",
+        "selectAll": "Tout",
+        "deselectAll": "Aucun",
+        "label": "département(s)"
       },
       "postcode": {
         "placeholder": "Code postal (5 chiffres)",
         "invalid": "Code postal invalide",
         "duplicate": "Déjà ajouté",
-        "selected": "{count} code(s) postal(aux)"
+        "selected": "{count} code(s) postal(aux)",
+        "label": "code(s) postal(aux)"
       },
       "address": {
         "placeholder": "Rechercher une adresse...",
@@ -313,7 +332,9 @@
         "description": "Créez votre première Landing Page pour l'associer à vos campagnes."
       },
       "createNew": "Créer une nouvelle Landing Page",
-      "selected": "Sélectionnée"
+      "selected": "Sélectionnée",
+      "refresh": "Rafraîchir",
+      "published": "Publiée"
     }
   }
 }

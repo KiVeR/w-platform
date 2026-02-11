@@ -7,6 +7,7 @@ const mockPut = vi.fn()
 const mockGet = vi.fn()
 
 stubAuthGlobals({ $api: { POST: mockPost, PUT: mockPut, GET: mockGet } })
+vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
 
 const { useCampaignWizardStore } = await import('@/stores/campaignWizard')
 
@@ -258,6 +259,43 @@ describe('useCampaignWizardStore', () => {
         params: { path: { campaign: 99 } },
       }))
       expect(result).toBe(true)
+    })
+  })
+
+  describe('validateStep', () => {
+    it('validateStep(0) returns true (type always set)', () => {
+      const wizard = useCampaignWizardStore()
+      expect(wizard.validateStep(0)).toBe(true)
+    })
+
+    it('validateStep(1) returns false if name empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = ''
+      wizard.campaign.message = 'Hello'
+      expect(wizard.validateStep(1)).toBe(false)
+    })
+
+    it('validateStep works independently of currentStep', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(0)
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      expect(wizard.validateStep(1)).toBe(true)
+    })
+
+    it('stepValidation returns array of 6 booleans', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.targeting.method = 'department'
+      wizard.campaign.targeting.departments = ['75']
+
+      const validation = wizard.stepValidation
+      expect(validation).toHaveLength(6)
+      expect(validation[0]).toBe(true)
+      expect(validation[1]).toBe(true)
+      expect(validation[2]).toBe(true)
+      expect(validation[3]).toBe(true)
     })
   })
 

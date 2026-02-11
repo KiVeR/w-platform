@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { CalendarIcon, Clock, Zap, CalendarClock, Info } from 'lucide-vue-next'
+import { CalendarIcon, Clock, Zap, CalendarClock, Info, AlertTriangle } from 'lucide-vue-next'
 import { CalendarDate, today, getLocalTimeZone } from '@internationalized/date'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -19,6 +19,7 @@ import { useCampaignWizardStore } from '@/stores/campaignWizard'
 const wizard = useCampaignWizardStore()
 const { t } = useI18n()
 
+const tz = getLocalTimeZone()
 const selectedDate = ref<CalendarDate | undefined>(undefined)
 const selectedTime = ref<string>('')
 
@@ -28,14 +29,16 @@ const timeSlots = Array.from({ length: 25 }, (_, i) => {
   return `${String(hour).padStart(2, '0')}:${min}`
 })
 
-const todayDate = today(getLocalTimeZone())
+const todayDate = today(tz)
+
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 
 function isDateDisabled(date: CalendarDate): boolean {
-  return date.toDate(getLocalTimeZone()).getDay() === 0
+  return date.toDate(tz).getDay() === 0
 }
 
 function formatDate(date: CalendarDate): string {
-  return date.toDate(getLocalTimeZone()).toLocaleDateString('fr-FR', {
+  return date.toDate(tz).toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -43,19 +46,44 @@ function formatDate(date: CalendarDate): string {
   })
 }
 
-function setMode(mode: 'now' | 'schedule') {
+function selectMode(mode: 'now' | 'schedule') {
   wizard.scheduleMode = mode
   if (mode === 'now') {
     wizard.campaign.scheduled_at = null
   }
 }
 
+const quickPicks = computed(() => {
+  const now = today(tz)
+  let tomorrow = now.add({ days: 1 })
+  if (tomorrow.toDate(tz).getDay() === 0) tomorrow = tomorrow.add({ days: 1 })
+  let nextMonday = now.add({ days: 1 })
+  while (nextMonday.toDate(tz).getDay() !== 1) nextMonday = nextMonday.add({ days: 1 })
+  return [
+    { label: t('wizard.schedule.quickPicks.tomorrowMorning'), date: tomorrow, time: '10:00' },
+    { label: t('wizard.schedule.quickPicks.nextMonday'), date: nextMonday, time: '10:00' },
+  ]
+})
+
+function applyQuickPick(pick: { date: CalendarDate, time: string }) {
+  selectedDate.value = pick.date
+  selectedTime.value = pick.time
+  wizard.isDirty = true
+}
+
+const isFarFuture = computed(() => {
+  if (!selectedDate.value) return false
+  const diff = selectedDate.value.toDate(tz).getTime() - today(tz).toDate(tz).getTime()
+  return diff > THIRTY_DAYS_MS
+})
+
 watch([selectedDate, selectedTime], ([date, time]) => {
   if (date && time) {
     const [hours, minutes] = time.split(':').map(Number)
-    const jsDate = date.toDate(getLocalTimeZone())
+    const jsDate = date.toDate(tz)
     jsDate.setHours(hours, minutes, 0, 0)
     wizard.campaign.scheduled_at = jsDate.toISOString()
+    wizard.isDirty = true
   }
 })
 
@@ -74,30 +102,34 @@ const scheduleSummary = computed(() => {
 
     <div class="grid gap-4 sm:grid-cols-2">
       <Card
-        class="cursor-pointer transition-all"
+        class="cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
         :class="wizard.scheduleMode === 'now'
           ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
           : 'hover:border-primary/50'"
-        @click="setMode('now')"
+        @click="selectMode('now')"
       >
         <CardHeader>
           <div class="flex items-center gap-3">
-            <Zap class="size-6 text-primary" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <Zap class="size-5 text-primary" />
+            </div>
             <CardTitle>{{ t('wizard.schedule.sendNow') }}</CardTitle>
           </div>
         </CardHeader>
       </Card>
 
       <Card
-        class="cursor-pointer transition-all"
+        class="cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
         :class="wizard.scheduleMode === 'schedule'
           ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
           : 'hover:border-primary/50'"
-        @click="setMode('schedule')"
+        @click="selectMode('schedule')"
       >
         <CardHeader>
           <div class="flex items-center gap-3">
-            <CalendarClock class="size-6 text-primary" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <CalendarClock class="size-5 text-primary" />
+            </div>
             <CardTitle>{{ t('wizard.schedule.scheduleLater') }}</CardTitle>
           </div>
         </CardHeader>
@@ -145,15 +177,33 @@ const scheduleSummary = computed(() => {
         </div>
       </div>
 
+      <div data-quick-picks class="flex flex-wrap gap-2">
+        <Button
+          v-for="pick in quickPicks"
+          :key="pick.label"
+          data-quick-pick
+          variant="outline"
+          size="sm"
+          @click="applyQuickPick(pick)"
+        >
+          {{ pick.label }}
+        </Button>
+      </div>
+
       <Alert>
         <Info class="size-4" />
         <AlertDescription>{{ t('wizard.schedule.windowInfo') }}</AlertDescription>
       </Alert>
 
-      <Card v-if="scheduleSummary">
+      <Alert v-if="isFarFuture" data-far-future-warning variant="destructive">
+        <AlertTriangle class="size-4" />
+        <AlertDescription>{{ t('wizard.schedule.farFutureWarning') }}</AlertDescription>
+      </Alert>
+
+      <Card v-if="scheduleSummary" data-schedule-summary>
         <CardContent class="flex items-center gap-3 pt-4">
           <CalendarIcon class="size-5 text-primary" />
-          <span>{{ t('wizard.schedule.summary', scheduleSummary) }}</span>
+          <span class="font-medium">{{ t('wizard.schedule.summary', scheduleSummary) }}</span>
         </CardContent>
       </Card>
     </div>

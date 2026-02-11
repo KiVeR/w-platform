@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { MapPin, Hash, Navigation, Check } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import DepartmentSelector from '@/components/campaigns/wizard/DepartmentSelector.vue'
-import PostcodeInput from '@/components/campaigns/wizard/PostcodeInput.vue'
-import AddressRadius from '@/components/campaigns/wizard/AddressRadius.vue'
-import TargetingMap from '@/components/campaigns/wizard/TargetingMap.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import type { TargetingMethod } from '@/types/campaign'
 
 const wizard = useCampaignWizardStore()
 const { t } = useI18n()
+
+const validationError = ref('')
 
 const methods: { key: TargetingMethod, icon: typeof MapPin }[] = [
   { key: 'department', icon: MapPin },
@@ -20,6 +19,7 @@ const methods: { key: TargetingMethod, icon: typeof MapPin }[] = [
 function selectMethod(method: TargetingMethod) {
   wizard.campaign.targeting.method = method
   wizard.isDirty = true
+  validationError.value = ''
 }
 
 function toggleDepartment(code: string) {
@@ -32,7 +32,10 @@ function toggleDepartment(code: string) {
     deps.push(code)
   }
   wizard.isDirty = true
+  validationError.value = ''
 }
+
+defineExpose({ validationError })
 </script>
 
 <template>
@@ -44,15 +47,17 @@ function toggleDepartment(code: string) {
         v-for="m in methods"
         :key="m.key"
         data-method-card
-        class="cursor-pointer transition-all"
+        class="cursor-pointer transition-all duration-200"
         :class="wizard.campaign.targeting.method === m.key
           ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
-          : 'hover:border-primary/50'"
+          : 'hover:border-primary/50 hover:scale-[1.02] hover:shadow-md'"
         @click="selectMethod(m.key)"
       >
         <CardHeader>
           <div class="flex items-center justify-between">
-            <component :is="m.icon" class="size-6 text-primary" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <component :is="m.icon" class="size-5 text-primary" />
+            </div>
             <Check v-if="wizard.campaign.targeting.method === m.key" class="size-5 text-primary" />
           </div>
           <CardTitle class="mt-2 text-sm">
@@ -81,11 +86,19 @@ function toggleDepartment(code: string) {
           :lat="wizard.campaign.targeting.lat"
           :lng="wizard.campaign.targeting.lng"
           :radius="wizard.campaign.targeting.radius"
-          @update:address="wizard.campaign.targeting.address = $event"
-          @update:lat="wizard.campaign.targeting.lat = $event"
-          @update:lng="wizard.campaign.targeting.lng = $event"
-          @update:radius="wizard.campaign.targeting.radius = $event"
+          @update:address="v => { wizard.campaign.targeting.address = v; wizard.isDirty = true }"
+          @update:lat="v => { wizard.campaign.targeting.lat = v; wizard.isDirty = true }"
+          @update:lng="v => { wizard.campaign.targeting.lng = v; wizard.isDirty = true }"
+          @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
         />
+
+        <p
+          v-if="validationError"
+          data-validation-error
+          class="mt-3 text-sm text-destructive"
+        >
+          {{ validationError }}
+        </p>
       </div>
 
       <ClientOnly>

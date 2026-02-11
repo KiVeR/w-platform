@@ -1,8 +1,7 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { Megaphone, MessageSquare, MapPin, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
-import { isForbiddenMessage } from '@/utils/sms'
 import type { CampaignDraft, CampaignEstimate, WizardStep } from '@/types/campaign'
 
 function freshDraft(): CampaignDraft {
@@ -80,8 +79,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     if (currentStep.value > 0) currentStep.value--
   }
 
-  function validateCurrentStep(): boolean {
-    switch (currentStep.value) {
+  function validateStep(stepIndex: number): boolean {
+    switch (stepIndex) {
       case 0:
         return !!campaign.value.type
       case 1:
@@ -108,6 +107,12 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
         return true
     }
   }
+
+  function validateCurrentStep(): boolean {
+    return validateStep(currentStep.value)
+  }
+
+  const stepValidation = computed(() => STEPS.map((_, i) => validateStep(i)))
 
   async function createDraft(): Promise<boolean> {
     return withSaving(async () => {
@@ -206,7 +211,9 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     goToStep,
     nextStep,
     prevStep,
+    validateStep,
     validateCurrentStep,
+    stepValidation,
     createDraft,
     saveDraft,
     requestEstimate,

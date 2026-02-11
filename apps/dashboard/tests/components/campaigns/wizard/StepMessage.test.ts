@@ -13,21 +13,11 @@ mockUseI18n()
 const { useCampaignWizardStore } = await import('@/stores/campaignWizard')
 const StepMessage = (await import('@/components/campaigns/wizard/StepMessage.vue')).default
 
-const slotStub = { template: '<div><slot /></div>' }
-
-const baseStubs = {
-  Input: { template: '<input v-bind="$attrs" />', inheritAttrs: true },
-  Textarea: { template: '<textarea v-bind="$attrs" />', inheritAttrs: true },
-  Label: slotStub,
-  Alert: { template: '<div v-bind="$attrs"><slot /></div>', inheritAttrs: true },
-  AlertTitle: slotStub,
-  AlertDescription: slotStub,
-  DropdownMenu: slotStub,
-  DropdownMenuTrigger: slotStub,
-  DropdownMenuContent: slotStub,
-  DropdownMenuItem: { template: '<div v-bind="$attrs" @click="$emit(\'click\')"><slot /></div>', inheritAttrs: true, emits: ['click'] },
-  Button: { template: '<button v-bind="$attrs"><slot /></button>', inheritAttrs: true },
-  SmsPreview: { template: '<div data-sms-preview />' },
+const SmsEditorStub = {
+  name: 'SmsEditor',
+  template: '<div data-sms-editor />',
+  props: ['name', 'sender', 'message', 'variables', 'labels', 'showPreview'],
+  emits: ['update:name', 'update:sender', 'update:message', 'dirty'],
 }
 
 describe('StepMessage', () => {
@@ -37,99 +27,100 @@ describe('StepMessage', () => {
     setActivePinia(createPinia())
   })
 
-  it('renders campaign name input', () => {
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-name-input]').exists()).toBe(true)
+  function mountStep() {
+    return mount(StepMessage, {
+      global: { stubs: { SmsEditor: SmsEditorStub } },
+    })
+  }
+
+  it('renders SmsEditor', () => {
+    const wrapper = mountStep()
+    expect(wrapper.find('[data-sms-editor]').exists()).toBe(true)
   })
 
-  it('renders sender input', () => {
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-sender-input]').exists()).toBe(true)
-  })
-
-  it('renders message textarea', () => {
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-message-textarea]').exists()).toBe(true)
-  })
-
-  it('renders variable dropdown trigger', () => {
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.text()).toContain('wizard.message.insertVariable')
-  })
-
-  it('renders STOP info alert', () => {
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-stop-alert]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('wizard.message.stopInfo')
-  })
-
-  it('shows multi-SMS warning when message exceeds 149 chars', async () => {
+  it('passes store values as props', () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.message = 'a'.repeat(150)
-
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.find('[data-multi-sms-alert]').exists()).toBe(true)
-  })
-
-  it('hides multi-SMS warning for short message', () => {
-    const wizard = useCampaignWizardStore()
+    wizard.campaign.name = 'Test Campaign'
+    wizard.campaign.sender = 'WELLPACK'
     wizard.campaign.message = 'Hello'
 
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-multi-sms-alert]').exists()).toBe(false)
+    const wrapper = mountStep()
+    const editor = wrapper.findComponent(SmsEditorStub)
+
+    expect(editor.props('name')).toBe('Test Campaign')
+    expect(editor.props('sender')).toBe('WELLPACK')
+    expect(editor.props('message')).toBe('Hello')
   })
 
-  it('shows forbidden domain alert when rsms.co present', async () => {
-    const wizard = useCampaignWizardStore()
-    wizard.campaign.message = 'Visit rsms.co'
-
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.find('[data-forbidden-alert]').exists()).toBe(true)
+  it('passes showPreview as true', () => {
+    const wrapper = mountStep()
+    const editor = wrapper.findComponent(SmsEditorStub)
+    expect(editor.props('showPreview')).toBe(true)
   })
 
-  it('inserting variable appends to message and sets isDirty', async () => {
+  it('passes 3 variables with correct keys', () => {
+    const wrapper = mountStep()
+    const editor = wrapper.findComponent(SmsEditorStub)
+    const vars = editor.props('variables')
+
+    expect(vars).toHaveLength(3)
+    expect(vars[0].key).toBe('shortUrl')
+    expect(vars[1].key).toBe('prenom')
+    expect(vars[2].key).toBe('nom')
+  })
+
+  it('passes labels with required keys', () => {
+    const wrapper = mountStep()
+    const editor = wrapper.findComponent(SmsEditorStub)
+    const labels = editor.props('labels')
+
+    expect(labels).toHaveProperty('name')
+    expect(labels).toHaveProperty('messageLabel')
+    expect(labels).toHaveProperty('stopTitle', 'STOP SMS')
+    expect(labels).toHaveProperty('previewPlaceholder')
+  })
+
+  it('update:name updates store and sets dirty', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.message = 'Bonjour '
+    const wrapper = mountStep()
 
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
+    await wrapper.findComponent(SmsEditorStub).vm.$emit('update:name', 'New Name')
 
-    // Find and click variable dropdown item
-    const items = wrapper.findAll('[data-variable-item]')
-    if (items.length > 0) {
-      await items[0].trigger('click')
-    }
-
-    expect(wizard.campaign.message).toContain('${')
+    expect(wizard.campaign.name).toBe('New Name')
     expect(wizard.isDirty).toBe(true)
   })
 
-  it('char counter displays correct stats', () => {
+  it('update:sender updates store and sets dirty', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.message = 'test'
+    const wrapper = mountStep()
 
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    const counter = wrapper.find('[data-char-counter]')
+    await wrapper.findComponent(SmsEditorStub).vm.$emit('update:sender', 'NEWCO')
 
-    expect(counter.exists()).toBe(true)
-    expect(counter.text()).toContain('wizard.message.charCount')
+    expect(wizard.campaign.sender).toBe('NEWCO')
+    expect(wizard.isDirty).toBe(true)
   })
 
-  it('renders SmsPreview component', () => {
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-sms-preview]').exists()).toBe(true)
+  it('update:message updates store and sets dirty', async () => {
+    const wizard = useCampaignWizardStore()
+    const wrapper = mountStep()
+
+    await wrapper.findComponent(SmsEditorStub).vm.$emit('update:message', 'New msg')
+
+    expect(wizard.campaign.message).toBe('New msg')
+    expect(wizard.isDirty).toBe(true)
   })
 
-  it('name input is bound to wizard.campaign.name', () => {
+  it('dirty event sets isDirty', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.name = 'My Campaign'
+    const wrapper = mountStep()
 
-    const wrapper = mount(StepMessage, { global: { stubs: baseStubs } })
-    const input = wrapper.find('[data-name-input]')
+    await wrapper.findComponent(SmsEditorStub).vm.$emit('dirty')
 
-    expect(input.attributes('modelvalue')).toBe('My Campaign')
+    expect(wizard.isDirty).toBe(true)
+  })
+
+  it('renders step title', () => {
+    const wrapper = mountStep()
+    expect(wrapper.text()).toContain('wizard.message.title')
   })
 })

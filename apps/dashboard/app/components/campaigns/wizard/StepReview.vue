@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Megaphone, MessageSquare, MapPin, LayoutTemplate, CalendarIcon, Pencil } from 'lucide-vue-next'
+import { computed, ref, onMounted } from 'vue'
+import {
+  Megaphone, MessageSquare, MapPin, LayoutTemplate, CalendarIcon,
+  Pencil, Send, FlaskConical, CheckCircle2, AlertCircle,
+} from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   AlertDialog,
@@ -18,9 +22,27 @@ import {
   AlertDialogAction,
 } from '@/components/ui/alert-dialog'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
+import { usePartnerStore } from '@/stores/partner'
+import { useApi } from '@/composables/useApi'
 
 const wizard = useCampaignWizardStore()
+const partnerStore = usePartnerStore()
+const api = useApi()
 const { t } = useI18n()
+
+const euroCredits = ref<number | null>(null)
+
+onMounted(async () => {
+  const partnerId = partnerStore.effectivePartnerId
+  if (!partnerId) return
+  const { data, error } = await api.GET('/partners/{partner}', {
+    params: { path: { partner: partnerId } },
+  } as never)
+  if (!error && data) {
+    const raw = (data as { data: { euro_credits: string } }).data
+    euroCredits.value = Number(raw.euro_credits)
+  }
+})
 
 const canLaunch = computed(() =>
   wizard.reviewChecks.messageVerified && wizard.reviewChecks.sendConfirmed,
@@ -28,7 +50,16 @@ const canLaunch = computed(() =>
 
 const scheduleLabel = computed(() => {
   if (wizard.scheduleMode === 'now') return t('wizard.review.sendNow')
-  return wizard.campaign.scheduled_at ?? t('wizard.review.incomplete')
+  if (!wizard.campaign.scheduled_at) return t('wizard.review.incomplete')
+  return new Date(wizard.campaign.scheduled_at).toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Paris',
+  })
 })
 
 const sections = [
@@ -39,31 +70,20 @@ const sections = [
   { key: 'schedule', icon: CalendarIcon, step: 4 },
 ] as const
 
-function sectionValue(key: string): string {
-  switch (key) {
-    case 'type':
-      return t(`campaigns.type.${wizard.campaign.type}`)
-    case 'message':
-      return wizard.campaign.message || t('wizard.review.incomplete')
-    case 'targeting': {
-      const tgt = wizard.campaign.targeting
-      if (tgt.method === 'department' && tgt.departments.length > 0)
-        return `${tgt.departments.length} ${t('wizard.review.departments')}`
-      if (tgt.method === 'postcode' && tgt.postcodes.length > 0)
-        return `${tgt.postcodes.length} ${t('wizard.review.postcodes')}`
-      if (tgt.method === 'address' && tgt.address)
-        return t('wizard.review.addressRadius', { address: tgt.address, radius: tgt.radius })
-      return t('wizard.review.incomplete')
-    }
-    case 'landingPage':
-      return wizard.campaign.landing_page_id
-        ? `LP #${wizard.campaign.landing_page_id}`
-        : t('wizard.review.noLandingPage')
-    case 'schedule':
-      return scheduleLabel.value
-    default:
-      return ''
-  }
+const targetingBadges = computed(() => {
+  const tgt = wizard.campaign.targeting
+  if (tgt.method === 'department') return tgt.departments
+  if (tgt.method === 'postcode') return tgt.postcodes
+  return []
+})
+
+const insufficientCredits = computed(() => {
+  if (!wizard.estimate || euroCredits.value === null) return false
+  return wizard.estimate.totalPrice > euroCredits.value
+})
+
+function formatEur(value: number): string {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value)
 }
 
 async function handleLaunch(): Promise<void> {
@@ -86,9 +106,23 @@ async function handleTest(): Promise<void> {
     <h2 class="text-lg font-semibold">{{ t('wizard.review.title') }}</h2>
 
     <div class="space-y-3">
-      <Card v-for="section in sections" :key="section.key">
+      <Card
+        v-for="section in sections"
+        :key="section.key"
+        :class="!wizard.validateStep(section.step) ? 'border-l-4 border-l-amber-500' : ''"
+      >
         <CardHeader class="flex-row items-center justify-between space-y-0 pb-2">
           <div class="flex items-center gap-2">
+            <CheckCircle2
+              v-if="wizard.validateStep(section.step)"
+              data-validation-icon
+              class="size-4 text-green-500"
+            />
+            <AlertCircle
+              v-else
+              data-validation-icon
+              class="size-4 text-amber-500"
+            />
             <component :is="section.icon" class="size-4 text-muted-foreground" />
             <CardTitle class="text-sm font-medium">
               {{ t(`wizard.review.sections.${section.key}`) }}
@@ -100,12 +134,93 @@ async function handleTest(): Promise<void> {
           </Button>
         </CardHeader>
         <CardContent>
-          <p class="text-sm">
-            <Badge v-if="section.key === 'type'" variant="secondary">
-              {{ sectionValue(section.key) }}
-            </Badge>
-            <span v-else>{{ sectionValue(section.key) }}</span>
-          </p>
+          <template v-if="section.key === 'type'">
+            <Badge variant="secondary">{{ t(`campaigns.type.${wizard.campaign.type}`) }}</Badge>
+          </template>
+
+          <template v-else-if="section.key === 'message'">
+            <div class="flex items-start gap-4">
+              <div data-mini-preview class="w-40 shrink-0 overflow-hidden rounded-lg border bg-muted/30 p-2" style="transform: scale(0.6); transform-origin: top left; height: 160px;">
+                <SmsPreview
+                  :sender="wizard.campaign.sender || 'SMS'"
+                  :message="wizard.campaign.message"
+                />
+              </div>
+              <div class="space-y-1.5">
+                <p class="line-clamp-2 text-sm">{{ wizard.campaign.message || t('wizard.review.incomplete') }}</p>
+                <Badge v-if="wizard.campaign.message" variant="secondary" data-sms-count>
+                  {{ t('wizard.review.smsCount', { count: getSmsStats(wizard.campaign.message).smsCount }) }}
+                </Badge>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="section.key === 'targeting'">
+            <div v-if="wizard.campaign.targeting.method === 'address' && wizard.campaign.targeting.address" class="flex items-center gap-2">
+              <MapPin class="size-4 text-muted-foreground" />
+              <span class="text-sm">{{ wizard.campaign.targeting.address }}</span>
+              <Badge variant="secondary">
+                {{ t('wizard.review.radius', { radius: wizard.campaign.targeting.radius }) }}
+              </Badge>
+            </div>
+            <div v-else-if="targetingBadges.length > 0" class="flex flex-wrap gap-1.5">
+              <Badge
+                v-for="item in targetingBadges.slice(0, 5)"
+                :key="item"
+                variant="secondary"
+                data-targeting-badge
+              >
+                {{ item }}
+              </Badge>
+              <Badge
+                v-if="targetingBadges.length > 5"
+                variant="outline"
+                data-targeting-overflow
+              >
+                {{ t('wizard.review.otherItems', { count: targetingBadges.length - 5 }) }}
+              </Badge>
+            </div>
+            <span v-else class="text-sm text-muted-foreground">{{ t('wizard.review.incomplete') }}</span>
+          </template>
+
+          <template v-else-if="section.key === 'landingPage'">
+            <span class="text-sm">
+              {{ wizard.campaign.landing_page_id ? `LP #${wizard.campaign.landing_page_id}` : t('wizard.review.noLandingPage') }}
+            </span>
+          </template>
+
+          <template v-else>
+            <span class="text-sm">{{ scheduleLabel }}</span>
+          </template>
+        </CardContent>
+      </Card>
+
+      <Card v-if="wizard.estimate" data-estimation-card>
+        <CardHeader class="flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle class="text-sm font-medium">
+            {{ t('wizard.review.sections.estimation') }}
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="space-y-2">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted-foreground">{{ t('wizard.review.estimatedVolume') }}</span>
+            <span class="font-medium" data-estimated-volume>
+              {{ wizard.estimate.volume.toLocaleString('fr-FR') }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted-foreground">{{ t('wizard.review.estimatedCost') }}</span>
+            <span class="text-lg font-semibold text-primary" data-estimated-cost>
+              {{ formatEur(wizard.estimate.totalPrice) }}
+            </span>
+          </div>
+          <Badge
+            v-if="insufficientCredits"
+            data-insufficient-credits
+            variant="destructive"
+          >
+            {{ t('wizard.review.insufficientCredits') }}
+          </Badge>
         </CardContent>
       </Card>
     </div>
@@ -129,24 +244,47 @@ async function handleTest(): Promise<void> {
       </label>
     </div>
 
-    <div class="flex gap-3">
-      <Button variant="outline" @click="handleTest">
-        {{ t('wizard.review.testButton') }}
-      </Button>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <Input
+          data-phone-input
+          :placeholder="t('wizard.review.testPhonePlaceholder')"
+          :model-value="wizard.campaign.additional_phone || ''"
+          class="w-44"
+          @update:model-value="wizard.campaign.additional_phone = ($event as string) || null"
+        />
+        <Button variant="outline" data-test-button @click="handleTest">
+          <FlaskConical class="mr-1.5 size-4" />
+          {{ t('wizard.review.testButton') }}
+        </Button>
+      </div>
 
       <AlertDialog>
         <AlertDialogTrigger as-child>
-          <Button
-            data-launch-button
-            :disabled="!canLaunch"
-          >
+          <Button data-launch-button :disabled="!canLaunch">
+            <Send class="mr-1.5 size-4" />
             {{ t('wizard.review.launchButton') }}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{{ t('wizard.review.confirmDialog.title') }}</AlertDialogTitle>
-            <AlertDialogDescription>{{ t('wizard.review.confirmDialog.description') }}</AlertDialogDescription>
+            <AlertDialogDescription>
+              <div class="space-y-2">
+                <p>{{ t('wizard.review.confirmDialog.description') }}</p>
+                <div class="rounded-md bg-muted p-3 text-sm" data-confirm-details>
+                  <p class="font-semibold">{{ wizard.campaign.name }}</p>
+                  <p>{{ t(`campaigns.type.${wizard.campaign.type}`) }}</p>
+                  <p v-if="wizard.estimate">
+                    {{ wizard.estimate.volume.toLocaleString('fr-FR') }} dest. —
+                    {{ formatEur(wizard.estimate.totalPrice) }}
+                  </p>
+                  <p v-if="wizard.campaign.scheduled_at">
+                    {{ scheduleLabel }}
+                  </p>
+                </div>
+              </div>
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{{ t('wizard.review.confirmDialog.cancel') }}</AlertDialogCancel>

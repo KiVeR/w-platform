@@ -39,6 +39,9 @@ async function handleNext() {
     await wizard.saveDraft()
   }
   wizard.nextStep()
+  if (wizard.currentStep === 5 && wizard.campaignId) {
+    wizard.requestEstimate()
+  }
 }
 </script>
 
@@ -56,7 +59,7 @@ async function handleNext() {
     <WizardStepper
       :steps="wizard.STEPS"
       :current-step="wizard.currentStep"
-      :validation="[false, false, false, false, false, false]"
+      :validation="wizard.stepValidation"
       @step="wizard.goToStep"
     />
 

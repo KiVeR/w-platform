@@ -21,7 +21,7 @@ const baseStubs = {
   CardHeader: slotStub,
   CardTitle: slotStub,
   CardDescription: slotStub,
-  Badge: { template: '<span data-badge><slot /></span>' },
+  Badge: { template: '<span data-badge v-bind="$attrs"><slot /></span>' },
 }
 
 describe('StepType', () => {
@@ -62,5 +62,24 @@ describe('StepType', () => {
     const badges = wrapper.findAll('[data-badge]')
     expect(badges.length).toBeGreaterThanOrEqual(2)
     expect(wrapper.text()).toContain('wizard.type.comingSoon')
+  })
+
+  it('affiche badge canal SMS sur la carte Prospection', () => {
+    const wrapper = mount(StepType, {
+      global: { stubs: baseStubs },
+    })
+
+    const channelBadge = wrapper.find('[data-channel-badge]')
+    expect(channelBadge.exists()).toBe(true)
+    expect(channelBadge.text()).toBe('SMS')
+  })
+
+  it('affiche overlay disabled sur les 2 cartes désactivées', () => {
+    const wrapper = mount(StepType, {
+      global: { stubs: baseStubs },
+    })
+
+    const overlays = wrapper.findAll('[data-disabled-overlay]')
+    expect(overlays).toHaveLength(2)
   })
 })

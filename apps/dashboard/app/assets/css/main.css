@@ -111,6 +111,12 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ==================== CONTENT-EDITOR LAYER BRIDGE ==================== */
+/* Maps shadcn-vue tokens to the content-editor layer's CSS custom properties */
+:root {
+  --color-surface: var(--background);
+}
+
 /* ==================== SHADCN-VUE SEMANTIC VARIABLES ==================== */
 /* Light mode (default) */
 :root {

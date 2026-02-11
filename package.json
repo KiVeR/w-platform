@@ -1,6 +1,12 @@
 {
   "name": "wellpack-platform",
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "@wellpack/content-editor": "link:../content-editor",
+      "@wellpack/targeting": "link:../targeting"
+    }
+  },
   "scripts": {
     "dev:dashboard": "pnpm --filter dashboard dev",
     "build:dashboard": "pnpm --filter dashboard build",

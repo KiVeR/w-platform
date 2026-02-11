@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { LayoutTemplate, Check, ExternalLink, FileX } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { LayoutTemplate, Check, ExternalLink, FileX, CheckCircle2, RefreshCw } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { useLandingPages } from '@/composables/useLandingPages'
@@ -12,6 +12,19 @@ const { t } = useI18n()
 const { landingPages, isLoading, hasError, fetchLandingPages } = useLandingPages()
 
 const mode = ref<'none' | 'with'>(wizard.campaign.landing_page_id ? 'with' : 'none')
+
+function getInitials(name: string): string {
+  return name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
+}
+
+function getAvatarColor(name: string): string {
+  const hue = [...name].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360
+  return `hsl(${hue}, 50%, 55%)`
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 
 function selectMode(m: 'none' | 'with') {
   mode.value = m
@@ -27,10 +40,6 @@ function selectLandingPage(id: number) {
   wizard.campaign.landing_page_id = id
   wizard.isDirty = true
 }
-
-watch(() => wizard.campaign.landing_page_id, (val) => {
-  if (val && mode.value === 'none') mode.value = 'with'
-})
 </script>
 
 <template>
@@ -40,13 +49,15 @@ watch(() => wizard.campaign.landing_page_id, (val) => {
     <div class="grid gap-4 sm:grid-cols-2">
       <Card
         data-mode-with
-        class="cursor-pointer transition-all"
+        class="cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
         :class="mode === 'with' ? 'border-primary bg-primary/5 ring-1 ring-primary/30' : 'hover:border-primary/50'"
         @click="selectMode('with')"
       >
         <CardHeader>
           <div class="flex items-center justify-between">
-            <LayoutTemplate class="size-8 text-primary" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <LayoutTemplate class="size-5 text-primary" />
+            </div>
             <Check v-if="mode === 'with'" class="size-5 text-primary" />
           </div>
           <CardTitle class="mt-3">{{ t('wizard.landingPage.withLp') }}</CardTitle>
@@ -56,13 +67,15 @@ watch(() => wizard.campaign.landing_page_id, (val) => {
 
       <Card
         data-mode-none
-        class="cursor-pointer transition-all"
+        class="cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
         :class="mode === 'none' ? 'border-primary bg-primary/5 ring-1 ring-primary/30' : 'hover:border-primary/50'"
         @click="selectMode('none')"
       >
         <CardHeader>
           <div class="flex items-center justify-between">
-            <FileX class="size-8 text-muted-foreground" />
+            <div class="flex size-10 items-center justify-center rounded-full bg-muted">
+              <FileX class="size-5 text-muted-foreground" />
+            </div>
             <Check v-if="mode === 'none'" class="size-5 text-primary" />
           </div>
           <CardTitle class="mt-3">{{ t('wizard.landingPage.withoutLp') }}</CardTitle>
@@ -83,34 +96,62 @@ watch(() => wizard.campaign.landing_page_id, (val) => {
         :description="t('wizard.landingPage.empty.description')"
       />
 
-      <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <Card
-          v-for="lp in landingPages"
-          :key="lp.id"
-          data-lp-card
-          class="cursor-pointer transition-all"
-          :class="wizard.campaign.landing_page_id === lp.id ? 'border-primary bg-primary/5 ring-1 ring-primary/30' : 'hover:border-primary/50'"
-          @click="selectLandingPage(lp.id)"
-        >
-          <CardHeader>
-            <div class="flex items-center justify-between">
-              <CardTitle class="text-sm">{{ lp.name }}</CardTitle>
-              <Badge v-if="wizard.campaign.landing_page_id === lp.id" variant="default">
-                {{ t('wizard.landingPage.selected') }}
-              </Badge>
-            </div>
-          </CardHeader>
-        </Card>
-      </div>
+      <template v-else>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <Card
+            v-for="lp in landingPages"
+            :key="lp.id"
+            data-lp-card
+            class="cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
+            :class="wizard.campaign.landing_page_id === lp.id
+              ? 'border-primary bg-primary/5 ring-2 ring-primary/30'
+              : 'hover:border-primary/50'"
+            @click="selectLandingPage(lp.id)"
+          >
+            <CardHeader>
+              <div class="flex items-center gap-3">
+                <div
+                  data-lp-avatar
+                  class="flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+                  :style="{ backgroundColor: getAvatarColor(lp.name) }"
+                >
+                  {{ getInitials(lp.name) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <CardTitle class="truncate text-sm">{{ lp.name }}</CardTitle>
+                  <p data-lp-date class="text-xs text-muted-foreground">
+                    {{ formatDate(lp.created_at) }}
+                  </p>
+                </div>
+                <div v-if="wizard.campaign.landing_page_id === lp.id" data-lp-selected class="shrink-0">
+                  <CheckCircle2 class="size-5 text-primary" />
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+        </div>
 
-      <NuxtLink
-        to="/landing-pages/new"
-        target="_blank"
-        class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
-      >
-        <ExternalLink class="size-3.5" />
-        {{ t('wizard.landingPage.createNew') }}
-      </NuxtLink>
+        <div class="flex items-center justify-between">
+          <Button
+            data-refresh-button
+            variant="ghost"
+            size="sm"
+            @click="fetchLandingPages()"
+          >
+            <RefreshCw class="mr-1.5 size-3.5" />
+            {{ t('wizard.landingPage.refresh') }}
+          </Button>
+
+          <NuxtLink
+            to="/landing-pages/new"
+            target="_blank"
+            class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+          >
+            <ExternalLink class="size-3.5" />
+            {{ t('wizard.landingPage.createNew') }}
+          </NuxtLink>
+        </div>
+      </template>
     </template>
   </div>
 </template>

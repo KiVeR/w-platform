@@ -38,7 +38,7 @@ const baseStubs = {
   CardContent: slotStub,
   CardDescription: slotStub,
   Badge: { template: '<span data-badge><slot /></span>' },
-  Button: { template: '<button data-button><slot /></button>' },
+  Button: { template: '<button data-button @click="$emit(\'click\')"><slot /></button>', emits: ['click'] },
   NuxtLink: NuxtLinkStub,
   EmptyState: { template: '<div data-empty-state />' },
 }
@@ -143,5 +143,58 @@ describe('StepLandingPage', () => {
     const link = wrapper.find('a[href="/landing-pages/new"]')
     expect(link.exists()).toBe(true)
     expect(link.attributes('target')).toBe('_blank')
+  })
+
+  it('refresh button triggers fetchLandingPages', async () => {
+    const wrapper = mount(StepLandingPage, {
+      global: { stubs: baseStubs },
+    })
+
+    await wrapper.find('[data-mode-with]').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    mockFetchLandingPages.mockClear()
+    await wrapper.find('[data-refresh-button]').trigger('click')
+    expect(mockFetchLandingPages).toHaveBeenCalledTimes(1)
+  })
+
+  it('LP card shows initials avatar', async () => {
+    const wrapper = mount(StepLandingPage, {
+      global: { stubs: baseStubs },
+    })
+
+    await wrapper.find('[data-mode-with]').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    const avatar = wrapper.find('[data-lp-avatar]')
+    expect(avatar.exists()).toBe(true)
+    expect(avatar.text()).toBe('LP')
+  })
+
+  it('LP card shows formatted date', async () => {
+    const wrapper = mount(StepLandingPage, {
+      global: { stubs: baseStubs },
+    })
+
+    await wrapper.find('[data-mode-with]').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    const dateEl = wrapper.find('[data-lp-date]')
+    expect(dateEl.exists()).toBe(true)
+    expect(dateEl.text()).toContain('2026')
+  })
+
+  it('selected LP has checkmark indicator', async () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.landing_page_id = 1
+
+    const wrapper = mount(StepLandingPage, {
+      global: { stubs: baseStubs },
+    })
+
+    await wrapper.find('[data-mode-with]').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[data-lp-selected]').exists()).toBe(true)
   })
 })

@@ -21,7 +21,7 @@ const baseStubs = {
   CardTitle: slotStub,
   CardContent: slotStub,
   CardDescription: slotStub,
-  Button: { template: '<button><slot /></button>' },
+  Button: { template: '<button data-button @click="$emit(\'click\')"><slot /></button>', emits: ['click'], props: ['variant', 'size'] },
   Popover: slotStub,
   PopoverTrigger: slotStub,
   PopoverContent: slotStub,
@@ -72,5 +72,51 @@ describe('StepSchedule', () => {
     })
 
     expect(wrapper.text()).toContain('wizard.schedule.windowInfo')
+  })
+
+  it('quick-pick buttons render in schedule mode', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.scheduleMode = 'schedule'
+
+    const wrapper = mount(StepSchedule, {
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.find('[data-quick-picks]').exists()).toBe(true)
+    const picks = wrapper.findAll('[data-quick-pick]')
+    expect(picks.length).toBe(2)
+  })
+
+  it('quick-pick sets isDirty on wizard', async () => {
+    const wizard = useCampaignWizardStore()
+    wizard.scheduleMode = 'schedule'
+    expect(wizard.isDirty).toBe(false)
+
+    const wrapper = mount(StepSchedule, {
+      global: { stubs: baseStubs },
+    })
+
+    const picks = wrapper.findAll('[data-quick-pick]')
+    await picks[0].trigger('click')
+    expect(wizard.isDirty).toBe(true)
+  })
+
+  it('far-future warning absent when no date selected', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.scheduleMode = 'schedule'
+
+    const wrapper = mount(StepSchedule, {
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.find('[data-far-future-warning]').exists()).toBe(false)
+  })
+
+  it('quick-picks not visible in now mode', () => {
+    const wrapper = mount(StepSchedule, {
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.find('[data-quick-picks]').exists()).toBe(false)
   })
 })

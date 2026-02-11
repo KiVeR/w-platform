@@ -191,7 +191,12 @@
       "time": "Send time",
       "windowInfo": "Sends are performed between 8am and 8pm (Europe/Paris)",
       "noSunday": "Sends are not allowed on Sundays",
-      "summary": "Scheduled for {date} at {time}"
+      "summary": "Scheduled for {date} at {time} (Europe/Paris)",
+      "quickPicks": {
+        "tomorrowMorning": "Tomorrow 10am",
+        "nextMonday": "Next Monday 10am"
+      },
+      "farFutureWarning": "This date is more than 30 days away"
     },
     "review": {
       "title": "Campaign summary",
@@ -200,10 +205,18 @@
         "message": "SMS message",
         "targeting": "Geographic targeting",
         "landingPage": "Landing Page",
-        "schedule": "Schedule"
+        "schedule": "Schedule",
+        "estimation": "Estimate"
       },
       "edit": "Edit",
       "incomplete": "To complete",
+      "smsCount": "{count} SMS",
+      "otherItems": "+{count} others",
+      "radius": "{radius} km",
+      "estimatedVolume": "Estimated volume",
+      "estimatedCost": "Estimated cost",
+      "insufficientCredits": "Insufficient credits",
+      "testPhonePlaceholder": "06 XX XX XX XX",
       "checkMessage": "I have verified the message content",
       "confirmSend": "I confirm the sending of this campaign",
       "testButton": "Send a test",
@@ -236,11 +249,13 @@
       "volume": "Estimated volume",
       "smsCount": "SMS count",
       "cost": "Estimated cost",
-      "creditsRemaining": "Remaining credits"
+      "creditsRemaining": "Remaining credits",
+      "insufficientCreditsWarning": "Insufficient credits for this campaign",
+      "recalculate": "Recalculate"
     },
-    "placeholder": {
-      "title": "Step under development",
-      "description": "This step will be available soon"
+    "stepper": {
+      "valid": "Step complete",
+      "incomplete": "Incomplete"
     },
     "message": {
       "title": "Compose your SMS message",
@@ -286,13 +301,17 @@
       "department": {
         "search": "Search a department...",
         "noResults": "No department found",
-        "selected": "{count} department(s) selected"
+        "selected": "{count} department(s) selected",
+        "selectAll": "All",
+        "deselectAll": "None",
+        "label": "department(s)"
       },
       "postcode": {
         "placeholder": "Postcode (5 digits)",
         "invalid": "Invalid postcode",
         "duplicate": "Already added",
-        "selected": "{count} postcode(s)"
+        "selected": "{count} postcode(s)",
+        "label": "postcode(s)"
       },
       "address": {
         "placeholder": "Search an address...",
@@ -313,7 +332,9 @@
         "description": "Create your first Landing Page to associate it with your campaigns."
       },
       "createNew": "Create a new Landing Page",
-      "selected": "Selected"
+      "selected": "Selected",
+      "refresh": "Refresh",
+      "published": "Published"
     }
   }
 }
