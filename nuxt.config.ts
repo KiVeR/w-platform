@@ -29,7 +29,6 @@ export default defineNuxtConfig({
   // Modules
   modules: [
     '@pinia/nuxt',
-    '@vueuse/nuxt',
   ],
 
   // Vite configuration for Tailwind v4
