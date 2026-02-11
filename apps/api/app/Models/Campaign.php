@@ -125,16 +125,20 @@ class Campaign extends Model
     {
         $targeting = $this->targeting;
 
-        if (! is_array($targeting) || ! isset($targeting['geo']['postcodes']) || ! is_array($targeting['geo']['postcodes'])) {
+        if (! is_array($targeting)) {
             return 0;
         }
 
-        $volume = 0;
-
-        foreach ($targeting['geo']['postcodes'] as $postcode) {
-            $volume += (int) ($postcode['volume'] ?? 0);
+        // Canonical format: zones[]
+        if (isset($targeting['zones']) && is_array($targeting['zones'])) {
+            return (int) collect($targeting['zones'])->sum(fn (array $zone) => (int) ($zone['volume'] ?? 0));
         }
 
-        return $volume;
+        // Legacy format: geo.postcodes[]
+        if (isset($targeting['geo']['postcodes']) && is_array($targeting['geo']['postcodes'])) {
+            return (int) collect($targeting['geo']['postcodes'])->sum(fn (array $pc) => (int) ($pc['volume'] ?? 0));
+        }
+
+        return 0;
     }
 }

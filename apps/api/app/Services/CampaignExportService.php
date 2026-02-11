@@ -41,16 +41,33 @@ class CampaignExportService
         $targeting = $campaign->targeting;
 
         if (is_array($targeting)) {
-            $lines[] = ['Targeting', 'Gender', $targeting['gender'] ?? 'mixte'];
-            $lines[] = ['Targeting', 'Age Min', (string) ($targeting['age_min'] ?? '')];
-            $lines[] = ['Targeting', 'Age Max', (string) ($targeting['age_max'] ?? '')];
+            // Canonical format
+            if (isset($targeting['method'])) {
+                $lines[] = ['Targeting', 'Method', $targeting['method']];
+                $demographics = $targeting['demographics'] ?? [];
+                $lines[] = ['Targeting', 'Gender', $demographics['gender'] ?? 'mixte'];
+                $lines[] = ['Targeting', 'Age Min', (string) ($demographics['age_min'] ?? '')];
+                $lines[] = ['Targeting', 'Age Max', (string) ($demographics['age_max'] ?? '')];
 
-            $postcodes = $targeting['geo']['postcodes'] ?? [];
+                $zones = $targeting['zones'] ?? [];
 
-            if (is_array($postcodes)) {
-                /** @var array{code: string, volume?: int} $postcode */
-                foreach ($postcodes as $postcode) {
-                    $lines[] = ['Targeting', $postcode['code'], (string) ($postcode['volume'] ?? 0)];
+                /** @var array{code: string, type: string, label: string, volume?: int} $zone */
+                foreach ($zones as $zone) {
+                    $lines[] = ['Targeting', $zone['code'], (string) ($zone['volume'] ?? 0)];
+                }
+            } else {
+                // Legacy format
+                $lines[] = ['Targeting', 'Gender', $targeting['gender'] ?? 'mixte'];
+                $lines[] = ['Targeting', 'Age Min', (string) ($targeting['age_min'] ?? '')];
+                $lines[] = ['Targeting', 'Age Max', (string) ($targeting['age_max'] ?? '')];
+
+                $postcodes = $targeting['geo']['postcodes'] ?? [];
+
+                if (is_array($postcodes)) {
+                    /** @var array{code: string, volume?: int} $postcode */
+                    foreach ($postcodes as $postcode) {
+                        $lines[] = ['Targeting', $postcode['code'], (string) ($postcode['volume'] ?? 0)];
+                    }
                 }
             }
         }

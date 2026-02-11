@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\Partner;
 use App\Models\User;
 use App\Services\CampaignSending\Drivers\WepakDriver;
+use App\Services\Targeting\Adapters\WepakTargetingAdapter;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Http;
 
@@ -17,6 +18,7 @@ beforeEach(function (): void {
         'timeout' => 10,
         'estimate_timeout' => 5,
     ];
+    $this->adapter = new WepakTargetingAdapter;
 });
 
 it('sends prospection campaign successfully', function (): void {
@@ -37,7 +39,7 @@ it('sends prospection campaign successfully', function (): void {
         'targeting' => ['geo' => ['postcodes' => [['code' => '75001', 'volume' => 1000]]]],
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $result = $driver->send($campaign);
 
     expect($result->success)->toBeTrue()
@@ -62,7 +64,7 @@ it('handles wepak error on send', function (): void {
         'targeting' => ['geo' => ['postcodes' => [['code' => '75001', 'volume' => 100]]]],
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $result = $driver->send($campaign);
 
     expect($result->success)->toBeFalse()
@@ -83,7 +85,7 @@ it('handles http failure on send', function (): void {
         'targeting' => ['geo' => ['postcodes' => [['code' => '75001', 'volume' => 100]]]],
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $result = $driver->send($campaign);
 
     expect($result->success)->toBeFalse()
@@ -105,7 +107,7 @@ it('estimates volume from wepak', function (): void {
         'targeting' => ['geo' => ['postcodes' => [['code' => '75001', 'volume' => 10000]]]],
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $volume = $driver->estimateVolume($campaign);
 
     expect($volume)->toBe(8500);
@@ -122,7 +124,7 @@ it('falls back to targeting volume on estimate failure', function (): void {
         'targeting' => ['geo' => ['postcodes' => [['code' => '75001', 'volume' => 5000]]]],
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $volume = $driver->estimateVolume($campaign);
 
     expect($volume)->toBe(5000);
@@ -137,7 +139,7 @@ it('rejects fidelisation send', function (): void {
         'volume_estimated' => 100,
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $result = $driver->send($campaign);
 
     expect($result->success)->toBeFalse()
@@ -162,7 +164,7 @@ it('sends api_key in payload', function (): void {
         'targeting' => ['geo' => ['postcodes' => [['code' => '75001', 'volume' => 100]]]],
     ]);
 
-    $driver = new WepakDriver($this->config);
+    $driver = new WepakDriver($this->config, $this->adapter);
     $driver->send($campaign);
 
     Http::assertSent(function ($request) {

@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace App\Services\CampaignSending;
 
+use App\Contracts\TargetingAdapterInterface;
+use App\DTOs\Targeting\CanonicalTargeting;
 use App\Models\Campaign;
 
 class WepakPayloadBuilder
 {
+    public function __construct(
+        private readonly TargetingAdapterInterface $adapter,
+    ) {}
+
     /**
      * Build payload for prospection campaign (/smsenvoi.php).
      *
@@ -15,7 +21,7 @@ class WepakPayloadBuilder
      */
     public function buildProspectionPayload(Campaign $campaign, bool $estimateOnly = false): array
     {
-        $targeting = $campaign->targeting ?? [];
+        $targeting = $this->resolveTargeting($campaign->targeting ?? []);
 
         $payload = [
             'query' => 'calcule_groupe_localite',
@@ -81,6 +87,21 @@ class WepakPayloadBuilder
     public function buildEstimatePayload(Campaign $campaign): array
     {
         return $this->buildProspectionPayload($campaign, estimateOnly: true);
+    }
+
+    /**
+     * Transform canonical targeting to Wepak format, or pass through legacy format.
+     *
+     * @param  array<string, mixed>  $targeting
+     * @return array<string, mixed>
+     */
+    private function resolveTargeting(array $targeting): array
+    {
+        if (isset($targeting['method'])) {
+            return $this->adapter->transform(CanonicalTargeting::fromArray($targeting));
+        }
+
+        return $targeting;
     }
 
     protected function mapGender(?string $gender): string

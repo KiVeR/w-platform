@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\CampaignSending;
 
+use App\Contracts\TargetingAdapterInterface;
 use App\Services\CampaignSending\Drivers\StubDriver;
 use App\Services\CampaignSending\Drivers\WepakDriver;
 use Illuminate\Support\Manager;
@@ -26,6 +27,9 @@ class CampaignSendingManager extends Manager
         /** @var array{base_url: string, api_key: string, timeout: int, estimate_timeout: int} $config */
         $config = $this->config->get('campaign-sending.drivers.wepak', []);
 
-        return new WepakDriver($config);
+        /** @var TargetingAdapterInterface $adapter */
+        $adapter = $this->container->make(TargetingAdapterInterface::class);
+
+        return new WepakDriver($config, $adapter);
     }
 }

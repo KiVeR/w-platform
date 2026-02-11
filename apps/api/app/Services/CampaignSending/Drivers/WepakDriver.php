@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\CampaignSending\Drivers;
 
 use App\Contracts\CampaignSenderInterface;
+use App\Contracts\TargetingAdapterInterface;
 use App\DTOs\SendResult;
 use App\Enums\CampaignType;
 use App\Models\Campaign;
@@ -20,6 +21,7 @@ class WepakDriver implements CampaignSenderInterface
     /** @param array{base_url: string, api_key: string, timeout: int, estimate_timeout: int} $config */
     public function __construct(
         protected array $config,
+        TargetingAdapterInterface $targetingAdapter,
     ) {
         $this->client = new WepakClient(
             baseUrl: $config['base_url'],
@@ -27,7 +29,7 @@ class WepakDriver implements CampaignSenderInterface
             timeout: $config['timeout'],
             estimateTimeout: $config['estimate_timeout'],
         );
-        $this->payloadBuilder = new WepakPayloadBuilder;
+        $this->payloadBuilder = new WepakPayloadBuilder($targetingAdapter);
     }
 
     public function send(Campaign $campaign): SendResult

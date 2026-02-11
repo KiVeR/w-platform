@@ -7,11 +7,12 @@ use App\Models\InterestGroup;
 use App\Models\Partner;
 use App\Models\User;
 use App\Services\CampaignSending\WepakPayloadBuilder;
+use App\Services\Targeting\Adapters\WepakTargetingAdapter;
 use Database\Seeders\RolesAndPermissionsSeeder;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
-    $this->builder = new WepakPayloadBuilder;
+    $this->builder = new WepakPayloadBuilder(new WepakTargetingAdapter);
 });
 
 it('builds prospection payload with targeting', function (): void {
@@ -82,7 +83,7 @@ it('maps gender correctly', function (): void {
             'targeting' => ['gender' => $gender, 'geo' => ['postcodes' => []]],
         ]);
 
-        return (new WepakPayloadBuilder)->buildEstimatePayload($campaign);
+        return (new WepakPayloadBuilder(new WepakTargetingAdapter))->buildEstimatePayload($campaign);
     };
 
     expect($makePayload('M')['genre'])->toBe('homme')

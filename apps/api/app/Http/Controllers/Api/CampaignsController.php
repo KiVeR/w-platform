@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Contracts\CampaignSenderInterface;
 use App\Contracts\CampaignStatsProviderInterface;
+use App\DTOs\Targeting\TargetingInput;
 use App\Enums\CampaignStatus;
 use App\Exceptions\InsufficientCreditsException;
 use App\Http\Controllers\Controller;
@@ -20,6 +21,7 @@ use App\Services\CampaignExportService;
 use App\Services\CampaignSending\StopSmsService;
 use App\Services\CreditService;
 use App\Services\PricingService;
+use App\Services\Targeting\TargetingResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -27,6 +29,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class CampaignsController extends Controller
 {
+    public function __construct(
+        private readonly TargetingResolver $targetingResolver,
+    ) {}
+
     public function index(): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Campaign::class);
@@ -58,6 +64,11 @@ class CampaignsController extends Controller
 
         $data['user_id'] = $user->id;
 
+        if (isset($data['targeting']) && is_array($data['targeting'])) {
+            $input = TargetingInput::fromRequest($data['targeting']);
+            $data['targeting'] = $this->targetingResolver->resolve($input)->toArray();
+        }
+
         $campaign = Campaign::create($data);
 
         return new CampaignResource($campaign->load('creator'));
@@ -78,7 +89,14 @@ class CampaignsController extends Controller
     {
         $this->authorize('update', $campaign);
 
-        $campaign->update($request->validated());
+        $data = $request->validated();
+
+        if (isset($data['targeting']) && is_array($data['targeting'])) {
+            $input = TargetingInput::fromRequest($data['targeting']);
+            $data['targeting'] = $this->targetingResolver->resolve($input)->toArray();
+        }
+
+        $campaign->update($data);
 
         return new CampaignResource($campaign->fresh());
     }

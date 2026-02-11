@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\TargetingAdapterInterface;
 use App\Services\Geo\GeoApiService;
+use App\Services\Targeting\Adapters\WepakTargetingAdapter;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
@@ -19,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
             baseUrl: (string) config('services.geo_api.base_url'),
             timeout: (int) config('services.geo_api.timeout'),
         ));
+
+        $this->app->singleton(TargetingAdapterInterface::class, WepakTargetingAdapter::class);
     }
 
     public function boot(): void
