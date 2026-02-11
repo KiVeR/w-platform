@@ -137,7 +137,7 @@ async function handleTest(): Promise<void> {
 
           <template v-else-if="section.key === 'message'">
             <div class="flex items-start gap-4">
-              <div data-mini-preview class="w-40 shrink-0 overflow-hidden rounded-lg border bg-muted/30 p-2" style="transform: scale(0.6); transform-origin: top left; height: 160px;">
+              <div data-mini-preview class="w-40 shrink-0 overflow-hidden rounded-lg border bg-white p-2 dark:bg-white" style="transform: scale(0.6); transform-origin: top left; height: 160px;">
                 <SmsPreview
                   :sender="wizard.campaign.sender || 'SMS'"
                   :message="wizard.campaign.message"
@@ -178,6 +178,23 @@ async function handleTest(): Promise<void> {
               </Badge>
             </div>
             <span v-else class="text-sm text-muted-foreground">{{ t('wizard.review.incomplete') }}</span>
+            <div
+              v-if="wizard.campaign.targeting.gender !== null || wizard.campaign.targeting.age_min !== null || wizard.campaign.targeting.age_max !== null"
+              data-demographics-info
+              class="mt-2 flex flex-wrap gap-1.5"
+            >
+              <Badge variant="outline">
+                {{ wizard.campaign.targeting.gender === 'M' ? t('wizard.targeting.demographics.genderMale')
+                  : wizard.campaign.targeting.gender === 'F' ? t('wizard.targeting.demographics.genderFemale')
+                    : t('wizard.targeting.demographics.genderMixed') }}
+              </Badge>
+              <Badge
+                v-if="wizard.campaign.targeting.age_min || wizard.campaign.targeting.age_max"
+                variant="outline"
+              >
+                {{ wizard.campaign.targeting.age_min ?? 18 }}–{{ wizard.campaign.targeting.age_max ?? 100 }} {{ t('wizard.targeting.demographics.ageLabel') }}
+              </Badge>
+            </div>
           </template>
 
           <template v-else-if="section.key === 'landingPage'">

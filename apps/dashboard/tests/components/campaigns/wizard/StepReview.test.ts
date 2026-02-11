@@ -220,4 +220,28 @@ describe('StepReview', () => {
     const wrapper = mount(StepReview, mountOptions())
     expect(wrapper.text()).toContain('Summer Promo')
   })
+
+  it('displays gender and age range in review when set', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.targeting.gender = 'M'
+    wizard.campaign.targeting.age_min = 25
+    wizard.campaign.targeting.age_max = 50
+
+    const wrapper = mount(StepReview, mountOptions())
+    expect(wrapper.find('[data-demographics-info]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('wizard.targeting.demographics.genderMale')
+    expect(wrapper.text()).toContain('25')
+    expect(wrapper.text()).toContain('50')
+  })
+
+  it('displays Mixte when gender is null but age is set', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.targeting.gender = null
+    wizard.campaign.targeting.age_min = 18
+    wizard.campaign.targeting.age_max = 65
+
+    const wrapper = mount(StepReview, mountOptions())
+    expect(wrapper.find('[data-demographics-info]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('wizard.targeting.demographics.genderMixed')
+  })
 })

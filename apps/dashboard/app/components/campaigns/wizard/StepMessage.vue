@@ -22,11 +22,11 @@ const smsLabels = computed(() => ({
   insertVariable: t('wizard.message.insertVariable'),
   stopTitle: 'STOP SMS',
   stopDescription: t('wizard.message.stopInfo'),
-  multiSmsWarning: t('wizard.message.multiSmsWarning'),
+  multiSmsWarning: t('wizard.message.multiSmsWarning', { count: 2 }),
   forbiddenDomain: t('wizard.message.forbiddenDomain'),
-  charCount: t('wizard.message.charCount'),
-  smsCount: t('wizard.message.smsCount'),
-  encoding: t('wizard.message.encoding'),
+  charCount: t('wizard.message.charCount', { count: '{count}', max: '{max}' }),
+  smsCount: t('wizard.message.smsCount', { count: '{count}' }),
+  encoding: t('wizard.message.encoding', { encoding: '{encoding}' }),
   previewPlaceholder: t('wizard.message.previewEmpty'),
 }))
 

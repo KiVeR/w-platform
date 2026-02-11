@@ -5,6 +5,7 @@ export type { CampaignStatus }
 export type CampaignType = 'prospection' | 'fidelisation' | 'comptage'
 export type CampaignChannel = 'sms' | 'email'
 export type TargetingMethod = 'department' | 'postcode' | 'address'
+export type Gender = 'M' | 'F' | null
 export type LandingPageStatus = 'draft' | 'published' | 'archived'
 
 export interface CampaignTargeting {
@@ -15,6 +16,24 @@ export interface CampaignTargeting {
   lat: number | null
   lng: number | null
   radius: number | null
+  gender: Gender
+  age_min: number | null
+  age_max: number | null
+}
+
+export interface CanonicalZone {
+  code: string
+  type: string
+  label: string
+  volume: number
+}
+
+export interface CanonicalTargeting {
+  method: TargetingMethod
+  input: Record<string, unknown>
+  zones: CanonicalZone[]
+  origin: { address: string, lat: number, lng: number, radius: number } | null
+  demographics: { gender: Gender, age_min: number | null, age_max: number | null } | null
 }
 
 export interface LandingPageRow {

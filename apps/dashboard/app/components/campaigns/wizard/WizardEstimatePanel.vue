@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
-import { BarChart3, RefreshCw, AlertCircle } from 'lucide-vue-next'
+import { BarChart3, RefreshCw, AlertCircle, Loader2 } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -17,7 +17,7 @@ const api = useApi()
 const { t } = useI18n()
 
 const euroCredits = ref<number | null>(null)
-const isRecalculating = ref(false)
+const isCounting = ref(false)
 
 onMounted(async () => {
   const partnerId = partnerStore.effectivePartnerId
@@ -36,10 +36,10 @@ const insufficientCredits = computed(() => {
   return wizard.estimate.totalPrice > euroCredits.value
 })
 
-async function handleRecalculate() {
-  isRecalculating.value = true
+async function handleCount() {
+  isCounting.value = true
   try { await wizard.requestEstimate() }
-  finally { isRecalculating.value = false }
+  finally { isCounting.value = false }
 }
 </script>
 
@@ -54,15 +54,22 @@ async function handleRecalculate() {
         v-if="wizard.estimate"
         variant="ghost"
         size="sm"
-        :disabled="isRecalculating"
+        :disabled="isCounting"
         data-recalculate-button
-        @click="handleRecalculate"
+        @click="handleCount"
       >
-        <RefreshCw class="size-3" :class="isRecalculating ? 'animate-spin' : ''" />
+        <RefreshCw class="size-3" :class="isCounting ? 'animate-spin' : ''" />
       </Button>
     </CardHeader>
     <CardContent class="space-y-3">
-      <template v-if="wizard.estimate">
+      <!-- Loading state -->
+      <div v-if="isCounting && !wizard.estimate" class="flex flex-col items-center gap-3 py-6 text-center" data-counting-state>
+        <Loader2 class="size-6 animate-spin text-primary" />
+        <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.calculating') }}</p>
+      </div>
+
+      <!-- Results -->
+      <template v-else-if="wizard.estimate">
         <div class="flex items-center justify-between text-sm">
           <span class="text-muted-foreground">{{ t('wizard.estimate.type') }}</span>
           <span class="font-medium">{{ t(`campaigns.type.${wizard.campaign.type}`) }}</span>
@@ -98,10 +105,19 @@ async function handleRecalculate() {
           <AlertDescription>{{ t('wizard.estimate.insufficientCreditsWarning') }}</AlertDescription>
         </Alert>
       </template>
+
+      <!-- Empty state: Launch counting button -->
       <template v-else>
-        <div v-for="i in 4" :key="i" class="flex items-center justify-between">
-          <Skeleton class="h-4 w-24" />
-          <Skeleton class="h-4 w-16" />
+        <div class="flex flex-col items-center gap-3 py-4 text-center">
+          <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.notAvailable') }}</p>
+          <Button
+            :disabled="!wizard.campaignId"
+            data-count-button
+            @click="handleCount"
+          >
+            <BarChart3 class="size-4" />
+            {{ t('wizard.estimate.launchCount') }}
+          </Button>
         </div>
       </template>
     </CardContent>

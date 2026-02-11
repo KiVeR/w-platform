@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
+import { Sonner } from '@/components/ui/sonner'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 </script>
@@ -16,4 +17,5 @@ import AppHeader from '@/components/layout/AppHeader.vue'
       </main>
     </SidebarInset>
   </SidebarProvider>
+  <Sonner position="bottom-right" />
 </template>

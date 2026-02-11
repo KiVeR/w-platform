@@ -60,10 +60,35 @@ describe('WizardEstimatePanel', () => {
     })
   })
 
-  it('skeleton quand estimate null', () => {
+  it('bouton "Lancer le comptage" quand estimate null', () => {
     const wrapper = mountPanel()
-    const skeletons = wrapper.findAll('[data-skeleton]')
-    expect(skeletons.length).toBeGreaterThanOrEqual(4)
+    expect(wrapper.find('[data-count-button]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('wizard.estimate.launchCount')
+  })
+
+  it('bouton comptage désactivé si pas de campaignId', () => {
+    const wrapper = mountPanel()
+    const btn = wrapper.find('[data-count-button]')
+    expect(btn.attributes('disabled')).toBeDefined()
+  })
+
+  it('bouton comptage activé si campaignId existe', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaignId = 99
+
+    const wrapper = mountPanel()
+    const btn = wrapper.find('[data-count-button]')
+    expect(btn.attributes('disabled')).toBeUndefined()
+  })
+
+  it('bouton comptage appelle requestEstimate', async () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaignId = 99
+    wizard.requestEstimate = vi.fn().mockResolvedValue(undefined)
+
+    const wrapper = mountPanel()
+    await wrapper.find('[data-count-button]').trigger('click')
+    expect(wizard.requestEstimate).toHaveBeenCalled()
   })
 
   it('affiche les 4 lignes + coût quand estimate', () => {
@@ -141,5 +166,13 @@ describe('WizardEstimatePanel', () => {
   it('bouton recalculer caché si pas d\'estimate', () => {
     const wrapper = mountPanel()
     expect(wrapper.find('[data-recalculate-button]').exists()).toBe(false)
+  })
+
+  it('pas de bouton comptage quand estimate existe', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1 }
+
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-count-button]').exists()).toBe(false)
   })
 })

@@ -243,6 +243,10 @@
       "next": "Next",
       "confirm": "Confirm"
     },
+    "validation": {
+      "incomplete": "Incomplete step",
+      "fillRequired": "Please fill in the required fields before continuing."
+    },
     "estimate": {
       "title": "Estimate",
       "type": "Type",
@@ -251,7 +255,10 @@
       "cost": "Estimated cost",
       "creditsRemaining": "Remaining credits",
       "insufficientCreditsWarning": "Insufficient credits for this campaign",
-      "recalculate": "Recalculate"
+      "recalculate": "Recalculate",
+      "launchCount": "Launch count",
+      "calculating": "Counting in progress, please wait…",
+      "notAvailable": "Complete targeting then launch the count"
     },
     "stepper": {
       "valid": "Step complete",
@@ -297,6 +304,15 @@
           "title": "By address + radius",
           "description": "Define a point and a radius around it"
         }
+      },
+      "demographics": {
+        "title": "Demographic criteria",
+        "genderMixed": "Mixed",
+        "genderMale": "Male",
+        "genderFemale": "Female",
+        "ageMin": "Min age",
+        "ageMax": "Max age",
+        "ageLabel": "years"
       },
       "department": {
         "search": "Search a department...",

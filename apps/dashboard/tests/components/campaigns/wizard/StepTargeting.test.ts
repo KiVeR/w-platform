@@ -24,6 +24,8 @@ const baseStubs = {
   PostcodeInput: { template: '<div data-postcode-input />', props: ['modelValue'], emits: ['update:modelValue'] },
   AddressRadius: { template: '<div data-address-radius />', props: ['address', 'lat', 'lng', 'radius'], emits: ['update:address', 'update:lat', 'update:lng', 'update:radius'] },
   TargetingMap: { template: '<div data-targeting-map />', props: ['method', 'departments', 'postcodes', 'address', 'lat', 'lng', 'radius'], emits: ['toggleDepartment'] },
+  DemographicsSelector: { template: '<div data-demographics-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
+  Separator: { template: '<hr data-separator />' },
   ClientOnly: slotStub,
 }
 
@@ -93,5 +95,12 @@ describe('StepTargeting', () => {
       map.vm.$emit('toggleDepartment', '75')
       expect(wizard.campaign.targeting.departments).toContain('75')
     }
+  })
+
+  it('renders DemographicsSelector after geo section', () => {
+    const wrapper = mount(StepTargeting, { global: { stubs: baseStubs } })
+
+    expect(wrapper.find('[data-separator]').exists()).toBe(true)
+    expect(wrapper.find('[data-demographics-selector]').exists()).toBe(true)
   })
 })

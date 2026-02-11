@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { MapPin, Hash, Navigation, Check } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import DemographicsSelector from '@/components/campaigns/wizard/DemographicsSelector.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import type { TargetingMethod } from '@/types/campaign'
 
@@ -70,49 +72,54 @@ defineExpose({ validationError })
       </Card>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
-      <div>
-        <DepartmentSelector
-          v-if="wizard.campaign.targeting.method === 'department'"
-          v-model="wizard.campaign.targeting.departments"
-        />
-        <PostcodeInput
-          v-if="wizard.campaign.targeting.method === 'postcode'"
-          v-model="wizard.campaign.targeting.postcodes"
-        />
-        <AddressRadius
-          v-if="wizard.campaign.targeting.method === 'address'"
-          :address="wizard.campaign.targeting.address"
-          :lat="wizard.campaign.targeting.lat"
-          :lng="wizard.campaign.targeting.lng"
-          :radius="wizard.campaign.targeting.radius"
-          @update:address="v => { wizard.campaign.targeting.address = v; wizard.isDirty = true }"
-          @update:lat="v => { wizard.campaign.targeting.lat = v; wizard.isDirty = true }"
-          @update:lng="v => { wizard.campaign.targeting.lng = v; wizard.isDirty = true }"
-          @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
-        />
+    <!-- Carte en premier (proéminente) -->
+    <ClientOnly>
+      <TargetingMap
+        :method="wizard.campaign.targeting.method"
+        :departments="wizard.campaign.targeting.departments"
+        :postcodes="wizard.campaign.targeting.postcodes"
+        :address="wizard.campaign.targeting.address"
+        :lat="wizard.campaign.targeting.lat"
+        :lng="wizard.campaign.targeting.lng"
+        :radius="wizard.campaign.targeting.radius"
+        class="h-105!"
+        @toggle-department="toggleDepartment"
+      />
+    </ClientOnly>
 
-        <p
-          v-if="validationError"
-          data-validation-error
-          class="mt-3 text-sm text-destructive"
-        >
-          {{ validationError }}
-        </p>
-      </div>
+    <!-- Sélecteur en dessous -->
+    <div>
+      <DepartmentSelector
+        v-if="wizard.campaign.targeting.method === 'department'"
+        v-model="wizard.campaign.targeting.departments"
+      />
+      <PostcodeInput
+        v-if="wizard.campaign.targeting.method === 'postcode'"
+        v-model="wizard.campaign.targeting.postcodes"
+      />
+      <AddressRadius
+        v-if="wizard.campaign.targeting.method === 'address'"
+        :address="wizard.campaign.targeting.address"
+        :lat="wizard.campaign.targeting.lat"
+        :lng="wizard.campaign.targeting.lng"
+        :radius="wizard.campaign.targeting.radius"
+        @update:address="v => { wizard.campaign.targeting.address = v; wizard.isDirty = true }"
+        @update:lat="v => { wizard.campaign.targeting.lat = v; wizard.isDirty = true }"
+        @update:lng="v => { wizard.campaign.targeting.lng = v; wizard.isDirty = true }"
+        @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
+      />
 
-      <ClientOnly>
-        <TargetingMap
-          :method="wizard.campaign.targeting.method"
-          :departments="wizard.campaign.targeting.departments"
-          :postcodes="wizard.campaign.targeting.postcodes"
-          :address="wizard.campaign.targeting.address"
-          :lat="wizard.campaign.targeting.lat"
-          :lng="wizard.campaign.targeting.lng"
-          :radius="wizard.campaign.targeting.radius"
-          @toggle-department="toggleDepartment"
-        />
-      </ClientOnly>
+      <p
+        v-if="validationError"
+        data-validation-error
+        class="mt-3 text-sm text-destructive"
+      >
+        {{ validationError }}
+      </p>
     </div>
+
+    <Separator />
+
+    <DemographicsSelector v-model="wizard.campaign.targeting" />
   </div>
 </template>

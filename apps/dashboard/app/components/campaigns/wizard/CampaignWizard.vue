@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, type Component } from 'vue'
+import { toast } from 'vue-sonner'
 import { Loader2, Check } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
@@ -34,7 +35,12 @@ const autosaveLabel = computed(() => {
 })
 
 async function handleNext() {
-  if (!wizard.validateCurrentStep()) return
+  if (!wizard.validateCurrentStep()) {
+    toast.warning(t('wizard.validation.incomplete'), {
+      description: t('wizard.validation.fillRequired'),
+    })
+    return
+  }
   if (wizard.campaignId && wizard.isDirty) {
     await wizard.saveDraft()
   }

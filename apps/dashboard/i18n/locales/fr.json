@@ -243,6 +243,10 @@
       "next": "Suivant",
       "confirm": "Confirmer"
     },
+    "validation": {
+      "incomplete": "Étape incomplète",
+      "fillRequired": "Veuillez remplir les champs requis avant de continuer."
+    },
     "estimate": {
       "title": "Estimation",
       "type": "Type",
@@ -251,7 +255,10 @@
       "cost": "Coût estimé",
       "creditsRemaining": "Crédits restants",
       "insufficientCreditsWarning": "Crédits insuffisants pour cette campagne",
-      "recalculate": "Recalculer"
+      "recalculate": "Recalculer",
+      "launchCount": "Lancer le comptage",
+      "calculating": "Calcul en cours, veuillez patienter…",
+      "notAvailable": "Complétez le ciblage puis lancez le comptage"
     },
     "stepper": {
       "valid": "Étape complète",
@@ -297,6 +304,15 @@
           "title": "Par adresse + rayon",
           "description": "Définissez un point et un rayon autour"
         }
+      },
+      "demographics": {
+        "title": "Critères démographiques",
+        "genderMixed": "Mixte",
+        "genderMale": "Homme",
+        "genderFemale": "Femme",
+        "ageMin": "Âge min",
+        "ageMax": "Âge max",
+        "ageLabel": "ans"
       },
       "department": {
         "search": "Rechercher un département...",
