@@ -13,7 +13,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['server/**/*.ts', 'app/**/*.ts', 'app/**/*.vue', 'layers/editor/**/*.ts', 'layers/editor/**/*.vue'],
+      include: ['server/**/*.ts', 'app/**/*.ts', 'app/**/*.vue'],
       exclude: [
         'node_modules',
         'tests',
@@ -32,7 +32,6 @@ export default defineConfig({
       '~~': fileURLToPath(new URL('.', import.meta.url)),
       '@@': fileURLToPath(new URL('.', import.meta.url)),
       '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
-      '#editor': fileURLToPath(new URL('./layers/editor', import.meta.url)),
     },
   },
 })
