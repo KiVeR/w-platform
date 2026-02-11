@@ -40,6 +40,9 @@ export default defineNuxtConfig({
         ? [visualizer({ filename: 'dist/stats.html', open: true, gzipSize: true, brotliSize: true })]
         : []),
     ],
+    optimizeDeps: {
+      include: ['vuedraggable'],
+    },
     build: {
       rollupOptions: {
         external: ['@anthropic-ai/sdk', 'openai', 'bcryptjs', 'jsonwebtoken', '@prisma/client'],
