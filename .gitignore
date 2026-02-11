@@ -55,6 +55,9 @@ test-results/
 plans/
 x-thought/
 
+# Editor layer (symlinked to v2/platform/layers/kreo-editor)
+layers/editor
+
 # Generated LP artifacts
 generated-lp*.json
 generated-lp*.png
