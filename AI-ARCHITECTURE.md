@@ -662,16 +662,16 @@ flowchart LR
 | | |
 |---|---|
 | **Fichier** | `.claude/scripts/batch-lp.ts` |
-| **Commande** | `yarn batch-lp run` |
+| **Commande** | `pnpm batch-lp run` |
 
 **Options CLI :**
 ```bash
-yarn batch-lp run                          # Pipeline complète (20 LPs)
-yarn batch-lp run --max-parallel 3         # Limite concurrence
-yarn batch-lp run --briefs 1,8,20          # Briefs spécifiques
-yarn batch-lp run --resume-from critique   # Reprendre depuis une phase
-yarn batch-lp status                       # État courant
-yarn batch-lp report                       # Rapport final
+pnpm batch-lp run                          # Pipeline complète (20 LPs)
+pnpm batch-lp run --max-parallel 3         # Limite concurrence
+pnpm batch-lp run --briefs 1,8,20          # Briefs spécifiques
+pnpm batch-lp run --resume-from critique   # Reprendre depuis une phase
+pnpm batch-lp status                       # État courant
+pnpm batch-lp report                       # Rapport final
 ```
 
 ### Prompts agents

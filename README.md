@@ -23,19 +23,19 @@ git clone <repository-url>
 cd kreo
 
 # Installer les dépendances
-yarn install
+pnpm install
 
 # Lancer le serveur de développement
-yarn dev
+pnpm dev
 ```
 
 ## Commandes
 
 ```bash
-yarn dev          # Serveur de développement (port 5174)
-yarn build        # Compilation TypeScript + build Vite
-yarn lint         # ESLint
-yarn lint:fix     # ESLint avec auto-fix
+pnpm dev          # Serveur de développement (port 5174)
+pnpm build        # Compilation TypeScript + build Vite
+pnpm lint         # ESLint
+pnpm lint:fix     # ESLint avec auto-fix
 ```
 
 ---

@@ -220,12 +220,12 @@ Les composants Vue qui utilisent `import type { Widget } from '@/types/widget'` 
 - Config `@antfu/eslint-config` : single quotes, 2 spaces, no semicolons
 - `antfu/if-newline` : saut de ligne obligatoire après `if`
 - `perfectionist/sort-imports` : imports triés alphabétiquement
-- Lancer `yarn lint:fix` après chaque batch
+- Lancer `pnpm lint:fix` après chaque batch
 
 ### Commits
 - Format conventionnel : `refactor(editor): move [category] components to editor layer`
 - Un commit par batch fonctionnel
-- `yarn build` et `yarn test` doivent passer à chaque commit
+- `pnpm build` et `pnpm test` doivent passer à chaque commit
 
 ### Vérifications finales
 ```bash
@@ -238,13 +238,13 @@ grep -r "from '@/" layers/editor/
 # → zéro résultat
 
 # Build OK
-yarn build
+pnpm build
 
 # Tests OK
-yarn test
+pnpm test
 
 # Lint OK
-yarn lint
+pnpm lint
 ```
 
 ## Dépendances externes des composants

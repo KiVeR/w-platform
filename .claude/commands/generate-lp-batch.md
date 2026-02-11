@@ -20,19 +20,19 @@ tsx .claude/scripts/batch-lp.ts run $ARGUMENTS
 
 ```bash
 # Full pipeline (20 LPs, 5 parallel)
-yarn batch-lp run
+pnpm batch-lp run
 
 # Test with 3 briefs
-yarn batch-lp run --briefs 1,8,20 --max-parallel 2
+pnpm batch-lp run --briefs 1,8,20 --max-parallel 2
 
 # Resume from critique phase
-yarn batch-lp run --resume-from critique
+pnpm batch-lp run --resume-from critique
 
 # Check status
-yarn batch-lp status
+pnpm batch-lp status
 
 # Show report
-yarn batch-lp report
+pnpm batch-lp report
 ```
 
 ## After completion

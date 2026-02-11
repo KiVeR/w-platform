@@ -9,19 +9,19 @@ Kreo - Visual content editor in Vue 3 with drag-and-drop interface. Create landi
 ## Commands
 
 ```bash
-yarn dev          # Dev server (port 5174)
-yarn build        # Compile TypeScript + Vite build
-yarn lint         # ESLint
-yarn lint:fix     # ESLint with auto-fix
-yarn test         # Vitest unit tests
-yarn test:coverage # Vitest with coverage
-yarn test:e2e     # Playwright E2E tests
-yarn db:generate  # Prisma generate
-yarn db:push      # Prisma db push
-yarn db:migrate   # Prisma migrate dev
-yarn db:studio    # Prisma Studio
-yarn user         # User management CLI
-yarn user:seed    # Seed users
+pnpm dev          # Dev server (port 5174)
+pnpm build        # Compile TypeScript + Vite build
+pnpm lint         # ESLint
+pnpm lint:fix     # ESLint with auto-fix
+pnpm test         # Vitest unit tests
+pnpm test:coverage # Vitest with coverage
+pnpm test:e2e     # Playwright E2E tests
+pnpm db:generate  # Prisma generate
+pnpm db:push      # Prisma db push
+pnpm db:migrate   # Prisma migrate dev
+pnpm db:studio    # Prisma Studio
+pnpm user         # User management CLI
+pnpm user:seed    # Seed users
 ```
 
 ## Architecture

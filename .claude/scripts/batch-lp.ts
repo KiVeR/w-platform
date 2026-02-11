@@ -4,12 +4,12 @@
  * Multi-agent batch LP generation pipeline.
  *
  * Usage:
- *   yarn batch-lp run                          # Full pipeline (20 LPs)
- *   yarn batch-lp run --max-parallel 3         # Limit concurrency
- *   yarn batch-lp run --briefs 1,8,20          # Specific briefs only
- *   yarn batch-lp run --resume-from critique   # Resume from phase
- *   yarn batch-lp status                       # Show current state
- *   yarn batch-lp report                       # Show final report
+ *   pnpm batch-lp run                          # Full pipeline (20 LPs)
+ *   pnpm batch-lp run --max-parallel 3         # Limit concurrency
+ *   pnpm batch-lp run --briefs 1,8,20          # Specific briefs only
+ *   pnpm batch-lp run --resume-from critique   # Resume from phase
+ *   pnpm batch-lp status                       # Show current state
+ *   pnpm batch-lp report                       # Show final report
  */
 
 import type { Buffer } from 'node:buffer'
@@ -483,7 +483,7 @@ async function preflight(runDir: string): Promise<string | false> {
     log.success('Server running on port 5174')
   }
   catch {
-    log.error('Server not running. Start it with: yarn dev')
+    log.error('Server not running. Start it with: pnpm dev')
     return false
   }
 
@@ -723,7 +723,7 @@ async function phaseHumanReview(state: State, runDir: string, skipReview: boolea
 
   log.warn(`${pending.length} LP en attente de review humaine`)
   log.info(`→ Ouvrir ${BASE_URL}/batch/review`)
-  log.info(`→ Puis relancer : yarn batch-lp run --resume-from revision`)
+  log.info(`→ Puis relancer : pnpm batch-lp run --resume-from revision`)
   state.phase = 'humanReview'
   await saveState(state, runDir)
   process.exit(0)
@@ -1024,7 +1024,7 @@ function printReport(state: State, runDir: string): void {
   const beautifiedBriefs = state.briefs.filter(b => b.reCritique === 'done')
   if (beautifiedBriefs.length > 0) {
     console.log(`\n${c.bold}Beautification Impact:${c.reset}`)
-    console.log(`  ${c.gray}(Run 'yarn batch-lp report' for detailed scores)${c.reset}`)
+    console.log(`  ${c.gray}(Run 'pnpm batch-lp report' for detailed scores)${c.reset}`)
   }
 
   if (state.errors.length > 0) {
@@ -1034,7 +1034,7 @@ function printReport(state: State, runDir: string): void {
     }
     const failedIds = [...new Set(state.errors.map(e => e.briefId))].filter(id => id > 0)
     if (failedIds.length > 0) {
-      console.log(`\n  Retry failed briefs: ${c.cyan}yarn batch-lp run --briefs ${failedIds.join(',')}${c.reset}`)
+      console.log(`\n  Retry failed briefs: ${c.cyan}pnpm batch-lp run --briefs ${failedIds.join(',')}${c.reset}`)
     }
   }
 
@@ -1072,7 +1072,7 @@ async function resolveRunDir(runArg?: string): Promise<{ runDir: string, state: 
   }
   const latestDir = await getLatestRunDir()
   if (!latestDir) {
-    log.error('No batch in progress. Run: yarn batch-lp run')
+    log.error('No batch in progress. Run: pnpm batch-lp run')
     return null
   }
   runDir = latestDir

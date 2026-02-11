@@ -4,12 +4,12 @@
  * CLI tool for user management
  *
  * Usage:
- *   yarn user create --email admin@test.com --password Test1234 --role ADMIN
- *   yarn user list
- *   yarn user delete --email user@test.com
- *   yarn user update --email user@test.com --role EDITOR
- *   yarn user reset-password --email user@test.com --password NewPass123
- *   yarn user seed
+ *   pnpm user create --email admin@test.com --password Test1234 --role ADMIN
+ *   pnpm user list
+ *   pnpm user delete --email user@test.com
+ *   pnpm user update --email user@test.com --role EDITOR
+ *   pnpm user reset-password --email user@test.com --password NewPass123
+ *   pnpm user seed
  */
 
 import process from 'node:process'
