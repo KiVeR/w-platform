@@ -69,7 +69,8 @@ it('seeds all when no flags are provided', function (): void {
         ]),
     ]);
 
-    $this->artisan('geo:seed')
+    // Use a nonexistent IRIS file so seedIris() skips gracefully
+    $this->artisan('geo:seed', ['--file' => '/tmp/nonexistent-iris.geojson'])
         ->assertSuccessful();
 
     expect(Region::count())->toBe(1)

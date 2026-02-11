@@ -103,6 +103,7 @@ class SeedGeoDataCommand extends Command
             return;
         }
 
+        $this->ensureComDepartmentsExist();
         $this->info('Seeding IRIS zones from: '.$file);
 
         $items = Items::fromFile($file, [
@@ -128,9 +129,9 @@ class SeedGeoDataCommand extends Command
                 'code' => $code,
                 'name' => $props['NOM_IRIS'] ?? $props['nom_iris'] ?? '',
                 'department_code' => $this->deriveDepartmentCode($code),
-                'commune_code' => $props['INSEE_COM'] ?? $props['insee_com'] ?? substr($code, 0, 5),
-                'commune_name' => $props['NOM_COM'] ?? $props['nom_com'] ?? '',
-                'iris_type' => $props['TYP_IRIS'] ?? $props['typ_iris'] ?? 'Z',
+                'commune_code' => $props['INSEE_COM'] ?? $props['insee_com'] ?? $props['code_insee'] ?? substr($code, 0, 5),
+                'commune_name' => $props['NOM_COM'] ?? $props['nom_com'] ?? $props['nom_commune'] ?? '',
+                'iris_type' => $props['TYP_IRIS'] ?? $props['typ_iris'] ?? $props['type_iris'] ?? 'Z',
                 'geometry' => json_encode($feature['geometry']),
             ];
 
@@ -177,6 +178,25 @@ class SeedGeoDataCommand extends Command
                 }
             }
         });
+    }
+
+    /**
+     * COM (collectivites d'outre-mer) are included in IGN IRIS data
+     * but not returned by geo.api.gouv.fr as departments.
+     */
+    protected function ensureComDepartmentsExist(): void
+    {
+        $comTerritories = [
+            '975' => ['name' => 'Saint-Pierre-et-Miquelon', 'region_code' => '00'],
+            '977' => ['name' => 'Saint-Barthélemy', 'region_code' => '00'],
+            '978' => ['name' => 'Saint-Martin', 'region_code' => '00'],
+        ];
+
+        Region::firstOrCreate(['code' => '00'], ['name' => 'Collectivités d\'outre-mer']);
+
+        foreach ($comTerritories as $code => $data) {
+            Department::firstOrCreate(['code' => $code], $data);
+        }
     }
 
     public function deriveDepartmentCode(string $irisCode): string
