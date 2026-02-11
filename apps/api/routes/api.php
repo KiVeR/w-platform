@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CampaignsController;
+use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\GeoController;
 use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\IrisZonesController;
@@ -37,8 +38,8 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
 
     Route::get('interest-groups', [InterestGroupsController::class, 'index']);
     Route::apiResource('partner-pricings', PartnerPricingsController::class);
+    Route::post('estimate', EstimateController::class);
     Route::apiResource('campaigns', CampaignsController::class);
-    Route::post('campaigns/{campaign}/estimate', [CampaignsController::class, 'estimate']);
     Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
     Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);

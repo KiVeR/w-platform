@@ -65,8 +65,8 @@ export interface WizardStep {
 
 export interface CampaignEstimate {
   volume: number
-  unitPrice: number
-  totalPrice: number
+  unitPrice: number | null
+  totalPrice: number | null
   smsCount: number
 }
 

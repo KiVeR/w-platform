@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { Sonner } from '@/components/ui/sonner'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
+import { useColorMode } from '@/composables/useColorMode'
+
+const { isDark } = useColorMode()
+const sonnerTheme = computed(() => isDark.value ? 'dark' : 'light')
 </script>
 
 <template>
@@ -17,5 +22,5 @@ import AppHeader from '@/components/layout/AppHeader.vue'
       </main>
     </SidebarInset>
   </SidebarProvider>
-  <Sonner position="bottom-right" />
+  <Sonner position="bottom-right" :theme="sonnerTheme" />
 </template>

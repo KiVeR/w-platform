@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { Megaphone, MessageSquare, MapPin, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
+import { usePartnerStore } from '@/stores/partner'
 import type { CampaignDraft, CampaignEstimate, WizardStep } from '@/types/campaign'
 
 function freshDraft(): CampaignDraft {
@@ -32,6 +33,7 @@ function freshDraft(): CampaignDraft {
 
 export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const api = useApi()
+  const partnerStore = usePartnerStore()
 
   const currentStep = ref(0)
   const campaignId = ref<number | null>(null)
@@ -42,6 +44,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const estimate = ref<CampaignEstimate | null>(null)
   const scheduleMode = ref<'now' | 'schedule'>('now')
   const reviewChecks = ref({ messageVerified: false, sendConfirmed: false })
+  const showValidation = ref(false)
 
   const STEPS: WizardStep[] = [
     { key: 'type', labelKey: 'wizard.steps.type', icon: Megaphone },
@@ -71,7 +74,10 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   }
 
   function goToStep(step: number): void {
-    if (step >= 0 && step <= 5) currentStep.value = step
+    if (step >= 0 && step <= 5) {
+      currentStep.value = step
+      showValidation.value = false
+    }
   }
 
   function nextStep(): void {
@@ -92,7 +98,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
           && campaign.value.name.length <= 255
           && campaign.value.message.trim().length > 0
           && !isForbiddenMessage(campaign.value.message)
-          && (campaign.value.sender === '' || /^[a-zA-Z0-9 .\-']{1,11}$/.test(campaign.value.sender))
+          && /^[a-zA-Z0-9 .\-']{3,11}$/.test(campaign.value.sender)
         )
       case 2: {
         const t = campaign.value.targeting
@@ -112,14 +118,35 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   }
 
   function validateCurrentStep(): boolean {
-    return validateStep(currentStep.value)
+    const valid = validateStep(currentStep.value)
+    if (!valid) showValidation.value = true
+    return valid
   }
 
   const stepValidation = computed(() => STEPS.map((_, i) => validateStep(i)))
 
+  function campaignBody() {
+    const { name, type, channel, message, sender, scheduled_at, is_demo, additional_phone, targeting, landing_page_id } = campaign.value
+    return {
+      name: name || 'Brouillon',
+      type,
+      channel,
+      message,
+      sender,
+      scheduled_at,
+      is_demo,
+      additional_phone,
+      targeting,
+      landing_page_id,
+      partner_id: partnerStore.effectivePartnerId,
+    }
+  }
+
   async function createDraft(): Promise<boolean> {
     return withSaving(async () => {
-      const { data, error } = await api.POST('/campaigns', {} as never)
+      const { data, error } = await api.POST('/campaigns', {
+        body: campaignBody(),
+      } as never)
       if (error) return false
       const raw = data as { data: { id: string } }
       campaignId.value = Number(raw.data.id)
@@ -131,10 +158,9 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     if (!campaignId.value) return false
     saveError.value = null
     return withSaving(async () => {
-      const { name, type, channel, message, sender, scheduled_at, is_demo, additional_phone, targeting } = campaign.value
       const { error } = await api.PUT('/campaigns/{campaign}', {
         ...campaignPath(),
-        body: { name, type, channel, message, sender, scheduled_at, is_demo, additional_phone, targeting },
+        body: campaignBody(),
       } as never)
       if (error) {
         saveError.value = 'save_failed'
@@ -146,15 +172,19 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   }
 
   async function requestEstimate(): Promise<void> {
-    if (!campaignId.value) return
     try {
-      const { data, error } = await api.POST('/campaigns/{campaign}/estimate', campaignPath() as never)
+      const body: Record<string, unknown> = { targeting: campaign.value.targeting }
+      const partnerId = partnerStore.effectivePartnerId
+      if (partnerId) body.partner_id = partnerId
+      const { data, error } = await api.POST('/estimate' as never, {
+        body,
+      } as never)
       if (error || !data) return
-      const raw = (data as { data: Record<string, string> }).data
+      const raw = (data as { data: Record<string, string | null> }).data
       estimate.value = {
         volume: Number(raw.volume),
-        unitPrice: Number(raw.unit_price),
-        totalPrice: Number(raw.total_price),
+        unitPrice: raw.unit_price != null ? Number(raw.unit_price) : null,
+        totalPrice: raw.total_price != null ? Number(raw.total_price) : null,
         smsCount: Number(raw.sms_count),
       }
     }
@@ -163,8 +193,14 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     }
   }
 
+  async function ensureDraft(): Promise<boolean> {
+    if (campaignId.value) return true
+    return createDraft()
+  }
+
   async function scheduleCampaign(): Promise<boolean> {
-    if (!campaignId.value) return false
+    if (!await ensureDraft()) return false
+    await saveDraft()
     try {
       const { error } = await api.POST('/campaigns/{campaign}/schedule', {
         ...campaignPath(),
@@ -178,7 +214,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   }
 
   async function sendCampaign(): Promise<boolean> {
-    if (!campaignId.value) return false
+    if (!await ensureDraft()) return false
+    await saveDraft()
     try {
       const { error } = await api.POST('/campaigns/{campaign}/send', campaignPath() as never)
       return !error
@@ -198,6 +235,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     estimate.value = null
     scheduleMode.value = 'now'
     reviewChecks.value = { messageVerified: false, sendConfirmed: false }
+    showValidation.value = false
   }
 
   return {
@@ -210,6 +248,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     estimate,
     scheduleMode,
     reviewChecks,
+    showValidation,
     STEPS,
     goToStep,
     nextStep,
@@ -219,6 +258,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     stepValidation,
     createDraft,
     saveDraft,
+    ensureDraft,
     requestEstimate,
     scheduleCampaign,
     sendCampaign,

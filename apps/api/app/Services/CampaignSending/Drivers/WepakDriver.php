@@ -53,6 +53,15 @@ class WepakDriver implements CampaignSenderInterface
         return $response->volume ?? $campaign->getTargetingVolume();
     }
 
+    /** @param array<string, mixed> $targeting */
+    public function estimateVolumeFromTargeting(array $targeting): int
+    {
+        $payload = $this->payloadBuilder->buildEstimatePayloadFromTargeting($targeting);
+        $response = $this->client->estimateVolume($payload);
+
+        return $response->success ? ($response->volume ?? 0) : 0;
+    }
+
     protected function sendProspection(Campaign $campaign): SendResult
     {
         $payload = $campaign->is_demo

@@ -22,4 +22,13 @@ class StubDriver implements CampaignSenderInterface
     {
         return $campaign->getTargetingVolume();
     }
+
+    /** @param array<string, mixed> $targeting */
+    public function estimateVolumeFromTargeting(array $targeting): int
+    {
+        /** @var list<array{volume?: int}> $zones */
+        $zones = $targeting['zones'] ?? [];
+
+        return (int) collect($zones)->sum('volume');
+    }
 }

@@ -8,9 +8,8 @@ definePageMeta({
 
 const wizard = useCampaignWizardStore()
 
-onMounted(async () => {
+onMounted(() => {
   wizard.reset()
-  await wizard.createDraft()
 })
 
 onBeforeUnmount(() => {

@@ -245,7 +245,12 @@
     },
     "validation": {
       "incomplete": "Incomplete step",
-      "fillRequired": "Please fill in the required fields before continuing."
+      "fillRequired": "Please fill in the required fields before continuing.",
+      "nameRequired": "Campaign name is required",
+      "messageRequired": "Message is required",
+      "messageForbidden": "Message contains a forbidden domain",
+      "senderRequired": "Sender is required",
+      "senderInvalid": "3 to 11 alphanumeric characters only"
     },
     "estimate": {
       "title": "Estimate",
@@ -258,11 +263,16 @@
       "recalculate": "Recalculate",
       "launchCount": "Launch count",
       "calculating": "Counting in progress, please wait…",
-      "notAvailable": "Complete targeting then launch the count"
+      "notAvailable": "Complete targeting then launch the count",
+      "selectPartner": "Select a partner to launch the count"
+    },
+    "sidebar": {
+      "progress": "Progress"
     },
     "stepper": {
       "valid": "Step complete",
-      "incomplete": "Incomplete"
+      "incomplete": "Incomplete",
+      "mobileIndicator": "Step {current} of {total}"
     },
     "message": {
       "title": "Compose your SMS message",

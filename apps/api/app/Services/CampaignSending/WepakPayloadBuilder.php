@@ -86,7 +86,28 @@ class WepakPayloadBuilder
      */
     public function buildEstimatePayload(Campaign $campaign): array
     {
-        return $this->buildProspectionPayload($campaign, estimateOnly: true);
+        return $this->buildEstimatePayloadFromTargeting($campaign->targeting ?? []);
+    }
+
+    /**
+     * Build estimate payload from a targeting array (no Campaign needed).
+     *
+     * @param  array<string, mixed>  $targeting
+     * @return array<string, mixed>
+     */
+    public function buildEstimatePayloadFromTargeting(array $targeting): array
+    {
+        $resolved = $this->resolveTargeting($targeting);
+
+        return [
+            'query' => 'calcule_groupe_localite',
+            'genre' => $this->mapGender($resolved['gender'] ?? null),
+            'age_min' => $this->mapMinAge($resolved['age_min'] ?? null),
+            'age_max' => $this->mapMaxAge($resolved['age_max'] ?? null),
+            'liste_cp_dept' => $this->buildLocationList($resolved),
+            'volume' => 0,
+            'is_split_volume' => $this->hasSplitVolume($resolved),
+        ];
     }
 
     /**

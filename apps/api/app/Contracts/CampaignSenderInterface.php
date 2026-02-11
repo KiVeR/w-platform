@@ -12,4 +12,7 @@ interface CampaignSenderInterface
     public function send(Campaign $campaign): SendResult;
 
     public function estimateVolume(Campaign $campaign): int;
+
+    /** @param array<string, mixed> $targeting */
+    public function estimateVolumeFromTargeting(array $targeting): int;
 }

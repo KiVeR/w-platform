@@ -98,7 +98,7 @@ const { t } = useI18n()
                 <Check v-if="validation[index]" class="size-4" />
                 <AlertTriangle v-else class="size-4" />
               </span>
-              <span class="hidden sm:inline">{{ t(step.labelKey) }}</span>
+              <span class="hidden max-w-20 truncate sm:inline">{{ t(step.labelKey) }}</span>
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -120,9 +120,17 @@ const { t } = useI18n()
           >
             <component :is="step.icon" class="size-4" />
           </span>
-          <span class="hidden sm:inline">{{ t(step.labelKey) }}</span>
+          <span
+            class="max-w-20 truncate"
+            :class="index === currentStep ? 'inline' : 'hidden sm:inline'"
+          >{{ t(step.labelKey) }}</span>
         </button>
       </template>
     </nav>
+
+    <!-- Mobile step indicator -->
+    <p class="text-center text-xs text-muted-foreground sm:hidden" data-mobile-step-indicator>
+      {{ t('wizard.stepper.mobileIndicator', { current: currentStep + 1, total: steps.length }) }}
+    </p>
   </TooltipProvider>
 </template>

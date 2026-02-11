@@ -79,7 +79,7 @@ const targetingBadges = computed(() => {
 })
 
 const insufficientCredits = computed(() => {
-  if (!wizard.estimate || euroCredits.value === null) return false
+  if (!wizard.estimate || wizard.estimate.totalPrice == null || euroCredits.value === null) return false
   return wizard.estimate.totalPrice > euroCredits.value
 })
 
@@ -93,7 +93,6 @@ async function handleLaunch(): Promise<void> {
 
 async function handleTest(): Promise<void> {
   wizard.campaign.is_demo = true
-  await wizard.saveDraft()
   await wizard.sendCampaign()
 }
 </script>
@@ -222,19 +221,21 @@ async function handleTest(): Promise<void> {
               {{ wizard.estimate.volume.toLocaleString('fr-FR') }}
             </span>
           </div>
-          <div class="flex items-center justify-between text-sm">
-            <span class="text-muted-foreground">{{ t('wizard.review.estimatedCost') }}</span>
-            <span class="text-lg font-semibold text-primary" data-estimated-cost>
-              {{ formatCurrency(wizard.estimate.totalPrice) }}
-            </span>
-          </div>
-          <Badge
-            v-if="insufficientCredits"
-            data-insufficient-credits
-            variant="destructive"
-          >
-            {{ t('wizard.review.insufficientCredits') }}
-          </Badge>
+          <template v-if="wizard.estimate.totalPrice != null">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-muted-foreground">{{ t('wizard.review.estimatedCost') }}</span>
+              <span class="text-lg font-semibold text-primary" data-estimated-cost>
+                {{ formatCurrency(wizard.estimate.totalPrice) }}
+              </span>
+            </div>
+            <Badge
+              v-if="insufficientCredits"
+              data-insufficient-credits
+              variant="destructive"
+            >
+              {{ t('wizard.review.insufficientCredits') }}
+            </Badge>
+          </template>
         </CardContent>
       </Card>
     </div>
@@ -290,8 +291,10 @@ async function handleTest(): Promise<void> {
                   <p class="font-semibold">{{ wizard.campaign.name }}</p>
                   <p>{{ t(`campaigns.type.${wizard.campaign.type}`) }}</p>
                   <p v-if="wizard.estimate">
-                    {{ wizard.estimate.volume.toLocaleString('fr-FR') }} dest. —
-                    {{ formatCurrency(wizard.estimate.totalPrice) }}
+                    {{ wizard.estimate.volume.toLocaleString('fr-FR') }} dest.
+                    <template v-if="wizard.estimate.totalPrice != null">
+                      — {{ formatCurrency(wizard.estimate.totalPrice) }}
+                    </template>
                   </p>
                   <p v-if="wizard.campaign.scheduled_at">
                     {{ scheduleLabel }}

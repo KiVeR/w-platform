@@ -34,10 +34,12 @@ it('deducts credits on successful send', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: true, externalId: 'test-123'));
@@ -67,10 +69,12 @@ it('verifies balance in DB after send deduction', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: true, externalId: 'test-456'));
@@ -99,7 +103,9 @@ it('rejects send when credits are insufficient', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $response = $this->postJson("/api/campaigns/{$campaign->id}/send");
@@ -126,7 +132,9 @@ it('does not change credits when send is insufficient', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $this->postJson("/api/campaigns/{$campaign->id}/send")->assertUnprocessable();
@@ -152,10 +160,12 @@ it('skips credit deduction for demo campaign on send', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
         'message' => 'Test Demo',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: true, externalId: 'demo-123'));
@@ -182,10 +192,12 @@ it('skips credit deduction when total_price is zero on send', function (): void 
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Free SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: true, externalId: 'free-123'));
@@ -212,10 +224,12 @@ it('refunds credits on send failure', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: false, error: 'API down'));
@@ -242,10 +256,12 @@ it('verifies balance restored in DB after send failure', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: false, error: 'API down'));
@@ -267,10 +283,18 @@ it('deducts credits on schedule', function (): void {
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'total_price' => 20.0,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $response = $this->postJson("/api/campaigns/{$campaign->id}/schedule", [
@@ -280,6 +304,7 @@ it('deducts credits on schedule', function (): void {
     $response->assertOk()->assertJsonPath('data.status', 'scheduled');
 
     $partner->refresh();
+    // unit_price = 0.03 + 0.01 = 0.04, total = 0.04 * 500 = 20
     expect((float) $partner->euro_credits)->toBe(80.0);
 });
 
@@ -289,10 +314,18 @@ it('verifies balance in DB after schedule deduction', function (): void {
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'total_price' => 20.0,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $this->postJson("/api/campaigns/{$campaign->id}/schedule", [
@@ -311,10 +344,18 @@ it('rejects schedule when credits are insufficient', function (): void {
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'total_price' => 20.0,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $response = $this->postJson("/api/campaigns/{$campaign->id}/schedule", [
@@ -331,10 +372,18 @@ it('does not change credits when schedule is insufficient', function (): void {
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->create([
         'message' => 'Promo SMS',
         'sender' => 'WELLPACK',
-        'total_price' => 20.0,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $this->postJson("/api/campaigns/{$campaign->id}/schedule", [
@@ -353,10 +402,18 @@ it('skips credit deduction for demo campaign on schedule', function (): void {
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
         'message' => 'Demo SMS',
         'sender' => 'WELLPACK',
-        'total_price' => 20.0,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $this->postJson("/api/campaigns/{$campaign->id}/schedule", [

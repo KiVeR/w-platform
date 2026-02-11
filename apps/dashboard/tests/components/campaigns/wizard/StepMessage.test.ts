@@ -13,10 +13,12 @@ mockUseI18n()
 const { useCampaignWizardStore } = await import('@/stores/campaignWizard')
 const StepMessage = (await import('@/components/campaigns/wizard/StepMessage.vue')).default
 
+vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
+
 const SmsEditorStub = {
   name: 'SmsEditor',
   template: '<div data-sms-editor />',
-  props: ['name', 'sender', 'message', 'variables', 'labels', 'showPreview'],
+  props: ['name', 'sender', 'message', 'variables', 'labels', 'showPreview', 'errors'],
   emits: ['update:name', 'update:sender', 'update:message', 'dirty'],
 }
 
@@ -52,10 +54,10 @@ describe('StepMessage', () => {
     expect(editor.props('message')).toBe('Hello')
   })
 
-  it('passes showPreview as true', () => {
+  it('passes showPreview as false (preview moved to sidebar)', () => {
     const wrapper = mountStep()
     const editor = wrapper.findComponent(SmsEditorStub)
-    expect(editor.props('showPreview')).toBe(true)
+    expect(editor.props('showPreview')).toBe(false)
   })
 
   it('passes 3 variables with correct keys', () => {
@@ -122,5 +124,103 @@ describe('StepMessage', () => {
   it('renders step title', () => {
     const wrapper = mountStep()
     expect(wrapper.text()).toContain('wizard.message.title')
+  })
+
+  describe('validation errors', () => {
+    it('passes no errors when showValidation is false', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = ''
+      wizard.campaign.message = ''
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toBeUndefined()
+    })
+
+    it('passes name error when showValidation is true and name is empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = ''
+      wizard.campaign.message = 'Hello'
+      wizard.showValidation = true
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toEqual(
+        expect.objectContaining({ name: expect.any(String) }),
+      )
+    })
+
+    it('passes message error when showValidation is true and message is empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = ''
+      wizard.showValidation = true
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toEqual(
+        expect.objectContaining({ message: expect.any(String) }),
+      )
+    })
+
+    it('passes message error for forbidden domain', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Visit rsms.co'
+      wizard.showValidation = true
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toEqual(
+        expect.objectContaining({ message: expect.any(String) }),
+      )
+    })
+
+    it('passes sender error when sender is empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = ''
+      wizard.showValidation = true
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toEqual(
+        expect.objectContaining({ sender: expect.any(String) }),
+      )
+    })
+
+    it('passes sender error for invalid sender', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = 'INVALID@@!'
+      wizard.showValidation = true
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toEqual(
+        expect.objectContaining({ sender: expect.any(String) }),
+      )
+    })
+
+    it('passes no errors when all fields are valid even with showValidation true', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = 'WELLPACK'
+      wizard.showValidation = true
+
+      const wrapper = mountStep()
+      const editor = wrapper.findComponent(SmsEditorStub)
+
+      expect(editor.props('errors')).toBeUndefined()
+    })
   })
 })

@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Campaign;
+namespace App\Http\Requests;
 
-use App\Enums\CampaignChannel;
-use App\Enums\CampaignType;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreCampaignRequest extends FormRequest
+class EstimateRequest extends FormRequest
 {
     /** @return array<string, array<int, mixed>> */
     public function rules(): array
@@ -18,13 +15,8 @@ class StoreCampaignRequest extends FormRequest
         $user = $this->user();
 
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', Rule::enum(CampaignType::class)],
-            'channel' => ['required', Rule::enum(CampaignChannel::class)],
-            'message' => ['nullable', 'string', 'max:612'],
-            'sender' => ['nullable', 'string', 'regex:/^[a-zA-Z0-9]{3,11}$/'],
-            'targeting' => ['nullable', 'array'],
-            'targeting.method' => ['required_with:targeting', 'string', 'in:department,postcode,address'],
+            'targeting' => ['required', 'array'],
+            'targeting.method' => ['required', 'string', 'in:department,postcode,address'],
             'targeting.departments' => ['exclude_unless:targeting.method,department', 'required', 'array', 'min:1'],
             'targeting.departments.*' => ['string', 'exists:departments,code'],
             'targeting.postcodes' => ['exclude_unless:targeting.method,postcode', 'required', 'array', 'min:1'],
@@ -36,14 +28,12 @@ class StoreCampaignRequest extends FormRequest
             'targeting.gender' => ['nullable', 'string', 'in:M,F'],
             'targeting.age_min' => ['nullable', 'integer', 'min:18', 'max:100'],
             'targeting.age_max' => ['nullable', 'integer', 'min:18', 'max:100', 'gte:targeting.age_min'],
-            'scheduled_at' => ['nullable', 'date', 'after:now'],
-            'is_demo' => ['sometimes', 'boolean'],
-            'additional_phone' => ['nullable', 'string', 'max:20'],
-            'landing_page_id' => ['nullable', 'integer', Rule::exists('landing_pages', 'id')->whereNull('deleted_at')],
         ];
 
         if ($user->hasRole('admin')) {
-            $rules['partner_id'] = ['required', 'integer', 'exists:partners,id'];
+            $rules['partner_id'] = ['nullable', 'integer', 'exists:partners,id'];
+        } else {
+            $rules['partner_id'] = ['prohibited'];
         }
 
         return $rules;

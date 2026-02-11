@@ -10,6 +10,7 @@ export function createAuthMiddleware(
 
   return {
     async onRequest({ request }) {
+      request.headers.set('Accept', 'application/json')
       const token = getToken()
       if (token) {
         request.headers.set('Authorization', `Bearer ${token}`)

@@ -116,34 +116,7 @@ class CampaignsController extends Controller
         return new JsonResponse(['message' => 'Campaign deleted.']);
     }
 
-    public function estimate(Campaign $campaign, PricingService $pricingService): CampaignResource
-    {
-        $this->authorize('update', $campaign);
-
-        $volume = $campaign->getTargetingVolume();
-        $useCi = $campaign->interestGroups()->exists();
-
-        if ($volume > 0 && $campaign->partner_id !== null) {
-            $estimate = $pricingService->calculate($campaign->partner_id, $volume, $useCi);
-            $campaign->update([
-                'volume_estimated' => $volume,
-                'unit_price' => $estimate->unitPrice,
-                'total_price' => $estimate->totalPrice,
-                'sms_count' => $volume,
-            ]);
-        } else {
-            $campaign->update([
-                'volume_estimated' => 0,
-                'unit_price' => null,
-                'total_price' => null,
-                'sms_count' => 0,
-            ]);
-        }
-
-        return new CampaignResource($campaign->fresh());
-    }
-
-    public function schedule(ScheduleCampaignRequest $request, Campaign $campaign, StopSmsService $stopSmsService, CreditService $creditService): CampaignResource|JsonResponse
+    public function schedule(ScheduleCampaignRequest $request, Campaign $campaign, CampaignSenderInterface $sender, PricingService $pricingService, StopSmsService $stopSmsService, CreditService $creditService): CampaignResource|JsonResponse
     {
         $this->authorize('update', $campaign);
 
@@ -151,9 +124,31 @@ class CampaignsController extends Controller
             return $error;
         }
 
-        if (! $campaign->is_demo && $campaign->total_price > 0 && $campaign->partner) {
+        $volume = $sender->estimateVolumeFromTargeting($campaign->targeting ?? []);
+
+        if ($volume <= 0) {
+            return new JsonResponse(
+                ['message' => 'Volume must be greater than 0.', 'errors' => ['volume' => ['Volume estimation returned 0.']]],
+                422,
+            );
+        }
+
+        $useCi = $campaign->interestGroups()->exists();
+        /** @var int $partnerId */
+        $partnerId = $campaign->partner_id;
+
+        $estimate = $pricingService->calculate($partnerId, $volume, $useCi);
+
+        $campaign->update([
+            'volume_estimated' => $volume,
+            'unit_price' => $estimate->unitPrice,
+            'total_price' => $estimate->totalPrice,
+            'sms_count' => $volume,
+        ]);
+
+        if (! $campaign->is_demo && $estimate->totalPrice > 0 && $campaign->partner) {
             try {
-                $creditService->deduct($campaign->partner, (float) $campaign->total_price);
+                $creditService->deduct($campaign->partner, $estimate->totalPrice);
             } catch (InsufficientCreditsException $e) {
                 return new JsonResponse([
                     'message' => $e->getMessage(),
@@ -178,9 +173,11 @@ class CampaignsController extends Controller
             return $error;
         }
 
-        if (! $campaign->volume_estimated || $campaign->volume_estimated <= 0) {
+        $volume = $sender->estimateVolumeFromTargeting($campaign->targeting ?? []);
+
+        if ($volume <= 0) {
             return new JsonResponse(
-                ['message' => 'Campaign must have a volume > 0.', 'errors' => ['volume_estimated' => ['Volume must be greater than 0.']]],
+                ['message' => 'Volume must be greater than 0.', 'errors' => ['volume' => ['Volume estimation returned 0.']]],
                 422,
             );
         }
@@ -190,10 +187,17 @@ class CampaignsController extends Controller
         $partnerId = $campaign->partner_id;
 
         try {
-            $estimate = $pricingService->calculate($partnerId, $campaign->volume_estimated, $useCi);
+            $estimate = $pricingService->calculate($partnerId, $volume, $useCi);
         } catch (\RuntimeException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 422);
         }
+
+        $campaign->update([
+            'volume_estimated' => $volume,
+            'unit_price' => $estimate->unitPrice,
+            'total_price' => $estimate->totalPrice,
+            'sms_count' => $volume,
+        ]);
 
         if (! $campaign->is_demo && $estimate->totalPrice > 0 && $campaign->partner) {
             try {
@@ -223,8 +227,6 @@ class CampaignsController extends Controller
 
         $campaign->update([
             'status' => CampaignStatus::SENDING,
-            'unit_price' => $estimate->unitPrice,
-            'total_price' => $estimate->totalPrice,
             'external_id' => $result->externalId,
         ]);
 

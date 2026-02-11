@@ -245,7 +245,12 @@
     },
     "validation": {
       "incomplete": "Étape incomplète",
-      "fillRequired": "Veuillez remplir les champs requis avant de continuer."
+      "fillRequired": "Veuillez remplir les champs requis avant de continuer.",
+      "nameRequired": "Le nom de la campagne est requis",
+      "messageRequired": "Le message est requis",
+      "messageForbidden": "Le message contient un domaine interdit",
+      "senderRequired": "L'expéditeur est requis",
+      "senderInvalid": "3 à 11 caractères alphanumériques uniquement"
     },
     "estimate": {
       "title": "Estimation",
@@ -258,11 +263,16 @@
       "recalculate": "Recalculer",
       "launchCount": "Lancer le comptage",
       "calculating": "Calcul en cours, veuillez patienter…",
-      "notAvailable": "Complétez le ciblage puis lancez le comptage"
+      "notAvailable": "Complétez le ciblage puis lancez le comptage",
+      "selectPartner": "Sélectionnez un partenaire pour lancer le comptage"
+    },
+    "sidebar": {
+      "progress": "Progression"
     },
     "stepper": {
       "valid": "Étape complète",
-      "incomplete": "À compléter"
+      "incomplete": "À compléter",
+      "mobileIndicator": "Étape {current} sur {total}"
     },
     "message": {
       "title": "Composez votre message SMS",

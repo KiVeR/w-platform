@@ -70,11 +70,9 @@ it('returns is_demo and additional_phone in resource', function (): void {
 
 it('sends demo campaign via wepak with query send_test', function (): void {
     Http::fake([
-        'wepak.wellpack.fr/*' => Http::response([
-            'id_message' => 0,
-            'message' => 'OK',
-            'idcampagne' => 999,
-        ]),
+        'wepak.wellpack.fr/*' => Http::sequence()
+            ->push(['id_message' => 0, 'volume' => 1])
+            ->push(['id_message' => 0, 'message' => 'OK', 'idcampagne' => 999]),
     ]);
 
     config([
@@ -99,7 +97,6 @@ it('sends demo campaign via wepak with query send_test', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
         'message' => 'Test Demo STOP 36111',
         'sender' => 'BRAND',
-        'volume_estimated' => 1,
     ]);
 
     $response = $this->postJson("/api/campaigns/{$campaign->id}/send");
@@ -127,10 +124,12 @@ it('does not deduct credits on demo send', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
         'message' => 'Test Demo',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 500,
     ]);
 
     $mockSender = Mockery::mock(CampaignSenderInterface::class);
+    $mockSender->shouldReceive('estimateVolumeFromTargeting')
+        ->once()
+        ->andReturn(500);
     $mockSender->shouldReceive('send')
         ->once()
         ->andReturn(new SendResult(success: true, externalId: 'demo-123'));
@@ -148,10 +147,18 @@ it('does not deduct credits on demo schedule', function (): void {
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
         'message' => 'Demo SMS',
         'sender' => 'WELLPACK',
-        'total_price' => 20.0,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 500]],
+        ],
     ]);
 
     $this->postJson("/api/campaigns/{$campaign->id}/schedule", [
@@ -193,7 +200,9 @@ it('handles stub driver with demo campaign', function (): void {
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->demo()->create([
         'message' => 'Stub Demo',
         'sender' => 'WELLPACK',
-        'volume_estimated' => 100,
+        'targeting' => [
+            'zones' => [['code' => '75001', 'type' => 'postcode', 'label' => '75001', 'volume' => 100]],
+        ],
     ]);
 
     $response = $this->postJson("/api/campaigns/{$campaign->id}/send");

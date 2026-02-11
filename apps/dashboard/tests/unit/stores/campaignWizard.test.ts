@@ -9,6 +9,12 @@ const mockGet = vi.fn()
 stubAuthGlobals({ $api: { POST: mockPost, PUT: mockPut, GET: mockGet } })
 vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
 
+vi.mock('@/stores/partner', () => ({
+  usePartnerStore: () => ({
+    effectivePartnerId: 42,
+  }),
+}))
+
 const { useCampaignWizardStore } = await import('@/stores/campaignWizard')
 
 describe('useCampaignWizardStore', () => {
@@ -105,11 +111,30 @@ describe('useCampaignWizardStore', () => {
       expect(wizard.validateCurrentStep()).toBe(false)
     })
 
-    it('step 1: returns true for valid name + message', () => {
+    it('step 1: returns false if sender empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(1)
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = ''
+      expect(wizard.validateCurrentStep()).toBe(false)
+    })
+
+    it('step 1: returns false if sender too short', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(1)
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = 'AB'
+      expect(wizard.validateCurrentStep()).toBe(false)
+    })
+
+    it('step 1: returns true for valid name + message + sender', () => {
       const wizard = useCampaignWizardStore()
       wizard.goToStep(1)
       wizard.campaign.name = 'Promo'
       wizard.campaign.message = 'Bonjour'
+      wizard.campaign.sender = 'WELLPACK'
       expect(wizard.validateCurrentStep()).toBe(true)
     })
 
@@ -209,19 +234,18 @@ describe('useCampaignWizardStore', () => {
       expect(result).toBe(false)
     })
 
-    it('requestEstimate calls POST /campaigns/{id}/estimate', async () => {
+    it('requestEstimate calls POST /estimate with targeting and partner_id', async () => {
       mockPost.mockResolvedValue({
         data: { data: { volume: '1000', unit_price: '0.045', total_price: '45.00', sms_count: '1' } },
         error: null,
       })
 
       const wizard = useCampaignWizardStore()
-      wizard.campaignId = 99
 
       await wizard.requestEstimate()
 
-      expect(mockPost).toHaveBeenCalledWith('/campaigns/{campaign}/estimate', expect.objectContaining({
-        params: { path: { campaign: 99 } },
+      expect(mockPost).toHaveBeenCalledWith('/estimate', expect.objectContaining({
+        body: { targeting: wizard.campaign.targeting, partner_id: 42 },
       }))
       expect(wizard.estimate).toEqual({
         volume: 1000,
@@ -280,6 +304,7 @@ describe('useCampaignWizardStore', () => {
       wizard.goToStep(0)
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = 'WELLPACK'
       expect(wizard.validateStep(1)).toBe(true)
     })
 
@@ -287,6 +312,7 @@ describe('useCampaignWizardStore', () => {
       const wizard = useCampaignWizardStore()
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = 'WELLPACK'
       wizard.campaign.targeting.method = 'department'
       wizard.campaign.targeting.departments = ['75']
 
@@ -296,6 +322,47 @@ describe('useCampaignWizardStore', () => {
       expect(validation[1]).toBe(true)
       expect(validation[2]).toBe(true)
       expect(validation[3]).toBe(true)
+    })
+  })
+
+  describe('showValidation', () => {
+    it('is false by default', () => {
+      const wizard = useCampaignWizardStore()
+      expect(wizard.showValidation).toBe(false)
+    })
+
+    it('is set to true when validateCurrentStep fails', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(1)
+      wizard.campaign.name = ''
+      wizard.campaign.message = ''
+
+      wizard.validateCurrentStep()
+
+      expect(wizard.showValidation).toBe(true)
+    })
+
+    it('stays false when validateCurrentStep succeeds', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(1)
+      wizard.campaign.name = 'Test'
+      wizard.campaign.message = 'Hello'
+      wizard.campaign.sender = 'WELLPACK'
+
+      wizard.validateCurrentStep()
+
+      expect(wizard.showValidation).toBe(false)
+    })
+
+    it('is reset to false on goToStep', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(1)
+      wizard.campaign.name = ''
+      wizard.validateCurrentStep()
+      expect(wizard.showValidation).toBe(true)
+
+      wizard.goToStep(2)
+      expect(wizard.showValidation).toBe(false)
     })
   })
 
@@ -317,6 +384,7 @@ describe('useCampaignWizardStore', () => {
       expect(wizard.scheduleMode).toBe('now')
       expect(wizard.reviewChecks.messageVerified).toBe(false)
       expect(wizard.reviewChecks.sendConfirmed).toBe(false)
+      expect(wizard.showValidation).toBe(false)
     })
   })
 })
