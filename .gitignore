@@ -36,15 +36,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Yarn 4 (without Zero-Installs)
+# Lock files (using pnpm)
 package-lock.json
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+yarn.lock
 
 # Testing
 coverage/
@@ -55,8 +49,6 @@ test-results/
 plans/
 x-thought/
 
-# Editor layer (symlinked to v2/platform/layers/kreo-editor)
-layers/editor
 
 # Generated LP artifacts
 generated-lp*.json

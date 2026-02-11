@@ -5,7 +5,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // Extend the editor layer (shared editor core)
-  extends: ['./layers/editor'],
+  extends: ['@wellpack/content-editor'],
 
   ssr: false,
   devtools: { enabled: true },
