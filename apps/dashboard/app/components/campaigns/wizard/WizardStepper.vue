@@ -55,15 +55,11 @@ const styles = computed(() =>
 )
 
 function dividerClass(index: number): string {
-  if (index <= props.currentStep) {
-    const prevValid = props.validation[index - 1]
-    const curValid = props.validation[index]
-    if (index < props.currentStep) {
-      return prevValid && curValid ? 'bg-success-500' : 'bg-warning-500'
-    }
-    return 'bg-primary'
-  }
-  return 'bg-border'
+  if (index > props.currentStep) return 'bg-border'
+  if (index === props.currentStep) return 'bg-primary'
+
+  const bothValid = props.validation[index - 1] && props.validation[index]
+  return bothValid ? 'bg-success-500' : 'bg-warning-500'
 }
 
 function handleClick(index: number): void {

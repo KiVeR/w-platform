@@ -24,6 +24,7 @@ import {
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { usePartnerStore } from '@/stores/partner'
 import { useApi } from '@/composables/useApi'
+import { formatCurrency } from '@/utils/format'
 
 const wizard = useCampaignWizardStore()
 const partnerStore = usePartnerStore()
@@ -81,10 +82,6 @@ const insufficientCredits = computed(() => {
   if (!wizard.estimate || euroCredits.value === null) return false
   return wizard.estimate.totalPrice > euroCredits.value
 })
-
-function formatEur(value: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value)
-}
 
 async function handleLaunch(): Promise<void> {
   const success = wizard.scheduleMode === 'schedule'
@@ -211,7 +208,7 @@ async function handleTest(): Promise<void> {
           <div class="flex items-center justify-between text-sm">
             <span class="text-muted-foreground">{{ t('wizard.review.estimatedCost') }}</span>
             <span class="text-lg font-semibold text-primary" data-estimated-cost>
-              {{ formatEur(wizard.estimate.totalPrice) }}
+              {{ formatCurrency(wizard.estimate.totalPrice) }}
             </span>
           </div>
           <Badge
@@ -277,7 +274,7 @@ async function handleTest(): Promise<void> {
                   <p>{{ t(`campaigns.type.${wizard.campaign.type}`) }}</p>
                   <p v-if="wizard.estimate">
                     {{ wizard.estimate.volume.toLocaleString('fr-FR') }} dest. —
-                    {{ formatEur(wizard.estimate.totalPrice) }}
+                    {{ formatCurrency(wizard.estimate.totalPrice) }}
                   </p>
                   <p v-if="wizard.campaign.scheduled_at">
                     {{ scheduleLabel }}
