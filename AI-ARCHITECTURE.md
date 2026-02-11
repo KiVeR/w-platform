@@ -1,7 +1,11 @@
 # Architecture IA — Kreo
 
 > Cartographie exhaustive de tous les fichiers liés à l'intelligence artificielle dans le projet Kreo.
-> Dernière mise à jour : 2026-02-09
+> Dernière mise à jour : 2026-02-11
+>
+> **Note** : les composants frontend éditeur (`stores/aiChat`, `composables/useAIChat`, `components/ai/*`)
+> ont été extraits dans le package `@wellpack/content-editor`. Les chemins `@wellpack/content-editor/` ci-dessous
+> correspondent à ce package externe.
 
 ---
 
@@ -63,7 +67,7 @@ L'IA dans Kreo sert deux cas d'usage :
 
 ```mermaid
 graph TB
-    subgraph "Frontend (layers/editor/)"
+    subgraph "Frontend (@wellpack/content-editor)"
         UI[AIChatPanel.vue]
         Input[AIChatInput.vue]
         Msg[AIChatMessage.vue]
@@ -508,7 +512,7 @@ Propriétés advisory (warning) : `letterSpacing`, `textTransform`, `opacity`
 
 | | |
 |---|---|
-| **Fichier** | `layers/editor/stores/aiChat.ts` |
+| **Fichier** | `@wellpack/content-editor/stores/aiChat.ts` |
 | **Store ID** | `aiChat` |
 
 **State :**
@@ -539,7 +543,7 @@ Propriétés advisory (warning) : `letterSpacing`, `textTransform`, `opacity`
 
 | | |
 |---|---|
-| **Fichier** | `layers/editor/composables/useAIChat.ts` |
+| **Fichier** | `@wellpack/content-editor/composables/useAIChat.ts` |
 | **Rôle** | Logique métier AI : envoi, streaming, application design |
 
 **Fonctions exposées :**
@@ -582,10 +586,10 @@ graph TB
 
 | Composant | Fichier | Rôle |
 |---|---|---|
-| **AIChatPanel** | `layers/editor/components/ai/AIChatPanel.vue` | Modal overlay, prompts exemples, auto-scroll, Escape pour fermer |
-| **AIChatInput** | `layers/editor/components/ai/AIChatInput.vue` | Textarea auto-expand, Enter pour envoyer, Shift+Enter pour newline, image attachment |
-| **AIChatMessage** | `layers/editor/components/ai/AIChatMessage.vue` | Bulle user/assistant, timestamp FR, image preview, curseur streaming |
-| **AIDesignPreview** | `layers/editor/components/ai/AIDesignPreview.vue` | MobileFrame preview, expand/collapse, bouton "Appliquer", compteur widgets |
+| **AIChatPanel** | `@wellpack/content-editor/components/ai/AIChatPanel.vue` | Modal overlay, prompts exemples, auto-scroll, Escape pour fermer |
+| **AIChatInput** | `@wellpack/content-editor/components/ai/AIChatInput.vue` | Textarea auto-expand, Enter pour envoyer, Shift+Enter pour newline, image attachment |
+| **AIChatMessage** | `@wellpack/content-editor/components/ai/AIChatMessage.vue` | Bulle user/assistant, timestamp FR, image preview, curseur streaming |
+| **AIDesignPreview** | `@wellpack/content-editor/components/ai/AIDesignPreview.vue` | MobileFrame preview, expand/collapse, bouton "Appliquer", compteur widgets |
 
 ---
 
@@ -790,12 +794,12 @@ pnpm batch-lp report                       # Rapport final
 | 14 | `shared/utils/contrast-validation.ts` | Shared — Validation contraste |
 | 15 | `shared/utils/design-tokens.ts` | Shared — Validation tokens |
 | 16 | `shared/constants/design-tokens.ts` | Shared — Constantes tokens |
-| 17 | `layers/editor/stores/aiChat.ts` | Frontend — Store Pinia |
-| 18 | `layers/editor/composables/useAIChat.ts` | Frontend — Composable |
-| 19 | `layers/editor/components/ai/AIChatPanel.vue` | Frontend — Panneau chat |
-| 20 | `layers/editor/components/ai/AIChatInput.vue` | Frontend — Input chat |
-| 21 | `layers/editor/components/ai/AIChatMessage.vue` | Frontend — Message chat |
-| 22 | `layers/editor/components/ai/AIDesignPreview.vue` | Frontend — Preview design |
+| 17 | `@wellpack/content-editor/stores/aiChat.ts` | Frontend — Store Pinia |
+| 18 | `@wellpack/content-editor/composables/useAIChat.ts` | Frontend — Composable |
+| 19 | `@wellpack/content-editor/components/ai/AIChatPanel.vue` | Frontend — Panneau chat |
+| 20 | `@wellpack/content-editor/components/ai/AIChatInput.vue` | Frontend — Input chat |
+| 21 | `@wellpack/content-editor/components/ai/AIChatMessage.vue` | Frontend — Message chat |
+| 22 | `@wellpack/content-editor/components/ai/AIDesignPreview.vue` | Frontend — Preview design |
 | 23 | `prisma/schema.prisma` (modèle AIUsage) | Database — Tracking quota |
 | 24 | `.claude/scripts/batch-lp.ts` | Batch — Orchestrateur |
 | 25 | `.claude/prompts/batch/brief-generator.md` | Batch — Prompt briefs |

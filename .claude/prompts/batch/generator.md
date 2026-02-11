@@ -113,7 +113,7 @@ Each LP MUST have at least ONE distinctive visual choice that makes it stand out
 ## Step 1: Read design guidelines
 Read these two files:
 - `server/services/ai/prompts/design-generation.ts`
-- `layers/editor/config/widgets.ts`
+- `node_modules/@wellpack/content-editor/config/widgets.ts`
 
 ## Step 2: Generate design JSON
 Create a complete DesignDocument JSON for this brief. Rules:

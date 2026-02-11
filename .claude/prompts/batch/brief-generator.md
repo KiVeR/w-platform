@@ -8,7 +8,7 @@ Generate original, varied briefs for the following sectors:
 
 ## Instructions
 
-1. **Read** `layers/editor/config/widgets.ts` to know all available widgets and their capabilities.
+1. **Read** `node_modules/@wellpack/content-editor/config/widgets.ts` to know all available widgets and their capabilities.
 
 2. For EACH sector listed above, invent a **unique, original scenario**. Be creative:
    - Vary the type of business within the sector (e.g. for "restauration-rapide": sometimes a pizzeria, sometimes a poke bowl shop, sometimes a kebab, NOT always a burger place)
