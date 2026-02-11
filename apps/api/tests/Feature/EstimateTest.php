@@ -107,18 +107,34 @@ it('returns zero volume when stub driver resolves no zones', function (): void {
         ->assertJsonPath('data.total_price', null);
 });
 
-it('validates required targeting field', function (): void {
+it('estimates without targeting for all-france volume', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();
     $user->assignRole('partner');
     Passport::actingAs($user);
 
+    PartnerPricing::factory()->forPartner($partner)->default()->create();
+
     $this->postJson('/api/estimate', [])
-        ->assertUnprocessable()
-        ->assertJsonValidationErrors(['targeting']);
+        ->assertOk()
+        ->assertJsonStructure(['data' => ['volume', 'unit_price', 'total_price', 'sms_count']]);
 });
 
-it('validates targeting method', function (): void {
+it('accepts empty departments for all-france estimate', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    PartnerPricing::factory()->forPartner($partner)->default()->create();
+
+    $this->postJson('/api/estimate', [
+        'targeting' => ['method' => 'department', 'departments' => []],
+    ])->assertOk()
+        ->assertJsonStructure(['data' => ['volume', 'unit_price', 'total_price', 'sms_count']]);
+});
+
+it('validates targeting method when targeting is provided', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();
     $user->assignRole('partner');
@@ -128,30 +144,6 @@ it('validates targeting method', function (): void {
         'targeting' => ['method' => 'invalid'],
     ])->assertUnprocessable()
         ->assertJsonValidationErrors(['targeting.method']);
-});
-
-it('validates departments required for department method', function (): void {
-    $partner = Partner::factory()->create();
-    $user = User::factory()->forPartner($partner)->create();
-    $user->assignRole('partner');
-    Passport::actingAs($user);
-
-    $this->postJson('/api/estimate', [
-        'targeting' => ['method' => 'department', 'departments' => []],
-    ])->assertUnprocessable()
-        ->assertJsonValidationErrors(['targeting.departments']);
-});
-
-it('validates lat lng radius required for address method', function (): void {
-    $partner = Partner::factory()->create();
-    $user = User::factory()->forPartner($partner)->create();
-    $user->assignRole('partner');
-    Passport::actingAs($user);
-
-    $this->postJson('/api/estimate', [
-        'targeting' => ['method' => 'address'],
-    ])->assertUnprocessable()
-        ->assertJsonValidationErrors(['targeting.lat', 'targeting.lng', 'targeting.radius']);
 });
 
 it('admin without partner_id returns volume without pricing', function (): void {

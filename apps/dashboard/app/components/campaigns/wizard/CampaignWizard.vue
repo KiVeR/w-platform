@@ -107,9 +107,9 @@ async function handleNext() {
       </div>
 
       <aside class="hidden lg:block">
-        <div class="sticky top-6">
+        <div class="sticky top-6 space-y-4">
           <WizardSidebarPreview v-if="wizard.currentStep <= 1" />
-          <WizardEstimatePanel v-else :current-step="wizard.currentStep" />
+          <WizardEstimatePanel />
         </div>
       </aside>
     </div>
@@ -158,7 +158,7 @@ async function handleNext() {
           <SheetTitle>{{ t('wizard.estimate.title') }}</SheetTitle>
         </SheetHeader>
         <div class="px-4 pb-6">
-          <WizardEstimatePanel :current-step="wizard.currentStep" />
+          <WizardEstimatePanel />
         </div>
       </SheetContent>
     </Sheet>

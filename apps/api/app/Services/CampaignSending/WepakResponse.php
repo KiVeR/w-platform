@@ -29,6 +29,17 @@ readonly class WepakResponse
         /** @var array<string, mixed> $data */
         $data = $response->json() ?? [];
 
+        // Estimate responses return an array of zone volumes: [{Type, Localite, Volume}, ...]
+        if (array_is_list($data)) {
+            $totalVolume = self::extractTotalVolume($data);
+
+            return new self(
+                success: true,
+                volume: $totalVolume,
+                raw: $data,
+            );
+        }
+
         $idMessage = (int) ($data['id_message'] ?? 0);
 
         if ($idMessage !== 0) {
@@ -45,5 +56,23 @@ readonly class WepakResponse
             volume: isset($data['volume']) ? (int) $data['volume'] : null,
             raw: $data,
         );
+    }
+
+    /**
+     * Extract total volume from Wepak estimate response array.
+     * Format: [{"Type":"dept","Localite":"77","Volume":670366}, {"Type":"total","Localite":"total","Volume":670366}]
+     *
+     * @param  list<array<string, mixed>>  $rows
+     */
+    private static function extractTotalVolume(array $rows): int
+    {
+        foreach ($rows as $row) {
+            if (($row['Type'] ?? null) === 'total') {
+                return (int) ($row['Volume'] ?? 0);
+            }
+        }
+
+        // Fallback: sum all Volume values
+        return (int) array_sum(array_column($rows, 'Volume'));
     }
 }

@@ -43,9 +43,8 @@ const baseStubs = {
   AlertDescription: slotStub,
 }
 
-function mountPanel(props?: { currentStep?: number }) {
+function mountPanel() {
   return mount(WizardEstimatePanel, {
-    props,
     global: { stubs: baseStubs },
   })
 }
@@ -170,30 +169,17 @@ describe('WizardEstimatePanel', () => {
     expect(wrapper.find('[data-count-button]').exists()).toBe(false)
   })
 
-  it('checklist affichée quand currentStep < 2 et pas d\'estimate', () => {
-    const wrapper = mountPanel({ currentStep: 0 })
-    expect(wrapper.find('[data-estimate-checklist]').exists()).toBe(true)
-    expect(wrapper.find('[data-count-button]').exists()).toBe(false)
-  })
-
-  it('checklist affiche 5 items de progression', () => {
-    const wrapper = mountPanel({ currentStep: 1 })
-    for (let i = 0; i < 5; i++) {
-      expect(wrapper.find(`[data-checklist-item="${i}"]`).exists()).toBe(true)
-    }
-  })
-
-  it('bouton comptage affiché quand currentStep >= 2', () => {
-    const wrapper = mountPanel({ currentStep: 3 })
-    expect(wrapper.find('[data-estimate-checklist]').exists()).toBe(false)
+  it('bouton comptage toujours visible sans estimate', () => {
+    const wrapper = mountPanel()
     expect(wrapper.find('[data-count-button]').exists()).toBe(true)
   })
 
-  it('checklist masquée si estimate existe même avec currentStep < 2', () => {
+  it('pricing masqué quand totalPrice null', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1 }
+    wizard.estimate = { volume: 500, unitPrice: null, totalPrice: null, smsCount: 1 }
 
-    const wrapper = mountPanel({ currentStep: 0 })
-    expect(wrapper.find('[data-estimate-checklist]').exists()).toBe(false)
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-total-price]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('wizard.estimate.selectPartner')
   })
 })

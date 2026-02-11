@@ -26,9 +26,13 @@ class EstimateController extends Controller
 
         $validated = $request->validated();
 
-        $input = TargetingInput::fromRequest($validated['targeting']);
-        $canonical = $targetingResolver->resolve($input);
-        $targetingArray = $canonical->toArray();
+        if (isset($validated['targeting'])) {
+            $input = TargetingInput::fromRequest($validated['targeting']);
+            $canonical = $targetingResolver->resolve($input);
+            $targetingArray = $canonical->toArray();
+        } else {
+            $targetingArray = [];
+        }
 
         $volume = $sender->estimateVolumeFromTargeting($targetingArray);
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
-import { BarChart3, RefreshCw, AlertCircle, Loader2, Check, Circle } from 'lucide-vue-next'
+import { BarChart3, RefreshCw, AlertCircle, Loader2 } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -11,26 +11,11 @@ import { usePartnerStore } from '@/stores/partner'
 import { useApi } from '@/composables/useApi'
 import { formatCurrency } from '@/utils/format'
 
-const props = withDefaults(defineProps<{
-  currentStep?: number
-}>(), {
-  currentStep: 2,
-})
-
 const wizard = useCampaignWizardStore()
 const partnerStore = usePartnerStore()
 const api = useApi()
 const { t } = useI18n()
 
-const showChecklist = computed(() => props.currentStep < 2 && !wizard.estimate)
-
-const checklist = computed(() =>
-  wizard.STEPS.slice(0, 5).map((step, i) => ({
-    labelKey: step.labelKey,
-    valid: wizard.stepValidation[i],
-    visited: i <= wizard.currentStep,
-  })),
-)
 
 const hasPricing = computed(() => wizard.estimate?.totalPrice != null)
 
@@ -132,37 +117,18 @@ async function handleCount() {
         </template>
       </template>
 
-      <!-- Empty state: Checklist or count button -->
-      <template v-else>
-        <!-- Checklist when on early steps -->
-        <div v-if="showChecklist" class="space-y-2" data-estimate-checklist>
-          <div
-            v-for="(item, i) in checklist"
-            :key="i"
-            class="flex items-center gap-2 text-xs"
-            :data-checklist-item="i"
-          >
-            <Check v-if="item.valid" class="size-3.5 text-success-500" />
-            <Circle v-else class="size-3.5" :class="item.visited ? 'text-muted-foreground' : 'text-muted-foreground/40'" />
-            <span :class="item.valid ? 'text-foreground' : 'text-muted-foreground'">
-              {{ t(item.labelKey) }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Count button when on targeting+ steps -->
-        <div v-else class="flex flex-col items-center gap-3 py-4 text-center">
-          <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.notAvailable') }}</p>
-          <Button
-            :disabled="isCounting"
-            data-count-button
-            @click="handleCount"
-          >
-            <BarChart3 class="size-4" />
-            {{ t('wizard.estimate.launchCount') }}
-          </Button>
-        </div>
-      </template>
+      <!-- Empty state: Count button -->
+      <div v-else class="flex flex-col items-center gap-3 py-4 text-center">
+        <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.notAvailable') }}</p>
+        <Button
+          :disabled="isCounting"
+          data-count-button
+          @click="handleCount"
+        >
+          <BarChart3 class="size-4" />
+          {{ t('wizard.estimate.launchCount') }}
+        </Button>
+      </div>
     </CardContent>
   </Card>
 </template>

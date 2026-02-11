@@ -104,8 +104,10 @@ it('sends demo campaign via wepak with query send_test', function (): void {
     $response->assertOk();
 
     Http::assertSent(function ($request) {
+        $data = json_decode($request['data'] ?? '{}', true);
+
         return str_contains($request->url(), 'smsenvoi.php')
-            && $request['query'] === 'send_test';
+            && ($data['query'] ?? null) === 'send_test';
     });
 });
 

@@ -39,16 +39,16 @@ it('builds prospection payload with targeting', function (): void {
     $payload = $this->builder->buildProspectionPayload($campaign);
 
     expect($payload['query'])->toBe('calcule_groupe_localite')
-        ->and($payload['genre'])->toBe('homme')
-        ->and($payload['age_min'])->toBe(25)
-        ->and($payload['age_max'])->toBe(45)
+        ->and($payload['civilite'])->toBe('homme')
+        ->and($payload['agemin'])->toBe(25)
+        ->and($payload['agemax'])->toBe(45)
         ->and($payload['volume'])->toBe(1000)
         ->and($payload['content'])->toBe('Promo -20% STOP 36111')
         ->and($payload['expediteur'])->toBe('MARQUE')
         ->and($payload['is_split_volume'])->toBeTrue()
         ->and($payload['liste_cp_dept'])->toHaveCount(2)
         ->and($payload['liste_cp_dept'][0]['label'])->toBe('75001')
-        ->and($payload['liste_cp_dept'][0]['type'])->toBe('cp');
+        ->and($payload['liste_cp_dept'][0])->toHaveKey('cp', '75001');
 });
 
 it('builds estimate payload without message fields', function (): void {
@@ -68,7 +68,7 @@ it('builds estimate payload without message fields', function (): void {
     $payload = $this->builder->buildEstimatePayload($campaign);
 
     expect($payload['query'])->toBe('calcule_groupe_localite')
-        ->and($payload['genre'])->toBe('femme')
+        ->and($payload['civilite'])->toBe('femme')
         ->and($payload)->not->toHaveKey('content')
         ->and($payload)->not->toHaveKey('expediteur')
         ->and($payload)->not->toHaveKey('idrouteur');
@@ -86,9 +86,9 @@ it('maps gender correctly', function (): void {
         return (new WepakPayloadBuilder(new WepakTargetingAdapter))->buildEstimatePayload($campaign);
     };
 
-    expect($makePayload('M')['genre'])->toBe('homme')
-        ->and($makePayload('F')['genre'])->toBe('femme')
-        ->and($makePayload('mixed')['genre'])->toBe('mixte');
+    expect($makePayload('M')['civilite'])->toBe('homme')
+        ->and($makePayload('F')['civilite'])->toBe('femme')
+        ->and($makePayload('mixed')['civilite'])->toBe('mixte');
 });
 
 it('returns null age for boundary values', function (): void {
@@ -105,8 +105,8 @@ it('returns null age for boundary values', function (): void {
 
     $payload = $this->builder->buildEstimatePayload($campaign);
 
-    expect($payload['age_min'])->toBeNull()
-        ->and($payload['age_max'])->toBeNull();
+    expect($payload['agemin'])->toBeNull()
+        ->and($payload['agemax'])->toBeNull();
 });
 
 it('handles null targeting gracefully', function (): void {
@@ -120,7 +120,7 @@ it('handles null targeting gracefully', function (): void {
     $payload = $this->builder->buildEstimatePayload($campaign);
 
     expect($payload['liste_cp_dept'])->toBeEmpty()
-        ->and($payload['genre'])->toBe('mixte');
+        ->and($payload['civilite'])->toBe('mixte');
 });
 
 it('includes blacklist in send payload', function (): void {
@@ -183,9 +183,9 @@ it('guesses location type from code length', function (): void {
 
     $payload = $this->builder->buildEstimatePayload($campaign);
 
-    expect($payload['liste_cp_dept'][0]['type'])->toBe('cp')
-        ->and($payload['liste_cp_dept'][1]['type'])->toBe('dept')
-        ->and($payload['liste_cp_dept'][2]['type'])->toBe('iris');
+    expect($payload['liste_cp_dept'][0])->toHaveKey('cp', '75001')
+        ->and($payload['liste_cp_dept'][1])->toHaveKey('dept', '75')
+        ->and($payload['liste_cp_dept'][2])->toHaveKey('iris', '751010101');
 });
 
 // ==================== DEMO PAYLOAD ====================
@@ -250,9 +250,9 @@ it('builds demo payload without targeting fields', function (): void {
 
     expect($payload)->not->toHaveKey('volume')
         ->and($payload)->not->toHaveKey('liste_cp_dept')
-        ->and($payload)->not->toHaveKey('genre')
-        ->and($payload)->not->toHaveKey('age_min')
-        ->and($payload)->not->toHaveKey('age_max');
+        ->and($payload)->not->toHaveKey('civilite')
+        ->and($payload)->not->toHaveKey('agemin')
+        ->and($payload)->not->toHaveKey('agemax');
 });
 
 it('detects double sms', function (): void {

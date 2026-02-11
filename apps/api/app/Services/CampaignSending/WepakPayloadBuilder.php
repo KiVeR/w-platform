@@ -25,9 +25,9 @@ class WepakPayloadBuilder
 
         $payload = [
             'query' => 'calcule_groupe_localite',
-            'genre' => $this->mapGender($targeting['gender'] ?? null),
-            'age_min' => $this->mapMinAge($targeting['age_min'] ?? null),
-            'age_max' => $this->mapMaxAge($targeting['age_max'] ?? null),
+            'civilite' => $this->mapGender($targeting['gender'] ?? null),
+            'agemin' => $this->mapMinAge($targeting['age_min'] ?? null),
+            'agemax' => $this->mapMaxAge($targeting['age_max'] ?? null),
             'liste_cp_dept' => $this->buildLocationList($targeting),
             'volume' => $campaign->volume_estimated ?? 0,
             'is_split_volume' => $this->hasSplitVolume($targeting),
@@ -101,9 +101,9 @@ class WepakPayloadBuilder
 
         return [
             'query' => 'calcule_groupe_localite',
-            'genre' => $this->mapGender($resolved['gender'] ?? null),
-            'age_min' => $this->mapMinAge($resolved['age_min'] ?? null),
-            'age_max' => $this->mapMaxAge($resolved['age_max'] ?? null),
+            'civilite' => $this->mapGender($resolved['gender'] ?? null),
+            'agemin' => $this->mapMinAge($resolved['age_min'] ?? null),
+            'agemax' => $this->mapMaxAge($resolved['age_max'] ?? null),
             'liste_cp_dept' => $this->buildLocationList($resolved),
             'volume' => 0,
             'is_split_volume' => $this->hasSplitVolume($resolved),
@@ -159,12 +159,19 @@ class WepakPayloadBuilder
 
         /** @var array{code: string, volume?: int, type?: string, filter?: array<string, mixed>|null} $entry */
         foreach ($postcodes as $entry) {
-            $locations[] = [
+            $type = (string) ($entry['type'] ?? $this->guessLocationType($entry['code']));
+            $typeKey = $this->wepakLocationKey($type);
+
+            $location = [
                 'label' => $entry['code'],
-                'quantite' => (int) ($entry['volume'] ?? 0),
-                'type' => (string) ($entry['type'] ?? $this->guessLocationType($entry['code'])),
-                'filtre' => $entry['filter'] ?? null,
+                $typeKey => $entry['code'],
             ];
+
+            if (isset($entry['volume']) && $entry['volume'] > 0) {
+                $location['quantite'] = (int) $entry['volume'];
+            }
+
+            $locations[] = $location;
         }
 
         return $locations;
@@ -176,6 +183,18 @@ class WepakPayloadBuilder
             5 => 'cp',
             1, 2, 3 => 'dept',
             9 => 'iris',
+            default => 'cp',
+        };
+    }
+
+    /**
+     * Map internal zone type to the Wepak entry key (dept, cp, iris).
+     */
+    protected function wepakLocationKey(string $type): string
+    {
+        return match ($type) {
+            'dept', 'department' => 'dept',
+            'iris' => 'iris',
             default => 'cp',
         };
     }

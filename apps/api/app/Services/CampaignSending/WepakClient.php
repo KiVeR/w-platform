@@ -44,8 +44,6 @@ class WepakClient
     /** @param array<string, mixed> $payload */
     protected function post(string $endpoint, array $payload, int $timeout): WepakResponse
     {
-        $payload['api_key'] = $this->apiKey;
-
         $url = rtrim($this->baseUrl, '/').$endpoint;
 
         Log::info('Wepak request', [
@@ -54,7 +52,10 @@ class WepakClient
         ]);
 
         try {
-            $response = $this->makeRequest($timeout)->post($url, $payload);
+            $response = $this->makeRequest($timeout)->asForm()->post($url, [
+                'data' => json_encode($payload),
+                'api_key' => $this->apiKey,
+            ]);
 
             Log::info('Wepak response', [
                 'endpoint' => $endpoint,
