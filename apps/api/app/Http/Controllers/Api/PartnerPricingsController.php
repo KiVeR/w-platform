@@ -11,6 +11,7 @@ use App\Http\Resources\PartnerPricingResource;
 use App\Models\PartnerPricing;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PartnerPricingsController extends Controller
@@ -20,7 +21,11 @@ class PartnerPricingsController extends Controller
         $this->authorize('viewAny', PartnerPricing::class);
 
         $pricings = QueryBuilder::for(PartnerPricing::class)
-            ->allowedFilters(['partner_id', 'is_active', 'is_default'])
+            ->allowedFilters([
+                AllowedFilter::exact('partner_id'),
+                AllowedFilter::exact('is_active'),
+                AllowedFilter::exact('is_default'),
+            ])
             ->allowedSorts(['name', 'volume_min', 'created_at'])
             ->allowedIncludes(['partner'])
             ->paginate(15);

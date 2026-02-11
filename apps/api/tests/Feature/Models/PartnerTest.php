@@ -7,9 +7,6 @@ use App\Models\Partner;
 use App\Models\PartnerFeature;
 use App\Models\Shop;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create a partner with required fields', function (): void {
     $partner = Partner::factory()->create([

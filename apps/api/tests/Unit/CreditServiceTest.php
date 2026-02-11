@@ -5,9 +5,6 @@ declare(strict_types=1);
 use App\Exceptions\InsufficientCreditsException;
 use App\Models\Partner;
 use App\Services\CreditService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('has enough credits when balance is sufficient', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);

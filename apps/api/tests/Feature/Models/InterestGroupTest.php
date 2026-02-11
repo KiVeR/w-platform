@@ -6,9 +6,6 @@ use App\Models\Campaign;
 use App\Models\Interest;
 use App\Models\InterestGroup;
 use App\Models\Partner;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create an interest group with required fields', function (): void {
     $group = InterestGroup::factory()->create([

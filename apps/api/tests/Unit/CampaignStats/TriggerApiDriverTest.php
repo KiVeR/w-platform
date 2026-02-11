@@ -7,11 +7,8 @@ use App\Models\Partner;
 use App\Models\User;
 use App\Services\CampaignStats\Drivers\TriggerApiDriver;
 use Database\Seeders\RolesAndPermissionsSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
@@ -34,7 +31,7 @@ it('returns stats on success', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->sent()->create([
-        'trigger_campaign_uuid' => 'uuid-abc-123',
+        'trigger_campaign_uuid' => '550e8400-e29b-41d4-a716-446655440000',
     ]);
 
     $stats = $this->driver->getStats($campaign);
@@ -65,7 +62,7 @@ it('returns null on HTTP error', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->sent()->create([
-        'trigger_campaign_uuid' => 'uuid-abc-123',
+        'trigger_campaign_uuid' => '550e8400-e29b-41d4-a716-446655440000',
     ]);
 
     $stats = $this->driver->getStats($campaign);
@@ -81,7 +78,7 @@ it('returns null on timeout exception', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->sent()->create([
-        'trigger_campaign_uuid' => 'uuid-abc-123',
+        'trigger_campaign_uuid' => '550e8400-e29b-41d4-a716-446655440000',
     ]);
 
     $stats = $this->driver->getStats($campaign);
@@ -101,7 +98,7 @@ it('logs error on exception', function (): void {
     $partner = Partner::factory()->create();
     $user = User::factory()->forPartner($partner)->create();
     $campaign = Campaign::factory()->forPartner($partner)->forUser($user)->sent()->create([
-        'trigger_campaign_uuid' => 'uuid-abc-123',
+        'trigger_campaign_uuid' => '550e8400-e29b-41d4-a716-446655440000',
     ]);
 
     $this->driver->getStats($campaign);

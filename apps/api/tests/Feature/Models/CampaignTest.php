@@ -8,9 +8,6 @@ use App\Enums\CampaignType;
 use App\Models\Campaign;
 use App\Models\Partner;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create a campaign with required fields', function (): void {
     $partner = Partner::factory()->create();

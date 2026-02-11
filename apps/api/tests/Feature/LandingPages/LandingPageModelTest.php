@@ -7,9 +7,6 @@ use App\Models\Campaign;
 use App\Models\LandingPage;
 use App\Models\Partner;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('belongs to partner', function (): void {
     $partner = Partner::factory()->create();

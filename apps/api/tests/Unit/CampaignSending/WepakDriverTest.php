@@ -7,10 +7,7 @@ use App\Models\Partner;
 use App\Models\User;
 use App\Services\CampaignSending\Drivers\WepakDriver;
 use Database\Seeders\RolesAndPermissionsSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

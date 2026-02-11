@@ -6,9 +6,6 @@ use App\DTOs\CostEstimate;
 use App\Models\Partner;
 use App\Models\PartnerPricing;
 use App\Services\PricingService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('calculates unit price from matching volume tier', function (): void {
     $partner = Partner::factory()->create();

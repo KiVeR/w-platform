@@ -6,14 +6,11 @@ use App\Models\LandingPage;
 use App\Models\Partner;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Laravel\Passport\Passport;
 use Wellpack\Sdk\Trigger\DTOs\VariableSchema;
 use Wellpack\Sdk\Trigger\Services\VariableSchemaApiService;
-
-uses(RefreshDatabase::class);
 
 const VALID_SCHEMA_UUID = '660e8400-e29b-41d4-a716-446655440111';
 const INVALID_SCHEMA_UUID = '660e8400-e29b-41d4-a716-000000000000';

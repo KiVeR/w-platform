@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 use App\Models\Interest;
 use App\Models\InterestGroup;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create an interest with required fields', function (): void {
     $group = InterestGroup::factory()->create();

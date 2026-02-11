@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 use App\Models\Partner;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create a user with required fields', function (): void {
     $user = User::factory()->create([

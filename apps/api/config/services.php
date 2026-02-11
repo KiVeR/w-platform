@@ -43,4 +43,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'geo_api' => [
+        'base_url' => env('GEO_API_URL', 'https://geo.api.gouv.fr'),
+        'timeout' => (int) env('GEO_API_TIMEOUT', 10),
+    ],
+
 ];

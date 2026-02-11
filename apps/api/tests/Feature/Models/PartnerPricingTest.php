@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 use App\Models\Partner;
 use App\Models\PartnerPricing;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create a partner pricing with required fields', function (): void {
     $partner = Partner::factory()->create();

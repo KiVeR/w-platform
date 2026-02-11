@@ -6,9 +6,6 @@ use App\Models\Partner;
 use App\Models\Router;
 use App\Services\CampaignSending\StopSmsService;
 use Database\Seeders\RolesAndPermissionsSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

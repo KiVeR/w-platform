@@ -5,9 +5,6 @@ declare(strict_types=1);
 use App\Enums\PartnerFeatureKey;
 use App\Models\Partner;
 use App\Models\PartnerFeature;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can create a partner feature', function (): void {
     $partner = Partner::factory()->create();
