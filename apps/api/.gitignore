@@ -14,6 +14,9 @@
 /auth.json
 /public/storage
 /storage/*.key
+/storage/*.7z
+/storage/geodata
+/storage/CONTOURS-IRIS-*
 /storage/pail
 /vendor
 /database/*.sqlite
