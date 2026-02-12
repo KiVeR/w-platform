@@ -202,12 +202,18 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
         body,
       } as never)
       if (error || !data) return
-      const raw = (data as { data: Record<string, string | null> }).data
+      const raw = (data as { data: Record<string, unknown> }).data
+      const nextTierRaw = raw.next_tier as { volume_threshold: number, unit_price: number, savings_pct: number } | null
       estimate.value = {
         volume: Number(raw.volume),
         unitPrice: raw.unit_price != null ? Number(raw.unit_price) : null,
         totalPrice: raw.total_price != null ? Number(raw.total_price) : null,
         smsCount: Number(raw.sms_count),
+        nextTier: nextTierRaw ? {
+          volumeThreshold: nextTierRaw.volume_threshold,
+          unitPrice: nextTierRaw.unit_price,
+          savingsPercent: nextTierRaw.savings_pct,
+        } : null,
       }
       estimateStale.value = false
     }

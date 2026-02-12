@@ -279,7 +279,54 @@
       "stale": "Estimation obsolète",
       "staleDescription": "L'estimation ne reflète plus votre ciblage actuel",
       "autoCalculating": "Calcul automatique en cours…",
-      "completeTargeting": "Complétez votre ciblage pour lancer l'estimation"
+      "completeTargeting": "Complétez votre ciblage pour lancer l'estimation",
+      "score": {
+        "tooTargeted": "Trop ciblé",
+        "targeted": "Assez ciblé",
+        "optimal": "Bien dimensionné",
+        "broad": "Large",
+        "tooBroad": "Très large"
+      },
+      "seasonal": {
+        "christmas": {
+          "title": "Préparez Noël",
+          "desc": "C'est le moment idéal pour toucher vos clients avec une offre festive !"
+        },
+        "valentine": {
+          "title": "Saint-Valentin",
+          "desc": "Profitez de cette période pour proposer une offre spéciale couples."
+        },
+        "spring": {
+          "title": "Soldes de printemps",
+          "desc": "Le printemps arrive, lancez une campagne pour la nouvelle saison."
+        },
+        "parents": {
+          "title": "Fête des pères/mères",
+          "desc": "Période idéale pour cibler les acheteurs de cadeaux."
+        },
+        "backToSchool": {
+          "title": "Préparez la rentrée",
+          "desc": "La rentrée approche, anticipez avec une campagne ciblée."
+        }
+      },
+      "pricingNudge": {
+        "message": "Ajoutez ~{gap} contacts pour économiser {savings}% par SMS"
+      },
+      "sector": {
+        "optique": "Optique",
+        "immobilier": "Immobilier",
+        "restauration": "Restauration",
+        "fleuriste": "Fleuriste",
+        "thermalisme": "Thermalisme",
+        "automobile": "Automobile",
+        "proximite": "Commerce de proximité"
+      },
+      "sectorNudge": {
+        "radiusTooLarge": "Pour votre secteur, un rayon de {recommended} km est recommandé (actuel : {current} km)",
+        "ageRange": "Pour votre secteur, la tranche d'âge {recommended} ans est la plus performante",
+        "gender": "Pour votre secteur, le ciblage {recommended} est recommandé",
+        "apply": "Appliquer"
+      }
     },
     "sidebar": {
       "progress": "Progression"
@@ -344,7 +391,14 @@
         "ageMin": "Âge min",
         "ageMax": "Âge max",
         "ageLabel": "ans",
-        "allAges": "Tous âges"
+        "allAges": "Tous âges",
+        "preset": {
+          "18_25": "18-25",
+          "25_45": "25-45",
+          "45_65": "45-65",
+          "65plus": "65+",
+          "all": "Tous âges"
+        }
       },
       "department": {
         "search": "Rechercher un département...",
@@ -355,11 +409,12 @@
         "label": "département(s)"
       },
       "postcode": {
-        "placeholder": "Code postal (5 chiffres)",
+        "placeholder": "Code postal ou nom de commune",
         "invalid": "Code postal invalide",
         "duplicate": "Déjà ajouté",
         "selected": "{count} code(s) postal(aux)",
-        "label": "code(s) postal(aux)"
+        "label": "code(s) postal(aux)",
+        "searching": "Recherche en cours…"
       },
       "address": {
         "placeholder": "Rechercher une adresse...",

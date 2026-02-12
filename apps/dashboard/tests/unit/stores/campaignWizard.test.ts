@@ -281,6 +281,7 @@ describe('useCampaignWizardStore', () => {
         unitPrice: 0.045,
         totalPrice: 45,
         smsCount: 1,
+        nextTier: null,
       })
     })
 

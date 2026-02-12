@@ -7,6 +7,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import TargetingScoreGauge from '@/components/campaigns/wizard/TargetingScoreGauge.vue'
+import PricingTierNudge from '@/components/campaigns/wizard/PricingTierNudge.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { usePartnerStore } from '@/stores/partner'
 import { useApi } from '@/composables/useApi'
@@ -103,6 +105,9 @@ async function handleCount() {
           <span class="tabular-nums">~{{ estimatedVisits.toLocaleString('fr-FR') }}</span>
         </div>
 
+        <!-- Targeting score gauge -->
+        <TargetingScoreGauge v-if="wizard.estimate" :volume="wizard.estimate.volume" data-targeting-gauge />
+
         <!-- Pricing (only when partner selected) -->
         <template v-if="hasPricing">
           <Separator />
@@ -110,6 +115,13 @@ async function handleCount() {
             <span class="text-muted-foreground">{{ t('wizard.estimate.cost') }}</span>
             <span class="text-lg font-semibold text-primary" data-total-price>{{ formatCurrency(wizard.estimate.totalPrice!) }}</span>
           </div>
+          <!-- Pricing tier nudge -->
+          <PricingTierNudge
+            v-if="wizard.estimate?.nextTier && !insufficientCredits"
+            :next-tier="wizard.estimate.nextTier"
+            :current-volume="wizard.estimate.volume"
+            data-pricing-nudge-wrapper
+          />
           <Separator />
           <div class="flex items-center justify-between text-sm">
             <span class="text-muted-foreground">{{ t('wizard.estimate.creditsRemaining') }}</span>

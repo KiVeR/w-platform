@@ -68,6 +68,11 @@ export interface CampaignEstimate {
   unitPrice: number | null
   totalPrice: number | null
   smsCount: number
+  nextTier: {
+    volumeThreshold: number
+    unitPrice: number
+    savingsPercent: number
+  } | null
 }
 
 export interface CampaignRow {

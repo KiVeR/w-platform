@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { computed, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { MapPin, Hash, Navigation, Check } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import DemographicsSelector from '@/components/campaigns/wizard/DemographicsSelector.vue'
+import SeasonalBanner from '@/components/campaigns/wizard/SeasonalBanner.vue'
+import SectorNudge from '@/components/campaigns/wizard/SectorNudge.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { usePartnerShops } from '@/composables/usePartnerShops'
 import { usePartnerStore } from '@/stores/partner'
+import { useTargetingNudges, type TargetingNudge } from '@/composables/useTargetingNudges'
+import { SECTOR_CONFIGS } from '@/data/sector-nudges'
 import { useExpertMode } from '@/composables/useExpertMode'
+import { useApi } from '@/composables/useApi'
 import type { TargetingMethod } from '@/types/campaign'
 import type { SmartSearchResult } from '@wellpack/targeting/types/targeting'
 import { useCommuneBoundaries } from '@wellpack/targeting/composables/useCommuneBoundaries'
@@ -18,6 +23,13 @@ const partnerStore = usePartnerStore()
 const { primaryShop, fetchShops } = usePartnerShops()
 const { effectiveMode, setMode, detect } = useExpertMode()
 const { t } = useI18n()
+const api = useApi()
+
+const partnerActivityType = ref<string | null>(null)
+const { nudges: sectorNudges } = useTargetingNudges(
+  partnerActivityType,
+  computed(() => wizard.campaign.targeting),
+)
 
 const { communeGeoJson } = useCommuneBoundaries(
   computed(() => wizard.campaign.targeting.postcodes),
@@ -32,8 +44,17 @@ onMounted(() => {
   detect()
 })
 
-watch(() => partnerStore.effectivePartnerId, (id) => {
-  if (id) fetchShops(id)
+watch(() => partnerStore.effectivePartnerId, async (id) => {
+  if (id) {
+    fetchShops(id)
+    const { data, error } = await api.GET('/partners/{partner}', {
+      params: { path: { partner: id } },
+    } as never)
+    if (!error && data) {
+      const raw = (data as { data: { activity_type: string | null } }).data
+      partnerActivityType.value = raw.activity_type
+    }
+  }
 }, { immediate: true })
 
 const shopLabel = computed(() => {
@@ -137,10 +158,30 @@ function clearAddress(): void {
   wizard.campaign.targeting.lng = null
   wizard.isDirty = true
 }
+
+function handleSectorNudge(nudge: TargetingNudge): void {
+  const config = SECTOR_CONFIGS[partnerActivityType.value ?? '']
+  if (!config) return
+
+  if (nudge.type === 'radius' && config.radiusHint) {
+    wizard.campaign.targeting.radius = config.radiusHint[1]
+  }
+  else if (nudge.type === 'age' && config.ageHint) {
+    wizard.campaign.targeting.age_min = config.ageHint[0]
+    wizard.campaign.targeting.age_max = config.ageHint[1]
+  }
+  else if (nudge.type === 'gender' && config.genderHint) {
+    wizard.campaign.targeting.gender = config.genderHint
+  }
+  wizard.isDirty = true
+}
 </script>
 
 <template>
   <div class="space-y-6">
+    <!-- Seasonal banner -->
+    <SeasonalBanner />
+
     <!-- Header with mode toggle -->
     <div class="flex items-start justify-between gap-4">
       <div>
@@ -261,5 +302,12 @@ function clearAddress(): void {
 
     <!-- Demographics inline (both modes) -->
     <DemographicsSelector v-model="wizard.campaign.targeting" />
+
+    <!-- Sector nudges -->
+    <SectorNudge
+      v-if="sectorNudges.length > 0"
+      :nudges="sectorNudges"
+      @apply="handleSectorNudge"
+    />
   </div>
 </template>

@@ -127,4 +127,45 @@ describe('DemographicsSelector', () => {
     const wrapper = mountComponent()
     expect(wrapper.find('[data-gender-group]').exists()).toBe(true)
   })
+
+  it('preset "25-45" sets ageRange to [25, 45]', async () => {
+    const wrapper = mountComponent()
+    const presets = wrapper.findAll('[data-age-preset]')
+    // Presets: 18-25, 25-45, 45-65, 65+, Tous âges
+    await presets[1].trigger('click')
+
+    const emitted = wrapper.emitted('update:modelValue')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0][0]).toMatchObject({ age_min: 25, age_max: 45 })
+  })
+
+  it('preset "Tous âges" resets age to null/null', async () => {
+    const wrapper = mountComponent({
+      modelValue: {
+        method: 'department',
+        departments: ['75'],
+        postcodes: [],
+        address: null,
+        lat: null,
+        lng: null,
+        radius: null,
+        gender: null,
+        age_min: 25,
+        age_max: 45,
+      },
+    })
+    const presets = wrapper.findAll('[data-age-preset]')
+    // Last preset is "Tous âges"
+    await presets[4].trigger('click')
+
+    const emitted = wrapper.emitted('update:modelValue')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0][0]).toMatchObject({ age_min: null, age_max: null })
+  })
+
+  it('renders min/max labels (18 / 100)', () => {
+    const wrapper = mountComponent()
+    expect(wrapper.find('[data-age-min-label]').text()).toBe('18')
+    expect(wrapper.find('[data-age-max-label]').text()).toBe('100')
+  })
 })

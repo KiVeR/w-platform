@@ -6,7 +6,7 @@ import { localStorageMock, stubAuthGlobals } from '../../../helpers/auth-stubs'
 import { mockUseI18n } from '../../../helpers/stubs'
 
 const mockPost = vi.fn()
-const mockGet = vi.fn()
+const mockGet = vi.fn().mockResolvedValue({ data: { data: { activity_type: null } }, error: null })
 stubAuthGlobals({ $api: { POST: mockPost, PUT: vi.fn(), GET: mockGet } })
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('ref', ref)

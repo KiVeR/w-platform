@@ -42,6 +42,8 @@ const baseStubs = {
   Alert: { template: '<div data-alert><slot /></div>', props: ['variant'] },
   AlertDescription: slotStub,
   Badge: { template: '<span v-bind="$attrs"><slot /></span>', inheritAttrs: true },
+  TargetingScoreGauge: { template: '<div data-targeting-gauge />', props: ['volume'] },
+  PricingTierNudge: { template: '<div data-pricing-nudge-wrapper />', props: ['nextTier', 'currentVolume'] },
 }
 
 function mountPanel() {
@@ -86,7 +88,7 @@ describe('WizardEstimatePanel', () => {
 
   it('affiche les 4 lignes + coût quand estimate', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 1500, unitPrice: 0.04, totalPrice: 60, smsCount: 2 }
+    wizard.estimate = { volume: 1500, unitPrice: 0.04, totalPrice: 60, smsCount: 2, nextTier: null }
 
     const wrapper = mountPanel()
     expect(wrapper.find('[data-volume]').text()).toContain('1')
@@ -96,7 +98,7 @@ describe('WizardEstimatePanel', () => {
 
   it('fetch crédits partenaire au mount', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1 }
+    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     await wrapper.vm.$nextTick()
@@ -111,7 +113,7 @@ describe('WizardEstimatePanel', () => {
 
   it('crédits en rouge si insuffisants', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 10000, unitPrice: 0.04, totalPrice: 400, smsCount: 1 }
+    wizard.estimate = { volume: 10000, unitPrice: 0.04, totalPrice: 400, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     await wrapper.vm.$nextTick()
@@ -123,7 +125,7 @@ describe('WizardEstimatePanel', () => {
 
   it('alerte insuffisante visible', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 10000, unitPrice: 0.04, totalPrice: 400, smsCount: 1 }
+    wizard.estimate = { volume: 10000, unitPrice: 0.04, totalPrice: 400, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     await wrapper.vm.$nextTick()
@@ -134,7 +136,7 @@ describe('WizardEstimatePanel', () => {
 
   it('pas d\'alerte si crédits suffisants', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1 }
+    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     await wrapper.vm.$nextTick()
@@ -145,7 +147,7 @@ describe('WizardEstimatePanel', () => {
 
   it('bouton recalculer appelle requestEstimate', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1 }
+    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1, nextTier: null }
     wizard.requestEstimate = vi.fn().mockResolvedValue(undefined)
 
     const wrapper = mountPanel()
@@ -164,7 +166,7 @@ describe('WizardEstimatePanel', () => {
 
   it('pas de bouton comptage quand estimate existe', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1 }
+    wizard.estimate = { volume: 100, unitPrice: 0.04, totalPrice: 4, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     expect(wrapper.find('[data-count-button]').exists()).toBe(false)
@@ -177,7 +179,7 @@ describe('WizardEstimatePanel', () => {
 
   it('pricing masqué quand totalPrice null', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 500, unitPrice: null, totalPrice: null, smsCount: 1 }
+    wizard.estimate = { volume: 500, unitPrice: null, totalPrice: null, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     expect(wrapper.find('[data-total-price]').exists()).toBe(false)
@@ -187,7 +189,7 @@ describe('WizardEstimatePanel', () => {
   // QW4 — Visites estimées
   it('affiche ~135 visites quand volume = 4500', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 4500, unitPrice: 0.04, totalPrice: 180, smsCount: 1 }
+    wizard.estimate = { volume: 4500, unitPrice: 0.04, totalPrice: 180, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     const visits = wrapper.find('[data-estimated-visits]')
@@ -197,7 +199,7 @@ describe('WizardEstimatePanel', () => {
 
   it('affiche ~0 visites quand volume = 0', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 0, unitPrice: 0.04, totalPrice: 0, smsCount: 1 }
+    wizard.estimate = { volume: 0, unitPrice: 0.04, totalPrice: 0, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     const visits = wrapper.find('[data-estimated-visits]')
@@ -212,7 +214,7 @@ describe('WizardEstimatePanel', () => {
 
   it('tooltip présent sur la ligne des visites', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 4500, unitPrice: 0.04, totalPrice: 180, smsCount: 1 }
+    wizard.estimate = { volume: 4500, unitPrice: 0.04, totalPrice: 180, smsCount: 1, nextTier: null }
 
     const wrapper = mountPanel()
     const visits = wrapper.find('[data-estimated-visits]')
@@ -222,19 +224,74 @@ describe('WizardEstimatePanel', () => {
   // QW7 — Badge stale
   it('badge stale visible quand estimateStale = true', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1 }
+    wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1, nextTier: null }
     wizard.estimateStale = true
 
     const wrapper = mountPanel()
     expect(wrapper.find('[data-stale-badge]').exists()).toBe(true)
   })
 
+  // S3.2 — Targeting score gauge
+  it('jauge ciblage visible quand estimate existe', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 5000, unitPrice: 0.04, totalPrice: 200, smsCount: 1 }
+
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-targeting-gauge]').exists()).toBe(true)
+  })
+
+  it('jauge ciblage masquée quand estimate null', () => {
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-targeting-gauge]').exists()).toBe(false)
+  })
+
   it('badge stale absent quand estimateStale = false', () => {
     const wizard = useCampaignWizardStore()
-    wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1 }
+    wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1, nextTier: null }
     wizard.estimateStale = false
 
     const wrapper = mountPanel()
     expect(wrapper.find('[data-stale-badge]').exists()).toBe(false)
+  })
+
+  // S3.4 — Pricing tier nudge
+  it('nudge visible quand nextTier présent', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = {
+      volume: 4000,
+      unitPrice: 0.04,
+      totalPrice: 160,
+      smsCount: 1,
+      nextTier: { volumeThreshold: 5001, unitPrice: 0.033, savingsPercent: 17.5 },
+    }
+
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-pricing-nudge-wrapper]').exists()).toBe(true)
+  })
+
+  it('nudge masqué quand nextTier null', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 4000, unitPrice: 0.04, totalPrice: 160, smsCount: 1, nextTier: null }
+
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-pricing-nudge-wrapper]').exists()).toBe(false)
+  })
+
+  it('nudge masqué quand crédits insuffisants', async () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = {
+      volume: 10000,
+      unitPrice: 0.04,
+      totalPrice: 400,
+      smsCount: 1,
+      nextTier: { volumeThreshold: 15001, unitPrice: 0.033, savingsPercent: 17.5 },
+    }
+
+    const wrapper = mountPanel()
+    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
+
+    // euroCredits = 100 (mock), totalPrice = 400 → insufficient
+    expect(wrapper.find('[data-pricing-nudge-wrapper]').exists()).toBe(false)
   })
 })

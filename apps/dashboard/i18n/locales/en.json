@@ -279,7 +279,54 @@
       "stale": "Outdated estimate",
       "staleDescription": "The estimate no longer reflects your current targeting",
       "autoCalculating": "Auto-calculating…",
-      "completeTargeting": "Complete your targeting to launch the estimate"
+      "completeTargeting": "Complete your targeting to launch the estimate",
+      "score": {
+        "tooTargeted": "Too targeted",
+        "targeted": "Fairly targeted",
+        "optimal": "Well sized",
+        "broad": "Broad",
+        "tooBroad": "Very broad"
+      },
+      "seasonal": {
+        "christmas": {
+          "title": "Get ready for Christmas",
+          "desc": "It's the perfect time to reach your customers with a festive offer!"
+        },
+        "valentine": {
+          "title": "Valentine's Day",
+          "desc": "Take advantage of this period to offer a special couples deal."
+        },
+        "spring": {
+          "title": "Spring sales",
+          "desc": "Spring is coming, launch a campaign for the new season."
+        },
+        "parents": {
+          "title": "Father's/Mother's Day",
+          "desc": "Ideal time to target gift buyers."
+        },
+        "backToSchool": {
+          "title": "Back to school",
+          "desc": "School is approaching, plan ahead with a targeted campaign."
+        }
+      },
+      "pricingNudge": {
+        "message": "Add ~{gap} contacts to save {savings}% per SMS"
+      },
+      "sector": {
+        "optique": "Eyecare",
+        "immobilier": "Real estate",
+        "restauration": "Food & dining",
+        "fleuriste": "Florist",
+        "thermalisme": "Wellness",
+        "automobile": "Automotive",
+        "proximite": "Local business"
+      },
+      "sectorNudge": {
+        "radiusTooLarge": "For your sector, a {recommended} km radius is recommended (current: {current} km)",
+        "ageRange": "For your sector, the {recommended} age range performs best",
+        "gender": "For your sector, targeting {recommended} is recommended",
+        "apply": "Apply"
+      }
     },
     "sidebar": {
       "progress": "Progress"
@@ -344,7 +391,14 @@
         "ageMin": "Min age",
         "ageMax": "Max age",
         "ageLabel": "years",
-        "allAges": "All ages"
+        "allAges": "All ages",
+        "preset": {
+          "18_25": "18-25",
+          "25_45": "25-45",
+          "45_65": "45-65",
+          "65plus": "65+",
+          "all": "All ages"
+        }
       },
       "department": {
         "search": "Search a department...",
@@ -355,11 +409,12 @@
         "label": "department(s)"
       },
       "postcode": {
-        "placeholder": "Postcode (5 digits)",
+        "placeholder": "Postcode or municipality name",
         "invalid": "Invalid postcode",
         "duplicate": "Already added",
         "selected": "{count} postcode(s)",
-        "label": "postcode(s)"
+        "label": "postcode(s)",
+        "searching": "Searching…"
       },
       "address": {
         "placeholder": "Search an address...",
