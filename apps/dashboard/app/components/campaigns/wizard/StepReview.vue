@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import {
-  Megaphone, MessageSquare, MapPin, LayoutTemplate, CalendarIcon,
+  BarChart3, Megaphone, MessageSquare, MapPin, LayoutTemplate, CalendarIcon,
   Pencil, Send, FlaskConical, CheckCircle2, AlertCircle,
 } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -21,6 +21,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { usePartnerStore } from '@/stores/partner'
 import { useApi } from '@/composables/useApi'
@@ -46,7 +47,7 @@ onMounted(async () => {
 })
 
 const canLaunch = computed(() =>
-  wizard.reviewChecks.messageVerified && wizard.reviewChecks.sendConfirmed,
+  wizard.reviewChecks.messageVerified && wizard.reviewChecks.sendConfirmed && wizard.hasValidTargeting,
 )
 
 const scheduleLabel = computed(() => {
@@ -64,9 +65,9 @@ const scheduleLabel = computed(() => {
 })
 
 const sections = [
-  { key: 'type', icon: Megaphone, step: 0 },
-  { key: 'message', icon: MessageSquare, step: 1 },
-  { key: 'targeting', icon: MapPin, step: 2 },
+  { key: 'targeting', icon: MapPin, step: 0 },
+  { key: 'type', icon: Megaphone, step: 1 },
+  { key: 'message', icon: MessageSquare, step: 2 },
   { key: 'landingPage', icon: LayoutTemplate, step: 3 },
   { key: 'schedule', icon: CalendarIcon, step: 4 },
 ] as const
@@ -239,6 +240,16 @@ async function handleTest(): Promise<void> {
         </CardContent>
       </Card>
     </div>
+
+    <Alert v-if="!wizard.hasValidTargeting" variant="destructive" data-targeting-required-alert>
+      <AlertCircle class="size-4" />
+      <AlertDescription class="flex items-center justify-between">
+        <span>{{ t('wizard.review.targetingRequired') }}</span>
+        <Button variant="outline" size="sm" @click="wizard.goToStep(0)">
+          {{ t('wizard.review.goToTargeting') }}
+        </Button>
+      </AlertDescription>
+    </Alert>
 
     <Separator />
 

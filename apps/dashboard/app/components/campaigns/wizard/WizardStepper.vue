@@ -43,6 +43,14 @@ function computeStepStyle(index: number): StepStyle {
       circle: 'bg-primary text-primary-foreground',
     }
   }
+  // Step 0 (estimate) is always accessible from any step
+  if (index === 0) {
+    return {
+      state: 'step-accessible',
+      button: 'cursor-pointer hover:bg-accent text-muted-foreground',
+      circle: 'bg-muted text-muted-foreground border border-dashed border-primary/40',
+    }
+  }
   return {
     state: 'step-future',
     button: 'cursor-default text-muted-foreground opacity-50',
@@ -63,7 +71,8 @@ function dividerClass(index: number): string {
 }
 
 function handleClick(index: number): void {
-  if (index < props.currentStep) {
+  // Step 0 (estimate) is always clickable from any step
+  if (index === 0 || index < props.currentStep) {
     emit('step', index)
   }
 }
@@ -81,7 +90,7 @@ const { t } = useI18n()
           :class="dividerClass(index)"
           data-divider
         />
-        <Tooltip v-if="index < currentStep">
+        <Tooltip v-if="index < currentStep || (index === 0 && index !== currentStep)">
           <TooltipTrigger as-child>
             <button
               type="button"
@@ -95,14 +104,22 @@ const { t } = useI18n()
                 class="flex size-7 items-center justify-center rounded-full text-xs transition-colors duration-200"
                 :class="styles[index].circle"
               >
-                <Check v-if="validation[index]" class="size-4" />
-                <AlertTriangle v-else class="size-4" />
+                <template v-if="index < currentStep">
+                  <Check v-if="validation[index]" class="size-4" />
+                  <AlertTriangle v-else class="size-4" />
+                </template>
+                <component :is="step.icon" v-else class="size-4" />
               </span>
               <span class="hidden max-w-20 truncate sm:inline">{{ t(step.labelKey) }}</span>
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            {{ validation[index] ? t('wizard.stepper.valid') : t('wizard.stepper.incomplete') }}
+            <template v-if="index < currentStep">
+              {{ validation[index] ? t('wizard.stepper.valid') : t('wizard.stepper.incomplete') }}
+            </template>
+            <template v-else>
+              {{ t('wizard.stepper.goToEstimate') }}
+            </template>
           </TooltipContent>
         </Tooltip>
         <button

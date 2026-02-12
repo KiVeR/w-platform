@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { Megaphone, MessageSquare, MapPin, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
+import { BarChart3, Megaphone, MessageSquare, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
 import { usePartnerStore } from '@/stores/partner'
 import type { CampaignDraft, CampaignEstimate, WizardStep } from '@/types/campaign'
@@ -47,9 +47,9 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const showValidation = ref(false)
 
   const STEPS: WizardStep[] = [
+    { key: 'estimate', labelKey: 'wizard.steps.estimate', icon: BarChart3 },
     { key: 'type', labelKey: 'wizard.steps.type', icon: Megaphone },
     { key: 'message', labelKey: 'wizard.steps.message', icon: MessageSquare },
-    { key: 'targeting', labelKey: 'wizard.steps.targeting', icon: MapPin },
     { key: 'landing-page', labelKey: 'wizard.steps.landingPage', icon: LayoutTemplate },
     { key: 'schedule', labelKey: 'wizard.steps.schedule', icon: Calendar },
     { key: 'review', labelKey: 'wizard.steps.review', icon: CheckCircle },
@@ -88,11 +88,21 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     if (currentStep.value > 0) currentStep.value--
   }
 
+  const hasValidTargeting = computed(() => {
+    const t = campaign.value.targeting
+    if (t.method === 'department') return t.departments.length > 0
+    if (t.method === 'postcode') return t.postcodes.length > 0
+    if (t.method === 'address') return !!t.address && t.lat !== null && t.lng !== null && (t.radius ?? 0) >= 1
+    return false
+  })
+
   function validateStep(stepIndex: number): boolean {
     switch (stepIndex) {
       case 0:
-        return !!campaign.value.type
+        return true // Estimation is optional/skippable
       case 1:
+        return !!campaign.value.type
+      case 2:
         return (
           campaign.value.name.trim().length > 0
           && campaign.value.name.length <= 255
@@ -100,13 +110,6 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
           && !isForbiddenMessage(campaign.value.message)
           && /^[a-zA-Z0-9 .\-']{3,11}$/.test(campaign.value.sender)
         )
-      case 2: {
-        const t = campaign.value.targeting
-        if (t.method === 'department') return t.departments.length > 0
-        if (t.method === 'postcode') return t.postcodes.length > 0
-        if (t.method === 'address') return t.address !== null && t.lat !== null && t.lng !== null && (t.radius ?? 0) >= 1
-        return false
-      }
       case 3:
         return true
       case 4:
@@ -259,6 +262,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     createDraft,
     saveDraft,
     ensureDraft,
+    hasValidTargeting,
     requestEstimate,
     scheduleCampaign,
     sendCampaign,

@@ -160,6 +160,7 @@
   "wizard": {
     "title": "Nouvelle campagne",
     "steps": {
+      "estimate": "Estimation",
       "type": "Type",
       "message": "Message",
       "targeting": "Ciblage",
@@ -231,7 +232,9 @@
       "noLandingPage": "Aucune landing page",
       "departments": "départements",
       "postcodes": "codes postaux",
-      "addressRadius": "{address} ({radius} km)"
+      "addressRadius": "{address} ({radius} km)",
+      "targetingRequired": "Ciblage requis pour envoyer la campagne",
+      "goToTargeting": "Configurer le ciblage"
     },
     "autosave": {
       "saved": "Brouillon sauvegardé",
@@ -254,6 +257,11 @@
     },
     "estimate": {
       "title": "Estimation",
+      "stepTitle": "Estimation du volume",
+      "stepDescription": "Définissez votre zone géographique et estimez le volume de destinataires",
+      "calculateButton": "Calculer le volume",
+      "resultTitle": "Résultat de l'estimation",
+      "recipients": "destinataires",
       "type": "Type",
       "volume": "Volume estimé",
       "smsCount": "Nombre de SMS",
@@ -263,8 +271,8 @@
       "recalculate": "Recalculer",
       "launchCount": "Lancer le comptage",
       "calculating": "Calcul en cours, veuillez patienter…",
-      "notAvailable": "Complétez le ciblage puis lancez le comptage",
-      "selectPartner": "Sélectionnez un partenaire pour lancer le comptage"
+      "notAvailable": "Lancez le comptage pour estimer le volume de destinataires",
+      "selectPartner": "Sélectionnez un partenaire pour voir le coût estimé"
     },
     "sidebar": {
       "progress": "Progression"
@@ -272,6 +280,7 @@
     "stepper": {
       "valid": "Étape complète",
       "incomplete": "À compléter",
+      "goToEstimate": "Retour à l'estimation",
       "mobileIndicator": "Étape {current} sur {total}"
     },
     "message": {

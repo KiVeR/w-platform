@@ -69,7 +69,7 @@ describe('WizardSidebarPreview', () => {
 
     const wrapper = mountPanel()
     const item0 = wrapper.find('[data-checklist-item="0"]')
-    expect(item0.text()).toContain('wizard.steps.type')
+    expect(item0.text()).toContain('wizard.steps.estimate')
   })
 
   it('renders sidebar preview card', () => {

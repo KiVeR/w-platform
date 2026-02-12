@@ -95,9 +95,11 @@ describe('StepReview', () => {
     expect(text).toContain('wizard.review.sections.schedule')
   })
 
-  it('checkboxes activent le bouton lancer', async () => {
+  it('checkboxes + valid targeting activent le bouton lancer', async () => {
     const wizard = useCampaignWizardStore()
     wizard.campaignId = 99
+    wizard.campaign.targeting.method = 'department'
+    wizard.campaign.targeting.departments = ['75']
 
     const wrapper = mount(StepReview, {
       global: { stubs: baseStubs },
@@ -112,6 +114,23 @@ describe('StepReview', () => {
 
     const launchBtnAfter = wrapper.find('[data-launch-button]')
     expect(launchBtnAfter.attributes('disabled')).toBeUndefined()
+  })
+
+  it('launch button disabled without valid targeting even with checkboxes', async () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaignId = 99
+    wizard.campaign.targeting.method = 'department'
+    wizard.campaign.targeting.departments = []
+    wizard.reviewChecks.messageVerified = true
+    wizard.reviewChecks.sendConfirmed = true
+
+    const wrapper = mount(StepReview, {
+      global: { stubs: baseStubs },
+    })
+
+    await wrapper.vm.$nextTick()
+    const launchBtn = wrapper.find('[data-launch-button]')
+    expect(launchBtn.attributes('disabled')).toBeDefined()
   })
 
   it('targeting badges render for department method', () => {
@@ -232,6 +251,24 @@ describe('StepReview', () => {
     expect(wrapper.text()).toContain('wizard.targeting.demographics.genderMale')
     expect(wrapper.text()).toContain('25')
     expect(wrapper.text()).toContain('50')
+  })
+
+  it('targeting required alert visible when no valid targeting', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.targeting.method = 'department'
+    wizard.campaign.targeting.departments = []
+
+    const wrapper = mount(StepReview, mountOptions())
+    expect(wrapper.find('[data-targeting-required-alert]').exists()).toBe(true)
+  })
+
+  it('targeting required alert hidden when targeting is valid', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.targeting.method = 'department'
+    wizard.campaign.targeting.departments = ['75']
+
+    const wrapper = mount(StepReview, mountOptions())
+    expect(wrapper.find('[data-targeting-required-alert]').exists()).toBe(false)
   })
 
   it('displays Mixte when gender is null but age is set', () => {

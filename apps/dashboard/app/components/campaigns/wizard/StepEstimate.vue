@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MapPin, Hash, Navigation, Check } from 'lucide-vue-next'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { MapPin, Hash, Navigation, Check, BarChart3, RefreshCw, Loader2 } from 'lucide-vue-next'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import DemographicsSelector from '@/components/campaigns/wizard/DemographicsSelector.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
@@ -10,7 +11,7 @@ import type { TargetingMethod } from '@/types/campaign'
 const wizard = useCampaignWizardStore()
 const { t } = useI18n()
 
-const validationError = ref('')
+const isCounting = ref(false)
 
 const methods: { key: TargetingMethod, icon: typeof MapPin }[] = [
   { key: 'department', icon: MapPin },
@@ -21,7 +22,6 @@ const methods: { key: TargetingMethod, icon: typeof MapPin }[] = [
 function selectMethod(method: TargetingMethod) {
   wizard.campaign.targeting.method = method
   wizard.isDirty = true
-  validationError.value = ''
 }
 
 function toggleDepartment(code: string) {
@@ -34,15 +34,21 @@ function toggleDepartment(code: string) {
     deps.push(code)
   }
   wizard.isDirty = true
-  validationError.value = ''
 }
 
-defineExpose({ validationError })
+async function handleCount() {
+  isCounting.value = true
+  try { await wizard.requestEstimate() }
+  finally { isCounting.value = false }
+}
 </script>
 
 <template>
   <div class="space-y-6">
-    <h2 class="text-lg font-semibold">{{ t('wizard.targeting.title') }}</h2>
+    <div>
+      <h2 class="text-lg font-semibold">{{ t('wizard.estimate.stepTitle') }}</h2>
+      <p class="mt-1 text-sm text-muted-foreground">{{ t('wizard.estimate.stepDescription') }}</p>
+    </div>
 
     <div class="grid gap-4 sm:grid-cols-3">
       <Card
@@ -72,7 +78,7 @@ defineExpose({ validationError })
       </Card>
     </div>
 
-    <!-- Carte en premier (proéminente) -->
+    <!-- Carte en premier (proeminente) -->
     <ClientOnly>
       <TargetingMap
         :method="wizard.campaign.targeting.method"
@@ -87,7 +93,7 @@ defineExpose({ validationError })
       />
     </ClientOnly>
 
-    <!-- Sélecteur en dessous -->
+    <!-- Selecteur en dessous -->
     <div>
       <DepartmentSelector
         v-if="wizard.campaign.targeting.method === 'department'"
@@ -108,18 +114,64 @@ defineExpose({ validationError })
         @update:lng="v => { wizard.campaign.targeting.lng = v; wizard.isDirty = true }"
         @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
       />
-
-      <p
-        v-if="validationError"
-        data-validation-error
-        class="mt-3 text-sm text-destructive"
-      >
-        {{ validationError }}
-      </p>
     </div>
 
     <Separator />
 
     <DemographicsSelector v-model="wizard.campaign.targeting" />
+
+    <!-- Section estimation inline -->
+    <Separator />
+
+    <!-- Loading state -->
+    <div v-if="isCounting && !wizard.estimate" class="flex flex-col items-center gap-3 py-6 text-center" data-counting-state>
+      <Loader2 class="size-6 animate-spin text-primary" />
+      <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.calculating') }}</p>
+    </div>
+
+    <!-- Results -->
+    <Card v-else-if="wizard.estimate" class="border-primary/20 bg-primary/3" data-estimate-result>
+      <CardHeader class="flex-row items-center justify-between space-y-0 pb-2">
+        <div class="flex items-center gap-2">
+          <BarChart3 class="size-4 text-primary" />
+          <CardTitle class="text-sm font-semibold text-primary">{{ t('wizard.estimate.resultTitle') }}</CardTitle>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="isCounting"
+          data-recalculate-button
+          @click="handleCount"
+        >
+          <RefreshCw class="size-3" :class="isCounting ? 'animate-spin' : ''" />
+          <span class="ml-1">{{ t('wizard.estimate.recalculate') }}</span>
+        </Button>
+      </CardHeader>
+      <CardContent>
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-muted-foreground">{{ t('wizard.estimate.volume') }}</span>
+          <span class="text-lg font-semibold" data-volume>
+            {{ wizard.estimate.volume.toLocaleString('fr-FR') }} {{ t('wizard.estimate.recipients') }}
+          </span>
+        </div>
+        <div class="mt-1 flex items-center justify-between text-sm">
+          <span class="text-muted-foreground">{{ t('wizard.estimate.smsCount') }}</span>
+          <span class="font-medium" data-sms-count>{{ wizard.estimate.smsCount }} SMS/dest.</span>
+        </div>
+      </CardContent>
+    </Card>
+
+    <!-- Empty state: Count button -->
+    <div v-else class="flex flex-col items-center gap-3 py-4 text-center" data-estimate-empty>
+      <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.notAvailable') }}</p>
+      <Button
+        :disabled="isCounting"
+        data-count-button
+        @click="handleCount"
+      >
+        <BarChart3 class="size-4" />
+        {{ t('wizard.estimate.calculateButton') }}
+      </Button>
+    </div>
   </div>
 </template>

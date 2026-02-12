@@ -160,6 +160,7 @@
   "wizard": {
     "title": "New campaign",
     "steps": {
+      "estimate": "Estimate",
       "type": "Type",
       "message": "Message",
       "targeting": "Targeting",
@@ -231,7 +232,9 @@
       "noLandingPage": "No landing page",
       "departments": "departments",
       "postcodes": "postcodes",
-      "addressRadius": "{address} ({radius} km)"
+      "addressRadius": "{address} ({radius} km)",
+      "targetingRequired": "Targeting is required to send the campaign",
+      "goToTargeting": "Configure targeting"
     },
     "autosave": {
       "saved": "Draft saved",
@@ -254,6 +257,11 @@
     },
     "estimate": {
       "title": "Estimate",
+      "stepTitle": "Volume estimation",
+      "stepDescription": "Define your geographic area and estimate the number of recipients",
+      "calculateButton": "Calculate volume",
+      "resultTitle": "Estimation result",
+      "recipients": "recipients",
       "type": "Type",
       "volume": "Estimated volume",
       "smsCount": "SMS count",
@@ -263,8 +271,8 @@
       "recalculate": "Recalculate",
       "launchCount": "Launch count",
       "calculating": "Counting in progress, please wait…",
-      "notAvailable": "Complete targeting then launch the count",
-      "selectPartner": "Select a partner to launch the count"
+      "notAvailable": "Launch the count to estimate the number of recipients",
+      "selectPartner": "Select a partner to see the estimated cost"
     },
     "sidebar": {
       "progress": "Progress"
@@ -272,6 +280,7 @@
     "stepper": {
       "valid": "Step complete",
       "incomplete": "Incomplete",
+      "goToEstimate": "Go to estimation",
       "mobileIndicator": "Step {current} of {total}"
     },
     "message": {

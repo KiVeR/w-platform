@@ -15,15 +15,15 @@ import StepSchedule from '@/components/campaigns/wizard/StepSchedule.vue'
 import StepReview from '@/components/campaigns/wizard/StepReview.vue'
 import StepLandingPage from '@/components/campaigns/wizard/StepLandingPage.vue'
 import StepMessage from '@/components/campaigns/wizard/StepMessage.vue'
-import StepTargeting from '@/components/campaigns/wizard/StepTargeting.vue'
+import StepEstimate from '@/components/campaigns/wizard/StepEstimate.vue'
 
 const wizard = useCampaignWizardStore()
 const { t } = useI18n()
 
 const stepComponents: Component[] = [
+  StepEstimate,
   StepType,
   StepMessage,
-  StepTargeting,
   StepLandingPage,
   StepSchedule,
   StepReview,
@@ -108,7 +108,7 @@ async function handleNext() {
 
       <aside class="hidden lg:block">
         <div class="sticky top-6 space-y-4">
-          <WizardSidebarPreview v-if="wizard.currentStep <= 1" />
+          <WizardSidebarPreview v-if="wizard.currentStep >= 1 && wizard.currentStep <= 2" />
           <WizardEstimatePanel />
         </div>
       </aside>

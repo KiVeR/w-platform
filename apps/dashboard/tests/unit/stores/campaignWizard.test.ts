@@ -82,94 +82,65 @@ describe('useCampaignWizardStore', () => {
   })
 
   describe('validation', () => {
-    it('validateStep 0 returns true (type always set)', () => {
+    it('step 0 (estimate) always returns true', () => {
       const wizard = useCampaignWizardStore()
       expect(wizard.validateCurrentStep()).toBe(true)
     })
 
-    it('step 1: returns false if name empty', () => {
+    it('step 1 (type) returns true (type always set)', () => {
       const wizard = useCampaignWizardStore()
       wizard.goToStep(1)
+      expect(wizard.validateCurrentStep()).toBe(true)
+    })
+
+    it('step 2: returns false if name empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(2)
       wizard.campaign.name = ''
       wizard.campaign.message = 'Hello'
       expect(wizard.validateCurrentStep()).toBe(false)
     })
 
-    it('step 1: returns false if message empty', () => {
+    it('step 2: returns false if message empty', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = 'Test'
       wizard.campaign.message = ''
       expect(wizard.validateCurrentStep()).toBe(false)
     })
 
-    it('step 1: returns false if forbidden domain in message', () => {
+    it('step 2: returns false if forbidden domain in message', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Visit rsms.co'
       expect(wizard.validateCurrentStep()).toBe(false)
     })
 
-    it('step 1: returns false if sender empty', () => {
+    it('step 2: returns false if sender empty', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
       wizard.campaign.sender = ''
       expect(wizard.validateCurrentStep()).toBe(false)
     })
 
-    it('step 1: returns false if sender too short', () => {
+    it('step 2: returns false if sender too short', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
       wizard.campaign.sender = 'AB'
       expect(wizard.validateCurrentStep()).toBe(false)
     })
 
-    it('step 1: returns true for valid name + message + sender', () => {
+    it('step 2: returns true for valid name + message + sender', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = 'Promo'
       wizard.campaign.message = 'Bonjour'
       wizard.campaign.sender = 'WELLPACK'
-      expect(wizard.validateCurrentStep()).toBe(true)
-    })
-
-    it('step 2 department: returns false if no departments', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.goToStep(2)
-      wizard.campaign.targeting.method = 'department'
-      wizard.campaign.targeting.departments = []
-      expect(wizard.validateCurrentStep()).toBe(false)
-    })
-
-    it('step 2 department: returns true with departments selected', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.goToStep(2)
-      wizard.campaign.targeting.method = 'department'
-      wizard.campaign.targeting.departments = ['75']
-      expect(wizard.validateCurrentStep()).toBe(true)
-    })
-
-    it('step 2 postcode: returns true with postcodes', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.goToStep(2)
-      wizard.campaign.targeting.method = 'postcode'
-      wizard.campaign.targeting.postcodes = ['75001']
-      expect(wizard.validateCurrentStep()).toBe(true)
-    })
-
-    it('step 2 address: returns true with full address data', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.goToStep(2)
-      wizard.campaign.targeting.method = 'address'
-      wizard.campaign.targeting.address = 'Paris'
-      wizard.campaign.targeting.lat = 48.86
-      wizard.campaign.targeting.lng = 2.34
-      wizard.campaign.targeting.radius = 10
       expect(wizard.validateCurrentStep()).toBe(true)
     })
 
@@ -194,6 +165,64 @@ describe('useCampaignWizardStore', () => {
       wizard.scheduleMode = 'now'
 
       expect(wizard.validateCurrentStep()).toBe(true)
+    })
+  })
+
+  describe('hasValidTargeting', () => {
+    it('returns false when departments empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'department'
+      wizard.campaign.targeting.departments = []
+      expect(wizard.hasValidTargeting).toBe(false)
+    })
+
+    it('returns true with departments selected', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'department'
+      wizard.campaign.targeting.departments = ['75']
+      expect(wizard.hasValidTargeting).toBe(true)
+    })
+
+    it('returns false when postcodes empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'postcode'
+      wizard.campaign.targeting.postcodes = []
+      expect(wizard.hasValidTargeting).toBe(false)
+    })
+
+    it('returns true with postcodes', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'postcode'
+      wizard.campaign.targeting.postcodes = ['75001']
+      expect(wizard.hasValidTargeting).toBe(true)
+    })
+
+    it('returns true with full address data', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'address'
+      wizard.campaign.targeting.address = 'Paris'
+      wizard.campaign.targeting.lat = 48.86
+      wizard.campaign.targeting.lng = 2.34
+      wizard.campaign.targeting.radius = 10
+      expect(wizard.hasValidTargeting).toBe(true)
+    })
+
+    it('returns false with incomplete address', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'address'
+      wizard.campaign.targeting.address = 'Paris'
+      wizard.campaign.targeting.lat = null
+      expect(wizard.hasValidTargeting).toBe(false)
+    })
+
+    it('returns false with radius < 1', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'address'
+      wizard.campaign.targeting.address = 'Paris'
+      wizard.campaign.targeting.lat = 48.86
+      wizard.campaign.targeting.lng = 2.34
+      wizard.campaign.targeting.radius = 0
+      expect(wizard.hasValidTargeting).toBe(false)
     })
   })
 
@@ -287,16 +316,21 @@ describe('useCampaignWizardStore', () => {
   })
 
   describe('validateStep', () => {
-    it('validateStep(0) returns true (type always set)', () => {
+    it('validateStep(0) always returns true (estimate optional)', () => {
       const wizard = useCampaignWizardStore()
       expect(wizard.validateStep(0)).toBe(true)
     })
 
-    it('validateStep(1) returns false if name empty', () => {
+    it('validateStep(1) returns true (type always set)', () => {
+      const wizard = useCampaignWizardStore()
+      expect(wizard.validateStep(1)).toBe(true)
+    })
+
+    it('validateStep(2) returns false if name empty', () => {
       const wizard = useCampaignWizardStore()
       wizard.campaign.name = ''
       wizard.campaign.message = 'Hello'
-      expect(wizard.validateStep(1)).toBe(false)
+      expect(wizard.validateStep(2)).toBe(false)
     })
 
     it('validateStep works independently of currentStep', () => {
@@ -305,7 +339,7 @@ describe('useCampaignWizardStore', () => {
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
       wizard.campaign.sender = 'WELLPACK'
-      expect(wizard.validateStep(1)).toBe(true)
+      expect(wizard.validateStep(2)).toBe(true)
     })
 
     it('stepValidation returns array of 6 booleans', () => {
@@ -313,15 +347,31 @@ describe('useCampaignWizardStore', () => {
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
       wizard.campaign.sender = 'WELLPACK'
-      wizard.campaign.targeting.method = 'department'
-      wizard.campaign.targeting.departments = ['75']
 
       const validation = wizard.stepValidation
       expect(validation).toHaveLength(6)
-      expect(validation[0]).toBe(true)
-      expect(validation[1]).toBe(true)
-      expect(validation[2]).toBe(true)
-      expect(validation[3]).toBe(true)
+      expect(validation[0]).toBe(true) // estimate
+      expect(validation[1]).toBe(true) // type
+      expect(validation[2]).toBe(true) // message
+      expect(validation[3]).toBe(true) // LP
+    })
+  })
+
+  describe('navigation — step 0 accessible from any step', () => {
+    it('goToStep(0) works from step 3', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(3)
+      expect(wizard.currentStep).toBe(3)
+
+      wizard.goToStep(0)
+      expect(wizard.currentStep).toBe(0)
+    })
+
+    it('goToStep(0) works from step 5', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.goToStep(5)
+      wizard.goToStep(0)
+      expect(wizard.currentStep).toBe(0)
     })
   })
 
@@ -333,7 +383,7 @@ describe('useCampaignWizardStore', () => {
 
     it('is set to true when validateCurrentStep fails', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = ''
       wizard.campaign.message = ''
 
@@ -344,7 +394,7 @@ describe('useCampaignWizardStore', () => {
 
     it('stays false when validateCurrentStep succeeds', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = 'Test'
       wizard.campaign.message = 'Hello'
       wizard.campaign.sender = 'WELLPACK'
@@ -356,12 +406,12 @@ describe('useCampaignWizardStore', () => {
 
     it('is reset to false on goToStep', () => {
       const wizard = useCampaignWizardStore()
-      wizard.goToStep(1)
+      wizard.goToStep(2)
       wizard.campaign.name = ''
       wizard.validateCurrentStep()
       expect(wizard.showValidation).toBe(true)
 
-      wizard.goToStep(2)
+      wizard.goToStep(3)
       expect(wizard.showValidation).toBe(false)
     })
   })
