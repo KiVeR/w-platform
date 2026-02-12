@@ -11,6 +11,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UsersController extends Controller
@@ -23,7 +24,7 @@ class UsersController extends Controller
         $currentUser = auth()->user();
 
         $users = QueryBuilder::for(User::forUser($currentUser))
-            ->allowedFilters(['partner_id', 'email', 'is_active'])
+            ->allowedFilters([AllowedFilter::exact('partner_id'), 'email', AllowedFilter::exact('is_active')])
             ->allowedSorts(['firstname', 'email', 'created_at'])
             ->allowedIncludes(['partner'])
             ->paginate(15);

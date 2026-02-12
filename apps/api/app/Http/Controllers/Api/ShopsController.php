@@ -12,6 +12,7 @@ use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ShopsController extends Controller
@@ -24,7 +25,7 @@ class ShopsController extends Controller
         $user = auth()->user();
 
         $shops = QueryBuilder::for(Shop::forUser($user))
-            ->allowedFilters(['partner_id', 'city', 'is_active'])
+            ->allowedFilters([AllowedFilter::exact('partner_id'), 'city', AllowedFilter::exact('is_active')])
             ->allowedSorts(['name', 'city', 'created_at'])
             ->allowedIncludes(['partner'])
             ->paginate(15);

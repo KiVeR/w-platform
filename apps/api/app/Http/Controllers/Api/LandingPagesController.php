@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Wellpack\Sdk\Trigger\Services\VariableSchemaApiService;
 
@@ -28,7 +29,7 @@ class LandingPagesController extends Controller
         $user = auth()->user();
 
         $landingPages = QueryBuilder::for(LandingPage::forUser($user))
-            ->allowedFilters(['partner_id', 'status', 'is_active'])
+            ->allowedFilters([AllowedFilter::exact('partner_id'), AllowedFilter::exact('status'), AllowedFilter::exact('is_active')])
             ->allowedSorts(['name', 'status', 'created_at'])
             ->allowedIncludes(['partner', 'creator'])
             ->paginate(15);

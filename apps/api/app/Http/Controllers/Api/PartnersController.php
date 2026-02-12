@@ -21,7 +21,7 @@ class PartnersController extends Controller
         $this->authorize('viewAny', Partner::class);
 
         $partners = QueryBuilder::for(Partner::class)
-            ->allowedFilters([AllowedFilter::partial('name'), 'is_active'])
+            ->allowedFilters([AllowedFilter::partial('name'), AllowedFilter::exact('is_active')])
             ->allowedSorts(['name', 'created_at'])
             ->allowedIncludes(['users', 'shops'])
             ->withCount(['users', 'shops'])

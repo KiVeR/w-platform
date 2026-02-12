@@ -25,6 +25,7 @@ use App\Services\Targeting\TargetingResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CampaignsController extends Controller
@@ -41,7 +42,12 @@ class CampaignsController extends Controller
         $user = auth()->user();
 
         $campaigns = QueryBuilder::for(Campaign::forUser($user))
-            ->allowedFilters(['partner_id', 'type', 'status', 'channel'])
+            ->allowedFilters([
+                AllowedFilter::exact('partner_id'),
+                AllowedFilter::exact('type'),
+                AllowedFilter::exact('status'),
+                AllowedFilter::exact('channel'),
+            ])
             ->allowedSorts(['name', 'scheduled_at', 'created_at'])
             ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
             ->paginate(15);
