@@ -9,7 +9,11 @@ definePageMeta({
 const wizard = useCampaignWizardStore()
 
 onMounted(() => {
-  wizard.reset()
+  if (wizard.isPreFilled) {
+    wizard.isPreFilled = false
+  } else {
+    wizard.reset()
+  }
 })
 
 onBeforeUnmount(() => {

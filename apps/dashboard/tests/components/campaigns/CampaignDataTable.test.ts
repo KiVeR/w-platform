@@ -116,4 +116,75 @@ describe('CampaignDataTable', () => {
 
     expect(wrapper.find('[data-skeleton]').exists()).toBe(true)
   })
+
+  // QW0 — Duplicate action
+  it('bouton "Relancer" visible pour status sent', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: [{ id: 1, name: 'Sent', type: 'prospection', status: 'sent', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: '2026-02-05', created_at: '2026-02-01' }],
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+    expect(wrapper.find('[data-duplicate-action]').exists()).toBe(true)
+  })
+
+  it('bouton "Relancer" visible pour status scheduled', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: [{ id: 1, name: 'Scheduled', type: 'prospection', status: 'scheduled', is_demo: false, volume_estimated: 100, scheduled_at: '2026-03-01', sent_at: null, created_at: '2026-02-01' }],
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+    expect(wrapper.find('[data-duplicate-action]').exists()).toBe(true)
+  })
+
+  it('bouton "Relancer" visible pour status cancelled', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: [{ id: 1, name: 'Cancelled', type: 'prospection', status: 'cancelled', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: null, created_at: '2026-02-01' }],
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+    expect(wrapper.find('[data-duplicate-action]').exists()).toBe(true)
+  })
+
+  it('bouton "Relancer" visible pour status failed', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: [{ id: 1, name: 'Failed', type: 'prospection', status: 'failed', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: null, created_at: '2026-02-01' }],
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+    expect(wrapper.find('[data-duplicate-action]').exists()).toBe(true)
+  })
+
+  it('bouton "Relancer" ABSENT pour status draft', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: [{ id: 2, name: 'Draft', type: 'fidelisation', status: 'draft', is_demo: false, volume_estimated: null, scheduled_at: null, sent_at: null, created_at: '2026-02-02' }],
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+    expect(wrapper.find('[data-duplicate-action]').exists()).toBe(false)
+  })
 })

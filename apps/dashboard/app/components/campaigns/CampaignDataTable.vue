@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, Eye, MoreHorizontal, Trash2, Send } from 'lucide-vue-next'
+import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, Copy, Eye, MoreHorizontal, Trash2, Send } from 'lucide-vue-next'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -31,6 +31,7 @@ const emit = defineEmits<{
   page: [page: number]
   delete: [id: number]
   view: [id: number]
+  duplicate: [id: number]
   retry: []
 }>()
 
@@ -143,6 +144,15 @@ function handleRowClick(row: CampaignRow, event: MouseEvent) {
                     <DropdownMenuItem @click="emit('view', row.id)">
                       <Eye class="mr-2 size-4" />
                       {{ t('campaigns.actions.view') }}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      v-if="row.status !== 'draft'"
+                      data-duplicate-action
+                      @click="emit('duplicate', row.id)"
+                    >
+                      <Copy class="mr-2 size-4" />
+                      {{ t('campaigns.actions.duplicate') }}
                     </DropdownMenuItem>
 
                     <AlertDialog v-if="row.status === 'draft'">

@@ -431,10 +431,202 @@ describe('useCampaignWizardStore', () => {
       expect(wizard.campaign.name).toBe('')
       expect(wizard.isDirty).toBe(false)
       expect(wizard.estimate).toBeNull()
+      expect(wizard.estimateStale).toBe(false)
       expect(wizard.scheduleMode).toBe('now')
       expect(wizard.reviewChecks.messageVerified).toBe(false)
       expect(wizard.reviewChecks.sendConfirmed).toBe(false)
       expect(wizard.showValidation).toBe(false)
+    })
+  })
+
+  // QW7 — estimateStale
+  describe('estimateStale', () => {
+    it('is false by default', () => {
+      const wizard = useCampaignWizardStore()
+      expect(wizard.estimateStale).toBe(false)
+    })
+
+    it('becomes true when targeting changes with existing estimate', async () => {
+      const wizard = useCampaignWizardStore()
+      wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1 }
+      wizard.campaign.targeting.departments = ['75']
+      await vi.dynamicImportSettled()
+
+      expect(wizard.estimateStale).toBe(true)
+    })
+
+    it('stays false when targeting changes WITHOUT existing estimate', async () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.departments = ['75']
+      await vi.dynamicImportSettled()
+
+      expect(wizard.estimateStale).toBe(false)
+    })
+
+    it('resets to false after requestEstimate succeeds', async () => {
+      mockPost.mockResolvedValue({
+        data: { data: { volume: '1000', unit_price: '0.045', total_price: '45.00', sms_count: '1' } },
+        error: null,
+      })
+
+      const wizard = useCampaignWizardStore()
+      wizard.estimate = { volume: 500, unitPrice: 0.04, totalPrice: 20, smsCount: 1 }
+      wizard.estimateStale = true
+
+      await wizard.requestEstimate()
+
+      expect(wizard.estimateStale).toBe(false)
+    })
+
+    it('resets to false in reset()', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.estimateStale = true
+
+      wizard.reset()
+
+      expect(wizard.estimateStale).toBe(false)
+    })
+  })
+
+  // QW2 — Debounced auto-estimate
+  describe('debouncedEstimate', () => {
+    it('triggers requestEstimate after 1500ms when valid targeting changes', async () => {
+      vi.useFakeTimers()
+      mockPost.mockResolvedValue({
+        data: { data: { volume: '1000', unit_price: '0.045', total_price: '45.00', sms_count: '1' } },
+        error: null,
+      })
+
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'department'
+      wizard.campaign.targeting.departments = ['75']
+      await vi.dynamicImportSettled()
+
+      vi.advanceTimersByTime(1500)
+      await vi.dynamicImportSettled()
+      await vi.runAllTimersAsync()
+
+      expect(mockPost).toHaveBeenCalledWith('/estimate', expect.anything())
+      vi.useRealTimers()
+    })
+
+    it('does NOT trigger if targeting is invalid', async () => {
+      vi.useFakeTimers()
+
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'department'
+      wizard.campaign.targeting.departments = []
+      await vi.dynamicImportSettled()
+
+      vi.advanceTimersByTime(2000)
+      await vi.dynamicImportSettled()
+
+      expect(mockPost).not.toHaveBeenCalled()
+      vi.useRealTimers()
+    })
+
+    it('rapid changes trigger only one call (debounce)', async () => {
+      vi.useFakeTimers()
+      mockPost.mockResolvedValue({
+        data: { data: { volume: '1000', unit_price: '0.045', total_price: '45.00', sms_count: '1' } },
+        error: null,
+      })
+
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'department'
+      wizard.campaign.targeting.departments = ['75']
+      await vi.dynamicImportSettled()
+
+      wizard.campaign.targeting.departments = ['75', '13']
+      await vi.dynamicImportSettled()
+
+      wizard.campaign.targeting.departments = ['75', '13', '69']
+      await vi.dynamicImportSettled()
+
+      vi.advanceTimersByTime(1500)
+      await vi.dynamicImportSettled()
+      await vi.runAllTimersAsync()
+
+      // Should only be called once (debounced)
+      const estimateCalls = mockPost.mock.calls.filter((args: unknown[]) => args[0] === '/estimate')
+      expect(estimateCalls.length).toBe(1)
+      vi.useRealTimers()
+    })
+  })
+
+  // QW0 — initFromCampaign + isPreFilled
+  describe('initFromCampaign', () => {
+    it('pre-fills type, channel, targeting, landing_page_id', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.initFromCampaign({
+        type: 'fidelisation',
+        channel: 'sms',
+        targeting: {
+          method: 'department',
+          departments: ['75', '13'],
+          postcodes: [],
+          address: null,
+          lat: null,
+          lng: null,
+          radius: null,
+          gender: 'F',
+          age_min: 25,
+          age_max: 55,
+        },
+        landing_page_id: 7,
+      })
+
+      expect(wizard.campaign.type).toBe('fidelisation')
+      expect(wizard.campaign.channel).toBe('sms')
+      expect(wizard.campaign.targeting.departments).toEqual(['75', '13'])
+      expect(wizard.campaign.targeting.gender).toBe('F')
+      expect(wizard.campaign.landing_page_id).toBe(7)
+    })
+
+    it('leaves name, message, sender empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.initFromCampaign({ type: 'prospection' })
+
+      expect(wizard.campaign.name).toBe('')
+      expect(wizard.campaign.message).toBe('')
+      expect(wizard.campaign.sender).toBe('')
+    })
+
+    it('campaignId is null (new draft)', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaignId = 99
+      wizard.initFromCampaign({ type: 'prospection' })
+
+      expect(wizard.campaignId).toBeNull()
+    })
+
+    it('is_demo is false even if source was demo', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.initFromCampaign({ type: 'prospection' })
+
+      expect(wizard.campaign.is_demo).toBe(false)
+    })
+
+    it('sets isPreFilled to true', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.initFromCampaign({ type: 'prospection' })
+
+      expect(wizard.isPreFilled).toBe(true)
+    })
+
+    it('targeting fallback to freshDraft if null', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.initFromCampaign({ type: 'prospection', targeting: null })
+
+      expect(wizard.campaign.targeting.method).toBe('department')
+      expect(wizard.campaign.targeting.departments).toEqual([])
+    })
+
+    it('estimateStale is false after init', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.initFromCampaign({ type: 'prospection' })
+
+      expect(wizard.estimateStale).toBe(false)
     })
   })
 })

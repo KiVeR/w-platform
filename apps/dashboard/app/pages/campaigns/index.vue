@@ -5,8 +5,12 @@ import { toast } from 'vue-sonner'
 import CampaignFilters from '@/components/campaigns/CampaignFilters.vue'
 import CampaignDataTable from '@/components/campaigns/CampaignDataTable.vue'
 import { useCampaigns } from '@/composables/useCampaigns'
+import { useCampaignWizardStore } from '@/stores/campaignWizard'
+import { useApi } from '@/composables/useApi'
 
 const { t } = useI18n()
+const wizard = useCampaignWizardStore()
+const api = useApi()
 
 const {
   campaigns,
@@ -48,6 +52,16 @@ async function handleSort(field: string) {
 async function handlePage(page: number) {
   await setPage(page)
 }
+
+async function handleDuplicate(id: number) {
+  const { data, error } = await api.GET('/campaigns/{campaign}', {
+    params: { path: { campaign: id } },
+  } as never)
+  if (error || !data) return
+  const raw = (data as { data: Record<string, unknown> }).data
+  wizard.initFromCampaign(raw)
+  navigateTo('/campaigns/new')
+}
 </script>
 
 <template>
@@ -87,6 +101,7 @@ async function handlePage(page: number) {
       @page="handlePage"
       @delete="handleDelete"
       @view="handleView"
+      @duplicate="handleDuplicate"
       @retry="fetchCampaigns"
     />
   </div>

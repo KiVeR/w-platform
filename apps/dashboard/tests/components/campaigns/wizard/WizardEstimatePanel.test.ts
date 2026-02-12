@@ -41,6 +41,7 @@ const baseStubs = {
   },
   Alert: { template: '<div data-alert><slot /></div>', props: ['variant'] },
   AlertDescription: slotStub,
+  Badge: { template: '<span v-bind="$attrs"><slot /></span>', inheritAttrs: true },
 }
 
 function mountPanel() {
@@ -181,5 +182,59 @@ describe('WizardEstimatePanel', () => {
     const wrapper = mountPanel()
     expect(wrapper.find('[data-total-price]').exists()).toBe(false)
     expect(wrapper.text()).toContain('wizard.estimate.selectPartner')
+  })
+
+  // QW4 — Visites estimées
+  it('affiche ~135 visites quand volume = 4500', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 4500, unitPrice: 0.04, totalPrice: 180, smsCount: 1 }
+
+    const wrapper = mountPanel()
+    const visits = wrapper.find('[data-estimated-visits]')
+    expect(visits.exists()).toBe(true)
+    expect(visits.text()).toContain('~135')
+  })
+
+  it('affiche ~0 visites quand volume = 0', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 0, unitPrice: 0.04, totalPrice: 0, smsCount: 1 }
+
+    const wrapper = mountPanel()
+    const visits = wrapper.find('[data-estimated-visits]')
+    expect(visits.exists()).toBe(true)
+    expect(visits.text()).toContain('~0')
+  })
+
+  it('n\'affiche PAS les visites si estimate est null', () => {
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-estimated-visits]').exists()).toBe(false)
+  })
+
+  it('tooltip présent sur la ligne des visites', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 4500, unitPrice: 0.04, totalPrice: 180, smsCount: 1 }
+
+    const wrapper = mountPanel()
+    const visits = wrapper.find('[data-estimated-visits]')
+    expect(visits.attributes('title')).toBe('wizard.estimate.estimatedVisitsTooltip')
+  })
+
+  // QW7 — Badge stale
+  it('badge stale visible quand estimateStale = true', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1 }
+    wizard.estimateStale = true
+
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-stale-badge]').exists()).toBe(true)
+  })
+
+  it('badge stale absent quand estimateStale = false', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.estimate = { volume: 1000, unitPrice: 0.04, totalPrice: 40, smsCount: 1 }
+    wizard.estimateStale = false
+
+    const wrapper = mountPanel()
+    expect(wrapper.find('[data-stale-badge]').exists()).toBe(false)
   })
 })

@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { usePartnerStore } from '@/stores/partner'
 import { useApi } from '@/composables/useApi'
@@ -16,8 +17,13 @@ const partnerStore = usePartnerStore()
 const api = useApi()
 const { t } = useI18n()
 
+const ESTIMATED_VISIT_RATE = 0.03
 
 const hasPricing = computed(() => wizard.estimate?.totalPrice != null)
+const estimatedVisits = computed(() => {
+  if (!wizard.estimate) return 0
+  return Math.round(wizard.estimate.volume * ESTIMATED_VISIT_RATE)
+})
 
 const euroCredits = ref<number | null>(null)
 const isCounting = ref(false)
@@ -52,6 +58,9 @@ async function handleCount() {
       <div class="flex items-center gap-2">
         <BarChart3 class="size-4 text-primary" />
         <CardTitle class="text-sm font-semibold text-primary">{{ t('wizard.estimate.title') }}</CardTitle>
+        <Badge v-if="wizard.estimateStale" variant="outline" class="border-warning text-warning text-xs" data-stale-badge>
+          {{ t('wizard.estimate.stale') }}
+        </Badge>
       </div>
       <Button
         v-if="wizard.estimate"
@@ -84,6 +93,14 @@ async function handleCount() {
         <div class="flex items-center justify-between text-sm">
           <span class="text-muted-foreground">{{ t('wizard.estimate.smsCount') }}</span>
           <span class="font-medium" data-sms-count>{{ wizard.estimate.smsCount }}</span>
+        </div>
+        <div
+          class="flex items-center justify-between text-xs text-muted-foreground"
+          :title="t('wizard.estimate.estimatedVisitsTooltip')"
+          data-estimated-visits
+        >
+          <span>{{ t('wizard.estimate.estimatedVisits') }}</span>
+          <span class="tabular-nums">~{{ estimatedVisits.toLocaleString('fr-FR') }}</span>
         </div>
 
         <!-- Pricing (only when partner selected) -->

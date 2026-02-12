@@ -1,4 +1,5 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { BarChart3, Megaphone, MessageSquare, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
@@ -42,6 +43,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const isSaving = ref(false)
   const saveError = ref<string | null>(null)
   const estimate = ref<CampaignEstimate | null>(null)
+  const estimateStale = ref(false)
   const scheduleMode = ref<'now' | 'schedule'>('now')
   const reviewChecks = ref({ messageVerified: false, sendConfirmed: false })
   const showValidation = ref(false)
@@ -96,6 +98,17 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     return false
   })
 
+  // QW2: Auto-estimate with debounce after targeting changes
+  const debouncedEstimate = useDebounceFn(() => {
+    if (hasValidTargeting.value) requestEstimate()
+  }, 1500)
+
+  // QW7 + QW2: Mark stale and trigger debounced re-estimate on targeting change
+  watch(() => JSON.stringify(campaign.value.targeting), () => {
+    if (estimate.value) estimateStale.value = true
+    debouncedEstimate()
+  })
+
   function validateStep(stepIndex: number): boolean {
     switch (stepIndex) {
       case 0:
@@ -128,8 +141,14 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
 
   const stepValidation = computed(() => STEPS.map((_, i) => validateStep(i)))
 
+  function targetingForApi() {
+    const t = { ...campaign.value.targeting }
+    if (t.radius != null) t.radius = t.radius * 1000
+    return t
+  }
+
   function campaignBody() {
-    const { name, type, channel, message, sender, scheduled_at, is_demo, additional_phone, targeting, landing_page_id } = campaign.value
+    const { name, type, channel, message, sender, scheduled_at, is_demo, additional_phone, landing_page_id } = campaign.value
     return {
       name: name || 'Brouillon',
       type,
@@ -139,7 +158,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
       scheduled_at,
       is_demo,
       additional_phone,
-      targeting,
+      targeting: targetingForApi(),
       landing_page_id,
       partner_id: partnerStore.effectivePartnerId,
     }
@@ -176,7 +195,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
 
   async function requestEstimate(): Promise<void> {
     try {
-      const body: Record<string, unknown> = { targeting: campaign.value.targeting }
+      const body: Record<string, unknown> = { targeting: targetingForApi() }
       const partnerId = partnerStore.effectivePartnerId
       if (partnerId) body.partner_id = partnerId
       const { data, error } = await api.POST('/estimate' as never, {
@@ -190,6 +209,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
         totalPrice: raw.total_price != null ? Number(raw.total_price) : null,
         smsCount: Number(raw.sms_count),
       }
+      estimateStale.value = false
     }
     catch {
       // Error toast handled by apiMiddleware
@@ -228,6 +248,20 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     }
   }
 
+  // QW0: Duplication — pre-fill wizard from existing campaign
+  const isPreFilled = ref(false)
+
+  function initFromCampaign(data: { type?: string, channel?: string, targeting?: CampaignDraft['targeting'] | null, landing_page_id?: number | null }): void {
+    reset()
+    if (data.type) campaign.value.type = data.type as CampaignDraft['type']
+    if (data.channel) campaign.value.channel = data.channel as CampaignDraft['channel']
+    const targeting = data.targeting ? { ...data.targeting } : freshDraft().targeting
+    if (targeting.radius != null) targeting.radius = targeting.radius / 1000
+    campaign.value.targeting = targeting
+    campaign.value.landing_page_id = data.landing_page_id ?? null
+    isPreFilled.value = true
+  }
+
   function reset(): void {
     currentStep.value = 0
     campaignId.value = null
@@ -236,9 +270,11 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     isSaving.value = false
     saveError.value = null
     estimate.value = null
+    estimateStale.value = false
     scheduleMode.value = 'now'
     reviewChecks.value = { messageVerified: false, sendConfirmed: false }
     showValidation.value = false
+    isPreFilled.value = false
   }
 
   return {
@@ -249,6 +285,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     isSaving,
     saveError,
     estimate,
+    estimateStale,
     scheduleMode,
     reviewChecks,
     showValidation,
@@ -266,6 +303,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     requestEstimate,
     scheduleCampaign,
     sendCampaign,
+    isPreFilled,
+    initFromCampaign,
     reset,
   }
 })

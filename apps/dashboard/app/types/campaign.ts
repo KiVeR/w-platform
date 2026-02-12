@@ -93,3 +93,13 @@ export interface CampaignFilters {
   status: string
   type: string
 }
+
+export interface Shop {
+  id: number
+  name: string
+  address: string | null
+  city: string | null
+  zip_code: string | null
+  latitude: number | null
+  longitude: number | null
+}
