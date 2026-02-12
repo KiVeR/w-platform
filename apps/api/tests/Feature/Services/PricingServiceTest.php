@@ -112,3 +112,99 @@ it('ignores inactive pricing tiers', function (): void {
     $service = app(PricingService::class);
     $service->calculate($partner->id, 5000);
 })->throws(\RuntimeException::class);
+
+// S3.4 — findNextTier tests
+it('findNextTier returns next tier with savings', function (): void {
+    $partner = Partner::factory()->create();
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 0,
+        'volume_max' => 5000,
+        'router_price' => 0.0400,
+        'data_price' => 0.0100,
+        'ci_price' => 0.0050,
+    ]);
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 5001,
+        'volume_max' => 20000,
+        'router_price' => 0.0250,
+        'data_price' => 0.0080,
+        'ci_price' => 0.0040,
+    ]);
+
+    $service = app(PricingService::class);
+    $result = $service->findNextTier($partner->id, 3000);
+
+    expect($result)
+        ->not->toBeNull()
+        ->volumeThreshold->toBe(5001)
+        ->unitPrice->toBe(0.033);
+
+    expect($result->savingsPercent)->toBeGreaterThan(0);
+});
+
+it('findNextTier returns null on the last tier', function (): void {
+    $partner = Partner::factory()->create();
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 0,
+        'volume_max' => null,
+        'router_price' => 0.0300,
+        'data_price' => 0.0100,
+        'ci_price' => 0.0050,
+        'is_default' => true,
+    ]);
+
+    $service = app(PricingService::class);
+    $result = $service->findNextTier($partner->id, 5000);
+
+    expect($result)->toBeNull();
+});
+
+it('findNextTier ignores inactive tiers', function (): void {
+    $partner = Partner::factory()->create();
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 0,
+        'volume_max' => 5000,
+        'router_price' => 0.0400,
+        'data_price' => 0.0100,
+        'ci_price' => 0.0050,
+    ]);
+    PartnerPricing::factory()->forPartner($partner)->inactive()->create([
+        'volume_min' => 5001,
+        'volume_max' => 20000,
+        'router_price' => 0.0200,
+        'data_price' => 0.0050,
+        'ci_price' => 0.0030,
+    ]);
+
+    $service = app(PricingService::class);
+    $result = $service->findNextTier($partner->id, 3000);
+
+    expect($result)->toBeNull();
+});
+
+it('findNextTier calculates correct savings percent', function (): void {
+    $partner = Partner::factory()->create();
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 0,
+        'volume_max' => 5000,
+        'router_price' => 0.0300,
+        'data_price' => 0.0100,
+        'ci_price' => 0.0050,
+    ]);
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 5001,
+        'volume_max' => 20000,
+        'router_price' => 0.0200,
+        'data_price' => 0.0100,
+        'ci_price' => 0.0050,
+    ]);
+
+    $service = app(PricingService::class);
+    $result = $service->findNextTier($partner->id, 3000);
+
+    // Current: 0.03 + 0.01 = 0.04, Next: 0.02 + 0.01 = 0.03
+    // Savings: (0.04 - 0.03) / 0.04 * 100 = 25%
+    expect($result)
+        ->not->toBeNull()
+        ->savingsPercent->toBe(25.0);
+});

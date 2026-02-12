@@ -30,6 +30,7 @@ class Partner extends Model
         'logo_url',
         'euro_credits',
         'router_id',
+        'activity_type',
     ];
 
     /** @return array<string, string> */

@@ -46,7 +46,7 @@ class EstimateController extends Controller
         }
 
         $partnerId = $user->hasRole('admin')
-            ? (isset($validated['partner_id']) ? (int) $validated['partner_id'] : null)
+            ? ($validated['partner_id'] ?? null)
             : $user->partner_id;
 
         if ($partnerId === null) {
@@ -59,12 +59,18 @@ class EstimateController extends Controller
         }
 
         $estimate = $pricingService->calculate($partnerId, $volume, useCi: false);
+        $nextTier = $pricingService->findNextTier($partnerId, $volume, useCi: false);
 
         return new JsonResponse(['data' => [
             'volume' => $volume,
             'unit_price' => $estimate->unitPrice,
             'total_price' => $estimate->totalPrice,
             'sms_count' => $volume,
+            'next_tier' => $nextTier ? [
+                'volume_threshold' => $nextTier->volumeThreshold,
+                'unit_price' => $nextTier->unitPrice,
+                'savings_pct' => $nextTier->savingsPercent,
+            ] : null,
         ]]);
     }
 }

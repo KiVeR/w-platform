@@ -195,3 +195,61 @@ it('returns 401 when unauthenticated', function (): void {
         'targeting' => ['method' => 'postcode', 'postcodes' => ['75001']],
     ])->assertUnauthorized();
 });
+
+// S3.4 — next_tier in estimate response (via mocked sender to control volume)
+it('estimate response includes next_tier when volume lands in lower tier', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'volume_min' => 0,
+        'volume_max' => 5000,
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+    PartnerPricing::factory()->forPartner($partner)->create([
+        'volume_min' => 5001,
+        'volume_max' => null,
+        'router_price' => 0.02,
+        'data_price' => 0.008,
+        'ci_price' => 0.004,
+    ]);
+
+    // Mock sender to return a controlled volume
+    $mock = Mockery::mock(\App\Contracts\CampaignSenderInterface::class);
+    $mock->shouldReceive('estimateVolumeFromTargeting')->andReturn(3000);
+    app()->instance(\App\Contracts\CampaignSenderInterface::class, $mock);
+
+    $response = $this->postJson('/api/estimate', [
+        'targeting' => ['method' => 'postcode', 'postcodes' => ['75001']],
+    ]);
+
+    $response->assertOk()
+        ->assertJsonStructure(['data' => ['volume', 'next_tier' => ['volume_threshold', 'unit_price', 'savings_pct']]])
+        ->assertJsonPath('data.next_tier.volume_threshold', 5001);
+});
+
+it('estimate response has next_tier null when on last tier', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    PartnerPricing::factory()->forPartner($partner)->default()->create([
+        'volume_min' => 0,
+        'volume_max' => null,
+        'router_price' => 0.03,
+        'data_price' => 0.01,
+        'ci_price' => 0.005,
+    ]);
+
+    $response = $this->postJson('/api/estimate', [
+        'targeting' => ['method' => 'postcode', 'postcodes' => ['75001']],
+    ]);
+
+    $response->assertOk()
+        ->assertJsonPath('data.next_tier', null);
+});
