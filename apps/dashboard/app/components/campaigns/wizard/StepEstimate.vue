@@ -1,17 +1,63 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { MapPin, Hash, Navigation, Check, BarChart3, RefreshCw, Loader2 } from 'lucide-vue-next'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { computed, watch, onMounted } from 'vue'
+import { MapPin, Hash, Navigation, Check } from 'lucide-vue-next'
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import DemographicsSelector from '@/components/campaigns/wizard/DemographicsSelector.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
+import { usePartnerShops } from '@/composables/usePartnerShops'
+import { usePartnerStore } from '@/stores/partner'
+import { useExpertMode } from '@/composables/useExpertMode'
 import type { TargetingMethod } from '@/types/campaign'
+import type { SmartSearchResult } from '@wellpack/targeting/types/targeting'
+import { useCommuneBoundaries } from '@wellpack/targeting/composables/useCommuneBoundaries'
 
 const wizard = useCampaignWizardStore()
+const partnerStore = usePartnerStore()
+const { primaryShop, fetchShops } = usePartnerShops()
+const { effectiveMode, setMode, detect } = useExpertMode()
 const { t } = useI18n()
 
-const isCounting = ref(false)
+const { communeGeoJson } = useCommuneBoundaries(
+  computed(() => wizard.campaign.targeting.postcodes),
+)
+
+const isSmartMode = computed({
+  get: () => effectiveMode.value === 'smart',
+  set: (val: boolean) => setMode(val ? 'smart' : 'classic'),
+})
+
+onMounted(() => {
+  detect()
+})
+
+watch(() => partnerStore.effectivePartnerId, (id) => {
+  if (id) fetchShops(id)
+}, { immediate: true })
+
+const shopLabel = computed(() => {
+  const shop = primaryShop.value
+  if (!shop) return ''
+  return [shop.address, shop.city].filter(Boolean).join(', ')
+})
+
+const shopCenter = computed<[number, number] | undefined>(() => {
+  const shop = primaryShop.value
+  if (!shop?.latitude || !shop?.longitude) return undefined
+  return [shop.latitude, shop.longitude]
+})
+
+function applyShopLocation(): void {
+  const shop = primaryShop.value
+  if (!shop?.latitude || !shop?.longitude) return
+  wizard.campaign.targeting.method = 'address'
+  wizard.campaign.targeting.address = shopLabel.value
+  wizard.campaign.targeting.lat = shop.latitude
+  wizard.campaign.targeting.lng = shop.longitude
+  wizard.campaign.targeting.radius = 3
+  wizard.isDirty = true
+}
 
 const methods: { key: TargetingMethod, icon: typeof MapPin }[] = [
   { key: 'department', icon: MapPin },
@@ -36,49 +82,143 @@ function toggleDepartment(code: string) {
   wizard.isDirty = true
 }
 
-async function handleCount() {
-  isCounting.value = true
-  try { await wizard.requestEstimate() }
-  finally { isCounting.value = false }
+// SmartSearch selection handler
+function handleSmartSelect(result: SmartSearchResult): void {
+  if (result.type === 'department' && result.departmentCode) {
+    wizard.campaign.targeting.method = 'department'
+    if (!wizard.campaign.targeting.departments.includes(result.departmentCode)) {
+      wizard.campaign.targeting.departments.push(result.departmentCode)
+    }
+    // Clear address fields when switching to department
+    wizard.campaign.targeting.address = null
+    wizard.campaign.targeting.lat = null
+    wizard.campaign.targeting.lng = null
+    wizard.campaign.targeting.postcodes = []
+  }
+  else if (result.type === 'postcode' && result.postcode) {
+    wizard.campaign.targeting.method = 'postcode'
+    if (!wizard.campaign.targeting.postcodes.includes(result.postcode)) {
+      wizard.campaign.targeting.postcodes.push(result.postcode)
+    }
+    // Clear address and department fields
+    wizard.campaign.targeting.address = null
+    wizard.campaign.targeting.lat = null
+    wizard.campaign.targeting.lng = null
+    wizard.campaign.targeting.departments = []
+  }
+  else if (result.type === 'address' && result.lat != null && result.lng != null) {
+    wizard.campaign.targeting.method = 'address'
+    wizard.campaign.targeting.address = result.label
+    wizard.campaign.targeting.lat = result.lat
+    wizard.campaign.targeting.lng = result.lng
+    wizard.campaign.targeting.radius = wizard.campaign.targeting.radius ?? 3
+    // Clear department and postcode fields
+    wizard.campaign.targeting.departments = []
+    wizard.campaign.targeting.postcodes = []
+  }
+  wizard.isDirty = true
+}
+
+function removeDepartment(code: string): void {
+  const idx = wizard.campaign.targeting.departments.indexOf(code)
+  if (idx >= 0) wizard.campaign.targeting.departments.splice(idx, 1)
+  wizard.isDirty = true
+}
+
+function removePostcode(code: string): void {
+  const idx = wizard.campaign.targeting.postcodes.indexOf(code)
+  if (idx >= 0) wizard.campaign.targeting.postcodes.splice(idx, 1)
+  wizard.isDirty = true
+}
+
+function clearAddress(): void {
+  wizard.campaign.targeting.address = null
+  wizard.campaign.targeting.lat = null
+  wizard.campaign.targeting.lng = null
+  wizard.isDirty = true
 }
 </script>
 
 <template>
   <div class="space-y-6">
-    <div>
-      <h2 class="text-lg font-semibold">{{ t('wizard.estimate.stepTitle') }}</h2>
-      <p class="mt-1 text-sm text-muted-foreground">{{ t('wizard.estimate.stepDescription') }}</p>
+    <!-- Header with mode toggle -->
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold">{{ t('wizard.estimate.stepTitle') }}</h2>
+        <p class="mt-1 text-sm text-muted-foreground">{{ t('wizard.estimate.stepDescription') }}</p>
+      </div>
+      <div class="flex shrink-0 items-center gap-2" data-targeting-mode-toggle>
+        <span class="text-xs text-muted-foreground">
+          {{ isSmartMode ? t('wizard.targeting.modeToggle.smart') : t('wizard.targeting.modeToggle.classic') }}
+        </span>
+        <Switch v-model="isSmartMode" />
+      </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-3">
-      <Card
-        v-for="m in methods"
-        :key="m.key"
-        data-method-card
-        class="cursor-pointer transition-all duration-200"
-        :class="wizard.campaign.targeting.method === m.key
-          ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
-          : 'hover:border-primary/50 hover:scale-[1.02] hover:shadow-md'"
-        @click="selectMethod(m.key)"
-      >
-        <CardHeader>
-          <div class="flex items-center justify-between">
-            <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
-              <component :is="m.icon" class="size-5 text-primary" />
+    <!-- My shop button (both modes) -->
+    <Button
+      v-if="shopCenter"
+      variant="outline"
+      class="w-full justify-start gap-2 border-primary/20 hover:bg-primary/5"
+      data-my-shop-button
+      @click="applyShopLocation"
+    >
+      <MapPin class="size-4 text-primary" />
+      <span class="truncate">{{ shopLabel }}</span>
+    </Button>
+
+    <!-- ===== SMART MODE ===== -->
+    <template v-if="isSmartMode">
+      <SmartSearch
+        :departments="wizard.campaign.targeting.departments"
+        :postcodes="wizard.campaign.targeting.postcodes"
+        :address="wizard.campaign.targeting.address"
+        :lat="wizard.campaign.targeting.lat"
+        :lng="wizard.campaign.targeting.lng"
+        :radius="wizard.campaign.targeting.radius"
+        @select="handleSmartSelect"
+        @remove-department="removeDepartment"
+        @remove-postcode="removePostcode"
+        @clear-address="clearAddress"
+        @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
+      />
+    </template>
+
+    <!-- ===== CLASSIC MODE ===== -->
+    <template v-else>
+      <div class="grid gap-4 sm:grid-cols-3">
+        <Card
+          v-for="m in methods"
+          :key="m.key"
+          data-method-card
+          class="cursor-pointer transition-all duration-200"
+          :class="wizard.campaign.targeting.method === m.key
+            ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
+            : 'hover:border-primary/50 hover:scale-[1.02] hover:shadow-md'"
+          @click="selectMethod(m.key)"
+        >
+          <CardHeader>
+            <div class="flex items-center justify-between">
+              <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <component :is="m.icon" class="size-5 text-primary" />
+              </div>
+              <Check v-if="wizard.campaign.targeting.method === m.key" class="size-5 text-primary" />
             </div>
-            <Check v-if="wizard.campaign.targeting.method === m.key" class="size-5 text-primary" />
-          </div>
-          <CardTitle class="mt-2 text-sm">
-            {{ t(`wizard.targeting.methods.${m.key}.title`) }}
-          </CardTitle>
-          <CardDescription class="text-xs">
-            {{ t(`wizard.targeting.methods.${m.key}.description`) }}
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
+            <CardTitle class="mt-2 text-sm">
+              {{ t(`wizard.targeting.methods.${m.key}.title`) }}
+            </CardTitle>
+            <CardDescription class="text-xs">
+              {{ t(`wizard.targeting.methods.${m.key}.description`) }}
+            </CardDescription>
+            <p class="mt-1 text-xs text-muted-foreground" data-method-hint>
+              {{ t(`wizard.targeting.methods.${m.key}.hint`) }}
+            </p>
+          </CardHeader>
+        </Card>
+      </div>
+    </template>
 
-    <!-- Carte en premier (proeminente) -->
+    <!-- Carte (both modes) -->
     <ClientOnly>
       <TargetingMap
         :method="wizard.campaign.targeting.method"
@@ -88,13 +228,16 @@ async function handleCount() {
         :lat="wizard.campaign.targeting.lat"
         :lng="wizard.campaign.targeting.lng"
         :radius="wizard.campaign.targeting.radius"
+        :default-center="shopCenter"
+        :default-zoom="9"
+        :commune-geo-json="communeGeoJson"
         class="h-105!"
         @toggle-department="toggleDepartment"
       />
     </ClientOnly>
 
-    <!-- Selecteur en dessous -->
-    <div>
+    <!-- Selecteur en dessous (classic mode only) -->
+    <div v-if="!isSmartMode">
       <DepartmentSelector
         v-if="wizard.campaign.targeting.method === 'department'"
         v-model="wizard.campaign.targeting.departments"
@@ -116,62 +259,7 @@ async function handleCount() {
       />
     </div>
 
-    <Separator />
-
+    <!-- Demographics inline (both modes) -->
     <DemographicsSelector v-model="wizard.campaign.targeting" />
-
-    <!-- Section estimation inline -->
-    <Separator />
-
-    <!-- Loading state -->
-    <div v-if="isCounting && !wizard.estimate" class="flex flex-col items-center gap-3 py-6 text-center" data-counting-state>
-      <Loader2 class="size-6 animate-spin text-primary" />
-      <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.calculating') }}</p>
-    </div>
-
-    <!-- Results -->
-    <Card v-else-if="wizard.estimate" class="border-primary/20 bg-primary/3" data-estimate-result>
-      <CardHeader class="flex-row items-center justify-between space-y-0 pb-2">
-        <div class="flex items-center gap-2">
-          <BarChart3 class="size-4 text-primary" />
-          <CardTitle class="text-sm font-semibold text-primary">{{ t('wizard.estimate.resultTitle') }}</CardTitle>
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          :disabled="isCounting"
-          data-recalculate-button
-          @click="handleCount"
-        >
-          <RefreshCw class="size-3" :class="isCounting ? 'animate-spin' : ''" />
-          <span class="ml-1">{{ t('wizard.estimate.recalculate') }}</span>
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-muted-foreground">{{ t('wizard.estimate.volume') }}</span>
-          <span class="text-lg font-semibold" data-volume>
-            {{ wizard.estimate.volume.toLocaleString('fr-FR') }} {{ t('wizard.estimate.recipients') }}
-          </span>
-        </div>
-        <div class="mt-1 flex items-center justify-between text-sm">
-          <span class="text-muted-foreground">{{ t('wizard.estimate.smsCount') }}</span>
-          <span class="font-medium" data-sms-count>{{ wizard.estimate.smsCount }} SMS/dest.</span>
-        </div>
-      </CardContent>
-    </Card>
-
-    <!-- Empty state: Count button -->
-    <div v-else class="flex flex-col items-center gap-3 py-4 text-center" data-estimate-empty>
-      <p class="text-sm text-muted-foreground">{{ t('wizard.estimate.notAvailable') }}</p>
-      <Button
-        :disabled="isCounting"
-        data-count-button
-        @click="handleCount"
-      >
-        <BarChart3 class="size-4" />
-        {{ t('wizard.estimate.calculateButton') }}
-      </Button>
-    </div>
   </div>
 </template>

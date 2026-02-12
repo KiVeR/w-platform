@@ -100,7 +100,7 @@ async function handleNext() {
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[1fr_280px]">
-      <div class="relative min-h-100 overflow-hidden">
+      <div class="relative min-h-100 overflow-x-clip">
         <Transition :name="transitionName" mode="out-in">
           <component :is="stepComponents[wizard.currentStep]" :key="wizard.currentStep" />
         </Transition>

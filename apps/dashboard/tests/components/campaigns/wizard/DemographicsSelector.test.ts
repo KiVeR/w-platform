@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { computed, ref, nextTick } from 'vue'
+import { computed, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { localStorageMock, stubAuthGlobals } from '../../../helpers/auth-stubs'
 import { mockUseI18n } from '../../../helpers/stubs'
@@ -11,17 +11,10 @@ mockUseI18n()
 
 const DemographicsSelector = (await import('@/components/campaigns/wizard/DemographicsSelector.vue')).default
 
-const slotStub = { template: '<div><slot /></div>' }
-
 const baseStubs = {
-  Card: { template: '<div data-card v-bind="$attrs"><slot /></div>' },
-  CardHeader: slotStub,
-  CardTitle: slotStub,
-  CardDescription: slotStub,
-  Label: { template: '<label><slot /></label>' },
-  Input: {
-    template: '<input :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" v-bind="$attrs" />',
-    props: ['modelValue'],
+  Slider: {
+    template: '<div data-age-slider @click="$emit(\'update:modelValue\', [25, 65])" />',
+    props: ['modelValue', 'min', 'max', 'step'],
     emits: ['update:modelValue'],
   },
 }
@@ -48,61 +41,66 @@ function mountComponent(props = {}) {
 }
 
 describe('DemographicsSelector', () => {
-  it('renders three gender cards', () => {
+  it('renders three gender buttons', () => {
     const wrapper = mountComponent()
-    const cards = wrapper.findAll('[data-gender-card]')
-    expect(cards).toHaveLength(3)
+    const buttons = wrapper.findAll('[data-gender-button]')
+    expect(buttons).toHaveLength(3)
   })
 
-  it('highlights Mixte card by default when gender is null', () => {
+  it('highlights Mixte button by default when gender is null', () => {
     const wrapper = mountComponent()
-    const cards = wrapper.findAll('[data-gender-card]')
-    expect(cards[0].attributes('data-selected')).toBe('true')
+    const buttons = wrapper.findAll('[data-gender-button]')
+    expect(buttons[0].attributes('data-selected')).toBe('true')
   })
 
-  it('selects Homme card and emits update', async () => {
+  it('selects Homme button and emits update', async () => {
     const wrapper = mountComponent()
-    const cards = wrapper.findAll('[data-gender-card]')
-    await cards[1].trigger('click')
+    const buttons = wrapper.findAll('[data-gender-button]')
+    await buttons[1].trigger('click')
 
     const emitted = wrapper.emitted('update:modelValue')
     expect(emitted).toBeTruthy()
     expect(emitted![0][0]).toMatchObject({ gender: 'M' })
   })
 
-  it('selects Femme card and emits update', async () => {
+  it('selects Femme button and emits update', async () => {
     const wrapper = mountComponent()
-    const cards = wrapper.findAll('[data-gender-card]')
-    await cards[2].trigger('click')
+    const buttons = wrapper.findAll('[data-gender-button]')
+    await buttons[2].trigger('click')
 
     const emitted = wrapper.emitted('update:modelValue')
     expect(emitted![0][0]).toMatchObject({ gender: 'F' })
   })
 
-  it('renders age min and max inputs', () => {
+  it('renders age range slider', () => {
     const wrapper = mountComponent()
-    const inputs = wrapper.findAll('input[type="number"]')
-    expect(inputs).toHaveLength(2)
+    expect(wrapper.find('[data-age-slider]').exists()).toBe(true)
   })
 
-  it('updates age_min on input change', async () => {
+  it('renders age label showing "Tous âges" when default range', () => {
     const wrapper = mountComponent()
-    const inputs = wrapper.findAll('input[type="number"]')
-    await inputs[0].setValue('25')
-
-    const emitted = wrapper.emitted('update:modelValue')
-    expect(emitted).toBeTruthy()
-    expect(emitted![0][0]).toMatchObject({ age_min: 25 })
+    const label = wrapper.find('[data-age-label]')
+    expect(label.text()).toContain('wizard.targeting.demographics.allAges')
   })
 
-  it('updates age_max on input change', async () => {
-    const wrapper = mountComponent()
-    const inputs = wrapper.findAll('input[type="number"]')
-    await inputs[1].setValue('50')
-
-    const emitted = wrapper.emitted('update:modelValue')
-    expect(emitted).toBeTruthy()
-    expect(emitted![0][0]).toMatchObject({ age_max: 50 })
+  it('renders age label with range when age filters set', () => {
+    const wrapper = mountComponent({
+      modelValue: {
+        method: 'department',
+        departments: ['75'],
+        postcodes: [],
+        address: null,
+        lat: null,
+        lng: null,
+        radius: null,
+        gender: null,
+        age_min: 25,
+        age_max: 50,
+      },
+    })
+    const label = wrapper.find('[data-age-label]')
+    expect(label.text()).toContain('25')
+    expect(label.text()).toContain('50')
   })
 
   it('renders with existing demographics values', () => {
@@ -121,7 +119,12 @@ describe('DemographicsSelector', () => {
       },
     })
 
-    const cards = wrapper.findAll('[data-gender-card]')
-    expect(cards[1].attributes('data-selected')).toBe('true')
+    const buttons = wrapper.findAll('[data-gender-button]')
+    expect(buttons[1].attributes('data-selected')).toBe('true')
+  })
+
+  it('renders gender group container', () => {
+    const wrapper = mountComponent()
+    expect(wrapper.find('[data-gender-group]').exists()).toBe(true)
   })
 })

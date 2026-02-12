@@ -142,7 +142,8 @@
     },
     "actions": {
       "view": "View",
-      "delete": "Delete"
+      "delete": "Delete",
+      "duplicate": "Relaunch"
     },
     "deleteConfirm": {
       "title": "Delete this campaign?",
@@ -272,7 +273,13 @@
       "launchCount": "Launch count",
       "calculating": "Counting in progress, please wait…",
       "notAvailable": "Launch the count to estimate the number of recipients",
-      "selectPartner": "Select a partner to see the estimated cost"
+      "selectPartner": "Select a partner to see the estimated cost",
+      "estimatedVisits": "Estimated shop visits",
+      "estimatedVisitsTooltip": "Based on an average visit rate of 3%",
+      "stale": "Outdated estimate",
+      "staleDescription": "The estimate no longer reflects your current targeting",
+      "autoCalculating": "Auto-calculating…",
+      "completeTargeting": "Complete your targeting to launch the estimate"
     },
     "sidebar": {
       "progress": "Progress"
@@ -313,25 +320,31 @@
       "methods": {
         "department": {
           "title": "By department",
-          "description": "Select one or more departments"
+          "description": "Select one or more departments",
+          "hint": "Ideal for covering a large area (e.g. all of Île-de-France)"
         },
         "postcode": {
           "title": "By postcode",
-          "description": "Enter targeted postcodes"
+          "description": "Enter targeted postcodes",
+          "hint": "Precise down to a city or neighbourhood"
         },
         "address": {
           "title": "By address + radius",
-          "description": "Define a point and a radius around it"
+          "description": "Define a point and a radius around it",
+          "hint": "Perfect for reaching people around your shop"
         }
       },
       "demographics": {
         "title": "Demographic criteria",
+        "genderLabel": "Gender",
         "genderMixed": "Mixed",
         "genderMale": "Male",
         "genderFemale": "Female",
+        "ageRangeLabel": "Age",
         "ageMin": "Min age",
         "ageMax": "Max age",
-        "ageLabel": "years"
+        "ageLabel": "years",
+        "allAges": "All ages"
       },
       "department": {
         "search": "Search a department...",
@@ -354,7 +367,19 @@
         "radiusUnit": "km",
         "noResults": "No address found",
         "clear": "Clear"
-      }
+      },
+      "myShop": "My shop",
+      "smartSearch": {
+        "placeholder": "Search for an address, postcode or department…",
+        "groupDepartments": "Departments",
+        "groupPostcodes": "Municipalities / postcodes",
+        "groupAddresses": "Addresses"
+      },
+      "modeToggle": {
+        "smart": "SmartZone",
+        "classic": "Classic"
+      },
+      "refine": "Refine targeting"
     },
     "landingPage": {
       "title": "Landing Page",

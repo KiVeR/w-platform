@@ -142,7 +142,8 @@
     },
     "actions": {
       "view": "Voir",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "duplicate": "Relancer"
     },
     "deleteConfirm": {
       "title": "Supprimer cette campagne ?",
@@ -272,7 +273,13 @@
       "launchCount": "Lancer le comptage",
       "calculating": "Calcul en cours, veuillez patienter…",
       "notAvailable": "Lancez le comptage pour estimer le volume de destinataires",
-      "selectPartner": "Sélectionnez un partenaire pour voir le coût estimé"
+      "selectPartner": "Sélectionnez un partenaire pour voir le coût estimé",
+      "estimatedVisits": "Visites estimées en boutique",
+      "estimatedVisitsTooltip": "Basé sur un taux de visite moyen de 3 %",
+      "stale": "Estimation obsolète",
+      "staleDescription": "L'estimation ne reflète plus votre ciblage actuel",
+      "autoCalculating": "Calcul automatique en cours…",
+      "completeTargeting": "Complétez votre ciblage pour lancer l'estimation"
     },
     "sidebar": {
       "progress": "Progression"
@@ -313,25 +320,31 @@
       "methods": {
         "department": {
           "title": "Par département",
-          "description": "Sélectionnez un ou plusieurs départements"
+          "description": "Sélectionnez un ou plusieurs départements",
+          "hint": "Idéal pour couvrir une large zone (ex : toute l'Île-de-France)"
         },
         "postcode": {
           "title": "Par code postal",
-          "description": "Saisissez les codes postaux ciblés"
+          "description": "Saisissez les codes postaux ciblés",
+          "hint": "Précis au niveau d'une ville ou d'un quartier"
         },
         "address": {
           "title": "Par adresse + rayon",
-          "description": "Définissez un point et un rayon autour"
+          "description": "Définissez un point et un rayon autour",
+          "hint": "Parfait pour toucher les gens autour de votre boutique"
         }
       },
       "demographics": {
         "title": "Critères démographiques",
+        "genderLabel": "Genre",
         "genderMixed": "Mixte",
         "genderMale": "Homme",
         "genderFemale": "Femme",
+        "ageRangeLabel": "Âge",
         "ageMin": "Âge min",
         "ageMax": "Âge max",
-        "ageLabel": "ans"
+        "ageLabel": "ans",
+        "allAges": "Tous âges"
       },
       "department": {
         "search": "Rechercher un département...",
@@ -354,7 +367,19 @@
         "radiusUnit": "km",
         "noResults": "Aucune adresse trouvée",
         "clear": "Effacer"
-      }
+      },
+      "myShop": "Ma boutique",
+      "smartSearch": {
+        "placeholder": "Rechercher une adresse, un code postal ou un département…",
+        "groupDepartments": "Départements",
+        "groupPostcodes": "Communes / codes postaux",
+        "groupAddresses": "Adresses"
+      },
+      "modeToggle": {
+        "smart": "SmartZone",
+        "classic": "Classique"
+      },
+      "refine": "Affiner le ciblage"
     },
     "landingPage": {
       "title": "Landing Page",

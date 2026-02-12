@@ -1,8 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Users, UserRound } from 'lucide-vue-next'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import type { CampaignTargeting, Gender } from '@/types/campaign'
 
 const { t } = useI18n()
@@ -25,64 +23,68 @@ function selectGender(gender: Gender) {
   emit('update:modelValue', { ...props.modelValue, gender })
 }
 
-function updateAgeMin(value: string) {
-  const num = value ? Number(value) : null
-  emit('update:modelValue', { ...props.modelValue, age_min: num })
-}
+const ageRange = computed({
+  get: () => [props.modelValue.age_min ?? 18, props.modelValue.age_max ?? 100],
+  set: (val: number[]) => {
+    const isDefault = val[0] === 18 && val[1] === 100
+    emit('update:modelValue', {
+      ...props.modelValue,
+      age_min: isDefault ? null : val[0],
+      age_max: isDefault ? null : val[1],
+    })
+  },
+})
 
-function updateAgeMax(value: string) {
-  const num = value ? Number(value) : null
-  emit('update:modelValue', { ...props.modelValue, age_max: num })
-}
+const ageLabel = computed(() => {
+  const [min, max] = ageRange.value
+  if (min === 18 && max === 100) return t('wizard.targeting.demographics.allAges')
+  return `${min} – ${max} ${t('wizard.targeting.demographics.ageLabel')}`
+})
 </script>
 
 <template>
-  <div class="space-y-4">
-    <h3 class="text-sm font-medium">{{ t('wizard.targeting.demographics.title') }}</h3>
-
-    <div class="grid gap-3 sm:grid-cols-3">
-      <Card
-        v-for="opt in genderOptions"
-        :key="String(opt.key)"
-        data-gender-card
-        :data-selected="modelValue.gender === opt.key ? 'true' : 'false'"
-        class="cursor-pointer transition-all duration-200"
-        :class="modelValue.gender === opt.key
-          ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
-          : 'hover:border-primary/50'"
-        @click="selectGender(opt.key)"
-      >
-        <CardHeader class="p-3">
-          <div class="flex items-center gap-2">
-            <component :is="opt.icon" class="size-4 text-primary" />
-            <CardTitle class="text-sm">{{ t(opt.labelKey) }}</CardTitle>
-          </div>
-        </CardHeader>
-      </Card>
+  <div class="space-y-3" data-demographics-selector>
+    <!-- Gender toggle group -->
+    <div class="flex items-center gap-4">
+      <span class="shrink-0 text-xs font-medium text-muted-foreground">
+        {{ t('wizard.targeting.demographics.genderLabel') }}
+      </span>
+      <div class="inline-flex rounded-lg border p-0.5" data-gender-group>
+        <button
+          v-for="opt in genderOptions"
+          :key="String(opt.key)"
+          type="button"
+          data-gender-button
+          :data-selected="modelValue.gender === opt.key ? 'true' : 'false'"
+          class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
+          :class="modelValue.gender === opt.key
+            ? 'bg-primary text-primary-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'"
+          @click="selectGender(opt.key)"
+        >
+          <component :is="opt.icon" class="size-3.5" />
+          {{ t(opt.labelKey) }}
+        </button>
+      </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div>
-        <Label>{{ t('wizard.targeting.demographics.ageMin') }}</Label>
-        <Input
-          type="number"
+    <!-- Age range slider -->
+    <div class="flex items-center gap-4">
+      <span class="shrink-0 text-xs font-medium text-muted-foreground">
+        {{ t('wizard.targeting.demographics.ageRangeLabel') }}
+      </span>
+      <div class="flex flex-1 items-center gap-3">
+        <Slider
+          v-model="ageRange"
           :min="18"
           :max="100"
-          :placeholder="t('wizard.targeting.demographics.ageMin')"
-          :model-value="modelValue.age_min ?? ''"
-          @update:model-value="updateAgeMin($event as string)"
+          :step="1"
+          class="flex-1"
+          data-age-slider
         />
-      </div>
-      <div>
-        <Label>{{ t('wizard.targeting.demographics.ageMax') }}</Label>
-        <Input
-          type="number"
-          :min="18"
-          :max="100"
-          :placeholder="t('wizard.targeting.demographics.ageMax')"
-          :model-value="modelValue.age_max ?? ''"
-          @update:model-value="updateAgeMax($event as string)"
-        />
+        <span class="w-24 shrink-0 text-right text-xs tabular-nums text-muted-foreground" data-age-label>
+          {{ ageLabel }}
+        </span>
       </div>
     </div>
   </div>
