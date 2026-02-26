@@ -26,6 +26,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage shops',
             'view landing-pages',
             'manage landing-pages',
+            'view targeting-templates',
+            'manage targeting-templates',
         ];
 
         foreach ($permissions as $permission) {
@@ -45,6 +47,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage shops',
                 'view landing-pages',
                 'manage landing-pages',
+                'view targeting-templates',
+                'manage targeting-templates',
             ]);
 
         Role::findOrCreate('merchant', 'api')
@@ -54,6 +58,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view shops',
                 'view landing-pages',
                 'manage landing-pages',
+                'view targeting-templates',
+                'manage targeting-templates',
             ]);
 
         Role::findOrCreate('employee', 'api');

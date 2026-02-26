@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
+use App\Http\Controllers\Api\TargetingTemplatesController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\ShopsController;
 use App\Http\Controllers\Api\UsersController;
@@ -45,6 +46,9 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
     Route::get('campaigns/{campaign}/stats', [CampaignsController::class, 'stats']);
     Route::get('campaigns/{campaign}/export', [CampaignsController::class, 'export']);
+
+    Route::apiResource('targeting-templates', TargetingTemplatesController::class);
+    Route::post('targeting-templates/{targeting_template}/use', [TargetingTemplatesController::class, 'useTemplate']);
 
     Route::apiResource('landing-pages', LandingPagesController::class);
     Route::get('landing-pages/{landing_page}/design', [LandingPagesController::class, 'design']);

@@ -48,6 +48,7 @@ describe('campaigns/index page — QW0 handleDuplicate', () => {
           Button: { template: '<button><slot /></button>' },
           CampaignFilters: { template: '<div />' },
           CampaignDataTable: CampaignDataTableStub,
+          ReEngagementBanner: { template: '<div data-re-engagement-banner />' },
         },
       },
     })
@@ -94,6 +95,13 @@ describe('campaigns/index page — QW0 handleDuplicate', () => {
     })
     expect(initSpy).toHaveBeenCalledOnce()
     expect(mockNavigateTo).toHaveBeenCalledWith('/campaigns/new')
+  })
+
+  it('renders ReEngagementBanner in the template', async () => {
+    const wrapper = mountPage()
+    await flushPromises()
+
+    expect(wrapper.find('[data-re-engagement-banner]').exists()).toBe(true)
   })
 
   it('handleDuplicate does not navigate when fetch fails', async () => {

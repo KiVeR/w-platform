@@ -179,6 +179,68 @@ it('accepts targeting with demographics', function (): void {
     ])->assertCreated();
 });
 
+// --- Commune method validation ---
+
+it('rejects commune targeting without communes array', function (): void {
+    $this->postJson('/api/campaigns', [
+        ...$this->basePayload,
+        'targeting' => ['method' => 'commune'],
+    ])->assertUnprocessable()
+        ->assertJsonValidationErrors(['targeting.communes']);
+});
+
+it('rejects commune targeting with invalid commune code format', function (): void {
+    $this->postJson('/api/campaigns', [
+        ...$this->basePayload,
+        'targeting' => [
+            'method' => 'commune',
+            'communes' => ['ABC'],
+        ],
+    ])->assertUnprocessable()
+        ->assertJsonValidationErrors(['targeting.communes.0']);
+});
+
+it('accepts valid commune targeting', function (): void {
+    $this->postJson('/api/campaigns', [
+        ...$this->basePayload,
+        'targeting' => [
+            'method' => 'commune',
+            'communes' => ['17109', '75056'],
+        ],
+    ])->assertCreated();
+});
+
+// --- IRIS method validation ---
+
+it('rejects iris targeting without iris_codes array', function (): void {
+    $this->postJson('/api/campaigns', [
+        ...$this->basePayload,
+        'targeting' => ['method' => 'iris'],
+    ])->assertUnprocessable()
+        ->assertJsonValidationErrors(['targeting.iris_codes']);
+});
+
+it('rejects iris targeting with invalid code format', function (): void {
+    $this->postJson('/api/campaigns', [
+        ...$this->basePayload,
+        'targeting' => [
+            'method' => 'iris',
+            'iris_codes' => ['12345'],
+        ],
+    ])->assertUnprocessable()
+        ->assertJsonValidationErrors(['targeting.iris_codes.0']);
+});
+
+it('accepts valid iris targeting', function (): void {
+    $this->postJson('/api/campaigns', [
+        ...$this->basePayload,
+        'targeting' => [
+            'method' => 'iris',
+            'iris_codes' => ['751040101', '751040102'],
+        ],
+    ])->assertCreated();
+});
+
 it('accepts targeting with null gender', function (): void {
     Department::factory()->create(['code' => '75', 'name' => 'Paris']);
 

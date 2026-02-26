@@ -16,6 +16,7 @@ use App\Http\Requests\Campaign\UpdateCampaignRequest;
 use App\Http\Resources\CampaignResource;
 use App\Http\Resources\CampaignStatsResource;
 use App\Models\Campaign;
+use App\Models\TargetingTemplate;
 use App\Models\User;
 use App\Services\CampaignExportService;
 use App\Services\CampaignSending\StopSmsService;
@@ -48,7 +49,7 @@ class CampaignsController extends Controller
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('channel'),
             ])
-            ->allowedSorts(['name', 'scheduled_at', 'created_at'])
+            ->allowedSorts(['name', 'scheduled_at', 'sent_at', 'created_at'])
             ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
             ->paginate(15);
 
@@ -236,6 +237,8 @@ class CampaignsController extends Controller
             'external_id' => $result->externalId,
         ]);
 
+        $this->autoSaveTargetingTemplate($campaign);
+
         return new CampaignResource($campaign->fresh());
     }
 
@@ -301,6 +304,70 @@ class CampaignsController extends Controller
         }
 
         return new CampaignStatsResource($stats);
+    }
+
+    private function autoSaveTargetingTemplate(Campaign $campaign): void
+    {
+        if (! $campaign->partner_id || ! $campaign->targeting || $campaign->is_demo) {
+            return;
+        }
+
+        $targeting = $campaign->targeting;
+        $sorted = $targeting;
+        ksort($sorted);
+        $hash = md5((string) json_encode($sorted));
+
+        $existing = TargetingTemplate::where('partner_id', $campaign->partner_id)
+            ->get()
+            ->first(fn (TargetingTemplate $t) => $t->getTargetingHash() === $hash);
+
+        if ($existing) {
+            $existing->increment('usage_count');
+            $existing->update(['last_used_at' => now()]);
+
+            return;
+        }
+
+        TargetingTemplate::create([
+            'partner_id' => $campaign->partner_id,
+            'name' => $this->generateTemplateName($targeting),
+            'targeting_json' => $targeting,
+            'usage_count' => 1,
+            'last_used_at' => now(),
+        ]);
+    }
+
+    /** @param array<string, mixed> $targeting */
+    private function generateTemplateName(array $targeting): string
+    {
+        $method = $targeting['method'] ?? 'unknown';
+        $gender = match ($targeting['gender'] ?? null) {
+            'M' => 'Hommes',
+            'F' => 'Femmes',
+            default => 'Mixte',
+        };
+
+        $ageMin = $targeting['age_min'] ?? null;
+        $ageMax = $targeting['age_max'] ?? null;
+        $agePart = '';
+        if ($ageMin && $ageMax) {
+            $agePart = " {$ageMin}-{$ageMax}";
+        } elseif ($ageMin) {
+            $agePart = " {$ageMin}+";
+        }
+
+        return match ($method) {
+            'department' => 'Zone Dept '.implode(', ', array_slice($targeting['departments'] ?? [], 0, 3))
+                .(count($targeting['departments'] ?? []) > 3 ? '...' : '')
+                ." — {$gender}{$agePart}",
+            'postcode' => 'CP '.implode(', ', array_slice($targeting['postcodes'] ?? [], 0, 3))
+                .(count($targeting['postcodes'] ?? []) > 3 ? '...' : '')
+                ." — {$gender}{$agePart}",
+            'address' => 'Rayon '.round(($targeting['radius'] ?? 0) / 1000).' km'
+                .($targeting['address'] ? ' — '.mb_substr($targeting['address'], 0, 20) : '')
+                ." — {$gender}{$agePart}",
+            default => "Zone {$gender}{$agePart}",
+        };
     }
 
     private function ensureReadyToSend(Campaign $campaign, StopSmsService $stopSmsService): ?JsonResponse

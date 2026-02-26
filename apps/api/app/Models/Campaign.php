@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $partner_id
  * @property float|null $total_price
  * @property \Illuminate\Support\Carbon|null $sent_at
+ * @property \Illuminate\Support\Carbon|null $draft_notified_at
  */
 class Campaign extends Model
 {
@@ -65,6 +66,7 @@ class Campaign extends Model
         'stats_notified',
         'adv_operation_id',
         'landing_page_id',
+        'draft_notified_at',
     ];
 
     /** @return array<string, string> */
@@ -84,6 +86,7 @@ class Campaign extends Model
             'unit_price' => 'float',
             'total_price' => 'float',
             'stats_notified' => 'boolean',
+            'draft_notified_at' => 'datetime',
         ];
     }
 

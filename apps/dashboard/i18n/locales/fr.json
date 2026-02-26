@@ -156,6 +156,70 @@
       "next": "Suivant",
       "page": "Page {page} sur {lastPage}",
       "total": "{total} campagnes"
+    },
+    "reEngagement": {
+      "title": "Il est temps de relancer !",
+      "message": "Votre dernière campagne « {name} » a touché {volume} personnes il y a {days} jours.",
+      "relaunch": "Relancer",
+      "later": "Plus tard"
+    },
+    "detail": {
+      "back": "Retour aux campagnes",
+      "export": "Exporter CSV",
+      "duplicate": "Dupliquer",
+      "loadError": "Impossible de charger la campagne",
+      "loadErrorDescription": "Une erreur est survenue lors du chargement de la campagne.",
+      "notFound": "Campagne introuvable",
+      "notFoundDescription": "Cette campagne n'existe pas ou a été supprimée.",
+      "summary": {
+        "title": "Détails",
+        "type": "Type",
+        "message": "Message",
+        "sender": "Expéditeur",
+        "volume": "Destinataires",
+        "volumeSent": "Volume envoyé",
+        "unitPrice": "Prix unitaire",
+        "totalPrice": "Prix total",
+        "smsCount": "Nombre de SMS",
+        "shortUrl": "Lien court",
+        "createdAt": "Créée le",
+        "scheduledAt": "Planifiée le",
+        "sentAt": "Envoyée le"
+      },
+      "targeting": {
+        "title": "Ciblage",
+        "methodLabel": "Méthode",
+        "method": {
+          "department": "Par département",
+          "postcode": "Par code postal",
+          "address": "Par adresse"
+        },
+        "zones": "Zones",
+        "demographics": "Démographie",
+        "mixed": "Mixte",
+        "male": "Homme",
+        "female": "Femme",
+        "age": "{min}-{max} ans",
+        "allAges": "Tous âges",
+        "radius": "{radius} km"
+      },
+      "stats": {
+        "title": "Statistiques",
+        "sent": "Envoyés",
+        "delivered": "Délivrés",
+        "clicks": "Clics",
+        "stop": "STOP",
+        "deliverabilityRate": "Taux de délivrabilité",
+        "ctr": "Taux de clic",
+        "undeliverable": "Non délivrés",
+        "rejected": "Rejetés",
+        "expired": "Expirés",
+        "notYet": "Statistiques disponibles à partir du {date}",
+        "notYetNoDate": "Statistiques pas encore disponibles",
+        "providerError": "Statistiques temporairement indisponibles",
+        "onlySent": "Les statistiques ne sont disponibles que pour les campagnes envoyées",
+        "loading": "Chargement des statistiques..."
+      }
     }
   },
   "wizard": {
@@ -242,6 +306,7 @@
       "saving": "Sauvegarde...",
       "error": "Erreur de sauvegarde"
     },
+    "draftLoaded": "Brouillon chargé",
     "nav": {
       "back": "Retour",
       "next": "Suivant",
@@ -328,6 +393,25 @@
         "apply": "Appliquer"
       }
     },
+    "savedZones": {
+      "title": "Zones sauvegardées",
+      "presets": "Modèles sectoriels",
+      "myZones": "Mes zones",
+      "usedCount": "Utilisé {count} fois",
+      "today": "Aujourd'hui",
+      "yesterday": "Hier",
+      "daysAgo": "Il y a {count} jours",
+      "empty": "Vos ciblages seront enregistrés automatiquement après chaque envoi",
+      "showAll": "Voir tout ({count})",
+      "applied": "Ciblage appliqué",
+      "deleteConfirm": {
+        "title": "Supprimer cette zone ?",
+        "description": "La zone « {name} » sera supprimée définitivement.",
+        "confirm": "Supprimer",
+        "cancel": "Annuler"
+      },
+      "deleteSuccess": "Zone supprimée"
+    },
     "sidebar": {
       "progress": "Progression"
     },
@@ -365,20 +449,30 @@
     "targeting": {
       "title": "Ciblage géographique",
       "methods": {
+        "postcode": {
+          "title": "Par commune ou code postal",
+          "description": "Recherchez une commune ou saisissez des codes postaux",
+          "hint": "Le plus utilisé — précis au niveau d'une ville ou d'un quartier"
+        },
+        "commune": {
+          "title": "Par commune (INSEE)",
+          "description": "Sélectionnez des communes spécifiques",
+          "hint": "Ciblage précis — résolution automatique en zones IRIS"
+        },
         "department": {
           "title": "Par département",
           "description": "Sélectionnez un ou plusieurs départements",
           "hint": "Idéal pour couvrir une large zone (ex : toute l'Île-de-France)"
         },
-        "postcode": {
-          "title": "Par code postal",
-          "description": "Saisissez les codes postaux ciblés",
-          "hint": "Précis au niveau d'une ville ou d'un quartier"
-        },
         "address": {
           "title": "Par adresse + rayon",
           "description": "Définissez un point et un rayon autour",
           "hint": "Parfait pour toucher les gens autour de votre boutique"
+        },
+        "iris": {
+          "title": "Par zone IRIS",
+          "description": "Sélectionnez des zones IRIS individuelles",
+          "hint": "Ciblage ultra-précis — quartier par quartier"
         }
       },
       "demographics": {
@@ -409,12 +503,28 @@
         "label": "département(s)"
       },
       "postcode": {
-        "placeholder": "Code postal ou nom de commune",
+        "placeholder": "Rechercher une commune (ex : Lyon) ou saisir un code postal",
         "invalid": "Code postal invalide",
         "duplicate": "Déjà ajouté",
         "selected": "{count} code(s) postal(aux)",
         "label": "code(s) postal(aux)",
         "searching": "Recherche en cours…"
+      },
+      "commune": {
+        "placeholder": "Rechercher une commune (ex : Lyon, Clavette…)",
+        "noResults": "Aucune commune trouvée",
+        "selected": "{count} commune(s) sélectionnée(s)",
+        "label": "commune(s)",
+        "searching": "Recherche en cours…"
+      },
+      "iris": {
+        "searchCommune": "Rechercher une commune pour voir ses zones IRIS…",
+        "selectZones": "Sélectionner les zones IRIS",
+        "noResults": "Aucune zone IRIS trouvée",
+        "selected": "{count} zone(s) IRIS sélectionnée(s)",
+        "label": "zone(s) IRIS",
+        "searching": "Chargement des zones…",
+        "loading": "Chargement…"
       },
       "address": {
         "placeholder": "Rechercher une adresse...",
@@ -425,7 +535,7 @@
       },
       "myShop": "Ma boutique",
       "smartSearch": {
-        "placeholder": "Rechercher une adresse, un code postal ou un département…",
+        "placeholder": "Rechercher une commune, un code postal ou un département…",
         "groupDepartments": "Départements",
         "groupPostcodes": "Communes / codes postaux",
         "groupAddresses": "Adresses"

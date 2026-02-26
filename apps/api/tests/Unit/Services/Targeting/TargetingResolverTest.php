@@ -236,3 +236,111 @@ it('returns null for targeting without input key', function (): void {
 
     expect($result)->toBeNull();
 });
+
+// --- Commune method ---
+
+it('resolves commune codes to IRIS zones from DB', function (): void {
+    $department = Department::factory()->create(['code' => '17', 'name' => 'Charente-Maritime']);
+    IrisZone::factory()->forDepartment($department)->create([
+        'code' => '171090101',
+        'name' => 'Centre',
+        'commune_code' => '17109',
+        'commune_name' => 'Clavette',
+    ]);
+    IrisZone::factory()->forDepartment($department)->create([
+        'code' => '171090102',
+        'name' => 'Nord',
+        'commune_code' => '17109',
+        'commune_name' => 'Clavette',
+    ]);
+
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'commune', communes: ['17109']);
+    $result = $resolver->resolve($input);
+
+    expect($result->method)->toBe('commune')
+        ->and($result->zones)->toHaveCount(2)
+        ->and($result->zones[0]->type)->toBe('iris')
+        ->and($result->zones[0]->code)->toBe('171090101')
+        ->and($result->zones[0]->label)->toBe('Clavette - Centre')
+        ->and($result->zones[1]->code)->toBe('171090102');
+});
+
+it('returns empty zones for empty communes array', function (): void {
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'commune', communes: []);
+    $result = $resolver->resolve($input);
+
+    expect($result->zones)->toBeEmpty();
+});
+
+it('resolves multiple communes to their IRIS zones', function (): void {
+    $department = Department::factory()->create(['code' => '75', 'name' => 'Paris']);
+    IrisZone::factory()->forDepartment($department)->create([
+        'code' => '751010101',
+        'name' => 'Louvre',
+        'commune_code' => '75101',
+        'commune_name' => 'Paris 1er',
+    ]);
+    IrisZone::factory()->forDepartment($department)->create([
+        'code' => '751020101',
+        'name' => 'Bourse',
+        'commune_code' => '75102',
+        'commune_name' => 'Paris 2e',
+    ]);
+
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'commune', communes: ['75101', '75102']);
+    $result = $resolver->resolve($input);
+
+    expect($result->zones)->toHaveCount(2)
+        ->and($result->zones[0]->label)->toBe('Paris 1er - Louvre')
+        ->and($result->zones[1]->label)->toBe('Paris 2e - Bourse');
+});
+
+it('stores commune input in resolved targeting', function (): void {
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'commune', communes: ['17109']);
+    $result = $resolver->resolve($input);
+
+    expect($result->input->method)->toBe('commune')
+        ->and($result->input->communes)->toBe(['17109']);
+});
+
+// --- IRIS method ---
+
+it('resolves IRIS codes to zones from DB', function (): void {
+    $department = Department::factory()->create(['code' => '75', 'name' => 'Paris']);
+    IrisZone::factory()->forDepartment($department)->create([
+        'code' => '751040101',
+        'name' => 'Les Halles',
+        'commune_name' => 'Paris 1er',
+    ]);
+
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'iris', iris_codes: ['751040101']);
+    $result = $resolver->resolve($input);
+
+    expect($result->method)->toBe('iris')
+        ->and($result->zones)->toHaveCount(1)
+        ->and($result->zones[0]->type)->toBe('iris')
+        ->and($result->zones[0]->code)->toBe('751040101')
+        ->and($result->zones[0]->label)->toBe('Paris 1er - Les Halles');
+});
+
+it('returns empty zones for empty iris_codes array', function (): void {
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'iris', iris_codes: []);
+    $result = $resolver->resolve($input);
+
+    expect($result->zones)->toBeEmpty();
+});
+
+it('stores iris input in resolved targeting', function (): void {
+    $resolver = new TargetingResolver;
+    $input = new TargetingInput(method: 'iris', iris_codes: ['751040101']);
+    $result = $resolver->resolve($input);
+
+    expect($result->input->method)->toBe('iris')
+        ->and($result->input->iris_codes)->toBe(['751040101']);
+});

@@ -224,6 +224,34 @@ describe('useCampaignWizardStore', () => {
       wizard.campaign.targeting.radius = 0
       expect(wizard.hasValidTargeting).toBe(false)
     })
+
+    it('returns false when communes empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'commune'
+      wizard.campaign.targeting.communes = []
+      expect(wizard.hasValidTargeting).toBe(false)
+    })
+
+    it('returns true with communes selected', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'commune'
+      wizard.campaign.targeting.communes = ['17109']
+      expect(wizard.hasValidTargeting).toBe(true)
+    })
+
+    it('returns false when iris_codes empty', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'iris'
+      wizard.campaign.targeting.iris_codes = []
+      expect(wizard.hasValidTargeting).toBe(false)
+    })
+
+    it('returns true with iris_codes selected', () => {
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.targeting.method = 'iris'
+      wizard.campaign.targeting.iris_codes = ['751040101']
+      expect(wizard.hasValidTargeting).toBe(true)
+    })
   })
 
   describe('API actions', () => {
@@ -619,7 +647,7 @@ describe('useCampaignWizardStore', () => {
       const wizard = useCampaignWizardStore()
       wizard.initFromCampaign({ type: 'prospection', targeting: null })
 
-      expect(wizard.campaign.targeting.method).toBe('department')
+      expect(wizard.campaign.targeting.method).toBe('postcode')
       expect(wizard.campaign.targeting.departments).toEqual([])
     })
 

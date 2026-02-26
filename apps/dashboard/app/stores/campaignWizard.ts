@@ -14,9 +14,11 @@ function freshDraft(): CampaignDraft {
     sender: '',
     message: '',
     targeting: {
-      method: 'department',
+      method: 'postcode',
       departments: [],
       postcodes: [],
+      communes: [],
+      iris_codes: [],
       address: null,
       lat: null,
       lng: null,
@@ -94,6 +96,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     const t = campaign.value.targeting
     if (t.method === 'department') return t.departments.length > 0
     if (t.method === 'postcode') return t.postcodes.length > 0
+    if (t.method === 'commune') return t.communes.length > 0
+    if (t.method === 'iris') return t.iris_codes.length > 0
     if (t.method === 'address') return !!t.address && t.lat !== null && t.lng !== null && (t.radius ?? 0) >= 1
     return false
   })
@@ -261,11 +265,35 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     reset()
     if (data.type) campaign.value.type = data.type as CampaignDraft['type']
     if (data.channel) campaign.value.channel = data.channel as CampaignDraft['channel']
-    const targeting = data.targeting ? { ...data.targeting } : freshDraft().targeting
+    const targeting = data.targeting ? { ...freshDraft().targeting, ...data.targeting } : freshDraft().targeting
     if (targeting.radius != null) targeting.radius = targeting.radius / 1000
     campaign.value.targeting = targeting
     campaign.value.landing_page_id = data.landing_page_id ?? null
     isPreFilled.value = true
+  }
+
+  async function loadDraft(draftId: number): Promise<boolean> {
+    const { data, error } = await api.GET('/campaigns/{campaign}', {
+      params: { path: { campaign: draftId } },
+    } as never)
+    if (error || !data) return false
+    const raw = (data as { data: Record<string, unknown> }).data
+    reset()
+    campaignId.value = Number(raw.id)
+    if (raw.type) campaign.value.type = raw.type as CampaignDraft['type']
+    if (raw.channel) campaign.value.channel = raw.channel as CampaignDraft['channel']
+    if (raw.name) campaign.value.name = raw.name as string
+    if (raw.sender) campaign.value.sender = raw.sender as string
+    if (raw.message) campaign.value.message = raw.message as string
+    if (raw.scheduled_at) campaign.value.scheduled_at = raw.scheduled_at as string
+    if (raw.landing_page_id) campaign.value.landing_page_id = raw.landing_page_id as number
+    campaign.value.is_demo = !!raw.is_demo
+    campaign.value.additional_phone = (raw.additional_phone as string | null) ?? null
+    const targeting = raw.targeting ? { ...(raw.targeting as CampaignDraft['targeting']) } : freshDraft().targeting
+    if (targeting.radius != null) targeting.radius = targeting.radius / 1000
+    campaign.value.targeting = targeting
+    isPreFilled.value = true
+    return true
   }
 
   function reset(): void {
@@ -311,6 +339,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     sendCampaign,
     isPreFilled,
     initFromCampaign,
+    loadDraft,
     reset,
   }
 })

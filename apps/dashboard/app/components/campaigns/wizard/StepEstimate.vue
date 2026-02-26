@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
-import { MapPin, Hash, Navigation, Check } from 'lucide-vue-next'
+import { MapPin, Hash, Navigation, Building2, Layers, Check } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import DemographicsSelector from '@/components/campaigns/wizard/DemographicsSelector.vue'
 import SeasonalBanner from '@/components/campaigns/wizard/SeasonalBanner.vue'
 import SectorNudge from '@/components/campaigns/wizard/SectorNudge.vue'
+import SavedZones from '@/components/campaigns/wizard/SavedZones.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { usePartnerShops } from '@/composables/usePartnerShops'
 import { usePartnerStore } from '@/stores/partner'
@@ -14,14 +15,14 @@ import { useTargetingNudges, type TargetingNudge } from '@/composables/useTarget
 import { SECTOR_CONFIGS } from '@/data/sector-nudges'
 import { useExpertMode } from '@/composables/useExpertMode'
 import { useApi } from '@/composables/useApi'
-import type { TargetingMethod } from '@/types/campaign'
+import type { CampaignTargeting, TargetingMethod } from '@/types/campaign'
 import type { SmartSearchResult } from '@wellpack/targeting/types/targeting'
 import { useCommuneBoundaries } from '@wellpack/targeting/composables/useCommuneBoundaries'
 
 const wizard = useCampaignWizardStore()
 const partnerStore = usePartnerStore()
 const { primaryShop, fetchShops } = usePartnerShops()
-const { effectiveMode, setMode, detect } = useExpertMode()
+const { effectiveMode, setMode, detect, isExpert } = useExpertMode()
 const { t } = useI18n()
 const api = useApi()
 
@@ -80,11 +81,19 @@ function applyShopLocation(): void {
   wizard.isDirty = true
 }
 
-const methods: { key: TargetingMethod, icon: typeof MapPin }[] = [
-  { key: 'department', icon: MapPin },
+const baseMethods: { key: TargetingMethod, icon: typeof MapPin }[] = [
   { key: 'postcode', icon: Hash },
+  { key: 'commune', icon: Building2 },
+  { key: 'department', icon: MapPin },
   { key: 'address', icon: Navigation },
 ]
+
+const methods = computed(() => {
+  if (isExpert.value) {
+    return [...baseMethods, { key: 'iris' as TargetingMethod, icon: Layers }]
+  }
+  return baseMethods
+})
 
 function selectMethod(method: TargetingMethod) {
   wizard.campaign.targeting.method = method
@@ -159,6 +168,12 @@ function clearAddress(): void {
   wizard.isDirty = true
 }
 
+function handleTemplateSelect(targeting: CampaignTargeting): void {
+  wizard.campaign.targeting = { ...targeting }
+  wizard.isDirty = true
+  wizard.requestEstimate()
+}
+
 function handleSectorNudge(nudge: TargetingNudge): void {
   const config = SECTOR_CONFIGS[partnerActivityType.value ?? '']
   if (!config) return
@@ -181,6 +196,9 @@ function handleSectorNudge(nudge: TargetingNudge): void {
   <div class="space-y-6">
     <!-- Seasonal banner -->
     <SeasonalBanner />
+
+    <!-- Saved zones / templates -->
+    <SavedZones :activity-type="partnerActivityType" @select="handleTemplateSelect" />
 
     <!-- Header with mode toggle -->
     <div class="flex items-start justify-between gap-4">
@@ -227,7 +245,7 @@ function handleSectorNudge(nudge: TargetingNudge): void {
 
     <!-- ===== CLASSIC MODE ===== -->
     <template v-else>
-      <div class="grid gap-4 sm:grid-cols-3">
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card
           v-for="m in methods"
           :key="m.key"
@@ -286,6 +304,14 @@ function handleSectorNudge(nudge: TargetingNudge): void {
       <PostcodeInput
         v-if="wizard.campaign.targeting.method === 'postcode'"
         v-model="wizard.campaign.targeting.postcodes"
+      />
+      <CommuneSelector
+        v-if="wizard.campaign.targeting.method === 'commune'"
+        v-model="wizard.campaign.targeting.communes"
+      />
+      <IrisSelector
+        v-if="wizard.campaign.targeting.method === 'iris'"
+        v-model="wizard.campaign.targeting.iris_codes"
       />
       <AddressRadius
         v-if="wizard.campaign.targeting.method === 'address'"

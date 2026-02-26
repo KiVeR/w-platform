@@ -6,7 +6,7 @@ export const fakeCampaignDraft: CampaignDraft = {
   name: '',
   sender: '',
   message: '',
-  targeting: { method: 'department', departments: [], postcodes: [], address: null, lat: null, lng: null, radius: null },
+  targeting: { method: 'postcode', departments: [], postcodes: [], communes: [], iris_codes: [], address: null, lat: null, lng: null, radius: null },
   scheduled_at: null,
   landing_page_id: null,
   is_demo: false,

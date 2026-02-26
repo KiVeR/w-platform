@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'vue-sonner'
 import CampaignFilters from '@/components/campaigns/CampaignFilters.vue'
 import CampaignDataTable from '@/components/campaigns/CampaignDataTable.vue'
+import ReEngagementBanner from '@/components/campaigns/ReEngagementBanner.vue'
 import { useCampaigns } from '@/composables/useCampaigns'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { useApi } from '@/composables/useApi'
@@ -83,6 +84,9 @@ async function handleDuplicate(id: number) {
         </Button>
       </NuxtLink>
     </div>
+
+    <!-- Re-engagement banner -->
+    <ReEngagementBanner />
 
     <!-- Filters -->
     <CampaignFilters

@@ -78,6 +78,12 @@ class Partner extends Model
         return $this->hasMany(LandingPage::class);
     }
 
+    /** @return HasMany<TargetingTemplate, $this> */
+    public function targetingTemplates(): HasMany
+    {
+        return $this->hasMany(TargetingTemplate::class);
+    }
+
     /** @return HasMany<PartnerFeature, $this> */
     public function features(): HasMany
     {

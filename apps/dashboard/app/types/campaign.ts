@@ -4,7 +4,7 @@ import type { CampaignStatus } from '@/components/shared/CampaignStatusBadge.vue
 export type { CampaignStatus }
 export type CampaignType = 'prospection' | 'fidelisation' | 'comptage'
 export type CampaignChannel = 'sms' | 'email'
-export type TargetingMethod = 'department' | 'postcode' | 'address'
+export type TargetingMethod = 'department' | 'postcode' | 'address' | 'commune' | 'iris'
 export type Gender = 'M' | 'F' | null
 export type LandingPageStatus = 'draft' | 'published' | 'archived'
 
@@ -12,6 +12,8 @@ export interface CampaignTargeting {
   method: TargetingMethod
   departments: string[]
   postcodes: string[]
+  communes: string[]
+  iris_codes: string[]
   address: string | null
   lat: number | null
   lng: number | null
@@ -107,4 +109,54 @@ export interface Shop {
   zip_code: string | null
   latitude: number | null
   longitude: number | null
+}
+
+export interface CampaignDetail {
+  id: number
+  partner_id: number
+  user_id: number
+  type: CampaignType
+  channel: CampaignChannel
+  status: CampaignStatus
+  is_demo: boolean
+  name: string
+  targeting: string | null
+  volume_estimated: number | null
+  volume_sent: number | null
+  message: string | null
+  sender: string | null
+  additional_phone: string | null
+  sms_count: number
+  short_url: string | null
+  scheduled_at: string | null
+  sent_at: string | null
+  unit_price: string | null
+  total_price: string | null
+  created_at: string
+  partner?: { id: number, name: string } | null
+  creator?: { id: number, full_name: string } | null
+}
+
+export interface CampaignStats {
+  sent: number
+  delivered: number
+  undeliverable: number
+  rejected: number
+  expired: number
+  stop: number
+  clicks: number
+  deliverability_rate: number
+  ctr: number
+}
+
+export interface TargetingTemplateRow {
+  id: number
+  partner_id: number | null
+  name: string
+  targeting_json: CampaignTargeting
+  usage_count: number
+  last_used_at: string | null
+  is_preset: boolean
+  category: string | null
+  created_at: string
 }

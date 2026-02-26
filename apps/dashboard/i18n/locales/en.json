@@ -156,6 +156,70 @@
       "next": "Next",
       "page": "Page {page} of {lastPage}",
       "total": "{total} campaigns"
+    },
+    "reEngagement": {
+      "title": "Time to re-engage!",
+      "message": "Your last campaign \"{name}\" reached {volume} people {days} days ago.",
+      "relaunch": "Relaunch",
+      "later": "Later"
+    },
+    "detail": {
+      "back": "Back to campaigns",
+      "export": "Export CSV",
+      "duplicate": "Duplicate",
+      "loadError": "Unable to load campaign",
+      "loadErrorDescription": "An error occurred while loading the campaign.",
+      "notFound": "Campaign not found",
+      "notFoundDescription": "This campaign does not exist or has been deleted.",
+      "summary": {
+        "title": "Details",
+        "type": "Type",
+        "message": "Message",
+        "sender": "Sender",
+        "volume": "Recipients",
+        "volumeSent": "Volume sent",
+        "unitPrice": "Unit price",
+        "totalPrice": "Total price",
+        "smsCount": "SMS count",
+        "shortUrl": "Short link",
+        "createdAt": "Created on",
+        "scheduledAt": "Scheduled on",
+        "sentAt": "Sent on"
+      },
+      "targeting": {
+        "title": "Targeting",
+        "methodLabel": "Method",
+        "method": {
+          "department": "By department",
+          "postcode": "By postcode",
+          "address": "By address"
+        },
+        "zones": "Zones",
+        "demographics": "Demographics",
+        "mixed": "Mixed",
+        "male": "Male",
+        "female": "Female",
+        "age": "{min}-{max} years",
+        "allAges": "All ages",
+        "radius": "{radius} km"
+      },
+      "stats": {
+        "title": "Statistics",
+        "sent": "Sent",
+        "delivered": "Delivered",
+        "clicks": "Clicks",
+        "stop": "STOP",
+        "deliverabilityRate": "Deliverability rate",
+        "ctr": "Click-through rate",
+        "undeliverable": "Undeliverable",
+        "rejected": "Rejected",
+        "expired": "Expired",
+        "notYet": "Statistics available from {date}",
+        "notYetNoDate": "Statistics not yet available",
+        "providerError": "Statistics temporarily unavailable",
+        "onlySent": "Statistics are only available for sent campaigns",
+        "loading": "Loading statistics..."
+      }
     }
   },
   "wizard": {
@@ -242,6 +306,7 @@
       "saving": "Saving...",
       "error": "Save error"
     },
+    "draftLoaded": "Draft loaded",
     "nav": {
       "back": "Back",
       "next": "Next",
@@ -328,6 +393,25 @@
         "apply": "Apply"
       }
     },
+    "savedZones": {
+      "title": "Saved zones",
+      "presets": "Sector templates",
+      "myZones": "My zones",
+      "usedCount": "Used {count} times",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{count} days ago",
+      "empty": "Your targeting zones will be saved automatically after each send",
+      "showAll": "Show all ({count})",
+      "applied": "Targeting applied",
+      "deleteConfirm": {
+        "title": "Delete this zone?",
+        "description": "Zone \"{name}\" will be permanently deleted.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      },
+      "deleteSuccess": "Zone deleted"
+    },
     "sidebar": {
       "progress": "Progress"
     },
@@ -365,20 +449,30 @@
     "targeting": {
       "title": "Geographic targeting",
       "methods": {
+        "postcode": {
+          "title": "By municipality or postcode",
+          "description": "Search a municipality or enter postcodes",
+          "hint": "Most used — precise down to a city or neighbourhood"
+        },
+        "commune": {
+          "title": "By municipality (INSEE)",
+          "description": "Select specific municipalities",
+          "hint": "Precise targeting — automatic resolution into IRIS zones"
+        },
         "department": {
           "title": "By department",
           "description": "Select one or more departments",
           "hint": "Ideal for covering a large area (e.g. all of Île-de-France)"
         },
-        "postcode": {
-          "title": "By postcode",
-          "description": "Enter targeted postcodes",
-          "hint": "Precise down to a city or neighbourhood"
-        },
         "address": {
           "title": "By address + radius",
           "description": "Define a point and a radius around it",
           "hint": "Perfect for reaching people around your shop"
+        },
+        "iris": {
+          "title": "By IRIS zone",
+          "description": "Select individual IRIS zones",
+          "hint": "Ultra-precise targeting — neighbourhood by neighbourhood"
         }
       },
       "demographics": {
@@ -409,12 +503,28 @@
         "label": "department(s)"
       },
       "postcode": {
-        "placeholder": "Postcode or municipality name",
+        "placeholder": "Search a municipality (e.g. Lyon) or enter a postcode",
         "invalid": "Invalid postcode",
         "duplicate": "Already added",
         "selected": "{count} postcode(s)",
         "label": "postcode(s)",
         "searching": "Searching…"
+      },
+      "commune": {
+        "placeholder": "Search a municipality (e.g. Lyon, Clavette…)",
+        "noResults": "No municipality found",
+        "selected": "{count} municipality(ies) selected",
+        "label": "municipality(ies)",
+        "searching": "Searching…"
+      },
+      "iris": {
+        "searchCommune": "Search a municipality to see its IRIS zones…",
+        "selectZones": "Select IRIS zones",
+        "noResults": "No IRIS zone found",
+        "selected": "{count} IRIS zone(s) selected",
+        "label": "IRIS zone(s)",
+        "searching": "Loading zones…",
+        "loading": "Loading…"
       },
       "address": {
         "placeholder": "Search an address...",
@@ -425,7 +535,7 @@
       },
       "myShop": "My shop",
       "smartSearch": {
-        "placeholder": "Search for an address, postcode or department…",
+        "placeholder": "Search for a municipality, postcode or department…",
         "groupDepartments": "Departments",
         "groupPostcodes": "Municipalities / postcodes",
         "groupAddresses": "Addresses"

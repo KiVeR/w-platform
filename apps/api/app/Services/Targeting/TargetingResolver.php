@@ -22,6 +22,8 @@ class TargetingResolver
         [$zones, $origin] = match ($input->method) {
             'department' => [$this->resolveDepartments($input->departments), null],
             'postcode' => [$this->resolvePostcodes($input->postcodes), null],
+            'commune' => [$this->resolveCommunes($input->communes), null],
+            'iris' => [$this->resolveIris($input->iris_codes), null],
             'address' => $this->resolveAddress($input->address, $input->lat, $input->lng, $input->radius),
             default => throw new \InvalidArgumentException("Unknown targeting method: {$input->method}"),
         };
@@ -75,6 +77,52 @@ class TargetingResolver
                 code: $dept->code,
                 type: 'department',
                 label: $dept->name,
+                volume: 0,
+            ))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @param  string[]  $communeCodes
+     * @return ResolvedZone[]
+     */
+    private function resolveCommunes(array $communeCodes): array
+    {
+        if ($communeCodes === []) {
+            return [];
+        }
+
+        return IrisZone::whereIn('commune_code', $communeCodes)
+            ->orderBy('code')
+            ->get(['code', 'name', 'commune_code', 'commune_name'])
+            ->map(fn (IrisZone $iris) => new ResolvedZone(
+                code: $iris->code,
+                type: 'iris',
+                label: "{$iris->commune_name} - {$iris->name}",
+                volume: 0,
+            ))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @param  string[]  $codes
+     * @return ResolvedZone[]
+     */
+    private function resolveIris(array $codes): array
+    {
+        if ($codes === []) {
+            return [];
+        }
+
+        return IrisZone::whereIn('code', $codes)
+            ->orderBy('code')
+            ->get(['code', 'name', 'commune_name'])
+            ->map(fn (IrisZone $iris) => new ResolvedZone(
+                code: $iris->code,
+                type: 'iris',
+                label: "{$iris->commune_name} - {$iris->name}",
                 volume: 0,
             ))
             ->values()

@@ -16,11 +16,15 @@ class EstimateRequest extends FormRequest
 
         $rules = [
             'targeting' => ['sometimes', 'array'],
-            'targeting.method' => ['required_with:targeting', 'string', 'in:department,postcode,address'],
+            'targeting.method' => ['required_with:targeting', 'string', 'in:department,postcode,address,commune,iris'],
             'targeting.departments' => ['exclude_unless:targeting.method,department', 'array'],
             'targeting.departments.*' => ['string', 'exists:departments,code'],
             'targeting.postcodes' => ['exclude_unless:targeting.method,postcode', 'array'],
             'targeting.postcodes.*' => ['string', 'regex:/^\d{5}$/'],
+            'targeting.communes' => ['exclude_unless:targeting.method,commune', 'nullable', 'array'],
+            'targeting.communes.*' => ['string', 'regex:/^\d{5}$/'],
+            'targeting.iris_codes' => ['exclude_unless:targeting.method,iris', 'nullable', 'array'],
+            'targeting.iris_codes.*' => ['string', 'regex:/^\d{9}$/'],
             'targeting.address' => ['nullable', 'string'],
             'targeting.lat' => ['exclude_unless:targeting.method,address', 'nullable', 'numeric', 'between:-90,90'],
             'targeting.lng' => ['exclude_unless:targeting.method,address', 'nullable', 'numeric', 'between:-180,180'],

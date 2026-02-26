@@ -9,11 +9,15 @@ readonly class TargetingInput
     /**
      * @param  string[]  $departments
      * @param  string[]  $postcodes
+     * @param  string[]  $communes
+     * @param  string[]  $iris_codes
      */
     public function __construct(
         public string $method,
         public array $departments = [],
         public array $postcodes = [],
+        public array $communes = [],
+        public array $iris_codes = [],
         public ?string $address = null,
         public ?float $lat = null,
         public ?float $lng = null,
@@ -30,6 +34,8 @@ readonly class TargetingInput
             method: (string) $data['method'],
             departments: (array) ($data['departments'] ?? []),
             postcodes: (array) ($data['postcodes'] ?? []),
+            communes: (array) ($data['communes'] ?? []),
+            iris_codes: (array) ($data['iris_codes'] ?? []),
             address: $data['address'] ?? null,
             lat: isset($data['lat']) ? (float) $data['lat'] : null,
             lng: isset($data['lng']) ? (float) $data['lng'] : null,
@@ -53,6 +59,8 @@ readonly class TargetingInput
             'method' => $this->method,
             'departments' => $this->departments,
             'postcodes' => $this->postcodes,
+            'communes' => $this->communes,
+            'iris_codes' => $this->iris_codes,
             'address' => $this->address,
             'lat' => $this->lat,
             'lng' => $this->lng,

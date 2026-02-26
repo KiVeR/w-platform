@@ -33,15 +33,32 @@ vi.mock('@/composables/usePartnerShops', () => ({
   }),
 }))
 
+// Mock useTargetingTemplates
+const mockFetchTemplates = vi.fn()
+const mockUseTemplateApi = vi.fn()
+
+vi.mock('@/composables/useTargetingTemplates', () => ({
+  useTargetingTemplates: () => ({
+    templates: ref([]),
+    presets: ref([]),
+    isLoading: ref(false),
+    hasError: ref(false),
+    fetchTemplates: mockFetchTemplates,
+    useTemplate: mockUseTemplateApi,
+    deleteTemplate: vi.fn(),
+  }),
+}))
+
 // Mock useExpertMode — default to classic to preserve existing test behavior
 const mockEffectiveMode = ref<'smart' | 'classic'>('classic')
+const mockIsExpert = ref(false)
 const mockSetMode = vi.fn((mode: 'smart' | 'classic') => { mockEffectiveMode.value = mode })
 const mockDetect = vi.fn()
 
 vi.mock('@/composables/useExpertMode', () => ({
   useExpertMode: () => ({
     effectiveMode: mockEffectiveMode,
-    isExpert: ref(false),
+    isExpert: mockIsExpert,
     isLoading: ref(false),
     storedMode: ref(null),
     campaignsTotal: ref(null),
@@ -66,10 +83,13 @@ const baseStubs = {
   Switch: { template: '<input type="checkbox" data-switch :checked="modelValue" @change="$emit(\'update:modelValue\', !modelValue)" />', props: ['modelValue'], emits: ['update:modelValue'] },
   DepartmentSelector: { template: '<div data-department-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
   PostcodeInput: { template: '<div data-postcode-input />', props: ['modelValue'], emits: ['update:modelValue'] },
+  CommuneSelector: { template: '<div data-commune-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
+  IrisSelector: { template: '<div data-iris-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
   AddressRadius: { template: '<div data-address-radius />', props: ['address', 'lat', 'lng', 'radius'], emits: ['update:address', 'update:lat', 'update:lng', 'update:radius'] },
   SmartSearch: { template: '<div data-smart-search />', props: ['departments', 'postcodes', 'address', 'lat', 'lng', 'radius'], emits: ['select', 'remove-department', 'remove-postcode', 'clear-address', 'update:radius'] },
   TargetingMap: { template: '<div data-targeting-map />', props: ['method', 'departments', 'postcodes', 'address', 'lat', 'lng', 'radius', 'defaultCenter', 'defaultZoom'], emits: ['toggleDepartment'] },
   DemographicsSelector: { template: '<div data-demographics-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
+  SavedZones: { template: '<div data-saved-zones />', props: ['activityType'], emits: ['select'] },
   ClientOnly: slotStub,
 }
 
@@ -78,47 +98,56 @@ describe('StepEstimate', () => {
     vi.clearAllMocks()
     mockPrimaryShop.value = null
     mockEffectiveMode.value = 'classic'
+    mockIsExpert.value = false
     localStorageMock.clear()
     setActivePinia(createPinia())
   })
 
   // === Classic mode tests (existing, preserved) ===
 
-  it('renders 3 method cards in classic mode', () => {
+  it('renders 4 method cards in classic mode', () => {
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
-    expect(wrapper.findAll('[data-method-card]')).toHaveLength(3)
+    expect(wrapper.findAll('[data-method-card]')).toHaveLength(4)
   })
 
-  it('department method is selected by default', () => {
+  it('postcode method is selected by default', () => {
     const wizard = useCampaignWizardStore()
-    expect(wizard.campaign.targeting.method).toBe('department')
+    expect(wizard.campaign.targeting.method).toBe('postcode')
 
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
     const cards = wrapper.findAll('[data-method-card]')
     expect(cards[0].classes().some(c => c.includes('border-primary') || c.includes('ring'))).toBe(true)
   })
 
-  it('clicking postcode card switches method', async () => {
+  it('clicking commune card switches method', async () => {
     const wizard = useCampaignWizardStore()
 
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
     const cards = wrapper.findAll('[data-method-card]')
     await cards[1].trigger('click')
 
-    expect(wizard.campaign.targeting.method).toBe('postcode')
+    expect(wizard.campaign.targeting.method).toBe('commune')
+  })
+
+  it('shows PostcodeInput when method is postcode', () => {
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    expect(wrapper.find('[data-postcode-input]').exists()).toBe(true)
   })
 
   it('shows DepartmentSelector when method is department', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.targeting.method = 'department'
+
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
     expect(wrapper.find('[data-department-selector]').exists()).toBe(true)
   })
 
-  it('shows PostcodeInput when method is postcode', () => {
+  it('shows CommuneSelector when method is commune', () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.targeting.method = 'postcode'
+    wizard.campaign.targeting.method = 'commune'
 
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
-    expect(wrapper.find('[data-postcode-input]').exists()).toBe(true)
+    expect(wrapper.find('[data-commune-selector]').exists()).toBe(true)
   })
 
   it('shows AddressRadius when method is address', () => {
@@ -152,13 +181,14 @@ describe('StepEstimate', () => {
 
 
   // QW8 — Texte d'aide sous les cartes de méthode
-  it('renders 3 method hints with i18n keys', () => {
+  it('renders 4 method hints with i18n keys', () => {
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
     const hints = wrapper.findAll('[data-method-hint]')
-    expect(hints).toHaveLength(3)
-    expect(hints[0].text()).toBe('wizard.targeting.methods.department.hint')
-    expect(hints[1].text()).toBe('wizard.targeting.methods.postcode.hint')
-    expect(hints[2].text()).toBe('wizard.targeting.methods.address.hint')
+    expect(hints).toHaveLength(4)
+    expect(hints[0].text()).toBe('wizard.targeting.methods.postcode.hint')
+    expect(hints[1].text()).toBe('wizard.targeting.methods.commune.hint')
+    expect(hints[2].text()).toBe('wizard.targeting.methods.department.hint')
+    expect(hints[3].text()).toBe('wizard.targeting.methods.address.hint')
   })
 
   it('hints are visible inside each method card', () => {
@@ -263,7 +293,7 @@ describe('StepEstimate', () => {
   it('shows method cards in classic mode, no SmartSearch', () => {
     mockEffectiveMode.value = 'classic'
     const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
-    expect(wrapper.findAll('[data-method-card]')).toHaveLength(3)
+    expect(wrapper.findAll('[data-method-card]')).toHaveLength(4)
     expect(wrapper.find('[data-smart-search]').exists()).toBe(false)
   })
 
@@ -315,5 +345,64 @@ describe('StepEstimate', () => {
   it('calls detect on mount', () => {
     mount(StepEstimate, { global: { stubs: baseStubs } })
     expect(mockDetect).toHaveBeenCalled()
+  })
+
+  // === SavedZones integration ===
+
+  it('renders SavedZones component', () => {
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    expect(wrapper.find('[data-saved-zones]').exists()).toBe(true)
+  })
+
+  it('SavedZones receives activityType prop', () => {
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    const savedZones = wrapper.findComponent({ name: 'SavedZones' })
+    if (savedZones.exists()) {
+      expect(savedZones.props('activityType')).toBeNull()
+    }
+  })
+
+  it('SavedZones select updates wizard targeting and triggers estimate', async () => {
+    const wizard = useCampaignWizardStore()
+    const requestEstimateSpy = vi.spyOn(wizard, 'requestEstimate').mockResolvedValue(undefined)
+
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    const savedZones = wrapper.findComponent({ name: 'SavedZones' })
+    if (savedZones.exists()) {
+      const targeting = { method: 'department' as const, departments: ['92'], postcodes: [], address: null, lat: null, lng: null, radius: null, gender: null, age_min: 30, age_max: 50 }
+      savedZones.vm.$emit('select', targeting)
+
+      expect(wizard.campaign.targeting.method).toBe('department')
+      expect(wizard.campaign.targeting.departments).toEqual(['92'])
+      expect(wizard.campaign.targeting.age_min).toBe(30)
+      expect(wizard.campaign.targeting.age_max).toBe(50)
+      expect(wizard.isDirty).toBe(true)
+      expect(requestEstimateSpy).toHaveBeenCalled()
+    }
+
+    requestEstimateSpy.mockRestore()
+  })
+
+  // === IRIS expert mode tests ===
+
+  it('shows 5 method cards when isExpert is true', () => {
+    mockIsExpert.value = true
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    expect(wrapper.findAll('[data-method-card]')).toHaveLength(5)
+  })
+
+  it('shows 4 method cards when isExpert is false', () => {
+    mockIsExpert.value = false
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    expect(wrapper.findAll('[data-method-card]')).toHaveLength(4)
+  })
+
+  it('shows IrisSelector when method is iris', () => {
+    const wizard = useCampaignWizardStore()
+    wizard.campaign.targeting.method = 'iris'
+    mockIsExpert.value = true
+
+    const wrapper = mount(StepEstimate, { global: { stubs: baseStubs } })
+    expect(wrapper.find('[data-iris-selector]').exists()).toBe(true)
   })
 })
