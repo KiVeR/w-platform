@@ -174,5 +174,5 @@ function remove(code: string) {
 </template>
 
 <style scoped>
-@import '@/assets/badge-transition.css';
+@import '../../assets/badge-transition.css';
 </style>

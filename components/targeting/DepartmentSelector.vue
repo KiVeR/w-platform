@@ -138,5 +138,5 @@ function deselectAll() {
 </template>
 
 <style scoped>
-@import '@/assets/badge-transition.css';
+@import '../../assets/badge-transition.css';
 </style>
