@@ -9,8 +9,8 @@ WORKDIR /app
 
 EXPOSE 3000
 
-# pnpm install si node_modules manquant, puis dev server
-CMD ["sh", "-c", "if [ ! -d 'node_modules' ]; then pnpm install --frozen-lockfile; fi && pnpm dev:dashboard --host 0.0.0.0"]
+# pnpm install si node_modules vide ou nuxt absent, puis dev server
+CMD ["sh", "-c", "if [ ! -f 'node_modules/.package-lock.json' ] && [ ! -f 'node_modules/.modules.yaml' ]; then pnpm install --frozen-lockfile; fi && pnpm dev:dashboard --host 0.0.0.0"]
 
 # =============================================================================
 # Stage: build — production build

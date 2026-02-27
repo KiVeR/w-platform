@@ -38,7 +38,7 @@ x-api-env: &api-env
 x-api-volumes: &api-volumes
   - ./apps/api:/var/www/html
   - api_vendor:/var/www/html/vendor
-  - ../../sdk:/sdk
+  - ${SDK_PATH:-../../sdk}:/sdk
 
 services:
   api:
@@ -92,7 +92,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgis/postgis:18-3.5-alpine
+    image: postgis/postgis:17-3.4
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-wellpack}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
