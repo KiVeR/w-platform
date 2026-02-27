@@ -125,6 +125,29 @@ services:
     ports:
       - "${PORT_PREFIX:-80}25:8025"
 
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/dashboard/Dockerfile
+      target: dev
+    volumes:
+      - ./apps/dashboard:/app/apps/dashboard
+      - ./packages/content-editor:/app/packages/content-editor
+      - ./packages/targeting:/app/packages/targeting
+      - ./package.json:/app/package.json
+      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
+      - ./pnpm-lock.yaml:/app/pnpm-lock.yaml
+      - dashboard_node_modules:/app/node_modules
+      - dashboard_app_node_modules:/app/apps/dashboard/node_modules
+    working_dir: /app
+    environment:
+      NUXT_PUBLIC_API_URL: http://localhost:${PORT_PREFIX:-80}00
+      NUXT_PUBLIC_GOOGLE_CLIENT_ID: ${NUXT_PUBLIC_GOOGLE_CLIENT_ID:-}
+    ports:
+      - "${PORT_PREFIX:-80}01:3000"
+    depends_on:
+      - api
+
 volumes:
   pg_data:
   redis_data:
