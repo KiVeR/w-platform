@@ -6,8 +6,23 @@ if [ "$APP_ENV" = "local" ] && { [ ! -d "vendor" ] || [ "composer.json" -nt "ven
     composer install --no-interaction
 fi
 
-# Auto-migrate in dev
+# Ensure .env exists (required by artisan commands even when env is set via Docker)
+if [ ! -f ".env" ]; then
+    touch .env
+fi
+
+# Auto-setup in dev
 if [ "$APP_ENV" = "local" ]; then
+    # Generate APP_KEY if not set
+    if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
+        php artisan key:generate --no-interaction 2>/dev/null || true
+    fi
+
+    # Generate Passport keys if missing
+    if [ ! -f "storage/oauth-private.key" ]; then
+        php artisan passport:keys --no-interaction 2>/dev/null || true
+    fi
+
     php artisan migrate --force --no-interaction 2>/dev/null || true
 fi
 
