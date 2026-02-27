@@ -16,8 +16,6 @@ import { SECTOR_CONFIGS } from '@/data/sector-nudges'
 import { useExpertMode } from '@/composables/useExpertMode'
 import { useApi } from '@/composables/useApi'
 import type { CampaignTargeting, TargetingMethod } from '@/types/campaign'
-import type { SmartSearchResult } from '@wellpack/targeting/types/targeting'
-import { useCommuneBoundaries } from '@wellpack/targeting/composables/useCommuneBoundaries'
 
 const wizard = useCampaignWizardStore()
 const partnerStore = usePartnerStore()
@@ -301,7 +299,7 @@ function handleSectorNudge(nudge: TargetingNudge): void {
         v-if="wizard.campaign.targeting.method === 'department'"
         v-model="wizard.campaign.targeting.departments"
       />
-      <PostcodeInput
+      <PostcodeSelector
         v-if="wizard.campaign.targeting.method === 'postcode'"
         v-model="wizard.campaign.targeting.postcodes"
       />

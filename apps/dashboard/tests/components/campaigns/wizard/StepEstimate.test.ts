@@ -13,6 +13,7 @@ vi.stubGlobal('ref', ref)
 vi.stubGlobal('watch', watch)
 vi.stubGlobal('onMounted', (fn: () => void) => fn())
 vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
+vi.stubGlobal('useCommuneBoundaries', () => ({ communeGeoJson: ref(null), isLoading: ref(false) }))
 mockUseI18n()
 
 vi.mock('@/stores/partner', () => ({
