@@ -1,0 +1,133 @@
+x-api-env: &api-env
+  APP_NAME: Wellpack
+  APP_ENV: ${APP_ENV:-local}
+  APP_KEY: ${APP_KEY:-}
+  APP_DEBUG: ${APP_DEBUG:-true}
+  APP_URL: http://localhost:${PORT_PREFIX:-80}00
+  FRONTEND_URL: http://localhost:${PORT_PREFIX:-80}01
+  LOG_CHANNEL: stderr
+  LOG_LEVEL: ${LOG_LEVEL:-debug}
+  DB_CONNECTION: pgsql
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_DATABASE: ${POSTGRES_DB:-platform-api}
+  DB_USERNAME: ${POSTGRES_USER:-wellpack}
+  DB_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+  AUTH_GUARD: api
+  SESSION_DRIVER: array
+  QUEUE_CONNECTION: redis
+  CACHE_STORE: redis
+  REDIS_CLIENT: predis
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  MAIL_MAILER: smtp
+  MAIL_HOST: mailpit
+  MAIL_PORT: 1025
+  MAIL_FROM_ADDRESS: hello@wellpack.fr
+  MAIL_FROM_NAME: Wellpack
+  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+  GOOGLE_REDIRECT_URI: http://localhost:${PORT_PREFIX:-80}00/api/auth/google/callback
+  CAMPAIGN_SENDING_DRIVER: ${CAMPAIGN_SENDING_DRIVER:-stub}
+  CAMPAIGN_STATS_DRIVER: ${CAMPAIGN_STATS_DRIVER:-stub}
+  WEPAK_API_URL: ${WEPAK_API_URL:-https://wepak.wellpack.fr}
+  WEPAK_API_KEY: ${WEPAK_API_KEY:-}
+  TRIGGER_API_URL: ${TRIGGER_API_URL:-http://localhost:8000}
+  TRIGGER_API_KEY: ${TRIGGER_API_KEY:-}
+
+x-api-volumes: &api-volumes
+  - ./apps/api:/var/www/html
+  - api_vendor:/var/www/html/vendor
+  - ../../sdk:/sdk
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+      target: dev
+    volumes: *api-volumes
+    environment:
+      <<: *api-env
+    ports:
+      - "${PORT_PREFIX:-80}00:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost/up"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  horizon:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+      target: dev
+    volumes: *api-volumes
+    environment:
+      <<: *api-env
+    command: php artisan horizon
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+      target: dev
+    volumes: *api-volumes
+    environment:
+      <<: *api-env
+    command: php artisan schedule:work
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgis/postgis:18-3.5-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-wellpack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_DB: ${POSTGRES_DB:-platform-api}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-databases.sh:/docker-entrypoint-initdb.d/init.sh
+    ports:
+      - "${PORT_PREFIX:-80}32:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-wellpack}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:8-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${PORT_PREFIX:-80}79:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "${PORT_PREFIX:-80}25:8025"
+
+volumes:
+  pg_data:
+  redis_data:
+  api_vendor:
+  dashboard_node_modules:
+  dashboard_app_node_modules:
