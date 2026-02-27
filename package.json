@@ -3,8 +3,8 @@
   "private": true,
   "pnpm": {
     "overrides": {
-      "@wellpack/content-editor": "link:../content-editor",
-      "@wellpack/targeting": "link:../targeting"
+      "@wellpack/content-editor": "workspace:*",
+      "@wellpack/targeting": "workspace:*"
     }
   },
   "scripts": {

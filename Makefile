@@ -11,6 +11,8 @@ setup: ## Premier lancement : build + install + migrate + seed + passport
 	docker compose up -d api
 	@echo "⏳ Attente API healthcheck..."
 	@until docker compose exec -T api curl -sf http://localhost/up > /dev/null 2>&1; do sleep 2; done
+	docker compose exec api composer dump-autoload
+	@grep -q '^APP_KEY=$$' apps/api/.env 2>/dev/null && docker compose exec api php artisan key:generate || true
 	docker compose exec api php artisan db:seed
 	docker compose exec api php artisan passport:client --personal --name="Wellpack" --no-interaction
 	docker compose up -d

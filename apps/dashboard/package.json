@@ -15,8 +15,8 @@
     "generate:types": "openapi-typescript ${API_URL:-https://platform-api.test}/docs/api.json -o app/types/api.d.ts"
   },
   "dependencies": {
-    "@wellpack/content-editor": "github:KiVeR/content-editor",
-    "@wellpack/targeting": "github:KiVeR/targeting",
+    "@wellpack/content-editor": "workspace:*",
+    "@wellpack/targeting": "workspace:*",
     "@internationalized/date": "^3.11.0",
     "@nuxtjs/i18n": "^10.2.3",
     "@pinia/nuxt": "^0.11.3",
