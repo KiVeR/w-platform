@@ -31,7 +31,7 @@ it('blocks social login after 5 attempts from same IP', function (): void {
         $this->postJson('/api/auth/social/login', [
             'provider' => 'google',
             'token' => 'invalid-token-'.$i,
-        ])->assertUnprocessable();
+        ])->assertUnauthorized();
     }
 
     $this->postJson('/api/auth/social/login', [
