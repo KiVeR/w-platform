@@ -33,7 +33,7 @@ class HighConnexionDriver implements SmsRoutingDriverInterface
     /** @return array<string, mixed> */
     public function getData(): array
     {
-        $messageText = $this->smsMessage?->content ?? '';
+        $messageText = $this->smsMessage !== null ? $this->smsMessage->content : '';
         $recipients = $this->getRecipientsPayload();
         $sender = $this->config['dry_run'] === false ? $this->fromValue : $this->config['from_testing'];
 
@@ -52,13 +52,18 @@ class HighConnexionDriver implements SmsRoutingDriverInterface
     /** @return list<array{value: string, ret_id: string|null, param: list<never>}> */
     private function getRecipientsPayload(): array
     {
-        return $this->recipients?->map(function (SmsRecipient $recipient): array {
+        if ($this->recipients === null) {
+            return [];
+        }
+
+        /** @var list<array{value: string, ret_id: string|null, param: list<never>}> */
+        return $this->recipients->map(function (SmsRecipient $recipient): array {
             return [
                 'value' => $recipient->phoneNumber,
                 'ret_id' => $recipient->uuid,
                 'param' => [],
             ];
-        })->toArray() ?? [];
+        })->values()->all();
     }
 
     public function checkRequiredValues(): void
