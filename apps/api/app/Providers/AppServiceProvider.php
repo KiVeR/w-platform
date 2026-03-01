@@ -7,7 +7,10 @@ namespace App\Providers;
 use App\Contracts\TargetingAdapterInterface;
 use App\Services\Geo\GeoApiService;
 use App\Services\Targeting\Adapters\WepakTargetingAdapter;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 use MatanYadaev\EloquentSpatial\EloquentSpatial;
@@ -32,6 +35,10 @@ class AppServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(now()->addHours(24));
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addHours(24));
+
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
 
         Gate::define('viewApiDocs', function () {
             return app()->environment('local');

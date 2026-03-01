@@ -21,7 +21,7 @@ Route::get('/', fn () => response()->json([
     'version' => '1.0.0',
 ]));
 
-Route::prefix('auth')->group(function (): void {
+Route::prefix('auth')->middleware('throttle:auth')->group(function (): void {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/social/login', [AuthController::class, 'socialLogin']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
