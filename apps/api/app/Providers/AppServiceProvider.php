@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\SmsRoutingDriverInterface;
 use App\Contracts\TargetingAdapterInterface;
 use App\Services\Geo\GeoApiService;
+use App\Services\SmsRouting\SmsRoutingManager;
 use App\Services\Targeting\Adapters\WepakTargetingAdapter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -26,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
         ));
 
         $this->app->singleton(TargetingAdapterInterface::class, WepakTargetingAdapter::class);
+
+        $this->app->singleton(SmsRoutingManager::class, fn ($app): SmsRoutingManager => new SmsRoutingManager($app));
+        $this->app->bind(SmsRoutingDriverInterface::class, fn ($app): SmsRoutingDriverInterface => $app->make(SmsRoutingManager::class)->driver());
     }
 
     public function boot(): void
