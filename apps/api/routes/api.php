@@ -11,12 +11,13 @@ use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
+use App\Http\Controllers\Api\PartnersController;
+use App\Http\Controllers\Api\ShopsController;
 use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\ShortUrlSuffixRequestController;
 use App\Http\Controllers\Api\TargetingTemplatesController;
-use App\Http\Controllers\Api\PartnersController;
-use App\Http\Controllers\Api\ShopsController;
 use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\VariableSchemaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => response()->json([
@@ -60,6 +61,14 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'variableSchema']);
     Route::post('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'attachVariableSchema']);
     Route::delete('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'detachVariableSchema']);
+
+    Route::post('variable-schemas/discover', [VariableSchemaController::class, 'discover']);
+    Route::post('variable-schemas/preview', [VariableSchemaController::class, 'preview']);
+    Route::apiResource('variable-schemas', VariableSchemaController::class)
+        ->parameters(['variable-schemas' => 'variableSchema']);
+    Route::post('variable-schemas/{variableSchema}/clone', [VariableSchemaController::class, 'clone']);
+    Route::post('variable-schemas/{variableSchema}/mark-used', [VariableSchemaController::class, 'markUsed']);
+    Route::post('variable-schemas/{variableSchema}/mark-unused', [VariableSchemaController::class, 'markUnused']);
 
     Route::apiResource('short-urls', ShortUrlController::class);
     Route::post('short-urls/list', [ShortUrlController::class, 'index']);

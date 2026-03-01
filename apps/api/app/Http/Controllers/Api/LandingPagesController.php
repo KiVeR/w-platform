@@ -10,14 +10,14 @@ use App\Http\Requests\LandingPage\SaveDesignRequest;
 use App\Http\Requests\LandingPage\StoreLandingPageRequest;
 use App\Http\Requests\LandingPage\UpdateLandingPageRequest;
 use App\Http\Resources\LandingPageResource;
+use App\Http\Resources\VariableSchemaResource;
 use App\Models\LandingPage;
 use App\Models\User;
-use Illuminate\Http\Client\RequestException;
+use App\Models\VariableSchema;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use Wellpack\Sdk\Trigger\Services\VariableSchemaApiService;
 
 class LandingPagesController extends Controller
 {
@@ -106,19 +106,14 @@ class LandingPagesController extends Controller
     {
         $this->authorize('view', $landingPage);
 
-        $uuid = $landingPage->variable_schema_uuid;
+        $schema = $landingPage->variableSchema;
 
-        if (! $uuid) {
-            return $this->variableSchemaResponse($landingPage, null);
-        }
-
-        try {
-            $schema = app(VariableSchemaApiService::class)->getOne($uuid);
-        } catch (RequestException) {
-            return $this->variableSchemaResponse($landingPage, null);
-        }
-
-        return $this->variableSchemaResponse($landingPage, $schema->toArray());
+        return new JsonResponse([
+            'data' => [
+                'id' => $landingPage->id,
+                'variable_schema' => $schema ? new VariableSchemaResource($schema->load('variableFields')) : null,
+            ],
+        ]);
     }
 
     public function attachVariableSchema(AttachVariableSchemaRequest $request, LandingPage $landingPage): JsonResponse
@@ -126,22 +121,19 @@ class LandingPagesController extends Controller
         $this->authorize('update', $landingPage);
 
         $uuid = $request->validated('variable_schema_uuid');
-        $service = app(VariableSchemaApiService::class);
+        $schema = VariableSchema::where('uuid', $uuid)->first();
 
-        try {
-            $schema = $service->getOne($uuid);
-        } catch (RequestException) {
+        if (! $schema) {
             return new JsonResponse(['message' => 'Variable schema not found.'], 422);
         }
 
-        $service->attach($uuid);
-        $landingPage->update(['variable_schema_uuid' => $uuid]);
+        $landingPage->update(['variable_schema_id' => $schema->id]);
 
         return new JsonResponse([
             'data' => [
                 'id' => $landingPage->id,
-                'variable_schema_uuid' => $uuid,
-                'schema' => $schema->toArray(),
+                'variable_schema_uuid' => $schema->uuid,
+                'schema' => new VariableSchemaResource($schema->load('variableFields')),
             ],
         ]);
     }
@@ -150,17 +142,7 @@ class LandingPagesController extends Controller
     {
         $this->authorize('update', $landingPage);
 
-        $uuid = $landingPage->variable_schema_uuid;
-
-        if ($uuid) {
-            try {
-                app(VariableSchemaApiService::class)->detach($uuid);
-            } catch (RequestException) {
-                // Silently ignore — schema may have been deleted on trigger-api
-            }
-        }
-
-        $landingPage->update(['variable_schema_uuid' => null]);
+        $landingPage->update(['variable_schema_id' => null]);
 
         return new JsonResponse(['message' => 'Variable schema detached.']);
     }
@@ -171,17 +153,6 @@ class LandingPagesController extends Controller
             'data' => [
                 'id' => $landingPage->id,
                 'design' => $landingPage->design,
-            ],
-        ]);
-    }
-
-    /** @param array<string, mixed>|null $schema */
-    private function variableSchemaResponse(LandingPage $landingPage, ?array $schema): JsonResponse
-    {
-        return new JsonResponse([
-            'data' => [
-                'id' => $landingPage->id,
-                'variable_schema' => $schema,
             ],
         ]);
     }

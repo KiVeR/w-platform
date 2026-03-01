@@ -71,6 +71,7 @@ class Campaign extends Model
         'stats_notified',
         'adv_operation_id',
         'landing_page_id',
+        'variable_schema_id',
         'draft_notified_at',
         'routing_status',
         'routing_at',
@@ -125,6 +126,12 @@ class Campaign extends Model
     public function landingPage(): BelongsTo
     {
         return $this->belongsTo(LandingPage::class);
+    }
+
+    /** @return BelongsTo<VariableSchema, $this> */
+    public function variableSchema(): BelongsTo
+    {
+        return $this->belongsTo(VariableSchema::class);
     }
 
     /** @param Builder<Campaign> $query */
