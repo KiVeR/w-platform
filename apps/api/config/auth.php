@@ -39,4 +39,6 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'allowed_email_domain' => env('ALLOWED_EMAIL_DOMAIN', 'wellpack.fr'),
+
 ];

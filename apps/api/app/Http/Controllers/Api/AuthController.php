@@ -63,6 +63,15 @@ class AuthController extends Controller
             );
         }
 
+        $allowedDomain = config('auth.allowed_email_domain');
+
+        if ($allowedDomain && ! str_ends_with((string) $socialUser->getEmail(), '@'.$allowedDomain)) {
+            return new JsonResponse(
+                ['message' => 'Email domain not allowed.'],
+                Response::HTTP_FORBIDDEN,
+            );
+        }
+
         /** @var User $user */
         $user = User::firstOrCreate(
             ['email' => $socialUser->getEmail()],

@@ -33,7 +33,7 @@ function mockSocialiteUser(string $email, string $id = '123456', string $name = 
 }
 
 it('creates a new user via google login', function (): void {
-    mockSocialiteUser('newuser@gmail.com', '789');
+    mockSocialiteUser('newuser@wellpack.fr', '789');
 
     $response = $this->postJson('/api/auth/social/login', [
         'provider' => 'google',
@@ -50,21 +50,21 @@ it('creates a new user via google login', function (): void {
                 'user' => ['id', 'firstname', 'lastname', 'email'],
             ],
         ])
-        ->assertJsonPath('data.user.email', 'newuser@gmail.com');
+        ->assertJsonPath('data.user.email', 'newuser@wellpack.fr');
 
     $this->assertDatabaseHas('users', [
-        'email' => 'newuser@gmail.com',
+        'email' => 'newuser@wellpack.fr',
         'google_id' => '789',
     ]);
 });
 
 it('logs in existing user via google', function (): void {
     $user = User::factory()->create([
-        'email' => 'existing@gmail.com',
+        'email' => 'existing@wellpack.fr',
         'google_id' => '123456',
     ]);
 
-    mockSocialiteUser('existing@gmail.com', '123456');
+    mockSocialiteUser('existing@wellpack.fr', '123456');
 
     $response = $this->postJson('/api/auth/social/login', [
         'provider' => 'google',
@@ -74,7 +74,7 @@ it('logs in existing user via google', function (): void {
     $response->assertOk()
         ->assertJsonPath('data.user.id', $user->id);
 
-    expect(User::where('email', 'existing@gmail.com')->count())->toBe(1);
+    expect(User::where('email', 'existing@wellpack.fr')->count())->toBe(1);
 });
 
 it('returns 401 for invalid google token', function (): void {
@@ -93,11 +93,11 @@ it('returns 401 for invalid google token', function (): void {
 
 it('returns 403 for inactive account via social login', function (): void {
     User::factory()->inactive()->create([
-        'email' => 'inactive@gmail.com',
+        'email' => 'inactive@wellpack.fr',
         'google_id' => '999',
     ]);
 
-    mockSocialiteUser('inactive@gmail.com', '999');
+    mockSocialiteUser('inactive@wellpack.fr', '999');
 
     $this->postJson('/api/auth/social/login', [
         'provider' => 'google',
@@ -116,4 +116,38 @@ it('validates social login request', function (): void {
         'token' => 'some-token',
     ])->assertUnprocessable()
         ->assertJsonValidationErrors(['provider']);
+});
+
+it('rejects social login from unauthorized email domain', function (): void {
+    mockSocialiteUser('user@gmail.com', '456');
+
+    $this->postJson('/api/auth/social/login', [
+        'provider' => 'google',
+        'token' => 'valid-google-token',
+    ])->assertForbidden()
+        ->assertJsonPath('message', 'Email domain not allowed.');
+
+    $this->assertDatabaseMissing('users', ['email' => 'user@gmail.com']);
+});
+
+it('accepts social login from authorized email domain', function (): void {
+    mockSocialiteUser('user@wellpack.fr', '789');
+
+    $this->postJson('/api/auth/social/login', [
+        'provider' => 'google',
+        'token' => 'valid-google-token',
+    ])->assertOk()
+        ->assertJsonPath('data.user.email', 'user@wellpack.fr');
+});
+
+it('allows any domain when ALLOWED_EMAIL_DOMAIN is empty', function (): void {
+    config(['auth.allowed_email_domain' => null]);
+
+    mockSocialiteUser('anyone@external.com', '101');
+
+    $this->postJson('/api/auth/social/login', [
+        'provider' => 'google',
+        'token' => 'valid-google-token',
+    ])->assertOk()
+        ->assertJsonPath('data.user.email', 'anyone@external.com');
 });
