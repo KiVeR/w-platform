@@ -93,7 +93,7 @@ class VariableSchemaController extends Controller
             }
         }
 
-        return new VariableSchemaResource($variableSchema->fresh()->load('variableFields'));
+        return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
     }
 
     public function destroy(VariableSchema $variableSchema): JsonResponse
@@ -141,7 +141,7 @@ class VariableSchemaController extends Controller
 
         $variableSchema->variableFields()->update(['is_used' => true]);
 
-        return new VariableSchemaResource($variableSchema->fresh()->load('variableFields'));
+        return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
     }
 
     public function markUnused(VariableSchema $variableSchema): VariableSchemaResource
@@ -150,7 +150,7 @@ class VariableSchemaController extends Controller
 
         $variableSchema->variableFields()->update(['is_used' => false]);
 
-        return new VariableSchemaResource($variableSchema->fresh()->load('variableFields'));
+        return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
     }
 
     public function discover(): JsonResponse
