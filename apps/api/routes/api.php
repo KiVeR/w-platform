@@ -6,10 +6,13 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\GeoController;
+use App\Http\Controllers\Api\ImportableLinkController;
 use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
+use App\Http\Controllers\Api\ShortUrlController;
+use App\Http\Controllers\Api\ShortUrlSuffixRequestController;
 use App\Http\Controllers\Api\TargetingTemplatesController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\ShopsController;
@@ -57,6 +60,13 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'variableSchema']);
     Route::post('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'attachVariableSchema']);
     Route::delete('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'detachVariableSchema']);
+
+    Route::apiResource('short-urls', ShortUrlController::class);
+    Route::post('short-urls/list', [ShortUrlController::class, 'index']);
+    Route::post('short-url-requests', [ShortUrlSuffixRequestController::class, 'store']);
+    Route::delete('short-url-requests', [ShortUrlSuffixRequestController::class, 'destroy']);
+    Route::post('importable-links/upload', [ImportableLinkController::class, 'upload']);
+    Route::post('importable-links/import/{uuid}', [ImportableLinkController::class, 'import']);
 
     Route::prefix('geo')->name('geo.')->group(function (): void {
         Route::get('departments', [GeoController::class, 'departments'])->name('departments.index');
