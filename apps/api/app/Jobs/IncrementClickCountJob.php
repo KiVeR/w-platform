@@ -107,9 +107,9 @@ class IncrementClickCountJob implements ShouldBeUnique, ShouldQueue
 
         return [
             $agent->isRobot(),
-            $agent->browser(),
-            $agent->platform(),
-            $agent->device(),
+            $agent->browser() ?: null,
+            $agent->platform() ?: null,
+            $agent->device() ?: null,
         ];
     }
 
