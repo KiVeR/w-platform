@@ -459,3 +459,68 @@ it('does not include design field in list resource', function (): void {
     expect($item)->not->toHaveKey('design');
     expect($item)->toHaveKeys(['id', 'type', 'title', 'status', 'is_favorite', 'partner_id', 'user_id']);
 });
+
+// --- DESIGN VALIDATION ---
+
+it('rejects design with duplicate widget IDs', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+    $content = AIContent::factory()->forPartner($partner)->create();
+
+    $this->putJson("/api/ai/contents/{$content->id}/design", [
+        'design' => ['widgets' => [
+            ['id' => 'w1', 'type' => 'text'],
+            ['id' => 'w1', 'type' => 'image'], // duplicate
+        ]],
+    ])->assertUnprocessable();
+});
+
+it('rejects design with column containing row child', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+    $content = AIContent::factory()->forPartner($partner)->create();
+
+    $this->putJson("/api/ai/contents/{$content->id}/design", [
+        'design' => ['widgets' => [
+            ['id' => 'w1', 'type' => 'column', 'children' => [
+                ['id' => 'w2', 'type' => 'row'],
+            ]],
+        ]],
+    ])->assertUnprocessable();
+});
+
+it('rejects design with nested form inside form', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+    $content = AIContent::factory()->forPartner($partner)->create();
+
+    $this->putJson("/api/ai/contents/{$content->id}/design", [
+        'design' => ['widgets' => [
+            ['id' => 'w1', 'type' => 'form', 'children' => [
+                ['id' => 'w2', 'type' => 'form'],
+            ]],
+        ]],
+    ])->assertUnprocessable();
+});
+
+it('rejects design with widget having more than 50 children', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+    $content = AIContent::factory()->forPartner($partner)->create();
+
+    $children = array_map(fn ($i): array => ['id' => "c{$i}", 'type' => 'text'], range(1, 51));
+
+    $this->putJson("/api/ai/contents/{$content->id}/design", [
+        'design' => ['widgets' => [
+            ['id' => 'w1', 'type' => 'column', 'children' => $children],
+        ]],
+    ])->assertUnprocessable();
+});

@@ -332,3 +332,35 @@ it('AIContent hasMany versions relationship works', function (): void {
 
     expect($content->versions)->toHaveCount(2);
 });
+
+it('rate limits version restore to 10 per hour', function (): void {
+    $partner = Partner::factory()->create();
+    $user = User::factory()->forPartner($partner)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    $content = AIContent::factory()->forPartner($partner)->create(['design' => ['widgets' => []]]);
+
+    // Create 11 versions to restore
+    $versions = [];
+    for ($i = 0; $i < 11; $i++) {
+        $versions[] = AIContentVersion::create([
+            'ai_content_id' => $content->id,
+            'version' => "1.{$i}",
+            'design' => ['widgets' => [['id' => "v{$i}", 'type' => 'text']]],
+            'widget_count' => 1,
+        ]);
+    }
+
+    // First 10 should succeed
+    for ($i = 0; $i < 10; $i++) {
+        $this->postJson("/api/ai/contents/{$content->id}/versions", [
+            'version_id' => $versions[$i]->id,
+        ])->assertOk();
+    }
+
+    // 11th should be rate limited
+    $this->postJson("/api/ai/contents/{$content->id}/versions", [
+        'version_id' => $versions[10]->id,
+    ])->assertStatus(429);
+});
