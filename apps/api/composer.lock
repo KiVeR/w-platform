@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f79fddccfc517b6628d84be0002c331",
+    "content-hash": "276140602494535c0e04e90ce369892d",
     "packages": [
         {
             "name": "brick/geo",

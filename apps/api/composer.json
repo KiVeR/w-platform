@@ -17,6 +17,7 @@
     "require": {
         "php": "^8.4",
         "dedoc/scramble": "^0.13.12",
+        "giggsey/libphonenumber-for-php": "^9.0",
         "halaxa/json-machine": "^1.2",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^12.0",
