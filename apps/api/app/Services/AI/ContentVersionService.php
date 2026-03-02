@@ -54,7 +54,7 @@ class ContentVersionService
         $major = (int) $parts[0] ?: 1;   // 0 → 1 (falsy coercion, mirrors JS `|| 1`)
         $minor = (int) $parts[1];
 
-        return "{$major}." . ($minor + 1);
+        return "{$major}.".($minor + 1);
     }
 
     /**

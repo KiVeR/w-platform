@@ -6,7 +6,6 @@ namespace App\Services\AI;
 
 class DesignFixService
 {
-    /** @var int */
     private static int $widgetCounter = 0;
 
     /**
@@ -35,7 +34,7 @@ class DesignFixService
         /** @var array<string, mixed>|null $decoded */
         $decoded = json_decode($jsonStr, true);
 
-        if (!is_array($decoded)) {
+        if (! is_array($decoded)) {
             return null;
         }
 
@@ -66,6 +65,7 @@ class DesignFixService
                 foreach ($fixedChildren as $child) {
                     $result[] = $child;
                 }
+
                 continue;
             }
 
@@ -79,11 +79,12 @@ class DesignFixService
                     'children' => [$widget + ['children' => $fixedChildren]],
                 ];
                 $result[] = $wrapper;
+
                 continue;
             }
 
             // Recurse into children
-            if (!empty($children)) {
+            if (! empty($children)) {
                 $widget['children'] = self::fixParentChildConstraints($children, $type);
             }
 
@@ -107,14 +108,14 @@ class DesignFixService
 
         foreach ($widgets as $index => $widget) {
             self::$widgetCounter++;
-            $widget['id'] = 'widget_' . self::$widgetCounter;
+            $widget['id'] = 'widget_'.self::$widgetCounter;
             $widget['order'] = $index;
 
-            if (!isset($widget['content']) || !is_array($widget['content'])) {
+            if (! isset($widget['content']) || ! is_array($widget['content'])) {
                 $widget['content'] = [];
             }
 
-            if (!isset($widget['styles']) || !is_array($widget['styles'])) {
+            if (! isset($widget['styles']) || ! is_array($widget['styles'])) {
                 $widget['styles'] = [];
             }
 
@@ -150,7 +151,7 @@ class DesignFixService
                 $children = self::ensureFormSubmitButton($children);
 
                 // Check if the last child is a button
-                $lastChild = !empty($children) ? end($children) : null;
+                $lastChild = ! empty($children) ? end($children) : null;
                 $lastType = $lastChild !== false && $lastChild !== null
                     ? (string) ($lastChild['type'] ?? '')
                     : '';
@@ -189,19 +190,19 @@ class DesignFixService
     public static function applyAllFixes(array $design): array
     {
         // Ensure version exists
-        if (!isset($design['version'])) {
+        if (! isset($design['version'])) {
             $design['version'] = '1.0';
         }
 
         // Ensure globalStyles object exists
-        if (!isset($design['globalStyles']) || !is_array($design['globalStyles'])) {
+        if (! isset($design['globalStyles']) || ! is_array($design['globalStyles'])) {
             $design['globalStyles'] = [
                 'backgroundColor' => '#ffffff',
             ];
         }
 
         // Ensure widgets array exists
-        if (!isset($design['widgets']) || !is_array($design['widgets'])) {
+        if (! isset($design['widgets']) || ! is_array($design['widgets'])) {
             $design['widgets'] = [];
         }
 

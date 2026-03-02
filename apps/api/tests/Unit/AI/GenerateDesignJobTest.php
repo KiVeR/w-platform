@@ -97,7 +97,7 @@ it('uses ai-generation queue by default', function (): void {
 it('increments and refunds quota when user exists', function (): void {
     $partner = \App\Models\Partner::factory()->create();
     $user = \App\Models\User::factory()->forPartner($partner)->create();
-    (new \Database\Seeders\RolesAndPermissionsSeeder())->run();
+    (new \Database\Seeders\RolesAndPermissionsSeeder)->run();
     $user->assignRole('partner');
 
     $jobId = 'test-job-id-quota-1';

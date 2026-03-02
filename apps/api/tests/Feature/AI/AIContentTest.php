@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\ContentStatus;
-use App\Enums\ContentType;
 use App\Models\AIContent;
 use App\Models\Partner;
 use App\Models\User;

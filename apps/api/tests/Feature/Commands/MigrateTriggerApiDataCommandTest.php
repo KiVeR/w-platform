@@ -4,12 +4,7 @@ declare(strict_types=1);
 
 use App\Console\Commands\MigrateTriggerApiDataCommand;
 use App\Models\Campaign;
-use App\Models\CampaignLog;
-use App\Models\CampaignRequestData;
-use App\Models\DeliveryReport;
-use App\Models\LogActivity;
 use App\Models\Partner;
-use Illuminate\Support\Facades\DB;
 
 it('is registered as an artisan command', function () {
     $commands = Artisan::all();

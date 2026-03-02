@@ -232,7 +232,7 @@ class MigrateTriggerApiDataCommand extends Command
     }
 
     /**
-     * @param array<int, int> $campaignIdMap
+     * @param  array<int, int>  $campaignIdMap
      */
     private function migrateCampaignLogs(string $sourceMongo, array $campaignIdMap): void
     {
@@ -299,8 +299,8 @@ class MigrateTriggerApiDataCommand extends Command
      * Extract campaign_id from a MongoDB campaign log document.
      * Maps trigger-api campaign ID to platform-api campaign ID using the external_id mapping.
      *
-     * @param array<string, mixed>|object $doc
-     * @param array<int, int> $campaignIdMap
+     * @param  array<string, mixed>|object  $doc
+     * @param  array<int, int>  $campaignIdMap
      */
     private function extractCampaignId(array|object $doc, array $campaignIdMap): ?int
     {
@@ -372,7 +372,7 @@ class MigrateTriggerApiDataCommand extends Command
     }
 
     /**
-     * @param array<int, int> $campaignIdMap
+     * @param  array<int, int>  $campaignIdMap
      */
     private function migrateCampaignRequestData(string $sourceMysql, array $campaignIdMap): void
     {
@@ -443,9 +443,9 @@ class MigrateTriggerApiDataCommand extends Command
             ['DeliveryReport (sinch)', $this->stats['delivery_reports_sinch']],
             ['DeliveryReport (infobip)', $this->stats['delivery_reports_infobip']],
             ['DeliveryReport (highconnexion)', $this->stats['delivery_reports_highconnexion']],
-            ['CampaignLog', $this->stats['campaign_logs'], $this->stats['campaign_logs_skipped'] . ' skipped'],
+            ['CampaignLog', $this->stats['campaign_logs'], $this->stats['campaign_logs_skipped'].' skipped'],
             ['LogActivity', $this->stats['log_activities']],
-            ['CampaignRequestData', $this->stats['campaign_request_data'], $this->stats['campaign_request_data_skipped'] . ' skipped'],
+            ['CampaignRequestData', $this->stats['campaign_request_data'], $this->stats['campaign_request_data_skipped'].' skipped'],
         ];
 
         $this->table(['Table', 'Migrated', 'Notes'], array_map(

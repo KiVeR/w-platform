@@ -41,7 +41,7 @@ class ContrastValidationService
             : [];
 
         $globalBg = (string) ($globalStyles['backgroundColor'] ?? '#ffffff');
-        if (!self::isValidHexColor($globalBg)) {
+        if (! self::isValidHexColor($globalBg)) {
             $globalBg = '#ffffff';
         }
 
@@ -106,7 +106,7 @@ class ContrastValidationService
 
         // Handle shorthand #abc → #aabbcc
         if (strlen($hex) === 3) {
-            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
         }
 
         return [
@@ -154,7 +154,7 @@ class ContrastValidationService
      */
     private static function isValidHexColor(mixed $value): bool
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return false;
         }
 
@@ -188,12 +188,12 @@ class ContrastValidationService
             $sources = ['styles' => $styles, 'content' => $content];
             foreach ($sources as $source) {
                 foreach (self::TEXT_COLOR_PROPERTIES as $prop) {
-                    if (!isset($source[$prop])) {
+                    if (! isset($source[$prop])) {
                         continue;
                     }
 
                     $textColor = $source[$prop];
-                    if (!self::isValidHexColor($textColor)) {
+                    if (! self::isValidHexColor($textColor)) {
                         continue;
                     }
 
@@ -261,7 +261,7 @@ class ContrastValidationService
             foreach (self::TEXT_COLOR_PROPERTIES as $prop) {
                 $key = "{$widgetId}:{$prop}";
 
-                if (!isset($fixMap[$key])) {
+                if (! isset($fixMap[$key])) {
                     continue;
                 }
 

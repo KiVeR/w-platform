@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Models\VariableSchema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Throwable;
 
 class MigrateKreoDataCommand extends Command
 {
@@ -60,6 +59,7 @@ class MigrateKreoDataCommand extends Command
             if ($platformUser === null) {
                 $this->warn("  User not found in platform: {$kreoUser->email} (kreo id={$kreoUser->id}) — skipped.");
                 $unmappedUsers++;
+
                 continue;
             }
 
@@ -104,11 +104,12 @@ class MigrateKreoDataCommand extends Command
         $skippedContents = 0;
         $insertedContents = 0;
 
-        if (!$dryRun) {
+        if (! $dryRun) {
             DB::transaction(function () use ($kreoContents, &$skippedContents, &$insertedContents): void {
                 foreach ($kreoContents as $row) {
-                    if (!isset($this->userMap[$row->ownerId])) {
+                    if (! isset($this->userMap[$row->ownerId])) {
                         $skippedContents++;
+
                         continue;
                     }
 
@@ -146,7 +147,7 @@ class MigrateKreoDataCommand extends Command
             });
         } else {
             foreach ($kreoContents as $row) {
-                if (!isset($this->userMap[$row->ownerId])) {
+                if (! isset($this->userMap[$row->ownerId])) {
                     $skippedContents++;
                 } else {
                     $insertedContents++;
@@ -185,11 +186,12 @@ class MigrateKreoDataCommand extends Command
         $skippedVersions = 0;
         $insertedVersions = 0;
 
-        if (!$dryRun) {
+        if (! $dryRun) {
             DB::transaction(function () use ($kreoVersions, &$skippedVersions, &$insertedVersions): void {
                 foreach ($kreoVersions as $row) {
-                    if (!isset($this->contentMap[$row->content_id])) {
+                    if (! isset($this->contentMap[$row->content_id])) {
                         $skippedVersions++;
+
                         continue;
                     }
 
@@ -212,7 +214,7 @@ class MigrateKreoDataCommand extends Command
             });
         } else {
             foreach ($kreoVersions as $row) {
-                if (!isset($this->contentMap[$row->content_id])) {
+                if (! isset($this->contentMap[$row->content_id])) {
                     $skippedVersions++;
                 } else {
                     $insertedVersions++;
@@ -236,11 +238,12 @@ class MigrateKreoDataCommand extends Command
         $skippedUsage = 0;
         $insertedUsage = 0;
 
-        if (!$dryRun) {
+        if (! $dryRun) {
             DB::transaction(function () use ($kreoAiUsage, &$skippedUsage, &$insertedUsage): void {
                 foreach ($kreoAiUsage as $row) {
-                    if (!isset($this->userMap[$row->userId])) {
+                    if (! isset($this->userMap[$row->userId])) {
                         $skippedUsage++;
+
                         continue;
                     }
 
@@ -262,7 +265,7 @@ class MigrateKreoDataCommand extends Command
             });
         } else {
             foreach ($kreoAiUsage as $row) {
-                if (!isset($this->userMap[$row->userId])) {
+                if (! isset($this->userMap[$row->userId])) {
                     $skippedUsage++;
                 } else {
                     $insertedUsage++;
