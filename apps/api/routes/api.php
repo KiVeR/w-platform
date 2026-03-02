@@ -113,6 +113,7 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     });
 
     Route::prefix('ai')->group(function (): void {
+        Route::get('quota', [AIGenerationController::class, 'quota']);
         Route::post('generate', [AIGenerationController::class, 'generate']);
         Route::get('generate/{jobId}/status', [AIGenerationController::class, 'status']);
 

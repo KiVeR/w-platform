@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\AI\GenerateDesignJob;
+use App\Models\User;
+use App\Services\AI\AIQuotaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -13,6 +15,10 @@ use Illuminate\Support\Str;
 
 class AIGenerationController extends Controller
 {
+    public function __construct(
+        private readonly AIQuotaService $quotaService,
+    ) {}
+
     public function generate(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -35,6 +41,18 @@ class AIGenerationController extends Controller
             }
         }
 
+        /** @var User $user */
+        $user = $request->user();
+
+        if (! $this->quotaService->canGenerate($user)) {
+            $info = $this->quotaService->getQuotaInfo($user);
+
+            return response()->json([
+                'message' => 'Monthly AI generation quota exceeded.',
+                'quota' => $info,
+            ], 429);
+        }
+
         $jobId = Str::uuid()->toString();
 
         /** @var int $ttl */
@@ -47,7 +65,7 @@ class AIGenerationController extends Controller
         GenerateDesignJob::dispatch(
             jobId: $jobId,
             prompt: $validated['prompt'],
-            userId: (int) $request->user()?->getAuthIdentifier(),
+            userId: (int) $user->getAuthIdentifier(),
             image: $validated['image'] ?? null,
             conversationHistory: $validated['conversation_history'] ?? [],
         );
@@ -76,5 +94,13 @@ class AIGenerationController extends Controller
         }
 
         return response()->json($result);
+    }
+
+    public function quota(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        return response()->json($this->quotaService->getQuotaInfo($user));
     }
 }

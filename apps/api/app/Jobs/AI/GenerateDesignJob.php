@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs\AI;
 
+use App\Models\User;
 use App\Services\AI\AIGenerationManager;
+use App\Services\AI\AIQuotaService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Cache;
@@ -32,19 +34,32 @@ class GenerateDesignJob implements ShouldQueue
         $this->onQueue((string) config('ai.job.queue', 'ai-generation'));
     }
 
-    public function handle(AIGenerationManager $manager): void
+    public function handle(AIGenerationManager $manager, AIQuotaService $quotaService): void
     {
         $cacheKey = "ai-job:{$this->jobId}";
+
+        /** @var User|null $user */
+        $user = User::find($this->userId);
 
         try {
             $systemPrompt = $this->loadSystemPrompt();
             $messages = $this->buildMessages();
+
+            // Increment usage optimistically before generation
+            if ($user !== null) {
+                $quotaService->incrementUsage($user);
+            }
 
             /** @var \App\Contracts\AIDriverInterface $driver */
             $driver = $manager->driver();
             $result = $driver->generate($systemPrompt, $messages);
 
             $design = $this->parseDesignFromResponse($result['content']);
+
+            // Refund if no design was produced
+            if ($design === null && $user !== null) {
+                $quotaService->refundUsage($user);
+            }
 
             /** @var int $ttl */
             $ttl = config('ai.job.cache_ttl', 3600);
@@ -56,6 +71,11 @@ class GenerateDesignJob implements ShouldQueue
                 'usage' => $result['usage'],
             ], $ttl);
         } catch (\Throwable $e) {
+            // Refund on failure since no design was produced
+            if ($user !== null) {
+                $quotaService->refundUsage($user);
+            }
+
             Log::error('AI generation failed', [
                 'job_id' => $this->jobId,
                 'user_id' => $this->userId,
