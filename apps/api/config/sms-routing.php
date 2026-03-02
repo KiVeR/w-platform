@@ -5,6 +5,12 @@ declare(strict_types=1);
 return [
     'default' => env('SMS_ROUTING_DRIVER', 'stub'),
 
+    'router_chunk_size' => (int) env('ROUTER_CHUNK_SIZE', 1000),
+
+    'query_timeout' => (int) env('QUERY_TIMEOUT', 1800),
+
+    'query_fail_on_timeout' => (bool) env('QUERY_FAIL_ON_TIMEOUT', true),
+
     'drivers' => [
         'stub' => [],
 

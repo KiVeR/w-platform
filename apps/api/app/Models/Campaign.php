@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -132,6 +133,30 @@ class Campaign extends Model
     public function variableSchema(): BelongsTo
     {
         return $this->belongsTo(VariableSchema::class);
+    }
+
+    /** @return BelongsTo<Router, $this> */
+    public function router(): BelongsTo
+    {
+        return $this->belongsTo(Router::class);
+    }
+
+    /** @return HasMany<CampaignRecipient, $this> */
+    public function campaignRecipients(): HasMany
+    {
+        return $this->hasMany(CampaignRecipient::class);
+    }
+
+    /** @return HasMany<CampaignLog, $this> */
+    public function campaignLogs(): HasMany
+    {
+        return $this->hasMany(CampaignLog::class);
+    }
+
+    /** @return HasMany<CampaignRequestData, $this> */
+    public function campaignRequestData(): HasMany
+    {
+        return $this->hasMany(CampaignRequestData::class);
     }
 
     /** @param Builder<Campaign> $query */
