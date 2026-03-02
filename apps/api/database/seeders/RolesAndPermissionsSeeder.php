@@ -30,6 +30,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage targeting-templates',
             'view variable-schemas',
             'manage variable-schemas',
+            'view ai-contents',
+            'manage ai-contents',
         ];
 
         foreach ($permissions as $permission) {
@@ -53,6 +55,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage targeting-templates',
                 'view variable-schemas',
                 'manage variable-schemas',
+                'view ai-contents',
+                'manage ai-contents',
             ]);
 
         Role::findOrCreate('merchant', 'api')
@@ -66,6 +70,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage targeting-templates',
                 'view variable-schemas',
                 'manage variable-schemas',
+                'view ai-contents',
+                'manage ai-contents',
             ]);
 
         Role::findOrCreate('employee', 'api');

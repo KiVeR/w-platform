@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\AIContentController;
 use App\Http\Controllers\Api\AIGenerationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CampaignsController;
@@ -114,5 +115,11 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::prefix('ai')->group(function (): void {
         Route::post('generate', [AIGenerationController::class, 'generate']);
         Route::get('generate/{jobId}/status', [AIGenerationController::class, 'status']);
+
+        Route::get('contents/recent', [AIContentController::class, 'recent']);
+        Route::apiResource('contents', AIContentController::class)->except(['edit', 'create'])->parameters(['contents' => 'aiContent']);
+        Route::post('contents/{aiContent}/favorite', [AIContentController::class, 'favorite']);
+        Route::get('contents/{aiContent}/design', [AIContentController::class, 'design']);
+        Route::put('contents/{aiContent}/design', [AIContentController::class, 'saveDesign']);
     });
 });
