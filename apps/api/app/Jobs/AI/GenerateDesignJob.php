@@ -7,6 +7,8 @@ namespace App\Jobs\AI;
 use App\Models\User;
 use App\Services\AI\AIGenerationManager;
 use App\Services\AI\AIQuotaService;
+use App\Services\AI\ContrastValidationService;
+use App\Services\AI\DesignFixService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Cache;
@@ -54,11 +56,17 @@ class GenerateDesignJob implements ShouldQueue
             $driver = $manager->driver();
             $result = $driver->generate($systemPrompt, $messages);
 
-            $design = $this->parseDesignFromResponse($result['content']);
+            $raw = $result['content'] ?? '';
+            $design = DesignFixService::parseDesignResponse($raw);
 
-            // Refund if no design was produced
-            if ($design === null && $user !== null) {
-                $quotaService->refundUsage($user);
+            if ($design !== null) {
+                $design = DesignFixService::applyAllFixes($design);
+                $design = ContrastValidationService::autoFixContrast($design);
+            } else {
+                // Refund if no design was produced
+                if ($user !== null) {
+                    $quotaService->refundUsage($user);
+                }
             }
 
             /** @var int $ttl */
@@ -154,52 +162,6 @@ class GenerateDesignJob implements ShouldQueue
         }
 
         return "User request: \"{$this->prompt}\"\n\nGenerate a DesignDocument JSON that fulfills this request using Kreo widgets.\n\nRemember: Brief French description, then ---JSON---, then pure JSON starting with { and ending with }.";
-    }
-
-    /**
-     * Parse the design JSON from the AI response.
-     *
-     * @return array<string, mixed>|null
-     */
-    private function parseDesignFromResponse(string $response): ?array
-    {
-        // Look for ---JSON--- separator
-        $parts = preg_split('/---JSON---/', $response, 2);
-
-        if ($parts === false || count($parts) < 2) {
-            // Try to find JSON directly
-            return $this->extractJsonFromString($response);
-        }
-
-        $jsonString = trim($parts[1]);
-
-        return $this->extractJsonFromString($jsonString);
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function extractJsonFromString(string $input): ?array
-    {
-        // Remove markdown code blocks if present
-        $cleaned = preg_replace('/```json\s*/i', '', $input) ?? $input;
-        $cleaned = preg_replace('/```\s*$/', '', $cleaned) ?? $cleaned;
-        $cleaned = trim($cleaned);
-
-        // Find the first { and last }
-        $start = strpos($cleaned, '{');
-        $end = strrpos($cleaned, '}');
-
-        if ($start === false || $end === false) {
-            return null;
-        }
-
-        $jsonString = substr($cleaned, $start, $end - $start + 1);
-
-        /** @var array<string, mixed>|null $decoded */
-        $decoded = json_decode($jsonString, true);
-
-        return $decoded;
     }
 
     private function extractDescription(string $response): string
