@@ -50,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->ip());
         });
 
+        RateLimiter::for('restore-version', function (Request $request) {
+            return Limit::perHour(10)->by($request->user()?->id ?: $request->ip());
+        });
+
         Gate::define('viewApiDocs', function () {
             return app()->environment('local');
         });

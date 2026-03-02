@@ -121,5 +121,8 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
         Route::post('contents/{aiContent}/favorite', [AIContentController::class, 'favorite']);
         Route::get('contents/{aiContent}/design', [AIContentController::class, 'design']);
         Route::put('contents/{aiContent}/design', [AIContentController::class, 'saveDesign']);
+        Route::get('contents/{aiContent}/versions', [AIContentController::class, 'versions']);
+        Route::get('contents/{aiContent}/versions/{version}', [AIContentController::class, 'showVersion']);
+        Route::post('contents/{aiContent}/versions', [AIContentController::class, 'restoreVersion'])->middleware('throttle:restore-version');
     });
 });

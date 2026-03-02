@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AIContent extends Model
@@ -63,5 +64,10 @@ class AIContent extends Model
     public function variableSchema(): BelongsTo
     {
         return $this->belongsTo(VariableSchema::class);
+    }
+
+    public function versions(): HasMany
+    {
+        return $this->hasMany(AIContentVersion::class, 'ai_content_id')->orderByDesc('id');
     }
 }
