@@ -43,7 +43,7 @@ class IncrementClickCountJob implements ShouldBeUnique, ShouldQueue
     {
         $shortUrl = ShortUrl::query()->find($this->shortUrlId);
 
-        if ($this->shouldSkipProcessing($shortUrl, $redirectService)) {
+        if ($shortUrl === null || ! $shortUrl->is_enabled || $shortUrl->is_draft || $redirectService->isExcludedDomains($this->referer)) {
             return;
         }
 
@@ -87,14 +87,7 @@ class IncrementClickCountJob implements ShouldBeUnique, ShouldQueue
         );
     }
 
-    private function shouldSkipProcessing(?ShortUrl $shortUrl, RedirectService $redirectService): bool
-    {
-        return ! $shortUrl
-            || ! $shortUrl->is_enabled
-            || $shortUrl->is_draft
-            || $redirectService->isExcludedDomains($this->referer);
-    }
-
+    /** @return array{0: bool, 1: string|null, 2: string|null, 3: string|null} */
     private function detectAgent(): array
     {
         if (empty($this->userAgent)) {
@@ -105,11 +98,15 @@ class IncrementClickCountJob implements ShouldBeUnique, ShouldQueue
         $agent->setUserAgent($this->userAgent);
         $agent->setHttpHeaders();
 
+        $browser = $agent->browser();
+        $platform = $agent->platform();
+        $device = $agent->device();
+
         return [
             $agent->isRobot(),
-            $agent->browser() ?: null,
-            $agent->platform() ?: null,
-            $agent->device() ?: null,
+            is_string($browser) ? $browser : null,
+            is_string($platform) ? $platform : null,
+            is_string($device) ? $device : null,
         ];
     }
 

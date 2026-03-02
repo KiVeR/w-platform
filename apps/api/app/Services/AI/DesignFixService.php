@@ -152,7 +152,7 @@ class DesignFixService
 
                 // Check if the last child is a button
                 $lastChild = ! empty($children) ? end($children) : null;
-                $lastType = $lastChild !== false && $lastChild !== null
+                $lastType = $lastChild !== null
                     ? (string) ($lastChild['type'] ?? '')
                     : '';
 

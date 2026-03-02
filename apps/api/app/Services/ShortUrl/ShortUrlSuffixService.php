@@ -9,6 +9,7 @@ use App\Models\ShortUrlSuffix;
 
 class ShortUrlSuffixService
 {
+    /** @return list<string> */
     public function generateRandomUniqueSuffixes(
         ShortUrl $shortUrl,
         int $quantity,

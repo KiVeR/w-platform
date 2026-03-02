@@ -56,7 +56,7 @@ class GenerateDesignJob implements ShouldQueue
             $driver = $manager->driver();
             $result = $driver->generate($systemPrompt, $messages);
 
-            $raw = $result['content'] ?? '';
+            $raw = $result['content'];
             $design = DesignFixService::parseDesignResponse($raw);
 
             if ($design !== null) {

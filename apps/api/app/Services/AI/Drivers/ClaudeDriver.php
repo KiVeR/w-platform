@@ -10,12 +10,6 @@ use RuntimeException;
 
 class ClaudeDriver implements AIDriverInterface
 {
-    private const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
-
-    private const DEFAULT_MAX_TOKENS = 8192;
-
-    private const DEFAULT_TEMPERATURE = 0.7;
-
     private const API_URL = 'https://api.anthropic.com/v1/messages';
 
     private const API_VERSION = '2023-06-01';

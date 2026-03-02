@@ -59,6 +59,7 @@ class ShortUrlVerifyRedirectsCommand extends Command
         $mismatches = 0;
         $errors = 0;
 
+        /** @phpstan-ignore argument.type */
         $this->withProgressBar($shortUrls, function (ShortUrl $shortUrl) use ($oldUrl, $newUrl, &$matches, &$mismatches, &$errors): void {
             try {
                 $oldResponse = Http::withoutRedirecting()

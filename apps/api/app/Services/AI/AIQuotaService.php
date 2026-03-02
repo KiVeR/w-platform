@@ -86,7 +86,7 @@ class AIQuotaService
             ->where('period_key', $this->getCurrentPeriodKey())
             ->first();
 
-        return $usage?->count ?? 0;
+        return $usage->count ?? 0;
     }
 
     private function getLimit(User $user): int

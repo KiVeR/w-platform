@@ -97,6 +97,7 @@ class MigrateTriggerApiDataCommand extends Command
         // Validate MongoDB connection (only if needed)
         if (! $skipReports || ! $skipLogs) {
             try {
+                /** @phpstan-ignore method.notFound */
                 DB::connection($sourceMongo)->getMongoClient();
                 $this->info("✓ MongoDB connection '{$sourceMongo}' OK");
             } catch (\Exception $e) {
@@ -167,6 +168,7 @@ class MigrateTriggerApiDataCommand extends Command
 
     private function getMongoCount(string $connection, string $collection): int
     {
+        /** @phpstan-ignore method.notFound */
         return DB::connection($connection)->collection($collection)->count();
     }
 
@@ -203,7 +205,7 @@ class MigrateTriggerApiDataCommand extends Command
         $migrated = 0;
 
         DB::connection($sourceMongo)
-            ->collection($collection)
+            ->collection($collection) /** @phpstan-ignore method.notFound */
             ->orderBy('_id')
             ->chunk(self::CHUNK_SIZE, function ($documents) use ($provider, &$migrated, $bar) {
                 $inserts = [];
@@ -254,7 +256,7 @@ class MigrateTriggerApiDataCommand extends Command
         $skipped = 0;
 
         DB::connection($sourceMongo)
-            ->collection('campaign_logs')
+            ->collection('campaign_logs') /** @phpstan-ignore method.notFound */
             ->orderBy('_id')
             ->chunk(self::CHUNK_SIZE, function ($documents) use ($campaignIdMap, &$migrated, &$skipped, $bar) {
                 $inserts = [];
@@ -270,6 +272,7 @@ class MigrateTriggerApiDataCommand extends Command
                     }
 
                     // Store the entire document as data
+                    /** @var array<string, mixed> $doc */
                     $data = collect($doc)->except(['_id'])->all();
 
                     $inserts[] = [

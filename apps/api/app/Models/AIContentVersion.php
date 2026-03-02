@@ -32,6 +32,7 @@ class AIContentVersion extends Model
         ];
     }
 
+    /** @return BelongsTo<AIContent, $this> */
     public function aiContent(): BelongsTo
     {
         return $this->belongsTo(AIContent::class, 'ai_content_id');

@@ -88,6 +88,7 @@ class ShortUrlController extends Controller
         $query = ShortUrl::findByIdOrSlug($shortUrlIdOrSlug);
 
         if ($request->has('type')) {
+            /** @var ShortUrl $shortUrl */
             $shortUrl = $query->firstOrFail();
 
             return response()->json([

@@ -16,6 +16,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class ShortUrlService
 {
     /**
+     * @param  array<string, mixed>  $data
+     *
      * @throws Exception
      */
     public function create(array $data): ShortUrl
@@ -74,6 +76,7 @@ class ShortUrlService
         return $slug;
     }
 
+    /** @return array<int, string>|false */
     public function getUrlsFromFile(Media $media): array|false
     {
         $path = $media->getPath();
@@ -90,6 +93,7 @@ class ShortUrlService
         return preg_split('/\r\n|\r|\n/', (string) file_get_contents($path));
     }
 
+    /** @return list<string> */
     public function convertStringToArray(?string $input = null): array
     {
         if (! $input) {

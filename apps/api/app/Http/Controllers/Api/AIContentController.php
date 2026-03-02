@@ -129,10 +129,13 @@ class AIContentController extends Controller
 
         $aiContent->update(['is_favorite' => ! $aiContent->is_favorite]);
 
+        /** @var AIContent $freshContent */
+        $freshContent = $aiContent->fresh();
+
         return new JsonResponse([
             'data' => [
                 'id' => $aiContent->id,
-                'is_favorite' => $aiContent->fresh()->is_favorite,
+                'is_favorite' => $freshContent->is_favorite,
             ],
         ]);
     }
@@ -150,9 +153,15 @@ class AIContentController extends Controller
 
         $aiContent->update(['design' => $request->validated('design')]);
 
-        $version = $this->versionService->createVersion($aiContent->fresh());
+        /** @var AIContent $freshContent */
+        $freshContent = $aiContent->fresh();
 
-        return $this->designResponse($aiContent->fresh(), $version->version);
+        $version = $this->versionService->createVersion($freshContent);
+
+        /** @var AIContent $freshContent2 */
+        $freshContent2 = $aiContent->fresh();
+
+        return $this->designResponse($freshContent2, $version->version);
     }
 
     // -------------------------------------------------------------------------
@@ -175,7 +184,7 @@ class AIContentController extends Controller
             'id' => $v->id,
             'version' => $v->version,
             'widget_count' => $v->widget_count,
-            'created_at' => $v->created_at?->toISOString(),
+            'created_at' => $v->created_at->toISOString(),
             'is_current' => $v->version === $latestVersion,
         ]);
 
@@ -208,7 +217,7 @@ class AIContentController extends Controller
                 'version' => $version->version,
                 'design' => $version->design,
                 'widget_count' => $version->widget_count,
-                'created_at' => $version->created_at?->toISOString(),
+                'created_at' => $version->created_at->toISOString(),
                 'is_current' => $version->version === $latestVersion,
             ],
         ]);
@@ -228,7 +237,10 @@ class AIContentController extends Controller
 
         $this->versionService->restoreVersion($aiContent, $version);
 
-        return $this->designResponse($aiContent->fresh());
+        /** @var AIContent $restoredContent */
+        $restoredContent = $aiContent->fresh();
+
+        return $this->designResponse($restoredContent);
     }
 
     // -------------------------------------------------------------------------

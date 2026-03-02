@@ -47,8 +47,10 @@ class GenerateRandomUniqueSuffixJob implements ShouldBeUnique, ShouldQueue
         DB::beginTransaction();
 
         try {
+            /** @var \App\Models\ShortUrl $shortUrl */
+            $shortUrl = $shortUrlSuffixRequest->shortUrl;
             $shortUrlSuffixService->generateRandomUniqueSuffixes(
-                $shortUrlSuffixRequest->shortUrl,
+                $shortUrl,
                 $shortUrlSuffixRequest->quantity,
                 $shortUrlSuffixRequest->batch_uuid,
             );

@@ -44,6 +44,7 @@ class AIContent extends Model
         ];
     }
 
+    /** @param Builder<AIContent> $query */
     public function scopeForUser(Builder $query, User $user): void
     {
         if (! $user->hasRole('admin')) {
@@ -51,21 +52,25 @@ class AIContent extends Model
         }
     }
 
+    /** @return BelongsTo<Partner, $this> */
     public function partner(): BelongsTo
     {
         return $this->belongsTo(Partner::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /** @return BelongsTo<VariableSchema, $this> */
     public function variableSchema(): BelongsTo
     {
         return $this->belongsTo(VariableSchema::class);
     }
 
+    /** @return HasMany<AIContentVersion, $this> */
     public function versions(): HasMany
     {
         return $this->hasMany(AIContentVersion::class, 'ai_content_id')->orderByDesc('id');

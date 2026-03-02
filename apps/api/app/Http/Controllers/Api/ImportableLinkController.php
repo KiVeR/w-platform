@@ -34,6 +34,7 @@ class ImportableLinkController extends Controller
             ->toMediaCollection('importable_links');
 
         $media = $importableLink->getFirstMedia('importable_links');
+        /** @var \Spatie\MediaLibrary\MediaCollections\Models\Media $media */
         $importableLink->count = count((array) $this->shortUrlService->getUrlsFromFile($media));
         $importableLink->save();
 
@@ -56,6 +57,7 @@ class ImportableLinkController extends Controller
             throw new Exception(__('validation.links_already_imported'));
         }
 
+        /** @var \Spatie\MediaLibrary\MediaCollections\Models\Media $media */
         $media = $importableLink->getFirstMedia('importable_links');
         $urls = (array) $this->shortUrlService->getUrlsFromFile($media);
 

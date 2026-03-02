@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\ShortUrlSuffixFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShortUrlSuffix extends Model
 {
+    /** @use HasFactory<ShortUrlSuffixFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -25,6 +27,7 @@ class ShortUrlSuffix extends Model
         'click_count_bots' => 'integer',
     ];
 
+    /** @return BelongsTo<ShortUrl, $this> */
     public function shortUrl(): BelongsTo
     {
         return $this->belongsTo(ShortUrl::class);

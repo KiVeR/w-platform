@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\ShortUrlFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class ShortUrl extends Model implements HasMedia
 {
+    /** @use HasFactory<ShortUrlFactory> */
     use HasFactory, InteractsWithMedia;
 
     protected $casts = [
@@ -24,16 +26,19 @@ class ShortUrl extends Model implements HasMedia
         'is_enabled' => 'boolean',
     ];
 
+    /** @return HasMany<ShortUrlSuffix, $this> */
     public function suffixes(): HasMany
     {
         return $this->hasMany(ShortUrlSuffix::class);
     }
 
+    /** @return HasMany<ShortUrlSuffixRequest, $this> */
     public function shortUrlSuffixRequests(): HasMany
     {
         return $this->hasMany(ShortUrlSuffixRequest::class);
     }
 
+    /** @return Builder<ShortUrl> */
     public static function findByIdOrSlug(int|string $shortUrlIdOrSlug): Builder
     {
         $query = self::query();

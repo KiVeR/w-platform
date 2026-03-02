@@ -13,7 +13,7 @@ readonly class WepakResponse
         public ?int $campaignId = null,
         public ?int $volume = null,
         public ?string $error = null,
-        /** @var array<string, mixed> */
+        /** @var array<mixed> */
         public array $raw = [],
     ) {}
 
@@ -26,7 +26,7 @@ readonly class WepakResponse
             );
         }
 
-        /** @var array<string, mixed> $data */
+        /** @var array<mixed> $data */
         $data = $response->json() ?? [];
 
         // Estimate responses return an array of zone volumes: [{Type, Localite, Volume}, ...]
