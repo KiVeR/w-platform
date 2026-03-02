@@ -34,5 +34,6 @@
         <env name="CAMPAIGN_SENDING_DRIVER" value="stub" force="true"/>
         <env name="CAMPAIGN_STATS_DRIVER" value="stub" force="true"/>
         <env name="SMS_ROUTING_DRIVER" value="stub" force="true"/>
+        <env name="AI_DRIVER" value="stub" force="true"/>
     </php>
 </phpunit>

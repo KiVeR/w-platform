@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\AIDriverInterface;
 use App\Contracts\SmsRoutingDriverInterface;
 use App\Contracts\TargetingAdapterInterface;
+use App\Services\AI\AIGenerationManager;
 use App\Services\Geo\GeoApiService;
 use App\Services\SmsRouting\SmsRoutingManager;
 use App\Services\Targeting\Adapters\WepakTargetingAdapter;
@@ -31,6 +33,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(SmsRoutingManager::class, fn ($app): SmsRoutingManager => new SmsRoutingManager($app));
         $this->app->bind(SmsRoutingDriverInterface::class, fn ($app): SmsRoutingDriverInterface => $app->make(SmsRoutingManager::class)->driver());
+
+        $this->app->singleton(AIGenerationManager::class, fn ($app): AIGenerationManager => new AIGenerationManager($app));
+        $this->app->bind(AIDriverInterface::class, fn ($app): AIDriverInterface => $app->make(AIGenerationManager::class)->driver());
     }
 
     public function boot(): void

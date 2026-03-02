@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\AIGenerationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\EstimateController;
@@ -108,5 +109,10 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
         Route::get('iris-zones/{code}/geometry', [IrisZonesController::class, 'geometry'])->name('iris-zones.geometry');
         Route::post('iris-zones/lookup', [IrisZonesController::class, 'lookup'])->name('iris-zones.lookup');
         Route::post('iris-zones/batch', [IrisZonesController::class, 'batch'])->name('iris-zones.batch');
+    });
+
+    Route::prefix('ai')->group(function (): void {
+        Route::post('generate', [AIGenerationController::class, 'generate']);
+        Route::get('generate/{jobId}/status', [AIGenerationController::class, 'status']);
     });
 });
