@@ -9,8 +9,6 @@ use App\Http\Requests\ShortUrl\StoreShortUrlRequest;
 use App\Http\Requests\ShortUrl\UpdateShortUrlRequest;
 use App\Http\Resources\ShortUrlResource;
 use App\Models\ShortUrl;
-use App\Rules\NoUnderscoreSlug;
-use App\Rules\UniqueShortUrlSlugEnabled;
 use App\Services\ShortUrl\ShortUrlService;
 use Exception;
 use Illuminate\Http\Request;

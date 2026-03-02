@@ -6,7 +6,6 @@ namespace App\Services\ShortUrl;
 
 use App\Http\Resources\ShortUrlResource;
 use App\Imports\DefaultImport;
-use App\Models\ImportableLink;
 use App\Models\ShortUrl;
 use Exception;
 use Illuminate\Http\Request;
