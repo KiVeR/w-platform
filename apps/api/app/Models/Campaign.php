@@ -74,6 +74,7 @@ class Campaign extends Model
         'landing_page_id',
         'variable_schema_id',
         'draft_notified_at',
+        'router_id',
         'routing_status',
         'routing_at',
         'routing_batch_id',

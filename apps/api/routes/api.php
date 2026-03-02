@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\EstimateController;
+use App\Http\Controllers\Api\ExternalCampaignController;
 use App\Http\Controllers\Api\GeoController;
 use App\Http\Controllers\Api\ImportableLinkController;
 use App\Http\Controllers\Api\InterestGroupsController;
@@ -15,10 +16,23 @@ use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\ShopsController;
 use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\ShortUrlSuffixRequestController;
+use App\Http\Controllers\Api\SmsWebhookController;
 use App\Http\Controllers\Api\TargetingTemplatesController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VariableSchemaController;
 use Illuminate\Support\Facades\Route;
+
+// External API — Client Credentials OAuth2 (machine-to-machine, e.g. Wepak PUSH)
+Route::middleware(['client'])->prefix('external')->group(function (): void {
+    Route::post('campaigns', [ExternalCampaignController::class, 'store']);
+});
+
+// SMS provider webhooks — public, no auth
+Route::prefix('webhooks')->group(function (): void {
+    Route::post('sinch', [SmsWebhookController::class, 'sinch']);
+    Route::post('infobip', [SmsWebhookController::class, 'infobip']);
+    Route::post('highconnexion', [SmsWebhookController::class, 'highconnexion']);
+});
 
 Route::get('/', fn () => response()->json([
     'name' => (string) config('app.name'),
