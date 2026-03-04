@@ -27,6 +27,9 @@ provider:
         FILESYSTEM_DISK: s3
         SESSION_DRIVER: array
         LOG_CHANNEL: stderr
+        DB_SSLMODE: require
+        DB_URL: ${ssm:/wellpack/prod/DATABASE_URL}
+        DATABASE_URL_UNPOOLED: ${ssm:/wellpack/prod/DATABASE_URL_UNPOOLED}
         APP_KEY: ${ssm:/wellpack/prod/APP_KEY}
         DB_PASSWORD: ${ssm:/wellpack/prod/DB_PASSWORD}
         GOOGLE_CLIENT_SECRET: ${ssm:/wellpack/prod/GOOGLE_CLIENT_SECRET}
