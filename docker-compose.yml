@@ -154,6 +154,16 @@ services:
     profiles:
       - bref
 
+  dashboard-preview:
+    image: nginx:alpine
+    volumes:
+      - ./apps/dashboard/.output/public:/usr/share/nginx/html:ro
+      - ./docker/nginx/spa.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${PORT_PREFIX:-80}02:80"
+    profiles:
+      - bref
+
   dashboard:
     build:
       context: .
