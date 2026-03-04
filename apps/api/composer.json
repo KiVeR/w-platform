@@ -7,6 +7,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
+        "bref/bref": "^3.0",
+        "bref/laravel-bridge": "^3.0",
         "dedoc/scramble": "^0.13.12",
         "giggsey/libphonenumber-for-php": "^9.0",
         "halaxa/json-machine": "^1.2",
