@@ -909,7 +909,19 @@ export interface operations {
     };
     "campaigns.index": {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                sort?: "name" | "-name" | "scheduled_at" | "-scheduled_at" | "sent_at" | "-sent_at" | "created_at" | "-created_at";
+                include?: string;
+                "filter[partner_id]"?: number;
+                "filter[type]"?: "prospection" | "fidelisation" | "comptage";
+                "filter[channel]"?: "sms" | "email";
+                "filter[status]"?: "draft" | "scheduled" | "sending" | "sent" | "cancelled" | "failed";
+                "filter[status][]"?: ("draft" | "scheduled" | "sending" | "sent" | "cancelled" | "failed")[];
+                "filter[name]"?: string;
+                "filter[created_at_from]"?: string;
+                "filter[created_at_to]"?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;

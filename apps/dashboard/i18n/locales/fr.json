@@ -169,7 +169,14 @@
     "filters": {
       "search": "Rechercher…",
       "allStatuses": "Tous les statuts",
-      "allTypes": "Tous les types"
+      "allTypes": "Tous les types",
+      "allDates": "Toutes les dates",
+      "statusLabel": "Statuts",
+      "typeLabel": "Type",
+      "dateLabel": "Période de création",
+      "from": "Du",
+      "to": "Au",
+      "clear": "Effacer"
     },
     "status": {
       "draft": "Brouillon",

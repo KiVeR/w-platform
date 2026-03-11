@@ -1,7 +1,10 @@
 import { ref } from 'vue'
 import { useApi } from '@/composables/useApi'
 import { usePartnerScope } from '@/composables/usePartnerScope'
+import type { operations } from '@/types/api'
 import type { CampaignFilters, CampaignPagination, CampaignRow, CampaignStatus, CampaignType } from '@/types/campaign'
+
+type CampaignsIndexQuery = NonNullable<operations['campaigns.index']['parameters']['query']>
 
 export function useCampaigns() {
   const api = useApi()
@@ -11,7 +14,7 @@ export function useCampaigns() {
   const pagination = ref<CampaignPagination>({ page: 1, lastPage: 1, total: 0 })
   const isLoading = ref(false)
   const hasError = ref(false)
-  const filters = ref<CampaignFilters>({ search: '', status: '', type: '' })
+  const filters = ref<CampaignFilters>({ search: '', statuses: [], type: '', dateFrom: '', dateTo: '' })
   const sort = ref('-created_at')
 
   function mapCampaign(raw: Record<string, unknown>): CampaignRow {
@@ -32,16 +35,20 @@ export function useCampaigns() {
     isLoading.value = true
     hasError.value = false
     try {
+      const query = withPartnerScope({
+        sort: sort.value,
+        page: pagination.value.page,
+        'filter[status][]': filters.value.statuses.length > 0 ? filters.value.statuses : undefined,
+        'filter[type]': filters.value.type || undefined,
+        'filter[name]': filters.value.search || undefined,
+        'filter[created_at_from]': filters.value.dateFrom || undefined,
+        'filter[created_at_to]': filters.value.dateTo || undefined,
+      }) as CampaignsIndexQuery
+
       const { data, error } = await api.GET('/campaigns', {
         params: {
-          query: withPartnerScope({
-            sort: sort.value,
-            page: pagination.value.page,
-            'filter[status]': filters.value.status || undefined,
-            'filter[type]': filters.value.type || undefined,
-            'filter[name]': filters.value.search || undefined,
-          }),
-        } as { query: Record<string, unknown> },
+          query,
+        },
       })
       if (error) {
         hasError.value = true

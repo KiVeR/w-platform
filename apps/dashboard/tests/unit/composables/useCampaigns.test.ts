@@ -44,14 +44,23 @@ describe('useCampaigns', () => {
     })
 
     const { setFilters, fetchCampaigns } = useCampaigns()
-    setFilters({ status: 'draft', type: 'prospection' })
+    setFilters({
+      statuses: ['draft', 'sent'],
+      type: 'prospection',
+      search: 'Promo',
+      dateFrom: '2026-03-01',
+      dateTo: '2026-03-31',
+    })
     await fetchCampaigns()
 
     expect(mockGet).toHaveBeenCalledWith('/campaigns', expect.objectContaining({
       params: expect.objectContaining({
         query: expect.objectContaining({
-          'filter[status]': 'draft',
+          'filter[status][]': ['draft', 'sent'],
           'filter[type]': 'prospection',
+          'filter[name]': 'Promo',
+          'filter[created_at_from]': '2026-03-01',
+          'filter[created_at_to]': '2026-03-31',
         }),
       }),
     }))

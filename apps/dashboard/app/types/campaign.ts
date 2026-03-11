@@ -97,8 +97,10 @@ export interface CampaignPagination {
 
 export interface CampaignFilters {
   search: string
-  status: string
+  statuses: CampaignStatus[]
   type: string
+  dateFrom: string
+  dateTo: string
 }
 
 export interface Shop {

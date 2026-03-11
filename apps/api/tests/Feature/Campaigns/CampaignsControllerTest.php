@@ -71,6 +71,113 @@ it('filters campaigns by type', function (): void {
         ->assertJsonPath('data.0.type', 'prospection');
 });
 
+it('filters campaigns by partial name', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    Campaign::factory()->create(['name' => 'Promo Spring 2026']);
+    Campaign::factory()->create(['name' => 'Newsletter Summer']);
+
+    $response = $this->getJson('/api/campaigns?filter[name]=Promo');
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Promo Spring 2026');
+});
+
+it('filters campaigns by multiple statuses', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    Campaign::factory()->sent()->create(['name' => 'Sent Campaign']);
+    Campaign::factory()->failed()->create(['name' => 'Failed Campaign']);
+    Campaign::factory()->create(['name' => 'Draft Campaign']);
+
+    $response = $this->getJson('/api/campaigns?filter[status][]=sent&filter[status][]=failed');
+
+    $response->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonFragment(['name' => 'Sent Campaign'])
+        ->assertJsonFragment(['name' => 'Failed Campaign'])
+        ->assertJsonMissing(['name' => 'Draft Campaign']);
+});
+
+it('filters campaigns by created_at_from date', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    Campaign::factory()->create([
+        'name' => 'Old Campaign',
+        'created_at' => now()->subDays(12),
+    ]);
+    Campaign::factory()->create([
+        'name' => 'Recent Campaign',
+        'created_at' => now()->subDays(3),
+    ]);
+
+    $response = $this->getJson('/api/campaigns?filter[created_at_from]='.now()->subDays(7)->toDateString());
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Recent Campaign');
+});
+
+it('filters campaigns by created_at_to date', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    Campaign::factory()->create([
+        'name' => 'Older Campaign',
+        'created_at' => now()->subDays(10),
+    ]);
+    Campaign::factory()->create([
+        'name' => 'Newest Campaign',
+        'created_at' => now()->subDays(1),
+    ]);
+
+    $response = $this->getJson('/api/campaigns?filter[created_at_to]='.now()->subDays(7)->toDateString());
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Older Campaign');
+});
+
+it('combines partner scope with name, status, and date filters', function (): void {
+    $partner1 = Partner::factory()->create();
+    $partner2 = Partner::factory()->create();
+
+    Campaign::factory()->forPartner($partner1)->sent()->create([
+        'name' => 'Promo Partner One',
+        'created_at' => now()->subDays(4),
+    ]);
+    Campaign::factory()->forPartner($partner1)->failed()->create([
+        'name' => 'Promo Failed Partner One',
+        'created_at' => now()->subDays(3),
+    ]);
+    Campaign::factory()->forPartner($partner2)->sent()->create([
+        'name' => 'Promo Partner Two',
+        'created_at' => now()->subDays(4),
+    ]);
+
+    $user = User::factory()->forPartner($partner1)->create();
+    $user->assignRole('partner');
+    Passport::actingAs($user);
+
+    $response = $this->getJson(sprintf(
+        '/api/campaigns?filter[name]=Promo&filter[status][]=sent&filter[created_at_from]=%s&filter[created_at_to]=%s',
+        now()->subDays(5)->toDateString(),
+        now()->subDays(2)->toDateString(),
+    ));
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Promo Partner One');
+});
+
 it('includes partner and creator relations', function (): void {
     $admin = User::factory()->create();
     $admin->assignRole('admin');

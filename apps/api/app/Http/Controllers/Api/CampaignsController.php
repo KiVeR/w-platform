@@ -10,6 +10,7 @@ use App\DTOs\Targeting\TargetingInput;
 use App\Enums\CampaignStatus;
 use App\Exceptions\InsufficientCreditsException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Campaign\IndexCampaignRequest;
 use App\Http\Requests\Campaign\ScheduleCampaignRequest;
 use App\Http\Requests\Campaign\StoreCampaignRequest;
 use App\Http\Requests\Campaign\UpdateCampaignRequest;
@@ -23,6 +24,7 @@ use App\Services\CampaignSending\StopSmsService;
 use App\Services\CreditService;
 use App\Services\PricingService;
 use App\Services\Targeting\TargetingResolver;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -35,7 +37,7 @@ class CampaignsController extends Controller
         private readonly TargetingResolver $targetingResolver,
     ) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(IndexCampaignRequest $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Campaign::class);
 
@@ -46,8 +48,34 @@ class CampaignsController extends Controller
             ->allowedFilters([
                 AllowedFilter::exact('partner_id'),
                 AllowedFilter::exact('type'),
-                AllowedFilter::exact('status'),
                 AllowedFilter::exact('channel'),
+                AllowedFilter::partial('name'),
+                AllowedFilter::callback('status', function (Builder $query, mixed $value): void {
+                    $statuses = array_values(array_filter(
+                        is_array($value) ? $value : [$value],
+                        fn (mixed $status): bool => is_string($status) && $status !== '',
+                    ));
+
+                    if ($statuses === []) {
+                        return;
+                    }
+
+                    $query->whereIn('status', $statuses);
+                }),
+                AllowedFilter::callback('created_at_from', function (Builder $query, mixed $value): void {
+                    if (! is_string($value) || $value === '') {
+                        return;
+                    }
+
+                    $query->whereDate('created_at', '>=', $value);
+                }),
+                AllowedFilter::callback('created_at_to', function (Builder $query, mixed $value): void {
+                    if (! is_string($value) || $value === '') {
+                        return;
+                    }
+
+                    $query->whereDate('created_at', '<=', $value);
+                }),
             ])
             ->allowedSorts(['name', 'scheduled_at', 'sent_at', 'created_at'])
             ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])

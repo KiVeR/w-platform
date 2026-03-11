@@ -8,6 +8,7 @@ import ReEngagementBanner from '@/components/campaigns/ReEngagementBanner.vue'
 import { useCampaigns } from '@/composables/useCampaigns'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { useApi } from '@/composables/useApi'
+import type { CampaignFilters as CampaignFiltersState } from '@/types/campaign'
 
 const { t } = useI18n()
 const wizard = useCampaignWizardStore()
@@ -41,7 +42,7 @@ function handleView(id: number) {
   navigateTo(`/campaigns/${id}`)
 }
 
-async function handleFilterUpdate(f: Record<string, string>) {
+async function handleFilterUpdate(f: Partial<CampaignFiltersState>) {
   setFilters(f)
   await fetchCampaigns()
 }

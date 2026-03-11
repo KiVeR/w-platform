@@ -169,7 +169,14 @@
     "filters": {
       "search": "Search…",
       "allStatuses": "All statuses",
-      "allTypes": "All types"
+      "allTypes": "All types",
+      "allDates": "Any date",
+      "statusLabel": "Statuses",
+      "typeLabel": "Type",
+      "dateLabel": "Created range",
+      "from": "From",
+      "to": "To",
+      "clear": "Clear"
     },
     "status": {
       "draft": "Draft",
