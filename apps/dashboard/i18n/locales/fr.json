@@ -61,7 +61,51 @@
   },
   "dashboard": {
     "welcome": "Bonjour, {firstname}",
-    "description": "Bienvenue sur votre espace de gestion Wellpack."
+    "description": "Vue operateur centralisee pour suivre vos campagnes sans quitter le dashboard.",
+    "live": "Poste de pilotage",
+    "periods": {
+      "7d": "7 jours",
+      "30d": "30 jours",
+      "90d": "90 jours"
+    },
+    "kpis": {
+      "active": {
+        "label": "Envoyees",
+        "subtitle": "Campagnes diffusees sur la periode selectionnee."
+      },
+      "scheduled": {
+        "label": "Programmees",
+        "subtitle": "Campagnes encore en attente de depart."
+      },
+      "error": {
+        "label": "En erreur",
+        "subtitle": "Campagnes a verifier ou relancer."
+      },
+      "volume": {
+        "label": "Volume estime",
+        "subtitle": "Contacts estimes sur la periode."
+      }
+    },
+    "chart": {
+      "title": "Rythme campagne",
+      "description": "Volume estime et nombre de campagnes creees par jour.",
+      "legendVolume": "Volume estime",
+      "legendActivity": "Campagnes",
+      "empty": "Pas encore assez d activite sur cette periode."
+    },
+    "recent": {
+      "title": "Campagnes recentes",
+      "description": "Les dossiers operateur ouverts le plus recemment.",
+      "empty": "Aucune campagne recente",
+      "today": "Aujourd hui",
+      "yesterday": "Hier",
+      "daysAgo": "Il y a {count} jours",
+      "viewAll": "Voir toutes"
+    },
+    "error": {
+      "title": "Impossible de charger le dashboard operateur",
+      "description": "Les donnees campagnes n ont pas pu etre recuperees."
+    }
   },
   "settings": {
     "title": "Paramètres",

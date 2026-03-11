@@ -61,7 +61,51 @@
   },
   "dashboard": {
     "welcome": "Hello, {firstname}",
-    "description": "Welcome to your Wellpack management workspace."
+    "description": "A single operator cockpit to monitor campaigns without leaving the dashboard.",
+    "live": "Operator desk",
+    "periods": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "90d": "90 days"
+    },
+    "kpis": {
+      "active": {
+        "label": "Sent",
+        "subtitle": "Campaigns delivered during the selected window."
+      },
+      "scheduled": {
+        "label": "Scheduled",
+        "subtitle": "Campaigns still queued before launch."
+      },
+      "error": {
+        "label": "Errors",
+        "subtitle": "Campaigns that need a manual check."
+      },
+      "volume": {
+        "label": "Estimated volume",
+        "subtitle": "Estimated contacts covered during the window."
+      }
+    },
+    "chart": {
+      "title": "Campaign pace",
+      "description": "Estimated volume and campaign count created each day.",
+      "legendVolume": "Estimated volume",
+      "legendActivity": "Campaigns",
+      "empty": "Not enough activity yet on this period."
+    },
+    "recent": {
+      "title": "Recent campaigns",
+      "description": "The latest operator cases opened in the dashboard.",
+      "empty": "No recent campaigns",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{count} days ago",
+      "viewAll": "View all"
+    },
+    "error": {
+      "title": "Unable to load the operator dashboard",
+      "description": "Campaign data could not be retrieved."
+    }
   },
   "settings": {
     "title": "Settings",
