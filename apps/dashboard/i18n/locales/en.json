@@ -60,9 +60,60 @@
     "variableSchemas": {
       "title": "Variable schemas",
       "description": "Admin foundation to manage schemas linked to campaigns and landing pages.",
-      "launchDescription": "The entry point is ready for the next dedicated variable-schemas CRUD step.",
-      "placeholderTitle": "Schema management is next",
-      "placeholderDescription": "List, clone and the edit stepper are handled in the next step, aligned with the variable-schemas contract already merged."
+      "create": "Create schema",
+      "table": {
+        "name": "Name",
+        "partner": "Partner",
+        "variables": "Variables",
+        "uuid": "UUID",
+        "createdAt": "Created",
+        "actions": "Actions"
+      },
+      "badges": {
+        "global": "{count} global",
+        "recipient": "{count} recipient"
+      },
+      "actions": {
+        "edit": "Edit",
+        "clone": "Clone",
+        "delete": "Delete"
+      },
+      "empty": {
+        "title": "No variable schemas yet",
+        "description": "Add a first schema to prepare campaigns and landing pages.",
+        "action": "Create schema"
+      },
+      "error": {
+        "title": "Unable to load schemas",
+        "description": "The variable-schemas contract exists, but loading failed.",
+        "retry": "Retry"
+      },
+      "cloneDialog": {
+        "title": "Clone this schema?",
+        "description": "The clone will be created with the (copy) suffix from \"{name}\".",
+        "cancel": "Cancel",
+        "confirm": "Clone"
+      },
+      "deleteConfirm": {
+        "title": "Delete this schema?",
+        "description": "Schema \"{name}\" will be permanently deleted.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "editorPlaceholder": {
+        "title": "Editor is being prepared",
+        "description": "Navigation and listing are ready, the stepper lands in step 10.3.",
+        "body": "The full create / edit form will be connected in the next sub-step of the track.",
+        "backToList": "Back to list"
+      },
+      "newPage": {
+        "title": "New variable schema",
+        "description": "Reserved entry point for the upcoming creation stepper."
+      },
+      "editPage": {
+        "title": "Edit variable schema",
+        "description": "Reserved entry point for the upcoming edit stepper."
+      }
     }
   },
   "login": {

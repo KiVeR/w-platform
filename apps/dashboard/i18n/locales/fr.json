@@ -60,9 +60,60 @@
     "variableSchemas": {
       "title": "Schemas de variables",
       "description": "Base admin pour gerer les schemas relies aux campagnes et landing pages.",
-      "launchDescription": "Le point d entree est en place pour attaquer le step dedie au CRUD variable-schemas.",
-      "placeholderTitle": "Gestion des schemas a venir",
-      "placeholderDescription": "La liste, le clone et le stepper d edition arrivent au step suivant, aligne sur le contrat variable-schemas deja merge."
+      "create": "Creer un schema",
+      "table": {
+        "name": "Nom",
+        "partner": "Partenaire",
+        "variables": "Variables",
+        "uuid": "UUID",
+        "createdAt": "Creation",
+        "actions": "Actions"
+      },
+      "badges": {
+        "global": "{count} globales",
+        "recipient": "{count} destinataires"
+      },
+      "actions": {
+        "edit": "Editer",
+        "clone": "Cloner",
+        "delete": "Supprimer"
+      },
+      "empty": {
+        "title": "Aucun schema de variables",
+        "description": "Ajoutez un premier schema pour preparer les campagnes et landing pages.",
+        "action": "Creer un schema"
+      },
+      "error": {
+        "title": "Impossible de charger les schemas",
+        "description": "Le contrat variable-schemas est disponible, mais la recuperation a echoue.",
+        "retry": "Reessayer"
+      },
+      "cloneDialog": {
+        "title": "Cloner ce schema ?",
+        "description": "Le clone sera cree avec le suffixe (copy) a partir de \"{name}\".",
+        "cancel": "Annuler",
+        "confirm": "Cloner"
+      },
+      "deleteConfirm": {
+        "title": "Supprimer ce schema ?",
+        "description": "Le schema \"{name}\" sera supprime definitivement.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "editorPlaceholder": {
+        "title": "Editeur en preparation",
+        "description": "La navigation et la liste sont pretes, le stepper arrive au step 10.3.",
+        "body": "Le formulaire complet creation / edition sera branche dans la prochaine sous-etape du track.",
+        "backToList": "Retour a la liste"
+      },
+      "newPage": {
+        "title": "Nouveau schema de variables",
+        "description": "Point d entree reserve pour le futur stepper de creation."
+      },
+      "editPage": {
+        "title": "Edition schema de variables",
+        "description": "Point d entree reserve pour le futur stepper d edition."
+      }
     }
   },
   "login": {
