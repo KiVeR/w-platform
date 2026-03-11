@@ -180,11 +180,14 @@
         "volumeSent": "Volume sent",
         "unitPrice": "Unit price",
         "totalPrice": "Total price",
-        "smsCount": "SMS count",
-        "shortUrl": "Short link",
-        "createdAt": "Created on",
-        "scheduledAt": "Scheduled on",
-        "sentAt": "Sent on"
+      "smsCount": "SMS count",
+      "shortUrl": "Short link",
+      "showFull": "View full message",
+      "showLess": "Collapse",
+      "emptyMessage": "No message available",
+      "createdAt": "Created on",
+      "scheduledAt": "Scheduled on",
+      "sentAt": "Sent on"
       },
       "targeting": {
         "title": "Targeting",

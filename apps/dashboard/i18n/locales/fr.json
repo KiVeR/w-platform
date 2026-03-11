@@ -180,11 +180,14 @@
         "volumeSent": "Volume envoyé",
         "unitPrice": "Prix unitaire",
         "totalPrice": "Prix total",
-        "smsCount": "Nombre de SMS",
-        "shortUrl": "Lien court",
-        "createdAt": "Créée le",
-        "scheduledAt": "Planifiée le",
-        "sentAt": "Envoyée le"
+      "smsCount": "Nombre de SMS",
+      "shortUrl": "Lien court",
+      "showFull": "Voir complet",
+      "showLess": "Replier",
+      "emptyMessage": "Aucun message disponible",
+      "createdAt": "Créée le",
+      "scheduledAt": "Planifiée le",
+      "sentAt": "Envoyée le"
       },
       "targeting": {
         "title": "Ciblage",
