@@ -167,10 +167,25 @@
       "back": "Retour aux campagnes",
       "export": "Exporter CSV",
       "duplicate": "Dupliquer",
+      "cancel": "Annuler la campagne",
+      "preview": "Aperçu SMS",
+      "previewDescription": "Visualisation mobile read-only du message envoyé.",
+      "moreActions": "Actions",
       "loadError": "Impossible de charger la campagne",
       "loadErrorDescription": "Une erreur est survenue lors du chargement de la campagne.",
       "notFound": "Campagne introuvable",
       "notFoundDescription": "Cette campagne n'existe pas ou a été supprimée.",
+      "actionsPanel": {
+        "title": "Actions campagne",
+        "description": "Raccourcis opérateur pour relancer, exporter ou annuler la diffusion.",
+        "cancelError": "Impossible d'annuler la campagne pour le moment.",
+        "cancelConfirm": {
+          "title": "Annuler cette campagne ?",
+          "description": "La campagne \"{name}\" sera stoppée avant envoi.",
+          "cancel": "Fermer",
+          "confirm": "Confirmer l'annulation"
+        }
+      },
       "summary": {
         "title": "Détails",
         "type": "Type",

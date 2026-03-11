@@ -167,10 +167,25 @@
       "back": "Back to campaigns",
       "export": "Export CSV",
       "duplicate": "Duplicate",
+      "cancel": "Cancel campaign",
+      "preview": "SMS preview",
+      "previewDescription": "Read-only mobile rendering of the sent message.",
+      "moreActions": "Actions",
       "loadError": "Unable to load campaign",
       "loadErrorDescription": "An error occurred while loading the campaign.",
       "notFound": "Campaign not found",
       "notFoundDescription": "This campaign does not exist or has been deleted.",
+      "actionsPanel": {
+        "title": "Campaign actions",
+        "description": "Operator shortcuts to duplicate, export or cancel the send.",
+        "cancelError": "Unable to cancel the campaign right now.",
+        "cancelConfirm": {
+          "title": "Cancel this campaign?",
+          "description": "The campaign \"{name}\" will be stopped before send.",
+          "cancel": "Close",
+          "confirm": "Confirm cancellation"
+        }
+      },
       "summary": {
         "title": "Details",
         "type": "Type",

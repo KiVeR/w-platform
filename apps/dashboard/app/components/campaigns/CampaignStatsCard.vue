@@ -4,8 +4,7 @@ import {
 } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useApi } from '@/composables/useApi'
-import type { CampaignStats } from '@/types/campaign'
+import { useCampaignStats } from '@/composables/useCampaignStats'
 import { formatNumber, formatDateTime } from '@/utils/format'
 import { AlertTriangle, Clock, ServerCrash } from 'lucide-vue-next'
 
@@ -14,52 +13,16 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const api = useApi()
-
-const stats = ref<CampaignStats | null>(null)
-const isLoading = ref(false)
-const errorType = ref<'not_yet' | 'provider' | 'only_sent' | null>(null)
-const availableAt = ref<string | null>(null)
+const {
+  stats,
+  isLoading,
+  errorType,
+  availableAt,
+  fetchStats,
+} = useCampaignStats(() => props.campaignId)
 
 function formatPercent(value: number): string {
   return `${(value * 100).toFixed(1)} %`
-}
-
-async function fetchStats(): Promise<void> {
-  isLoading.value = true
-  errorType.value = null
-  availableAt.value = null
-  try {
-    const { data: resp, error: apiError, response } = await api.GET('/campaigns/{campaign}/stats', {
-      params: { path: { campaign: props.campaignId } },
-    } as never)
-
-    if (apiError) {
-      const status = (response as Response | undefined)?.status
-      const body = apiError as Record<string, unknown>
-      if (status === 422 && body.message === 'Stats only available for sent campaigns.') {
-        errorType.value = 'only_sent'
-      }
-      else if (status === 422) {
-        errorType.value = 'not_yet'
-        availableAt.value = (body.available_at as string) ?? null
-      }
-      else {
-        errorType.value = 'provider'
-      }
-      return
-    }
-
-    if (resp) {
-      stats.value = (resp as { data: CampaignStats }).data
-    }
-  }
-  catch {
-    errorType.value = 'provider'
-  }
-  finally {
-    isLoading.value = false
-  }
 }
 
 onMounted(() => fetchStats())

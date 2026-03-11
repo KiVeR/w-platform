@@ -1,15 +1,46 @@
 <script setup lang="ts">
-import { ArrowLeft, Download, Copy } from 'lucide-vue-next'
-import { Button } from '@/components/ui/button'
+import { ArrowLeft, Copy, Download, Eye, MoreHorizontal, XCircle } from 'lucide-vue-next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
+import CampaignActionsPanel from '@/components/campaigns/detail/CampaignActionsPanel.vue'
+import ContextBar from '@/components/campaigns/detail/ContextBar.vue'
+import PerformancePanel from '@/components/campaigns/detail/PerformancePanel.vue'
+import SectionLogs from '@/components/campaigns/detail/SectionLogs.vue'
+import SectionMessage from '@/components/campaigns/detail/SectionMessage.vue'
+import SectionRecipients from '@/components/campaigns/detail/SectionRecipients.vue'
+import SectionTargeting from '@/components/campaigns/detail/SectionTargeting.vue'
+import SectionTimeline from '@/components/campaigns/detail/SectionTimeline.vue'
 import CampaignStatusBadge from '@/components/shared/CampaignStatusBadge.vue'
-import CampaignSummaryCard from '@/components/campaigns/CampaignSummaryCard.vue'
-import TargetingSummary from '@/components/campaigns/TargetingSummary.vue'
-import CampaignStatsCard from '@/components/campaigns/CampaignStatsCard.vue'
+import { useCampaignActions } from '@/composables/useCampaignActions'
 import { useCampaignDetail } from '@/composables/useCampaignDetail'
-import { useCampaignWizardStore } from '@/stores/campaignWizard'
+import { useCampaignStats } from '@/composables/useCampaignStats'
+import { useCollapsibleSections } from '@/composables/useCollapsibleSections'
+import { usePermission } from '@/composables/usePermission'
 import { useApi } from '@/composables/useApi'
+import { formatDateTime } from '@/utils/format'
+import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import type { CampaignTargeting } from '@/types/campaign'
 
 definePageMeta({
@@ -20,8 +51,11 @@ const route = useRoute()
 const { t } = useI18n()
 const wizard = useCampaignWizardStore()
 const api = useApi()
+const { can, hasRole } = usePermission()
 
 const campaignId = computed(() => Number(route.params.id))
+const isMobile = useMediaQuery('(max-width: 767px)')
+const isDesktop = useMediaQuery('(min-width: 1024px)')
 
 const {
   campaign,
@@ -32,7 +66,22 @@ const {
   exportCampaign,
 } = useCampaignDetail(campaignId)
 
-onMounted(() => fetchCampaign())
+const {
+  isCancelling,
+  cancelError,
+  cancelCampaign,
+} = useCampaignActions(campaignId)
+
+const {
+  stats,
+  isLoading: isStatsLoading,
+  errorType: statsErrorType,
+  availableAt: statsAvailableAt,
+  fetchStats,
+} = useCampaignStats(campaignId)
+
+const currentStatus = computed(() => campaign.value?.status ?? 'draft')
+const { sections } = useCollapsibleSections(currentStatus)
 
 function extractPostcodeCode(p: { code?: string } | string): string {
   if (typeof p === 'string') return p
@@ -46,6 +95,8 @@ function parseTargetingJson(raw: string): CampaignTargeting | null {
       method: parsed.method ?? 'department',
       departments: parsed.departments ?? parsed.geo?.departments ?? [],
       postcodes: parsed.postcodes ?? parsed.geo?.postcodes?.map(extractPostcodeCode) ?? [],
+      communes: parsed.communes ?? [],
+      iris_codes: parsed.iris_codes ?? [],
       address: parsed.address ?? parsed.origin?.address ?? null,
       lat: parsed.lat ?? parsed.origin?.lat ?? null,
       lng: parsed.lng ?? parsed.origin?.lng ?? null,
@@ -66,29 +117,92 @@ const parsedTargeting = computed<CampaignTargeting | null>(() => {
 })
 
 const showStats = computed(() => campaign.value?.status === 'sent')
+const isAdmin = computed(() => hasRole('admin'))
+const canViewRecipients = computed(() => isAdmin.value || can('view campaigns'))
+const canManageCampaigns = computed(() => isAdmin.value || can('manage campaigns'))
+
+const availableActions = computed(() => ({
+  duplicate: !!campaign.value && canManageCampaigns.value && campaign.value.status !== 'draft',
+  export: !!campaign.value && canManageCampaigns.value && campaign.value.status === 'sent',
+  cancel: !!campaign.value && canManageCampaigns.value && campaign.value.status === 'scheduled',
+}))
+
+const statsAlertText = computed(() => {
+  switch (statsErrorType.value) {
+    case 'not_yet':
+      return statsAvailableAt.value
+        ? t('campaigns.detail.stats.notYet', { date: formatDateTime(statsAvailableAt.value) })
+        : t('campaigns.detail.stats.notYetNoDate')
+    case 'only_sent':
+      return t('campaigns.detail.stats.onlySent')
+    case 'provider':
+      return t('campaigns.detail.stats.providerError')
+    default:
+      return null
+  }
+})
+
+const statsAlertVariant = computed(() => {
+  switch (statsErrorType.value) {
+    case 'only_sent':
+      return 'warning'
+    case 'provider':
+      return 'destructive'
+    default:
+      return 'info'
+  }
+})
 
 async function handleDuplicate(): Promise<void> {
   if (!campaign.value) return
+
   const { data, error: apiError } = await api.GET('/campaigns/{campaign}', {
     params: { path: { campaign: campaign.value.id } },
   } as never)
+
   if (apiError || !data) return
+
   const raw = (data as { data: Record<string, unknown> }).data
   wizard.initFromCampaign(raw)
   navigateTo('/campaigns/new')
 }
+
+async function handleCancel(): Promise<void> {
+  const cancelled = await cancelCampaign()
+
+  if (cancelled) {
+    await fetchCampaign()
+  }
+}
+
+watch(campaignId, async () => {
+  await fetchCampaign()
+}, { immediate: true })
+
+watch(() => [campaign.value?.id, campaign.value?.status] as const, async ([id, status]) => {
+  if (!id || status !== 'sent') return
+  await fetchStats()
+}, { immediate: true })
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 pb-24 md:pb-0">
     <div v-if="isLoading" class="space-y-6" data-detail-loading>
       <div class="flex items-center gap-4">
         <Skeleton class="h-8 w-8 rounded" />
         <Skeleton class="h-8 w-64" />
       </div>
-      <div class="grid gap-6 lg:grid-cols-2">
-        <Skeleton class="h-80 rounded-lg" />
-        <Skeleton class="h-80 rounded-lg" />
+
+      <div class="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_380px]">
+        <div class="space-y-4">
+          <Skeleton class="h-28 rounded-xl" />
+          <Skeleton class="h-48 rounded-xl" />
+          <Skeleton class="h-64 rounded-xl" />
+        </div>
+        <div class="space-y-4">
+          <Skeleton class="h-96 rounded-xl" />
+          <Skeleton class="h-48 rounded-xl" />
+        </div>
       </div>
     </div>
 
@@ -108,53 +222,203 @@ async function handleDuplicate(): Promise<void> {
     </div>
 
     <template v-else-if="campaign">
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div class="flex items-center gap-3">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex min-w-0 items-center gap-3">
           <NuxtLink to="/campaigns">
             <Button variant="ghost" size="icon" class="size-8" data-back-button>
               <ArrowLeft class="size-4" />
             </Button>
           </NuxtLink>
-          <h1 class="text-2xl font-semibold tracking-tight" data-campaign-name>
-            {{ campaign.name }}
-          </h1>
-          <CampaignStatusBadge :status="campaign.status" />
+
+          <div class="min-w-0 space-y-1">
+            <p class="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+              {{ t('campaigns.detail.summary.title') }}
+            </p>
+            <div class="flex flex-wrap items-center gap-3">
+              <h1 class="truncate text-2xl font-semibold tracking-tight" data-campaign-name>
+                {{ campaign.name }}
+              </h1>
+              <CampaignStatusBadge :status="campaign.status" />
+            </div>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <Button
-            v-if="campaign.status === 'sent'"
-            variant="outline"
-            size="sm"
-            :disabled="isExporting"
-            data-export-button
-            @click="exportCampaign"
-          >
-            <Download class="mr-2 size-4" />
-            {{ t('campaigns.detail.export') }}
-          </Button>
-          <Button
-            v-if="campaign.status !== 'draft'"
-            variant="outline"
-            size="sm"
-            data-duplicate-button
-            @click="handleDuplicate"
-          >
-            <Copy class="mr-2 size-4" />
-            {{ t('campaigns.detail.duplicate') }}
-          </Button>
+        <DropdownMenu v-if="isMobile">
+          <DropdownMenuTrigger as-child>
+            <Button data-mobile-actions-trigger variant="outline" size="sm">
+              <MoreHorizontal class="mr-2 size-4" />
+              {{ t('campaigns.detail.moreActions') }}
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              v-if="availableActions.duplicate"
+              data-mobile-duplicate
+              @select="handleDuplicate"
+            >
+              <Copy class="mr-2 size-4" />
+              {{ t('campaigns.detail.duplicate') }}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              v-if="availableActions.export"
+              data-mobile-export
+              @select="exportCampaign"
+            >
+              <Download class="mr-2 size-4" />
+              {{ t('campaigns.detail.export') }}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              v-if="availableActions.cancel"
+              data-mobile-cancel
+              class="text-destructive"
+              @select="handleCancel"
+            >
+              <XCircle class="mr-2 size-4" />
+              {{ t('campaigns.detail.cancel') }}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <ContextBar :campaign="campaign" />
+
+      <div
+        v-if="!isDesktop && !isMobile"
+        class="grid gap-4"
+      >
+        <Card class="overflow-hidden border-border/70 shadow-sm">
+          <CardHeader class="pb-0">
+            <CardTitle class="text-base">{{ t('campaigns.detail.preview') }}</CardTitle>
+            <CardDescription>{{ t('campaigns.detail.previewDescription') }}</CardDescription>
+          </CardHeader>
+          <CardContent class="flex justify-center px-4 pb-6 pt-2">
+            <SmsPreview :sender="campaign.sender || ''" :message="campaign.message || ''" />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div data-detail-layout class="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_380px]">
+        <div data-detail-main class="space-y-4">
+          <SectionMessage :campaign="campaign" v-model:open="sections.message" />
+          <SectionTargeting :targeting="parsedTargeting" v-model:open="sections.targeting" />
+          <SectionRecipients
+            v-if="canViewRecipients"
+            :campaign-id="campaign.id"
+            v-model:open="sections.recipients"
+          />
+          <SectionTimeline :campaign-id="campaign.id" v-model:open="sections.timeline" />
+          <SectionLogs
+            v-if="isAdmin"
+            :campaign-id="campaign.id"
+            v-model:open="sections.logs"
+          />
+
+          <template v-if="!isDesktop">
+            <div v-if="showStats" class="space-y-4">
+              <PerformancePanel
+                v-if="!statsErrorType || isStatsLoading"
+                :campaign-status="campaign.status"
+                :stats="stats"
+                :is-loading="isStatsLoading"
+              />
+
+              <Alert
+                v-else
+                data-stats-inline-alert
+                :variant="statsAlertVariant"
+              >
+                <AlertTitle>{{ t('campaigns.detail.stats.title') }}</AlertTitle>
+                <AlertDescription>{{ statsAlertText }}</AlertDescription>
+              </Alert>
+            </div>
+
+            <CampaignActionsPanel
+              v-if="!isMobile"
+              :campaign="campaign"
+              :show-duplicate="availableActions.duplicate"
+              :show-export="availableActions.export"
+              :show-cancel="availableActions.cancel"
+              :is-exporting="isExporting"
+              :is-cancelling="isCancelling"
+              :cancel-error="cancelError"
+              @duplicate="handleDuplicate"
+              @export="exportCampaign"
+              @cancel="handleCancel"
+            />
+          </template>
+        </div>
+
+        <div
+          v-if="isDesktop"
+          data-detail-sidebar
+          class="space-y-4 xl:sticky xl:top-6 xl:self-start"
+        >
+          <Card class="overflow-hidden border-border/70 shadow-sm">
+            <CardHeader class="pb-0">
+              <CardTitle class="text-base">{{ t('campaigns.detail.preview') }}</CardTitle>
+              <CardDescription>{{ t('campaigns.detail.previewDescription') }}</CardDescription>
+            </CardHeader>
+            <CardContent class="flex justify-center px-4 pb-6 pt-2">
+              <SmsPreview :sender="campaign.sender || ''" :message="campaign.message || ''" />
+            </CardContent>
+          </Card>
+
+          <div v-if="showStats" class="space-y-4">
+            <PerformancePanel
+              v-if="!statsErrorType || isStatsLoading"
+              :campaign-status="campaign.status"
+              :stats="stats"
+              :is-loading="isStatsLoading"
+            />
+
+            <Alert
+              v-else
+              data-stats-inline-alert
+              :variant="statsAlertVariant"
+            >
+              <AlertTitle>{{ t('campaigns.detail.stats.title') }}</AlertTitle>
+              <AlertDescription>{{ statsAlertText }}</AlertDescription>
+            </Alert>
+          </div>
+
+          <CampaignActionsPanel
+            :campaign="campaign"
+            :show-duplicate="availableActions.duplicate"
+            :show-export="availableActions.export"
+            :show-cancel="availableActions.cancel"
+            :is-exporting="isExporting"
+            :is-cancelling="isCancelling"
+            :cancel-error="cancelError"
+            @duplicate="handleDuplicate"
+            @export="exportCampaign"
+            @cancel="handleCancel"
+          />
         </div>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-2">
-        <div class="space-y-6">
-          <CampaignSummaryCard :campaign="campaign" />
-          <TargetingSummary v-if="parsedTargeting" :targeting="parsedTargeting" />
-        </div>
+      <div v-if="isMobile" class="fixed inset-x-0 bottom-4 z-20 px-4">
+        <Sheet>
+          <SheetTrigger as-child>
+            <Button data-mobile-preview-trigger class="w-full shadow-lg">
+              <Eye class="mr-2 size-4" />
+              {{ t('campaigns.detail.preview') }}
+            </Button>
+          </SheetTrigger>
 
-        <div v-if="showStats">
-          <CampaignStatsCard :campaign-id="campaign.id" />
-        </div>
+          <SheetContent side="bottom" class="max-h-[90svh] overflow-y-auto rounded-t-3xl">
+            <SheetHeader>
+              <SheetTitle>{{ t('campaigns.detail.preview') }}</SheetTitle>
+              <SheetDescription>{{ t('campaigns.detail.previewDescription') }}</SheetDescription>
+            </SheetHeader>
+
+            <div class="mt-6 flex justify-center pb-6">
+              <SmsPreview :sender="campaign.sender || ''" :message="campaign.message || ''" />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </template>
   </div>
