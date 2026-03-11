@@ -160,3 +160,84 @@ export interface TargetingTemplateRow {
   category: string | null
   created_at: string
 }
+
+export type CampaignRecipientStatus =
+  | 'QUEUED'
+  | 'DISPATCHED'
+  | 'DELIVERED'
+  | 'UNDELIVERABLE'
+  | 'FAILED'
+  | 'REJECTED'
+  | 'EXPIRED'
+  | 'CANCELED'
+
+export interface CampaignRecipientRow {
+  id: number
+  campaign_id: number
+  status: CampaignRecipientStatus
+  phone_number: string
+  message_preview: string | null
+  message_preview_length: number | null
+  short_url_suffix: string | null
+  short_url_slug: string | null
+  short_url_click: number
+  additional_information: Record<string, unknown> | null
+  stop_requested_at: string | null
+  delivered_at: string | null
+}
+
+export interface RecipientFilters {
+  search: string
+  statuses: CampaignRecipientStatus[]
+}
+
+export interface RecipientPagination {
+  page: number
+  lastPage: number
+  total: number
+  perPage: number
+}
+
+export interface CampaignLogRow {
+  id: number
+  campaign_id: number
+  data: Record<string, unknown>
+  created_at: string
+}
+
+export interface LogActivityRow {
+  id: number
+  event: string
+  model_type: string | null
+  model_id: number | null
+  old_values: Record<string, unknown> | null
+  new_values: Record<string, unknown> | null
+  created_at: string
+}
+
+export type CampaignRoutingStatus =
+  | 'QUERY_PENDING'
+  | 'QUERY_IN_PROGRESS'
+  | 'QUERY_FAILED'
+  | 'SHORT_URL_ERROR'
+  | 'SHORT_URL_SUFFIX_PENDING'
+  | 'SHORT_URL_SUFFIX_REQUESTED'
+  | 'SHORT_URL_SUFFIX_FAILED'
+  | 'MESSAGE_GENERATION_PENDING'
+  | 'MESSAGE_GENERATION_REQUESTED'
+  | 'MESSAGE_GENERATION_FAILED'
+  | 'ROUTING_PENDING'
+  | 'ROUTING_IN_PROGRESS'
+  | 'ROUTING_COMPLETED'
+  | 'ROUTING_PAUSED'
+  | 'ROUTING_FAILED'
+  | 'ROUTING_CANCELED'
+
+export interface CampaignDetailEnriched extends CampaignDetail {
+  routing_status: CampaignRoutingStatus | null
+  router_id: number | null
+  variable_schema_id: number | null
+  routing_at: string | null
+  recipients_count: number | null
+  router?: { id: number, name: string, external_id: number | null } | null
+}

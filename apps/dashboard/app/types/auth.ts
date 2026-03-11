@@ -4,6 +4,9 @@ export type Role = 'admin' | 'partner' | 'merchant' | 'employee'
 export type Permission = 'view partners' | 'manage partners' | 'view users' | 'manage users'
   | 'view campaigns' | 'manage campaigns' | 'view shops' | 'manage shops'
   | 'view landing-pages' | 'manage landing-pages'
+  | 'view targeting-templates' | 'manage targeting-templates'
+  | 'view variable-schemas' | 'manage variable-schemas'
+  | 'view ai-contents' | 'manage ai-contents'
 
 export interface AuthUser {
   id: number

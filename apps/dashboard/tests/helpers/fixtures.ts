@@ -1,4 +1,10 @@
-import type { CampaignDraft, LandingPageRow } from '@/types/campaign'
+import type {
+  CampaignDraft,
+  CampaignLogRow,
+  CampaignRecipientStatus,
+  LandingPageRow,
+  LogActivityRow,
+} from '@/types/campaign'
 
 export const fakeCampaignDraft: CampaignDraft = {
   type: 'prospection',
@@ -60,6 +66,12 @@ export const fakeAdminUser = {
     'manage shops' as const,
     'view landing-pages' as const,
     'manage landing-pages' as const,
+    'view targeting-templates' as const,
+    'manage targeting-templates' as const,
+    'view variable-schemas' as const,
+    'manage variable-schemas' as const,
+    'view ai-contents' as const,
+    'manage ai-contents' as const,
   ],
 }
 
@@ -122,4 +134,84 @@ export const fakePaginationMeta = {
   per_page: 15,
   to: 15,
   total: 42,
+}
+
+const recipientStatuses: CampaignRecipientStatus[] = [
+  'QUEUED',
+  'DISPATCHED',
+  'DELIVERED',
+  'UNDELIVERABLE',
+  'FAILED',
+  'REJECTED',
+  'EXPIRED',
+  'CANCELED',
+]
+
+export const fakeRecipient = {
+  id: '1',
+  campaign_id: '42',
+  status: 'DELIVERED',
+  phone_number: '+33612345678',
+  message_preview: 'Profitez de -20% cet ete !',
+  message_preview_length: '28',
+  short_url_suffix: 'abc123',
+  short_url_slug: 'promo-ete',
+  short_url_click: '3',
+  additional_information: null,
+  stop_requested_at: null,
+  delivered_at: '2026-02-05T09:05:00Z',
+} satisfies Record<string, unknown>
+
+export function fakeRecipientList(count = 5) {
+  return Array.from({ length: count }, (_, i) => ({
+    ...fakeRecipient,
+    id: String(i + 1),
+    phone_number: `+336${String(i + 1).padStart(8, '0')}`,
+    status: recipientStatuses[i % recipientStatuses.length],
+  }))
+}
+
+export const fakeRecipientPaginationMeta = {
+  current_page: 1,
+  from: 1,
+  last_page: 5,
+  links: [],
+  path: '/api/campaigns/42/recipients',
+  per_page: 15,
+  to: 15,
+  total: 72,
+}
+
+export const fakeCampaignLog: CampaignLogRow & { id: string | number, campaign_id: string | number } = {
+  id: '1',
+  campaign_id: '42',
+  data: { phase: 'routing', message: 'Routing started', level: 'info' },
+  created_at: '2026-02-05T09:00:00Z',
+}
+
+export function fakeCampaignLogList(count = 3) {
+  return Array.from({ length: count }, (_, i) => ({
+    ...fakeCampaignLog,
+    id: String(i + 1),
+    created_at: `2026-02-05T09:0${i}:00Z`,
+  }))
+}
+
+export const fakeLogActivity: LogActivityRow & { id: string | number, model_id: string | number } = {
+  id: '1',
+  event: 'updated',
+  model_type: 'App\\Models\\Campaign',
+  model_id: '42',
+  old_values: { status: 'draft' },
+  new_values: { status: 'scheduled' },
+  created_at: '2026-02-04T15:00:00Z',
+}
+
+export function fakeLogActivityList(count = 3) {
+  return Array.from({ length: count }, (_, i) => ({
+    ...fakeLogActivity,
+    id: String(i + 1),
+    event: ['created', 'updated', 'deleted'][i % 3],
+    created_at: `2026-02-05T09:0${i}:00Z`,
+  }))
 }

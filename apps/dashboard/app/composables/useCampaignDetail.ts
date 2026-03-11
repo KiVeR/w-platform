@@ -1,6 +1,12 @@
 import { ref, type MaybeRef, toValue } from 'vue'
 import { useApi } from '@/composables/useApi'
-import type { CampaignDetail, CampaignType, CampaignChannel, CampaignStatus } from '@/types/campaign'
+import type {
+  CampaignChannel,
+  CampaignDetailEnriched,
+  CampaignRoutingStatus,
+  CampaignStatus,
+  CampaignType,
+} from '@/types/campaign'
 
 function optionalString(value: unknown): string | null {
   return value ? String(value) : null
@@ -8,6 +14,10 @@ function optionalString(value: unknown): string | null {
 
 function optionalNumber(value: unknown): number | null {
   return value ? Number(value) : null
+}
+
+function isBlob(value: unknown): value is Blob {
+  return typeof Blob !== 'undefined' && value instanceof Blob
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -21,7 +31,7 @@ function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url)
 }
 
-function mapCampaign(raw: Record<string, unknown>): CampaignDetail {
+function mapCampaign(raw: Record<string, unknown>): CampaignDetailEnriched {
   return {
     id: Number(raw.id),
     partner_id: Number(raw.partner_id),
@@ -44,15 +54,21 @@ function mapCampaign(raw: Record<string, unknown>): CampaignDetail {
     unit_price: optionalString(raw.unit_price),
     total_price: optionalString(raw.total_price),
     created_at: String(raw.created_at ?? ''),
-    partner: raw.partner ? raw.partner as CampaignDetail['partner'] : null,
-    creator: raw.creator ? raw.creator as CampaignDetail['creator'] : null,
+    partner: raw.partner ? raw.partner as CampaignDetailEnriched['partner'] : null,
+    creator: raw.creator ? raw.creator as CampaignDetailEnriched['creator'] : null,
+    routing_status: (raw.routing_status as CampaignRoutingStatus | undefined) ?? null,
+    router_id: optionalNumber(raw.router_id),
+    variable_schema_id: optionalNumber(raw.variable_schema_id),
+    routing_at: optionalString(raw.routing_at),
+    recipients_count: optionalNumber(raw.recipients_count),
+    router: raw.router ? raw.router as CampaignDetailEnriched['router'] : null,
   }
 }
 
 export function useCampaignDetail(id: MaybeRef<number>) {
   const api = useApi()
 
-  const campaign = ref<CampaignDetail | null>(null)
+  const campaign = ref<CampaignDetailEnriched | null>(null)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
   const isExporting = ref(false)
@@ -87,13 +103,13 @@ export function useCampaignDetail(id: MaybeRef<number>) {
   async function exportCampaign(): Promise<void> {
     isExporting.value = true
     try {
-      const { data: resp, error: apiError } = await api.GET('/campaigns/{campaign}/export', {
+      const { data: resp, error: apiError } = await api.GET('/campaigns/{campaign}/export' as never, {
         params: { path: { campaign: toValue(id) } },
         parseAs: 'blob',
       } as never)
       if (apiError || !resp) return
 
-      const blob = resp instanceof Blob ? resp : new Blob([resp as BlobPart], { type: 'text/csv' })
+      const blob = isBlob(resp) ? resp : new Blob([resp as BlobPart], { type: 'text/csv' })
       downloadBlob(blob, `campagne-${toValue(id)}-export.csv`)
     }
     catch {

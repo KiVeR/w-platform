@@ -34,7 +34,64 @@ describe('useCampaignDetail', () => {
     expect(campaign.value!.name).toBe('Promo ete 2026')
     expect(campaign.value!.type).toBe('prospection')
     expect(campaign.value!.status).toBe('sent')
+    expect(campaign.value!.routing_status).toBeNull()
     expect(isLoading.value).toBe(false)
+  })
+
+  test('fetchCampaign mappe les champs enrichis quand ils sont présents', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        data: {
+          ...fakeCampaign,
+          routing_status: 'ROUTING_COMPLETED',
+          router_id: '7',
+          variable_schema_id: '12',
+          routing_at: '2026-02-05T08:59:00Z',
+          recipients_count: '72',
+          router: { id: 7, name: 'sinch', external_id: 3 },
+        },
+      },
+      error: null,
+    })
+
+    const { campaign, fetchCampaign } = useCampaignDetail(1)
+    await fetchCampaign()
+
+    expect(campaign.value).not.toBeNull()
+    expect(campaign.value!.routing_status).toBe('ROUTING_COMPLETED')
+    expect(campaign.value!.router_id).toBe(7)
+    expect(campaign.value!.variable_schema_id).toBe(12)
+    expect(campaign.value!.routing_at).toBe('2026-02-05T08:59:00Z')
+    expect(campaign.value!.recipients_count).toBe(72)
+    expect(campaign.value!.router).toEqual({ id: 7, name: 'sinch', external_id: 3 })
+  })
+
+  test('fetchCampaign garde la backward compatibility quand les champs enrichis sont absents', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        data: {
+          ...fakeCampaign,
+          routing_status: undefined,
+          router_id: undefined,
+          variable_schema_id: undefined,
+          routing_at: undefined,
+          recipients_count: undefined,
+          router: undefined,
+        },
+      },
+      error: null,
+    })
+
+    const { campaign, fetchCampaign } = useCampaignDetail(1)
+    await fetchCampaign()
+
+    expect(campaign.value).not.toBeNull()
+    expect(campaign.value!.routing_status).toBeNull()
+    expect(campaign.value!.router_id).toBeNull()
+    expect(campaign.value!.variable_schema_id).toBeNull()
+    expect(campaign.value!.routing_at).toBeNull()
+    expect(campaign.value!.recipients_count).toBeNull()
+    expect(campaign.value!.router).toBeNull()
   })
 
   test('fetchCampaign set error quand API retourne une erreur', async () => {
