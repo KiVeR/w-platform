@@ -4,6 +4,9 @@
 setup: ## Premier lancement : build + install + migrate + seed + passport
 	@echo "🚀 Setup Wellpack Platform..."
 	cp -n .env.example .env 2>/dev/null || true
+	@if grep -q '^COMPOSE_PROJECT_NAME=' .env 2>/dev/null; then \
+		echo "⚠️ Remove COMPOSE_PROJECT_NAME from .env to enable per-worktree isolation"; \
+	fi
 	@echo "📦 Docker project: wellpack-$${PORT_PREFIX:-80}"
 	@echo "🔌 Port prefix: $${PORT_PREFIX:-80} (change it for a concurrent worktree)"
 	docker compose build

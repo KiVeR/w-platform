@@ -27,13 +27,173 @@ export interface paths {
                     content: {
                         "application/json": {
                             name: string;
-                            /** @enum {string} */
+                            /** @constant */
                             version: "1.0.0";
                         };
                     };
                 };
             };
         };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents/recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["aIContent.recent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["contents.index"];
+        put?: never;
+        post: operations["contents.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents/{aiContent}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["contents.show"];
+        put: operations["contents.update"];
+        post?: never;
+        delete: operations["contents.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents/{aiContent}/favorite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["aIContent.favorite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents/{aiContent}/design": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["aIContent.design"];
+        put: operations["aIContent.saveDesign"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents/{aiContent}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["aIContent.versions"];
+        put?: never;
+        post: operations["aIContent.restoreVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/contents/{aiContent}/versions/{version}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["aIContent.showVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/quota": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["aIGeneration.quota"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["aIGeneration.generate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/generate/{jobId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["aIGeneration.status"];
         put?: never;
         post?: never;
         delete?: never;
@@ -154,22 +314,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/campaigns/{campaign}/estimate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["campaigns.estimate"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/campaigns/{campaign}/schedule": {
         parameters: {
             query?: never;
@@ -250,6 +394,198 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/estimate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["estimate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/external/campaigns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["externalCampaign.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.departments.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/departments/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.departments.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/departments/{code}/geometry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.departments.geometry"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/regions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.regions.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/regions/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.regions.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/regions/{code}/geometry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.regions.geometry"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/communes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.communes.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/communes/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.communes.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/importable-links/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["importableLink.upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/importable-links/import/{importableLinkUuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["importableLink.import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/interest-groups": {
         parameters: {
             query?: never;
@@ -261,6 +597,150 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/iris-zones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.iris-zones.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/iris-zones/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.iris-zones.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/iris-zones/{code}/geometry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo.iris-zones.geometry"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/iris-zones/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["geo.iris-zones.lookup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/iris-zones/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["geo.iris-zones.batch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/landing-pages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["landing-pages.index"];
+        put?: never;
+        post: operations["landing-pages.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/landing-pages/{landingPage}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["landing-pages.show"];
+        put: operations["landing-pages.update"];
+        post?: never;
+        delete: operations["landing-pages.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/landing-pages/{landingPage}/design": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["landingPages.design"];
+        put: operations["landingPages.saveDesign"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/landing-pages/{landingPage}/variable-schema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["landingPages.variableSchema"];
+        put?: never;
+        post: operations["landingPages.attachVariableSchema"];
+        delete: operations["landingPages.detachVariableSchema"];
         options?: never;
         head?: never;
         patch?: never;
@@ -362,6 +842,182 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/short-urls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["short-urls.index"];
+        put?: never;
+        post: operations["short-urls.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/short-urls/{shortUrlIdOrSlug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["short-urls.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/short-urls/{shortUrl}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["short-urls.update"];
+        post?: never;
+        delete: operations["short-urls.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/short-urls/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["shortUrl.index_0"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/short-url-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["shortUrlSuffixRequest.store"];
+        delete: operations["shortUrlSuffixRequest.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/webhooks/sinch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["smsWebhook.sinch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/webhooks/infobip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["smsWebhook.infobip"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/webhooks/highconnexion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["smsWebhook.highconnexion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/targeting-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["targeting-templates.index"];
+        put?: never;
+        post: operations["targeting-templates.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/targeting-templates/{targetingTemplate}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["targeting-templates.show"];
+        put: operations["targeting-templates.update"];
+        post?: never;
+        delete: operations["targeting-templates.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/targeting-templates/{targetingTemplate}/use": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["targetingTemplates.useTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users": {
         parameters: {
             query?: never;
@@ -394,18 +1050,164 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/variable-schemas/discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["variableSchema.discover"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/variable-schemas/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["variableSchema.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/variable-schemas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["variable-schemas.index"];
+        put?: never;
+        post: operations["variable-schemas.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/variable-schemas/{variableSchema}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["variable-schemas.show"];
+        put: operations["variable-schemas.update"];
+        post?: never;
+        delete: operations["variable-schemas.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/variable-schemas/{variableSchema}/clone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["variableSchema.clone"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/variable-schemas/{variableSchema}/mark-used": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["variableSchema.markUsed"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/variable-schemas/{variableSchema}/mark-unused": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["variableSchema.markUnused"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AIContentResource */
+        AIContentResource: {
+            id: number;
+            user_id: number;
+            partner_id: number;
+            type: string;
+            title: string;
+            status: string;
+            is_favorite: boolean;
+            variable_schema_id: number | null;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+            partner?: components["schemas"]["PartnerResource"];
+            creator?: components["schemas"]["UserResource"];
+        };
+        /** App.Http.Requests.LandingPage.SaveDesignRequest */
+        "App.Http.Requests.LandingPage.SaveDesignRequest": {
+            design: {
+                version?: string;
+                globalStyles?: string[];
+                widgets?: string[];
+            };
+        };
+        /** AttachVariableSchemaRequest */
+        AttachVariableSchemaRequest: {
+            /** Format: uuid */
+            variable_schema_uuid: string;
+        };
         /** AuthResource */
         AuthResource: {
             access_token: string;
-            /** @enum {string} */
+            /** @constant */
             token_type: "Bearer";
             expires_in: string;
             refresh_token: string;
             user: components["schemas"]["UserResource"];
+        };
+        /** BatchIrisRequest */
+        BatchIrisRequest: {
+            codes: string[];
         };
         /**
          * CampaignChannel
@@ -414,29 +1216,34 @@ export interface components {
         CampaignChannel: "sms" | "email";
         /** CampaignResource */
         CampaignResource: {
-            id: string;
-            partner_id: string;
-            user_id: string;
+            id: number;
+            partner_id: number;
+            user_id: number | null;
             type: string;
             channel: string;
             status: string;
-            is_demo: string;
+            is_demo: boolean;
             name: string;
-            targeting: string;
-            volume_estimated: string;
-            volume_sent: string;
-            message: string;
-            sender: string;
-            additional_phone: string;
-            sms_count: string;
-            short_url: string;
-            scheduled_at: string;
-            sent_at: string;
-            unit_price: string;
-            total_price: string;
-            created_at: string;
+            targeting: unknown[] | null;
+            volume_estimated: number | null;
+            volume_sent: number | null;
+            message: string | null;
+            sender: string | null;
+            additional_phone: string | null;
+            sms_count: number | null;
+            short_url: string | null;
+            /** Format: date-time */
+            scheduled_at: string | null;
+            /** Format: date-time */
+            sent_at: string | null;
+            unit_price: number | null;
+            total_price: number | null;
+            landing_page_id: number | null;
+            /** Format: date-time */
+            created_at: string | null;
             partner?: components["schemas"]["PartnerResource"];
             creator?: components["schemas"]["UserResource"];
+            landing_page?: components["schemas"]["LandingPageResource"];
             interest_groups?: components["schemas"]["InterestGroupResource"][];
         };
         /** CampaignStatsResource */
@@ -452,45 +1259,136 @@ export interface components {
             ctr: number;
         };
         /**
+         * CampaignStatus
+         * @enum {string}
+         */
+        CampaignStatus: "draft" | "scheduled" | "sending" | "sent" | "cancelled" | "failed";
+        /**
          * CampaignType
          * @enum {string}
          */
         CampaignType: "prospection" | "fidelisation" | "comptage";
+        /** CommuneResource */
+        CommuneResource: {
+            code: string | null;
+            name: string | null;
+            postal_codes: string | string[];
+            population: string | null;
+            department: {
+                code: string | null;
+                name: string | null;
+            } | null;
+            region: {
+                code: string | null;
+                name: string | null;
+            } | null;
+            contour: string | null;
+        };
+        /**
+         * ContentStatus
+         * @enum {string}
+         */
+        ContentStatus: "draft" | "published" | "archived";
+        /**
+         * ContentType
+         * @enum {string}
+         */
+        ContentType: "landing_page" | "rcs" | "sms";
+        /** DepartmentResource */
+        DepartmentResource: {
+            code: string;
+            name: string;
+            region_code: string;
+            geometry?: string | null;
+        };
+        /** ImportableLinkResource */
+        ImportableLinkResource: {
+            id: string;
+            count: number | null;
+        };
         /** InterestGroupResource */
         InterestGroupResource: {
-            id: string;
+            id: number;
             label: string;
-            description: string;
-            is_active: string;
+            description: string | null;
+            is_active: boolean;
             children?: components["schemas"]["InterestGroupResource"][];
             interests?: components["schemas"]["InterestResource"][];
         };
         /** InterestResource */
         InterestResource: {
-            id: string;
-            wellpack_id: string;
+            id: number;
+            wellpack_id: number;
             label: string;
             type: string;
         };
+        /**
+         * IrisType
+         * @enum {string}
+         */
+        IrisType: "H" | "A" | "D" | "Z";
+        /** IrisZoneResource */
+        IrisZoneResource: {
+            code: string;
+            name: string;
+            department_code: string;
+            commune_code: string;
+            commune_name: string;
+            iris_type: components["schemas"]["IrisType"];
+            geometry?: string | null;
+        };
+        /** LandingPageResource */
+        LandingPageResource: {
+            id: number;
+            partner_id: number;
+            user_id: number;
+            name: string;
+            title: string | null;
+            status: string;
+            is_active: boolean;
+            og_title: string | null;
+            og_description: string | null;
+            og_image_url: string | null;
+            favicon_url: string | null;
+            short_url_api_id: number | null;
+            variable_schema_id: number | null;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+            partner?: components["schemas"]["PartnerResource"];
+            creator?: components["schemas"]["UserResource"];
+        };
+        /**
+         * LandingPageStatus
+         * @enum {string}
+         */
+        LandingPageStatus: "draft" | "published" | "archived";
         /** LoginRequest */
         LoginRequest: {
             /** Format: email */
             email: string;
             password: string;
         };
+        /** LookupIrisRequest */
+        LookupIrisRequest: {
+            lat: number;
+            lng: number;
+        };
         /** PartnerPricingResource */
         PartnerPricingResource: {
-            id: string;
-            partner_id: string;
+            id: number;
+            partner_id: number;
             name: string;
-            volume_min: string;
-            volume_max: string;
-            router_price: string;
-            data_price: string;
-            ci_price: string;
-            is_active: string;
-            is_default: string;
-            created_at: string;
+            volume_min: number;
+            volume_max: number | null;
+            router_price: number;
+            data_price: number;
+            ci_price: number;
+            is_active: boolean;
+            is_default: boolean;
+            /** Format: date-time */
+            created_at: string | null;
             partner?: components["schemas"]["PartnerResource"];
         };
         /** PartnerResource */
@@ -498,12 +1396,13 @@ export interface components {
             id: number;
             name: string;
             code: string;
-            email: string;
-            phone: string;
-            address: string;
-            city: string;
-            zip_code: string;
-            logo_url: string;
+            activity_type: string | null;
+            email: string | null;
+            phone: string | null;
+            address: string | null;
+            city: string | null;
+            zip_code: string | null;
+            logo_url: string | null;
             euro_credits: string;
             is_active: boolean;
             /** Format: date-time */
@@ -517,6 +1416,20 @@ export interface components {
         RefreshTokenRequest: {
             refresh_token: string;
         };
+        /** RegionResource */
+        RegionResource: {
+            code: string;
+            name: string;
+            geometry?: string | null;
+        };
+        /** SaveDesignRequest */
+        SaveDesignRequest: {
+            design: {
+                version?: string;
+                globalStyles?: string[];
+                widgets?: string[];
+            };
+        };
         /** ScheduleCampaignRequest */
         ScheduleCampaignRequest: {
             /** Format: date-time */
@@ -524,24 +1437,52 @@ export interface components {
         };
         /** ShopResource */
         ShopResource: {
-            id: string;
-            partner_id: string;
+            id: number;
+            partner_id: number;
             name: string;
-            address: string;
-            city: string;
-            zip_code: string;
-            phone: string;
-            latitude: string;
-            longitude: string;
-            is_active: string;
-            created_at: string;
+            address: string | null;
+            city: string | null;
+            zip_code: string | null;
+            phone: string | null;
+            latitude: number | null;
+            longitude: number | null;
+            is_active: boolean;
+            /** Format: date-time */
+            created_at: string | null;
             partner?: components["schemas"]["PartnerResource"];
+        };
+        /** ShortUrlResource */
+        ShortUrlResource: {
+            id: number;
+            slug: string;
+            link: string | null;
+            click_count: number;
+            click_count_bots: number;
+            is_draft: boolean;
+            import_id: string | null;
+            is_traceable_by_recipient: boolean;
+            is_enabled: boolean;
+        };
+        /** ShortUrlSuffixResource */
+        ShortUrlSuffixResource: {
+            id: number;
+            quantity: number;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+            short_url_id: number;
         };
         /** SocialLoginRequest */
         SocialLoginRequest: {
             /** @enum {string} */
             provider: "google";
             token: string;
+        };
+        /** StoreImportableLinkRequest */
+        StoreImportableLinkRequest: {
+            /** Format: binary */
+            file: string;
         };
         /** StorePartnerPricingRequest */
         StorePartnerPricingRequest: {
@@ -570,6 +1511,17 @@ export interface components {
             euro_credits?: number | null;
             is_active?: boolean | null;
         };
+        /** StoreShortUrlRequest */
+        StoreShortUrlRequest: {
+            slug?: string | null;
+            /** Format: uri */
+            link: string;
+            import_id?: string | null;
+            prefix?: string | null;
+            length?: number | null;
+            is_traceable_by_recipient?: boolean | null;
+            fake?: boolean | null;
+        };
         /** StoreUserRequest */
         StoreUserRequest: {
             firstname: string;
@@ -582,6 +1534,29 @@ export interface components {
             /** @enum {string} */
             role: "admin" | "partner" | "merchant" | "employee";
         };
+        /** TargetingTemplateResource */
+        TargetingTemplateResource: {
+            id: number;
+            partner_id: number | null;
+            name: string;
+            targeting_json: unknown[];
+            usage_count: number;
+            /** Format: date-time */
+            last_used_at: string | null;
+            is_preset: boolean;
+            category: string | null;
+            /** Format: date-time */
+            created_at: string | null;
+            partner?: components["schemas"]["PartnerResource"];
+        };
+        /** UpdateAIContentRequest */
+        UpdateAIContentRequest: {
+            type?: components["schemas"]["ContentType"];
+            title?: string;
+            status?: components["schemas"]["ContentStatus"];
+            is_favorite?: boolean;
+            variable_schema_id?: number | null;
+        };
         /** UpdateCampaignRequest */
         UpdateCampaignRequest: {
             name?: string;
@@ -593,11 +1568,36 @@ export interface components {
             scheduled_at?: string | null;
             is_demo?: boolean;
             additional_phone?: string | null;
-            targeting?: {
+            landing_page_id?: number | null;
+            targeting: {
+                /** @enum {string} */
+                method?: "department" | "postcode" | "address" | "commune" | "iris";
+                departments: string[];
+                postcodes: string[];
+                communes: string[];
+                iris_codes: string[];
+                address?: string | null;
+                lat: number;
+                lng: number;
+                radius: number;
+                /** @enum {string|null} */
+                gender?: "M" | "F" | null;
                 age_min?: number | null;
                 age_max?: number | null;
-                geo?: string[] | null;
             };
+        };
+        /** UpdateLandingPageRequest */
+        UpdateLandingPageRequest: {
+            name?: string;
+            title?: string | null;
+            status?: components["schemas"]["LandingPageStatus"];
+            is_active?: boolean;
+            og_title?: string | null;
+            og_description?: string | null;
+            /** Format: uri */
+            og_image_url?: string | null;
+            /** Format: uri */
+            favicon_url?: string | null;
         };
         /** UpdatePartnerPricingRequest */
         UpdatePartnerPricingRequest: {
@@ -625,6 +1625,25 @@ export interface components {
             euro_credits?: number | null;
             is_active?: boolean | null;
         };
+        /** UpdateRequest */
+        UpdateRequest: {
+            name?: string;
+            category?: string | null;
+            targeting_json: {
+                /** @enum {string} */
+                method?: "department" | "postcode" | "address";
+                departments: string[];
+                postcodes: string[];
+                address?: string | null;
+                lat: number;
+                lng: number;
+                radius: number;
+                /** @enum {string|null} */
+                gender?: "M" | "F" | null;
+                age_min?: number | null;
+                age_max?: number | null;
+            };
+        };
         /** UpdateShopRequest */
         UpdateShopRequest: {
             name?: string;
@@ -635,6 +1654,16 @@ export interface components {
             latitude?: number | null;
             longitude?: number | null;
             is_active?: boolean | null;
+        };
+        /** UpdateShortUrlRequest */
+        UpdateShortUrlRequest: {
+            slug?: string;
+            /** Format: uri */
+            link?: string | null;
+            import_id?: string | null;
+            is_enabled?: boolean;
+            is_draft?: boolean;
+            is_traceable_by_recipient?: boolean;
         };
         /** UpdateUserRequest */
         UpdateUserRequest: {
@@ -647,6 +1676,16 @@ export interface components {
             is_active?: boolean | null;
             /** @enum {string} */
             role?: "admin" | "partner" | "merchant" | "employee";
+        };
+        /** UpdateVariableSchemaRequest */
+        UpdateVariableSchemaRequest: {
+            name?: string;
+            global_data?: string[] | null;
+            recipient_preview_data?: string[] | null;
+            fields?: {
+                name?: string;
+                is_global?: boolean | null;
+            }[] | null;
         };
         /** UserResource */
         UserResource: {
@@ -662,6 +1701,32 @@ export interface components {
             roles: Record<string, never>;
             permissions: unknown[];
             partner?: components["schemas"]["PartnerResource"];
+        };
+        /** VariableFieldResource */
+        VariableFieldResource: {
+            id: number;
+            name: string;
+            is_used: boolean;
+            is_global: boolean;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+        };
+        /** VariableSchemaResource */
+        VariableSchemaResource: {
+            id: number;
+            uuid: string;
+            partner_id: number;
+            name: string;
+            global_data: unknown[] | null;
+            recipient_preview_data: unknown[] | null;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+            partner?: components["schemas"]["PartnerResource"];
+            fields?: components["schemas"]["VariableFieldResource"][];
         };
     };
     responses: {
@@ -725,6 +1790,532 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    "aIContent.recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            recent: components["schemas"]["AIContentResource"][];
+                            favorites: components["schemas"]["AIContentResource"][];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "contents.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `AIContentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AIContentResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "contents.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `AIContentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AIContentResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "contents.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `AIContentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AIContentResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "contents.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateAIContentRequest"];
+            };
+        };
+        responses: {
+            /** @description `AIContentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AIContentResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "contents.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "AI content deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "aIContent.favorite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            is_favorite: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "aIContent.design": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            design: unknown[] | null;
+                            version: null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "aIContent.saveDesign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveDesignRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            design: unknown[] | null;
+                            version: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "aIContent.versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            version: string;
+                            widget_count: number;
+                            created_at: string | null;
+                            is_current: boolean;
+                        }[];
+                        meta: {
+                            current_page: number;
+                            last_page: number;
+                            per_page: number;
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "aIContent.restoreVersion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version_id: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            design: unknown[] | null;
+                            version: null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "aIContent.showVersion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The ai content ID */
+                aiContent: number;
+                /** @description The version ID */
+                version: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            version: string;
+                            design: unknown[];
+                            widget_count: number;
+                            created_at: string | null;
+                            is_current: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "aIGeneration.quota": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        remaining: Record<string, never> | null;
+                        limit: number;
+                        resets_at: string;
+                        can_generate: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "aIGeneration.generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    prompt: string;
+                    image?: {
+                        data?: string;
+                        /** @enum {string} */
+                        mime_type?: "image/png" | "image/jpeg" | "image/gif" | "image/webp";
+                    };
+                    conversation_history?: {
+                        /** @enum {string} */
+                        role: "user" | "assistant";
+                        content: string;
+                    }[] | null;
+                };
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        job_id: Record<string, never>;
+                        /** @constant */
+                        status: "pending";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Monthly AI generation quota exceeded.";
+                        quota: {
+                            remaining: Record<string, never> | null;
+                            limit: number;
+                            resets_at: string;
+                            can_generate: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "aIGeneration.status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Invalid job ID.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Job not found or expired.";
+                    };
+                };
+            };
+        };
+    };
     "auth.login": {
         parameters: {
             query?: never;
@@ -755,7 +2346,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Invalid credentials.";
                     };
                 };
@@ -766,7 +2357,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Your account has been deactivated.";
                     };
                 };
@@ -804,7 +2395,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Invalid social token.";
                     };
                 };
@@ -815,8 +2406,11 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Your account has been deactivated.";
+                    } | {
+                        /** @constant */
+                        message: "Email domain not allowed.";
                     };
                 };
             };
@@ -853,7 +2447,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Invalid refresh token.";
                     };
                 };
@@ -899,7 +2493,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Successfully logged out.";
                     };
                 };
@@ -914,10 +2508,9 @@ export interface operations {
                 sort?: "name" | "-name" | "scheduled_at" | "-scheduled_at" | "sent_at" | "-sent_at" | "created_at" | "-created_at";
                 include?: string;
                 "filter[partner_id]"?: number;
-                "filter[type]"?: "prospection" | "fidelisation" | "comptage";
-                "filter[channel]"?: "sms" | "email";
-                "filter[status]"?: "draft" | "scheduled" | "sending" | "sent" | "cancelled" | "failed";
-                "filter[status][]"?: ("draft" | "scheduled" | "sending" | "sent" | "cancelled" | "failed")[];
+                "filter[type]"?: components["schemas"]["CampaignType"];
+                "filter[channel]"?: components["schemas"]["CampaignChannel"];
+                "filter[status][]"?: components["schemas"]["CampaignStatus"][];
                 "filter[name]"?: string;
                 "filter[created_at_from]"?: string;
                 "filter[created_at_to]"?: string;
@@ -966,6 +2559,7 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
         };
     };
     "campaigns.store": {
@@ -1031,7 +2625,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["UpdateCampaignRequest"];
             };
@@ -1072,36 +2666,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Campaign deleted.";
-                    };
-                };
-            };
-            401: components["responses"]["AuthenticationException"];
-            403: components["responses"]["AuthorizationException"];
-            404: components["responses"]["ModelNotFoundException"];
-        };
-    };
-    "campaigns.estimate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The campaign ID */
-                campaign: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description `CampaignResource` */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["CampaignResource"];
                     };
                 };
             };
@@ -1231,15 +2797,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Stats not yet available.";
                         available_at: string;
                     } | {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Stats not yet available.";
                         available_at: null;
                     } | {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Stats only available for sent campaigns.";
                     };
                 };
@@ -1250,7 +2816,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Stats retrieval failed.";
                     };
                 };
@@ -1284,11 +2850,351 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Only sent campaigns can be exported.";
                     };
                 };
             };
+        };
+    };
+    estimate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            volume: number;
+                            unit_price: number;
+                            total_price: number;
+                            sms_count: number;
+                            next_tier: {
+                                volume_threshold: string;
+                                unit_price: string;
+                                savings_pct: string;
+                            } | null;
+                        };
+                    } | {
+                        data: {
+                            volume: number;
+                            unit_price: null;
+                            total_price: null;
+                            sms_count: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "externalCampaign.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    wp_campaign_id: string;
+                    wp_routing_id: string;
+                    name: string;
+                    partner_id: number;
+                    router_id: number;
+                    /** Format: date-time */
+                    routing_at: string;
+                    source_name?: string | null;
+                    type: components["schemas"]["CampaignType"];
+                    format?: string | null;
+                    query_data?: string[] | null;
+                    /** Format: uuid */
+                    variable_schema_uuid?: string | null;
+                    message: {
+                        content: string;
+                        short_url?: string | null;
+                        short_url_key?: string | null;
+                    };
+                    recipients?: string[] | null;
+                };
+            };
+        };
+        responses: {
+            /** @description `CampaignResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CampaignResource"];
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "geo.departments.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.departments.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `DepartmentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["DepartmentResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.departments.geometry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.regions.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.regions.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `RegionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["RegionResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.regions.geometry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.communes.index": {
+        parameters: {
+            query?: {
+                "filter[codePostal]"?: string;
+                "filter[nom]"?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `CommuneResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CommuneResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.communes.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CommuneResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CommuneResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "importableLink.upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["StoreImportableLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description `ImportableLinkResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ImportableLinkResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "importableLink.import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                importableLinkUuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    length?: number | null;
+                    prefix?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Array of `ShortUrlResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
         };
     };
     "interestGroups.index": {
@@ -1312,6 +3218,479 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.iris-zones.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `IrisZoneResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["IrisZoneResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.iris-zones.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `IrisZoneResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["IrisZoneResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.iris-zones.geometry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "geo.iris-zones.lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LookupIrisRequest"];
+            };
+        };
+        responses: {
+            /** @description Array of `IrisZoneResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["IrisZoneResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "geo.iris-zones.batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BatchIrisRequest"];
+            };
+        };
+        responses: {
+            /** @description Array of `IrisZoneResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["IrisZoneResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "landing-pages.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `LandingPageResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LandingPageResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "landing-pages.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `LandingPageResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LandingPageResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "landing-pages.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `LandingPageResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LandingPageResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "landing-pages.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateLandingPageRequest"];
+            };
+        };
+        responses: {
+            /** @description `LandingPageResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LandingPageResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "landing-pages.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Landing page deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "landingPages.design": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            design: unknown[] | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "landingPages.saveDesign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["App.Http.Requests.LandingPage.SaveDesignRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            design: unknown[] | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "landingPages.variableSchema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            variable_schema: components["schemas"]["VariableSchemaResource"] | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "landingPages.attachVariableSchema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttachVariableSchemaRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            variable_schema_uuid: string;
+                            schema: components["schemas"]["VariableSchemaResource"];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "landingPages.detachVariableSchema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landing page ID */
+                landingPage: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Variable schema detached.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
     };
     "partner-pricings.index": {
@@ -1471,7 +3850,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Partner pricing deleted.";
                     };
                 };
@@ -1638,7 +4017,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Partner deleted.";
                     };
                 };
@@ -1801,8 +4180,495 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "Shop deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "short-urls.index": {
+        parameters: {
+            query?: {
+                search?: string | null;
+                is_enabled?: boolean;
+                ids?: string;
+                import_id?: string;
+                perPage?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `ShortUrlResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "short-urls.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreShortUrlRequest"];
+            };
+        };
+        responses: {
+            /** @description `ShortUrlResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "short-urls.show": {
+        parameters: {
+            query?: {
+                is_enabled?: boolean;
+            };
+            header?: never;
+            path: {
+                shortUrlIdOrSlug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ShortUrlResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlResource"];
+                    } | {
+                        external: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "short-urls.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The short url ID */
+                shortUrl: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateShortUrlRequest"];
+            };
+        };
+        responses: {
+            /** @description `ShortUrlResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "short-urls.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The short url ID */
+                shortUrl: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "shortUrl.index_0": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    search?: string | null;
+                    is_enabled?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Array of `ShortUrlResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "shortUrlSuffixRequest.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    quantity: number;
+                    short_url_id: number;
+                    /** Format: uuid */
+                    batch_uuid: string;
+                };
+            };
+        };
+        responses: {
+            /** @description `ShortUrlSuffixResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ShortUrlSuffixResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "shortUrlSuffixRequest.destroy": {
+        parameters: {
+            query: {
+                batch_uuid: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "smsWebhook.sinch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "ok";
+                    };
+                };
+            };
+        };
+    };
+    "smsWebhook.infobip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "ok";
+                    };
+                };
+            };
+        };
+    };
+    "smsWebhook.highconnexion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "ok";
+                    };
+                };
+            };
+        };
+    };
+    "targeting-templates.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `TargetingTemplateResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TargetingTemplateResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "targeting-templates.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TargetingTemplateResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TargetingTemplateResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "targeting-templates.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The targeting template ID */
+                targetingTemplate: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TargetingTemplateResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TargetingTemplateResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "targeting-templates.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The targeting template ID */
+                targetingTemplate: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description `TargetingTemplateResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TargetingTemplateResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "targeting-templates.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The targeting template ID */
+                targetingTemplate: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Targeting template deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "targetingTemplates.useTemplate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The targeting template ID */
+                targetingTemplate: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TargetingTemplateResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TargetingTemplateResource"];
                     };
                 };
             };
@@ -1968,8 +4834,301 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        /** @enum {string} */
+                        /** @constant */
                         message: "User deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "variableSchema.discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            401: components["responses"]["AuthenticationException"];
+            501: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Not implemented.";
+                    };
+                };
+            };
+        };
+    };
+    "variableSchema.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            401: components["responses"]["AuthenticationException"];
+            501: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Not implemented.";
+                    };
+                };
+            };
+        };
+    };
+    "variable-schemas.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "variable-schemas.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "variable-schemas.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The variable schema UUID */
+                variableSchema: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "variable-schemas.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The variable schema UUID */
+                variableSchema: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateVariableSchemaRequest"];
+            };
+        };
+        responses: {
+            /** @description `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "variable-schemas.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The variable schema UUID */
+                variableSchema: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Variable schema deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "variableSchema.clone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The variable schema UUID */
+                variableSchema: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "variableSchema.markUsed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The variable schema UUID */
+                variableSchema: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "variableSchema.markUnused": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The variable schema UUID */
+                variableSchema: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `VariableSchemaResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VariableSchemaResource"];
                     };
                 };
             };
