@@ -1,0 +1,15 @@
+{
+  "Records": [{
+    "messageId": "test-msg-001",
+    "receiptHandle": "test-receipt",
+    "body": "{\"displayName\":\"App\\\\Jobs\\\\ExampleJob\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"data\":{}}",
+    "attributes": {
+      "ApproximateReceiveCount": "1",
+      "SentTimestamp": "1735689600000"
+    },
+    "messageAttributes": {},
+    "eventSource": "aws:sqs",
+    "eventSourceARN": "arn:aws:sqs:eu-west-3:000000000000:default",
+    "awsRegion": "eu-west-3"
+  }]
+}

@@ -100,6 +100,30 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
+        'pgsql-migrate' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL_UNPOOLED'),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
+        ],
+
+        'kreo' => [
+            'driver' => 'pgsql',
+            'host' => env('KREO_DB_HOST', '127.0.0.1'),
+            'port' => env('KREO_DB_PORT', '5432'),
+            'database' => env('KREO_DB_DATABASE', 'kreo'),
+            'username' => env('KREO_DB_USERNAME', 'root'),
+            'password' => env('KREO_DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),

@@ -146,7 +146,7 @@ class WepakPayloadBuilder
 
     /**
      * @param  array<string, mixed>  $targeting
-     * @return list<array{label: string, quantite: int, type: string, filtre?: array<string, mixed>|null}>
+     * @return list<array<string, mixed>>
      */
     protected function buildLocationList(array $targeting): array
     {

@@ -8,3 +8,9 @@ Schedule::command('horizon:snapshot')->everyFiveMinutes();
 Schedule::command('app:send-scheduled-campaigns')->everyMinute();
 Schedule::command('app:notify-campaign-stats')->dailyAt('11:00');
 Schedule::command('app:notify-abandoned-drafts')->dailyAt('09:00');
+
+// SMS routing scheduler (consolidated from trigger-api)
+Schedule::command('app:request-campaign-query')->everyMinute()->onOneServer();
+Schedule::command('app:request-campaign-routing')->everyMinute()->onOneServer();
+Schedule::command('app:digest-delivery-reports')->everyMinute()->onOneServer();
+Schedule::command('app:pull-reports')->everyFiveMinutes()->onOneServer();

@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array<string, mixed>|null $design
  * @property bool $is_active
  * @property int|null $short_url_api_id
- * @property string|null $variable_schema_uuid
+ * @property int|null $variable_schema_id
  */
 class LandingPage extends Model
 {
@@ -44,7 +44,7 @@ class LandingPage extends Model
         'og_image_url',
         'favicon_url',
         'short_url_api_id',
-        'variable_schema_uuid',
+        'variable_schema_id',
     ];
 
     /** @return array<string, string> */
@@ -76,6 +76,12 @@ class LandingPage extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /** @return BelongsTo<VariableSchema, $this> */
+    public function variableSchema(): BelongsTo
+    {
+        return $this->belongsTo(VariableSchema::class);
     }
 
     /** @return HasMany<Campaign, $this> */

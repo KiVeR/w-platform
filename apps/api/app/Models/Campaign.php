@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CampaignChannel;
+use App\Enums\CampaignRoutingStatus;
 use App\Enums\CampaignStatus;
 use App\Enums\CampaignType;
 use Database\Factories\CampaignFactory;
@@ -13,12 +14,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property CampaignType $type
  * @property CampaignChannel $channel
  * @property CampaignStatus $status
+ * @property CampaignRoutingStatus|null $routing_status
  * @property array<string, mixed>|null $targeting
  * @property bool $is_demo
  * @property string|null $additional_phone
@@ -27,6 +30,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float|null $total_price
  * @property \Illuminate\Support\Carbon|null $sent_at
  * @property \Illuminate\Support\Carbon|null $draft_notified_at
+ * @property \Illuminate\Support\Carbon|null $routing_at
+ * @property string|null $routing_batch_id
+ * @property string|null $wp_routing_id
  */
 class Campaign extends Model
 {
@@ -66,7 +72,13 @@ class Campaign extends Model
         'stats_notified',
         'adv_operation_id',
         'landing_page_id',
+        'variable_schema_id',
         'draft_notified_at',
+        'router_id',
+        'routing_status',
+        'routing_at',
+        'routing_batch_id',
+        'wp_routing_id',
     ];
 
     /** @return array<string, string> */
@@ -87,6 +99,8 @@ class Campaign extends Model
             'total_price' => 'float',
             'stats_notified' => 'boolean',
             'draft_notified_at' => 'datetime',
+            'routing_status' => CampaignRoutingStatus::class,
+            'routing_at' => 'datetime',
         ];
     }
 
@@ -114,6 +128,36 @@ class Campaign extends Model
     public function landingPage(): BelongsTo
     {
         return $this->belongsTo(LandingPage::class);
+    }
+
+    /** @return BelongsTo<VariableSchema, $this> */
+    public function variableSchema(): BelongsTo
+    {
+        return $this->belongsTo(VariableSchema::class);
+    }
+
+    /** @return BelongsTo<Router, $this> */
+    public function router(): BelongsTo
+    {
+        return $this->belongsTo(Router::class);
+    }
+
+    /** @return HasMany<CampaignRecipient, $this> */
+    public function campaignRecipients(): HasMany
+    {
+        return $this->hasMany(CampaignRecipient::class);
+    }
+
+    /** @return HasMany<CampaignLog, $this> */
+    public function campaignLogs(): HasMany
+    {
+        return $this->hasMany(CampaignLog::class);
+    }
+
+    /** @return HasMany<CampaignRequestData, $this> */
+    public function campaignRequestData(): HasMany
+    {
+        return $this->hasMany(CampaignRequestData::class);
     }
 
     /** @param Builder<Campaign> $query */

@@ -30,7 +30,7 @@ class LandingPageResource extends JsonResource
             'og_image_url' => $this->og_image_url,
             'favicon_url' => $this->favicon_url,
             'short_url_api_id' => $this->short_url_api_id,
-            'variable_schema_uuid' => $this->variable_schema_uuid,
+            'variable_schema_id' => $this->variable_schema_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'partner' => new PartnerResource($this->whenLoaded('partner')),

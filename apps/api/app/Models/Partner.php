@@ -84,6 +84,12 @@ class Partner extends Model
         return $this->hasMany(TargetingTemplate::class);
     }
 
+    /** @return HasMany<VariableSchema, $this> */
+    public function variableSchemas(): HasMany
+    {
+        return $this->hasMany(VariableSchema::class);
+    }
+
     /** @return HasMany<PartnerFeature, $this> */
     public function features(): HasMany
     {
