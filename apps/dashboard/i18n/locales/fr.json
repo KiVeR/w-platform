@@ -9,11 +9,14 @@
     "shops": "Boutiques",
     "landingPages": "Landing Pages",
     "stats": "Statistiques",
+    "routers": "Routeurs",
+    "variableSchemas": "Schemas variables",
     "settings": "Paramètres",
     "groups": {
       "main": "Principal",
       "analysis": "Analyse",
-      "config": "Configuration"
+      "config": "Configuration",
+      "admin": "Administration"
     }
   },
   "sidebar": {
@@ -31,14 +34,36 @@
   },
   "breadcrumb": {
     "dashboard": "Dashboard",
+    "admin": "Administration",
     "campaigns": "Campagnes",
     "newCampaign": "Nouvelle campagne",
     "shops": "Boutiques",
     "landingPages": "Landing Pages",
     "stats": "Statistiques",
     "settings": "Paramètres",
+    "routers": "Routeurs",
     "users": "Utilisateurs",
-    "partner": "Partenaire"
+    "partner": "Partenaire",
+    "variableSchemas": "Schemas variables"
+  },
+  "admin": {
+    "comingSoon": "Bientot disponible",
+    "backendRequired": "Backend requis",
+    "backToDashboard": "Retour au dashboard",
+    "routers": {
+      "title": "Routeurs SMS",
+      "description": "Point d entree admin pour piloter le futur CRUD des routeurs SMS.",
+      "backendDescription": "La navigation est prete, mais l API publique /routers n est pas encore exposee sur main.",
+      "placeholderTitle": "Gestion des routeurs en attente",
+      "placeholderDescription": "Le CRUD sera branche des que le backend exposera les endpoints /routers, la policy et le contrat OpenAPI."
+    },
+    "variableSchemas": {
+      "title": "Schemas de variables",
+      "description": "Base admin pour gerer les schemas relies aux campagnes et landing pages.",
+      "launchDescription": "Le point d entree est en place pour attaquer le step dedie au CRUD variable-schemas.",
+      "placeholderTitle": "Gestion des schemas a venir",
+      "placeholderDescription": "La liste, le clone et le stepper d edition arrivent au step suivant, aligne sur le contrat variable-schemas deja merge."
+    }
   },
   "login": {
     "title": "Connexion",

@@ -6,6 +6,8 @@ import {
   Layout,
   BarChart3,
   Settings,
+  Router,
+  FileCode,
   LogOut,
   ChevronsUpDown,
 } from 'lucide-vue-next'
@@ -79,6 +81,15 @@ const navGroups = computed<NavGroup[]>(() => [
       { label: t('nav.settings'), icon: Settings, to: '/settings' },
     ],
   },
+  ...(auth.isAdmin
+    ? [{
+        label: t('nav.groups.admin'),
+        items: [
+          { label: t('nav.routers'), icon: Router, to: '/admin/routers' },
+          { label: t('nav.variableSchemas'), icon: FileCode, to: '/admin/variable-schemas' },
+        ],
+      }]
+    : []),
 ])
 
 function isActive(to: string): boolean {

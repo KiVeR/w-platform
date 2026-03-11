@@ -108,6 +108,22 @@ describe('AppSidebar', () => {
     expect(wrapper.text()).toContain('nav.groups.main')
     expect(wrapper.text()).toContain('nav.groups.analysis')
     expect(wrapper.text()).toContain('nav.groups.config')
+    expect(wrapper.text()).not.toContain('nav.groups.admin')
+  })
+
+  it('renders admin navigation group and links for admins', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+
+    const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
+
+    expect(wrapper.text()).toContain('nav.groups.admin')
+    expect(wrapper.text()).toContain('nav.routers')
+    expect(wrapper.text()).toContain('nav.variableSchemas')
+
+    const links = wrapper.findAll('a').map(link => link.attributes('href'))
+    expect(links).toContain('/admin/routers')
+    expect(links).toContain('/admin/variable-schemas')
   })
 
   describe('partner badge', () => {

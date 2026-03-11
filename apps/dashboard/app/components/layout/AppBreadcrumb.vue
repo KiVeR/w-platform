@@ -18,14 +18,17 @@ interface BreadcrumbEntry {
 }
 
 const routeLabels: Record<string, string> = {
+  admin: 'breadcrumb.admin',
   campaigns: 'breadcrumb.campaigns',
   new: 'breadcrumb.newCampaign',
   shops: 'breadcrumb.shops',
   'landing-pages': 'breadcrumb.landingPages',
   stats: 'breadcrumb.stats',
   settings: 'breadcrumb.settings',
+  routers: 'breadcrumb.routers',
   users: 'breadcrumb.users',
   partner: 'breadcrumb.partner',
+  'variable-schemas': 'breadcrumb.variableSchemas',
 }
 
 const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
@@ -39,7 +42,10 @@ const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
     path += `/${segment}`
     const key = routeLabels[segment]
     if (key) {
-      items.push({ label: t(key), to: path })
+      items.push({
+        label: t(key),
+        to: segment === 'admin' && segments.length > 1 ? undefined : path,
+      })
     } else if (/^\d+$/.test(segment)) {
       // Dynamic route segment — use page title from route meta if available
       const pageTitle = route.meta.breadcrumbLabel as string | undefined
@@ -61,7 +67,7 @@ const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
           <Slash />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <BreadcrumbPage v-if="index === breadcrumbs.length - 1">
+          <BreadcrumbPage v-if="index === breadcrumbs.length - 1 || !item.to">
             {{ item.label }}
           </BreadcrumbPage>
           <BreadcrumbLink v-else as-child>

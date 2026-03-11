@@ -9,11 +9,14 @@
     "shops": "Shops",
     "landingPages": "Landing Pages",
     "stats": "Statistics",
+    "routers": "Routers",
+    "variableSchemas": "Variable schemas",
     "settings": "Settings",
     "groups": {
       "main": "Main",
       "analysis": "Analysis",
-      "config": "Configuration"
+      "config": "Configuration",
+      "admin": "Administration"
     }
   },
   "sidebar": {
@@ -31,14 +34,36 @@
   },
   "breadcrumb": {
     "dashboard": "Dashboard",
+    "admin": "Administration",
     "campaigns": "Campaigns",
     "newCampaign": "New campaign",
     "shops": "Shops",
     "landingPages": "Landing Pages",
     "stats": "Statistics",
     "settings": "Settings",
+    "routers": "Routers",
     "users": "Users",
-    "partner": "Partner"
+    "partner": "Partner",
+    "variableSchemas": "Variable schemas"
+  },
+  "admin": {
+    "comingSoon": "Coming soon",
+    "backendRequired": "Backend required",
+    "backToDashboard": "Back to dashboard",
+    "routers": {
+      "title": "SMS routers",
+      "description": "Admin entry point for the upcoming SMS router CRUD.",
+      "backendDescription": "Navigation is ready, but the public /routers API is still not exposed on main.",
+      "placeholderTitle": "Router management pending",
+      "placeholderDescription": "The CRUD will be connected once the backend exposes /routers endpoints, the policy and the OpenAPI contract."
+    },
+    "variableSchemas": {
+      "title": "Variable schemas",
+      "description": "Admin foundation to manage schemas linked to campaigns and landing pages.",
+      "launchDescription": "The entry point is ready for the next dedicated variable-schemas CRUD step.",
+      "placeholderTitle": "Schema management is next",
+      "placeholderDescription": "List, clone and the edit stepper are handled in the next step, aligned with the variable-schemas contract already merged."
+    }
   },
   "login": {
     "title": "Sign in",
