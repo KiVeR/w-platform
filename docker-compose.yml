@@ -1,6 +1,8 @@
 # Infrastructure-only env vars (Docker hostnames, ports).
 # App-specific vars (drivers, API keys, OAuth) live in apps/api/.env
 # and are read directly by Laravel via the mounted volume.
+name: "wellpack-${PORT_PREFIX:-80}"
+
 x-api-env: &api-env
   APP_NAME: Wellpack
   APP_ENV: ${APP_ENV:-local}

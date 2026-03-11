@@ -4,6 +4,8 @@
 setup: ## Premier lancement : build + install + migrate + seed + passport
 	@echo "🚀 Setup Wellpack Platform..."
 	cp -n .env.example .env 2>/dev/null || true
+	@echo "📦 Docker project: wellpack-$${PORT_PREFIX:-80}"
+	@echo "🔌 Port prefix: $${PORT_PREFIX:-80} (change it for a concurrent worktree)"
 	docker compose build
 	docker compose up -d postgres redis
 	@echo "⏳ Attente PostgreSQL..."

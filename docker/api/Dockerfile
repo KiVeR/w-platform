@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
-        pdo_pgsql pgsql gd zip bcmath intl pcntl opcache \
+        pdo_pgsql pgsql gd zip bcmath intl pcntl opcache exif \
     && pecl install redis && docker-php-ext-enable redis \
     && pecl install pcov && docker-php-ext-enable pcov \
     && rm -rf /var/lib/apt/lists/*
