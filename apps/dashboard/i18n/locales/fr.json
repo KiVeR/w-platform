@@ -263,6 +263,90 @@
           "EXPIRED": "Expiré",
           "CANCELED": "STOP"
         }
+      },
+      "timeline": {
+        "title": "Historique",
+        "errorTitle": "Impossible de charger l'historique",
+        "errorDescription": "Une erreur est survenue lors du chargement des activites.",
+        "retry": "Reessayer",
+        "emptyTitle": "Aucune activite",
+        "emptyDescription": "Cette campagne ne contient pas encore d'historique.",
+        "showDetails": "Voir le detail",
+        "hideDetails": "Masquer le detail",
+        "technicalDetails": "Detail technique",
+        "source": {
+          "system": "Systeme",
+          "campaign": "Campagne",
+          "recipient": "Destinataire",
+          "log": "Log"
+        },
+        "events": {
+          "created": "Campagne creee",
+          "deleted": "Campagne supprimee",
+          "updated": "Campagne mise a jour",
+          "generic": "{event}",
+          "statusChanged": "Statut passe de {from} a {to}",
+          "scheduledAtUpdated": "Planifiee pour {date}",
+          "messageUpdated": "Message modifie",
+          "senderUpdated": "Expediteur modifie",
+          "targetingUpdated": "Ciblage modifie",
+          "fieldsUpdated": "Champs mis a jour : {fields}"
+        },
+        "fields": {
+          "scheduled_at": "Date de planification",
+          "message": "Message",
+          "sender": "Expediteur",
+          "targeting": "Ciblage",
+          "status": "Statut",
+          "routing_status": "Statut de routage"
+        },
+        "status": {
+          "draft": "Brouillon",
+          "scheduled": "Planifiee",
+          "sending": "En cours d'envoi",
+          "sent": "Envoyee",
+          "canceled": "Annulee",
+          "QUERY_PENDING": "Requete en attente",
+          "QUERY_IN_PROGRESS": "Requete en cours",
+          "ROUTING_IN_PROGRESS": "Routage en cours",
+          "ROUTING_COMPLETED": "Routage termine",
+          "ROUTING_FAILED": "Routage echoue"
+        }
+      },
+      "logs": {
+        "title": "Logs HTTP",
+        "errorTitle": "Impossible de charger les logs HTTP",
+        "errorDescription": "Une erreur est survenue lors du chargement des logs providers.",
+        "retry": "Reessayer",
+        "emptyTitle": "Aucun log HTTP",
+        "emptyDescription": "Aucun echange provider n'est disponible pour cette campagne.",
+        "details": "Details",
+        "columns": {
+          "date": "Date",
+          "phase": "Phase",
+          "message": "Message",
+          "type": "Type",
+          "level": "Niveau",
+          "actions": "Actions"
+        },
+        "phase": {
+          "query": "Query",
+          "routing": "Routing",
+          "sending": "Sending",
+          "unknown": "Inconnu"
+        },
+        "level": {
+          "info": "Info",
+          "warning": "Warning",
+          "error": "Erreur",
+          "debug": "Debug"
+        },
+        "dialog": {
+          "title": "Detail du log HTTP",
+          "description": "Inspecter la charge utile envoyee au provider.",
+          "context": "Contexte JSON",
+          "close": "Fermer"
+        }
       }
     }
   },

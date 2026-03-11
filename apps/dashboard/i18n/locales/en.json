@@ -263,6 +263,90 @@
           "EXPIRED": "Expired",
           "CANCELED": "STOP"
         }
+      },
+      "timeline": {
+        "title": "Timeline",
+        "errorTitle": "Unable to load timeline",
+        "errorDescription": "An error occurred while loading activities.",
+        "retry": "Retry",
+        "emptyTitle": "No activity",
+        "emptyDescription": "This campaign has no activity yet.",
+        "showDetails": "Show details",
+        "hideDetails": "Hide details",
+        "technicalDetails": "Technical details",
+        "source": {
+          "system": "System",
+          "campaign": "Campaign",
+          "recipient": "Recipient",
+          "log": "Log"
+        },
+        "events": {
+          "created": "Campaign created",
+          "deleted": "Campaign deleted",
+          "updated": "Campaign updated",
+          "generic": "{event}",
+          "statusChanged": "Status updated from {from} to {to}",
+          "scheduledAtUpdated": "Scheduled for {date}",
+          "messageUpdated": "Message updated",
+          "senderUpdated": "Sender updated",
+          "targetingUpdated": "Targeting updated",
+          "fieldsUpdated": "Fields updated: {fields}"
+        },
+        "fields": {
+          "scheduled_at": "Scheduled at",
+          "message": "Message",
+          "sender": "Sender",
+          "targeting": "Targeting",
+          "status": "Status",
+          "routing_status": "Routing status"
+        },
+        "status": {
+          "draft": "Draft",
+          "scheduled": "Scheduled",
+          "sending": "Sending",
+          "sent": "Sent",
+          "canceled": "Canceled",
+          "QUERY_PENDING": "Query pending",
+          "QUERY_IN_PROGRESS": "Query in progress",
+          "ROUTING_IN_PROGRESS": "Routing in progress",
+          "ROUTING_COMPLETED": "Routing completed",
+          "ROUTING_FAILED": "Routing failed"
+        }
+      },
+      "logs": {
+        "title": "HTTP logs",
+        "errorTitle": "Unable to load HTTP logs",
+        "errorDescription": "An error occurred while loading provider logs.",
+        "retry": "Retry",
+        "emptyTitle": "No HTTP logs",
+        "emptyDescription": "No provider exchange is available for this campaign.",
+        "details": "Details",
+        "columns": {
+          "date": "Date",
+          "phase": "Phase",
+          "message": "Message",
+          "type": "Type",
+          "level": "Level",
+          "actions": "Actions"
+        },
+        "phase": {
+          "query": "Query",
+          "routing": "Routing",
+          "sending": "Sending",
+          "unknown": "Unknown"
+        },
+        "level": {
+          "info": "Info",
+          "warning": "Warning",
+          "error": "Error",
+          "debug": "Debug"
+        },
+        "dialog": {
+          "title": "HTTP log details",
+          "description": "Inspect the payload sent to the provider.",
+          "context": "JSON context",
+          "close": "Close"
+        }
       }
     }
   },
