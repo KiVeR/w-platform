@@ -18,6 +18,8 @@ export interface VariableField {
   name: string
   is_used: boolean
   is_global: boolean
+  created_at: string | null
+  updated_at: string | null
 }
 
 export type VariableFieldForm = Pick<VariableField, 'name' | 'is_used' | 'is_global'>
@@ -32,9 +34,14 @@ export interface VariableSchema {
   fields: VariableField[]
   created_at: string | null
   updated_at: string | null
+  partner?: {
+    id: number
+    name: string
+  } | null
 }
 
 export interface VariableSchemaForm {
+  partner_id: number | null
   name: string
   global_data: Record<string, unknown> | null
   recipient_preview_data: Array<Record<string, unknown>> | null
