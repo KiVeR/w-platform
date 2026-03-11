@@ -108,11 +108,99 @@
       },
       "newPage": {
         "title": "New variable schema",
-        "description": "Reserved entry point for the upcoming creation stepper."
+        "description": "Build a schema in 3 steps and connect it to campaigns and landing pages."
       },
       "editPage": {
         "title": "Edit variable schema",
-        "description": "Reserved entry point for the upcoming edit stepper."
+        "description": "Adjust variables and preview data exposed to campaigns.",
+        "notFoundTitle": "Schema not found",
+        "notFoundDescription": "This schema could not be loaded or you do not have access to it.",
+        "backToList": "Back to list"
+      },
+      "discoverDialog": {
+        "title": "Discover from CSV",
+        "description": "Upload a sample CSV to prefill the schema and its preview datasets.",
+        "fileLabel": "CSV file",
+        "fileHint": "Select a .csv file to start discovery.",
+        "confirm": "Analyze CSV",
+        "cancel": "Cancel",
+        "loading": "Analyzing...",
+        "errorTitle": "Unable to process this CSV",
+        "error": "Discovery failed. You can keep filling the form manually.",
+        "validation": {
+          "name": "The schema name is required before starting discovery.",
+          "file": "Add a CSV file to continue."
+        },
+        "pending": {
+          "title": "Backend discovery still pending",
+          "description": "The endpoint exists but still returns 501. Continue the schema manually for now."
+        }
+      },
+      "form": {
+        "stepLabel": "Step {current}/{total}",
+        "previous": "Previous",
+        "next": "Next",
+        "saving": "Saving...",
+        "mode": {
+          "create": {
+            "title": "New schema",
+            "description": "Prepare the shared variable structure used by campaigns and landing pages.",
+            "submit": "Create schema"
+          },
+          "edit": {
+            "title": "Edit schema",
+            "description": "Update the structure and preview data without leaving the admin area.",
+            "submit": "Save changes"
+          }
+        },
+        "steps": {
+          "identity": "Name",
+          "fields": "Variables",
+          "datasets": "Data"
+        },
+        "partnerScope": {
+          "title": "Partner required",
+          "description": "Select a partner in the admin header before creating a schema.",
+          "scopedTitle": "Active partner",
+          "scopedDescription": "This schema will be created in the {name} scope."
+        },
+        "fields": {
+          "name": {
+            "label": "Schema name",
+            "placeholder": "Example: Spring promo 2026",
+            "error": "Schema name is required."
+          }
+        },
+        "identity": {
+          "title": "Name and starting point",
+          "description": "Define the schema identity, then optionally try a CSV-based pre-discovery.",
+          "discoverTitle": "Prefill from CSV",
+          "discoverDescription": "The backend can eventually suggest an initial structure from a source file.",
+          "discoverAction": "Discover from CSV"
+        },
+        "fieldsStep": {
+          "title": "Exposed variables",
+          "description": "Define global and recipient variables that will be interpolated in messages.",
+          "notice": "The used status is informational only to stay aligned with the current API.",
+          "empty": "No variables yet. Add at least one variable to continue.",
+          "fieldName": "Variable name",
+          "fieldPlaceholder": "first_name, city, offer_url...",
+          "fieldScope": "Scope",
+          "global": "Global",
+          "recipient": "Recipient",
+          "used": "Used",
+          "add": "Add variable",
+          "error": "Add at least one non-empty variable."
+        },
+        "datasets": {
+          "title": "JSON datasets",
+          "description": "Provide sample data to preview how the variables will render.",
+          "globalData": "global_data",
+          "recipientPreview": "recipient_preview_data",
+          "globalPlaceholder": "{\n  \"sender\": \"WELLPACK\"\n}",
+          "recipientPlaceholder": "{\n  \"first_name\": \"Marie\",\n  \"city\": \"Paris\"\n}",
+          "jsonError": "JSON must be a valid object."
+        }
       }
     }
   },

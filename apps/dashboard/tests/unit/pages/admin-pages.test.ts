@@ -6,7 +6,6 @@ vi.stubGlobal('definePageMeta', vi.fn())
 mockUseI18n()
 
 const RouterAdminPage = (await import('@/pages/admin/routers.vue')).default
-const VariableSchemaNewPage = (await import('@/pages/admin/variable-schemas/new.vue')).default
 
 const slotStub = { template: '<div><slot /></div>' }
 const EmptyStateStub = {
@@ -47,13 +46,5 @@ describe('admin placeholder pages', () => {
     expect(wrapper.text()).toContain('admin.routers.title')
     expect(wrapper.text()).toContain('admin.routers.placeholderTitle')
     expect(wrapper.text()).toContain('admin.backToDashboard')
-  })
-
-  it('renders variable schemas placeholder page', () => {
-    const wrapper = mountPage(VariableSchemaNewPage)
-
-    expect(wrapper.find('[data-schema-editor-page="new"]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('admin.variableSchemas.newPage.title')
-    expect(wrapper.text()).toContain('admin.variableSchemas.editorPlaceholder.title')
   })
 })

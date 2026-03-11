@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { FileCode } from 'lucide-vue-next'
-import EmptyState from '@/components/shared/EmptyState.vue'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import VariableSchemaForm from '@/components/admin/variable-schemas/VariableSchemaForm.vue'
+import type { VariableSchemaForm as VariableSchemaFormPayload } from '@/types/admin'
 
 const { t } = useI18n()
+const { current, createSchema, isSaving } = useVariableSchemas()
 
 definePageMeta({
   middleware: 'admin',
 })
+
+async function handleSubmit(payload: VariableSchemaFormPayload): Promise<void> {
+  const created = await createSchema(payload)
+  if (!created) return
+
+  const targetUuid = current.value?.uuid
+  if (targetUuid) {
+    await navigateTo(`/admin/variable-schemas/${targetUuid}`)
+    return
+  }
+
+  await navigateTo('/admin/variable-schemas')
+}
 </script>
 
 <template>
@@ -27,20 +34,10 @@ definePageMeta({
       </p>
     </div>
 
-    <Card class="border-dashed">
-      <CardHeader>
-        <CardTitle>{{ t('admin.comingSoon') }}</CardTitle>
-        <CardDescription>{{ t('admin.variableSchemas.editorPlaceholder.description') }}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <EmptyState
-          :icon="FileCode"
-          :title="t('admin.variableSchemas.editorPlaceholder.title')"
-          :description="t('admin.variableSchemas.editorPlaceholder.body')"
-          :action-label="t('admin.variableSchemas.editorPlaceholder.backToList')"
-          action-to="/admin/variable-schemas"
-        />
-      </CardContent>
-    </Card>
+    <VariableSchemaForm
+      mode="create"
+      :is-saving="isSaving"
+      @submit="handleSubmit"
+    />
   </div>
 </template>

@@ -24,13 +24,15 @@ export interface VariableField {
 
 export type VariableFieldForm = Pick<VariableField, 'name' | 'is_used' | 'is_global'>
 
+export type VariableSchemaDataSet = Record<string, unknown>
+
 export interface VariableSchema {
   id: number
   uuid: string
   partner_id: number | null
   name: string
-  global_data: Record<string, unknown> | null
-  recipient_preview_data: Array<Record<string, unknown>> | null
+  global_data: VariableSchemaDataSet | null
+  recipient_preview_data: VariableSchemaDataSet | null
   fields: VariableField[]
   created_at: string | null
   updated_at: string | null
@@ -43,7 +45,17 @@ export interface VariableSchema {
 export interface VariableSchemaForm {
   partner_id: number | null
   name: string
-  global_data: Record<string, unknown> | null
-  recipient_preview_data: Array<Record<string, unknown>> | null
+  global_data: VariableSchemaDataSet | null
+  recipient_preview_data: VariableSchemaDataSet | null
   fields: VariableFieldForm[]
+}
+
+export function createEmptyVariableSchemaForm(partnerId: number | null = null): VariableSchemaForm {
+  return {
+    partner_id: partnerId,
+    name: '',
+    global_data: null,
+    recipient_preview_data: null,
+    fields: [],
+  }
 }

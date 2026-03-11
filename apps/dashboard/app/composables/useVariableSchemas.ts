@@ -39,9 +39,7 @@ function mapSchema(raw: Record<string, unknown>): VariableSchema {
     partner_id: raw.partner_id == null ? null : Number(raw.partner_id),
     name: String(raw.name ?? ''),
     global_data: isRecord(raw.global_data) ? raw.global_data : null,
-    recipient_preview_data: Array.isArray(raw.recipient_preview_data)
-      ? raw.recipient_preview_data.filter(isRecord)
-      : null,
+    recipient_preview_data: isRecord(raw.recipient_preview_data) ? raw.recipient_preview_data : null,
     fields: Array.isArray(raw.fields)
       ? raw.fields.filter(isRecord).map(mapField)
       : [],
@@ -309,8 +307,8 @@ export function useVariableSchemas() {
         partner_id: auth.isAdmin ? partner.effectivePartnerId : auth.partnerId,
         name: typeof payload.name === 'string' ? payload.name : name,
         global_data: isRecord(payload.global_data) ? payload.global_data : null,
-        recipient_preview_data: Array.isArray(payload.recipient_preview_data)
-          ? payload.recipient_preview_data.filter(isRecord)
+        recipient_preview_data: isRecord(payload.recipient_preview_data)
+          ? payload.recipient_preview_data
           : null,
         fields: Array.isArray(payload.fields)
           ? payload.fields.filter(isRecord).map(mapFieldForm)

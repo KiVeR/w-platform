@@ -1,20 +1,29 @@
 <script setup lang="ts">
-import { FileCode } from 'lucide-vue-next'
+import { computed, onMounted } from 'vue'
+import VariableSchemaForm from '@/components/admin/variable-schemas/VariableSchemaForm.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import PageSkeleton from '@/components/shared/PageSkeleton.vue'
+import type { VariableSchemaForm as VariableSchemaFormPayload } from '@/types/admin'
 
 const { t } = useI18n()
 const route = useRoute()
+const { current, isLoading, isSaving, fetchSchema, updateSchema } = useVariableSchemas()
 
 definePageMeta({
   middleware: 'admin',
 })
+
+const uuid = computed(() => String(route.params.uuid ?? ''))
+
+onMounted(async () => {
+  if (!uuid.value) return
+  await fetchSchema(uuid.value)
+})
+
+async function handleSubmit(payload: VariableSchemaFormPayload): Promise<void> {
+  if (!uuid.value) return
+  await updateSchema(uuid.value, payload)
+}
 </script>
 
 <template>
@@ -27,24 +36,27 @@ definePageMeta({
         {{ t('admin.variableSchemas.editPage.description') }}
       </p>
       <p class="font-mono text-xs text-muted-foreground">
-        {{ route.params.uuid }}
+        {{ uuid }}
       </p>
     </div>
 
-    <Card class="border-dashed">
-      <CardHeader>
-        <CardTitle>{{ t('admin.comingSoon') }}</CardTitle>
-        <CardDescription>{{ t('admin.variableSchemas.editorPlaceholder.description') }}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <EmptyState
-          :icon="FileCode"
-          :title="t('admin.variableSchemas.editorPlaceholder.title')"
-          :description="t('admin.variableSchemas.editorPlaceholder.body')"
-          :action-label="t('admin.variableSchemas.editorPlaceholder.backToList')"
-          action-to="/admin/variable-schemas"
-        />
-      </CardContent>
-    </Card>
+    <PageSkeleton v-if="isLoading" variant="table" />
+
+    <EmptyState
+      v-else-if="!current"
+      data-schema-edit-empty
+      :title="t('admin.variableSchemas.editPage.notFoundTitle')"
+      :description="t('admin.variableSchemas.editPage.notFoundDescription')"
+      :action-label="t('admin.variableSchemas.editPage.backToList')"
+      action-to="/admin/variable-schemas"
+    />
+
+    <VariableSchemaForm
+      v-else
+      mode="edit"
+      :initial-data="current"
+      :is-saving="isSaving"
+      @submit="handleSubmit"
+    />
   </div>
 </template>

@@ -62,7 +62,7 @@ describe('useVariableSchemas', () => {
             partner_id: '42',
             name: 'My Schema',
             global_data: { sender: 'WELLPACK' },
-            recipient_preview_data: [{ prenom: 'Jean' }],
+            recipient_preview_data: { prenom: 'Jean' },
             fields: [
               { id: '7', name: 'prenom', is_used: true, is_global: false, created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' },
             ],

@@ -108,11 +108,99 @@
       },
       "newPage": {
         "title": "Nouveau schema de variables",
-        "description": "Point d entree reserve pour le futur stepper de creation."
+        "description": "Construisez un schema en 3 etapes puis branchez-le aux campagnes et landing pages."
       },
       "editPage": {
         "title": "Edition schema de variables",
-        "description": "Point d entree reserve pour le futur stepper d edition."
+        "description": "Ajustez les variables et les jeux de donnees exposes aux campagnes.",
+        "notFoundTitle": "Schema introuvable",
+        "notFoundDescription": "Impossible de charger ce schema ou vous n y avez pas acces.",
+        "backToList": "Retour a la liste"
+      },
+      "discoverDialog": {
+        "title": "Decouvrir depuis un CSV",
+        "description": "Importez un exemple CSV pour pre-remplir le schema et ses jeux de donnees.",
+        "fileLabel": "Fichier CSV",
+        "fileHint": "Selectionnez un fichier .csv pour lancer la decouverte.",
+        "confirm": "Analyser le CSV",
+        "cancel": "Annuler",
+        "loading": "Analyse en cours...",
+        "errorTitle": "Impossible de traiter ce CSV",
+        "error": "La decouverte a echoue. Vous pouvez continuer le formulaire manuellement.",
+        "validation": {
+          "name": "Le nom du schema est requis avant de lancer la decouverte.",
+          "file": "Ajoutez un fichier CSV pour continuer."
+        },
+        "pending": {
+          "title": "Decouverte backend en attente",
+          "description": "L endpoint existe mais repond encore 501. Continuez le schema manuellement pour l instant."
+        }
+      },
+      "form": {
+        "stepLabel": "Etape {current}/{total}",
+        "previous": "Precedent",
+        "next": "Suivant",
+        "saving": "Sauvegarde...",
+        "mode": {
+          "create": {
+            "title": "Nouveau schema",
+            "description": "Preparez la structure des variables partagees entre campagnes et landing pages.",
+            "submit": "Creer le schema"
+          },
+          "edit": {
+            "title": "Edition du schema",
+            "description": "Mettez a jour la structure et les donnees d apercu sans quitter l espace admin.",
+            "submit": "Enregistrer les changements"
+          }
+        },
+        "steps": {
+          "identity": "Nom",
+          "fields": "Variables",
+          "datasets": "Donnees"
+        },
+        "partnerScope": {
+          "title": "Partenaire requis",
+          "description": "Selectionnez un partenaire dans l entete admin avant de creer un schema.",
+          "scopedTitle": "Partenaire actif",
+          "scopedDescription": "Le schema sera cree dans le contexte de {name}."
+        },
+        "fields": {
+          "name": {
+            "label": "Nom du schema",
+            "placeholder": "Ex: Promo printemps 2026",
+            "error": "Le nom du schema est requis."
+          }
+        },
+        "identity": {
+          "title": "Nom et point de depart",
+          "description": "Definissez l identite du schema puis, si besoin, tentez une pre-decouverte depuis un CSV.",
+          "discoverTitle": "Pre-remplir depuis un CSV",
+          "discoverDescription": "Le backend peut a terme proposer une structure initiale a partir d un fichier source.",
+          "discoverAction": "Decouvrir depuis CSV"
+        },
+        "fieldsStep": {
+          "title": "Variables exposees",
+          "description": "Definissez les variables globales et destinataires qui seront interpolatees dans les messages.",
+          "notice": "Le statut utilise est informatif pour rester coherent avec l API actuelle.",
+          "empty": "Aucune variable pour l instant. Ajoutez au moins une variable pour continuer.",
+          "fieldName": "Nom de variable",
+          "fieldPlaceholder": "prenom, ville, url_offre...",
+          "fieldScope": "Portee",
+          "global": "Globale",
+          "recipient": "Destinataire",
+          "used": "Utilisee",
+          "add": "Ajouter une variable",
+          "error": "Ajoutez au moins une variable non vide."
+        },
+        "datasets": {
+          "title": "Jeux de donnees JSON",
+          "description": "Renseignez des exemples de donnees pour previsualiser le rendu des variables.",
+          "globalData": "global_data",
+          "recipientPreview": "recipient_preview_data",
+          "globalPlaceholder": "{\n  \"sender\": \"WELLPACK\"\n}",
+          "recipientPlaceholder": "{\n  \"prenom\": \"Marie\",\n  \"ville\": \"Paris\"\n}",
+          "jsonError": "Le JSON doit etre un objet valide."
+        }
       }
     }
   },
