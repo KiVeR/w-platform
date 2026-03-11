@@ -222,6 +222,47 @@
         "providerError": "Statistiques temporairement indisponibles",
         "onlySent": "Les statistiques ne sont disponibles que pour les campagnes envoyées",
         "loading": "Chargement des statistiques..."
+      },
+      "recipients": {
+        "title": "Destinataires",
+        "searchPlaceholder": "Rechercher un numéro",
+        "errorTitle": "Impossible de charger les destinataires",
+        "errorDescription": "Une erreur est survenue lors du chargement de la liste.",
+        "retry": "Réessayer",
+        "emptyTitle": "Aucun destinataire",
+        "emptyDescription": "La campagne ne contient pas encore de destinataires.",
+        "emptyDescriptionFiltered": "Aucun destinataire ne correspond au filtre {status}.",
+        "filters": {
+          "all": "Tous",
+          "delivered": "Délivrés",
+          "failed": "Échec",
+          "expired": "Expirés",
+          "stop": "STOP"
+        },
+        "columns": {
+          "phone": "Téléphone",
+          "status": "Statut",
+          "message": "Aperçu message",
+          "clicks": "Clics",
+          "deliveredAt": "Livré le",
+          "info": "Infos"
+        },
+        "pagination": {
+          "summary": "{from}-{to} de {total}",
+          "previous": "Précédent",
+          "next": "Suivant",
+          "perPage": "Par page"
+        },
+        "status": {
+          "QUEUED": "En attente",
+          "DISPATCHED": "Expédié",
+          "DELIVERED": "Délivré",
+          "UNDELIVERABLE": "Non délivré",
+          "FAILED": "Échec",
+          "REJECTED": "Rejeté",
+          "EXPIRED": "Expiré",
+          "CANCELED": "STOP"
+        }
       }
     }
   },

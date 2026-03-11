@@ -48,6 +48,7 @@ export function useCampaignRecipients(campaignId: MaybeRef<number>) {
           query: {
             sort: sort.value,
             page: pagination.value.page,
+            per_page: pagination.value.perPage,
             'filter[status]': filters.value.statuses.join(',') || undefined,
             'filter[phone_number]': filters.value.search || undefined,
           },
@@ -83,6 +84,12 @@ export function useCampaignRecipients(campaignId: MaybeRef<number>) {
     await fetchRecipients()
   }
 
+  async function setPerPage(perPage: number): Promise<void> {
+    pagination.value.page = 1
+    pagination.value.perPage = perPage
+    await fetchRecipients()
+  }
+
   async function setSort(field: string): Promise<void> {
     const currentField = sort.value.replace(/^-/, '')
     if (currentField === field) {
@@ -109,6 +116,7 @@ export function useCampaignRecipients(campaignId: MaybeRef<number>) {
     sort,
     fetchRecipients,
     setPage,
+    setPerPage,
     setSort,
     setFilters,
   }

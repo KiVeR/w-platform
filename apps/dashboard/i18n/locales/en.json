@@ -222,6 +222,47 @@
         "providerError": "Statistics temporarily unavailable",
         "onlySent": "Statistics are only available for sent campaigns",
         "loading": "Loading statistics..."
+      },
+      "recipients": {
+        "title": "Recipients",
+        "searchPlaceholder": "Search a phone number",
+        "errorTitle": "Unable to load recipients",
+        "errorDescription": "An error occurred while loading the list.",
+        "retry": "Retry",
+        "emptyTitle": "No recipients",
+        "emptyDescription": "This campaign does not contain recipients yet.",
+        "emptyDescriptionFiltered": "No recipients match the {status} filter.",
+        "filters": {
+          "all": "All",
+          "delivered": "Delivered",
+          "failed": "Failed",
+          "expired": "Expired",
+          "stop": "STOP"
+        },
+        "columns": {
+          "phone": "Phone",
+          "status": "Status",
+          "message": "Message preview",
+          "clicks": "Clicks",
+          "deliveredAt": "Delivered at",
+          "info": "Info"
+        },
+        "pagination": {
+          "summary": "{from}-{to} of {total}",
+          "previous": "Previous",
+          "next": "Next",
+          "perPage": "Per page"
+        },
+        "status": {
+          "QUEUED": "Queued",
+          "DISPATCHED": "Dispatched",
+          "DELIVERED": "Delivered",
+          "UNDELIVERABLE": "Undeliverable",
+          "FAILED": "Failed",
+          "REJECTED": "Rejected",
+          "EXPIRED": "Expired",
+          "CANCELED": "STOP"
+        }
       }
     }
   },

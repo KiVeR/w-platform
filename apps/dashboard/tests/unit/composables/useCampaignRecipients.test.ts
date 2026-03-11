@@ -25,7 +25,7 @@ describe('useCampaignRecipients', () => {
     expect(mockGet).toHaveBeenCalledWith('/campaigns/{campaign}/recipients', expect.objectContaining({
       params: expect.objectContaining({
         path: { campaign: 42 },
-        query: expect.objectContaining({ sort: '-delivered_at', page: 1 }),
+        query: expect.objectContaining({ sort: '-delivered_at', page: 1, per_page: 15 }),
       }),
     }))
     expect(recipients.value).toHaveLength(3)
@@ -67,6 +67,25 @@ describe('useCampaignRecipients', () => {
     expect(mockGet).toHaveBeenCalledWith('/campaigns/{campaign}/recipients', expect.objectContaining({
       params: expect.objectContaining({
         query: expect.objectContaining({ page: 2 }),
+      }),
+    }))
+  })
+
+  test('setPerPage change le per_page, reset la page et re-fetch', async () => {
+    mockGet.mockResolvedValue({
+      data: { data: [], meta: { ...fakeRecipientPaginationMeta, per_page: 25 } },
+    })
+
+    const { pagination, setPerPage } = useCampaignRecipients(42)
+    pagination.value.page = 3
+
+    await setPerPage(25)
+
+    expect(pagination.value.page).toBe(1)
+    expect(pagination.value.perPage).toBe(25)
+    expect(mockGet).toHaveBeenCalledWith('/campaigns/{campaign}/recipients', expect.objectContaining({
+      params: expect.objectContaining({
+        query: expect.objectContaining({ page: 1, per_page: 25 }),
       }),
     }))
   })
