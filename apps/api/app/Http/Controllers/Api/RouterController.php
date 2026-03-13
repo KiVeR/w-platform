@@ -26,6 +26,7 @@ class RouterController extends Controller
                 AllowedFilter::exact('is_active'),
             ])
             ->allowedSorts(['name', 'external_id', 'created_at'])
+            ->withCount(['partners', 'campaigns'])
             ->paginate(15);
 
         return RouterResource::collection($routers);
@@ -52,6 +53,10 @@ class RouterController extends Controller
     public function destroy(Router $router): JsonResponse
     {
         $this->authorize('delete', $router);
+
+        if ($router->partners()->exists() || $router->campaigns()->exists()) {
+            return new JsonResponse(['message' => 'Router is in use. Disable it instead.'], 409);
+        }
 
         $router->delete();
 

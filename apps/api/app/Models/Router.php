@@ -36,4 +36,10 @@ class Router extends Model
     {
         return $this->hasMany(Partner::class);
     }
+
+    /** @return HasMany<Campaign, $this> */
+    public function campaigns(): HasMany
+    {
+        return $this->hasMany(Campaign::class);
+    }
 }

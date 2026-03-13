@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Models\Campaign;
+use App\Models\Partner;
 use App\Models\Router;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
@@ -40,6 +42,8 @@ it('allows admin to list routers', function (): void {
                 'external_id',
                 'num_stop',
                 'is_active',
+                'partners_count',
+                'campaigns_count',
                 'created_at',
                 'updated_at',
             ]],
@@ -104,6 +108,23 @@ it('sorts routers by name', function (): void {
     $response->assertOk()
         ->assertJsonPath('data.0.name', 'Alpha')
         ->assertJsonPath('data.1.name', 'Zeta');
+});
+
+it('returns partner and campaign counts on index', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $router = Router::factory()->create(['name' => 'Counted']);
+    Partner::factory()->count(2)->create(['router_id' => $router->id]);
+    Campaign::factory()->count(3)->create(['router_id' => $router->id]);
+
+    $response = $this->getJson('/api/routers?filter[name]=Counted');
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.partners_count', 2)
+        ->assertJsonPath('data.0.campaigns_count', 3);
 });
 
 it('allows admin to create a router', function (): void {
@@ -210,6 +231,36 @@ it('allows admin to delete a router', function (): void {
         ->assertJsonPath('message', 'Router deleted.');
 
     $this->assertDatabaseMissing('routers', ['id' => $router->id]);
+});
+
+it('blocks delete when a partner uses the router', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $router = Router::factory()->create(['name' => 'Partner-bound']);
+    Partner::factory()->create(['router_id' => $router->id]);
+
+    $this->deleteJson("/api/routers/{$router->id}")
+        ->assertStatus(409)
+        ->assertJsonPath('message', 'Router is in use. Disable it instead.');
+
+    $this->assertDatabaseHas('routers', ['id' => $router->id]);
+});
+
+it('blocks delete when a campaign uses the router', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $router = Router::factory()->create(['name' => 'Campaign-bound']);
+    Campaign::factory()->create(['router_id' => $router->id]);
+
+    $this->deleteJson("/api/routers/{$router->id}")
+        ->assertStatus(409)
+        ->assertJsonPath('message', 'Router is in use. Disable it instead.');
+
+    $this->assertDatabaseHas('routers', ['id' => $router->id]);
 });
 
 it('denies employee from deleting a router', function (): void {

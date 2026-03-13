@@ -20,6 +20,8 @@ class RouterResource extends JsonResource
             'external_id' => $this->external_id,
             'num_stop' => $this->num_stop,
             'is_active' => $this->is_active,
+            'partners_count' => $this->whenCounted('partners'),
+            'campaigns_count' => $this->whenCounted('campaigns'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
