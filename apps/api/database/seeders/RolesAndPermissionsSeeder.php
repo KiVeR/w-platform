@@ -18,6 +18,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $permissions = [
             'view partners',
             'manage partners',
+            'view routers',
+            'manage routers',
             'view users',
             'manage users',
             'view campaigns',

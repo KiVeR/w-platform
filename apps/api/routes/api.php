@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
 use App\Http\Controllers\Api\PartnersController;
+use App\Http\Controllers\Api\RouterController;
 use App\Http\Controllers\Api\ShopsController;
 use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\ShortUrlSuffixRequestController;
@@ -54,6 +55,7 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     });
 
     Route::apiResource('partners', PartnersController::class);
+    Route::get('routers', [RouterController::class, 'index']);
     Route::apiResource('shops', ShopsController::class);
     Route::apiResource('users', UsersController::class);
 
