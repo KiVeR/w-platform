@@ -1,16 +1,29 @@
 export interface Router {
   id: number
   name: string
-  external_id: string
-  num_stop: number | null
+  external_id: number | null
+  num_stop: string | null
+  is_active: boolean
+  partners_count: number
+  campaigns_count: number
   created_at: string | null
   updated_at: string | null
 }
 
 export interface RouterForm {
   name: string
-  external_id: string
-  num_stop: number | null
+  external_id: number | null
+  num_stop: string | null
+  is_active: boolean
+}
+
+export function createEmptyRouterForm(): RouterForm {
+  return {
+    name: '',
+    external_id: null,
+    num_stop: null,
+    is_active: true,
+  }
 }
 
 export interface VariableField {

@@ -52,10 +52,72 @@
     "backToDashboard": "Retour au dashboard",
     "routers": {
       "title": "Routeurs SMS",
-      "description": "Point d entree admin pour piloter le futur CRUD des routeurs SMS.",
-      "backendDescription": "La navigation est prete, mais l API publique /routers n est pas encore exposee sur main.",
-      "placeholderTitle": "Gestion des routeurs en attente",
-      "placeholderDescription": "Le CRUD sera branche des que le backend exposera les endpoints /routers, la policy et le contrat OpenAPI."
+      "description": "Gerer les routeurs exposes a l orchestration SMS depuis l espace administration.",
+      "create": "Ajouter un routeur",
+      "table": {
+        "name": "Nom",
+        "externalId": "ID externe",
+        "numStop": "Num STOP",
+        "partners": "Partenaires",
+        "campaigns": "Campagnes",
+        "status": "Statut",
+        "createdAt": "Creation",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "empty": {
+        "title": "Aucun routeur configure",
+        "description": "Ajoutez un premier routeur pour preparer les futures integrations d envoi.",
+        "action": "Ajouter un routeur"
+      },
+      "error": {
+        "title": "Impossible de charger les routeurs",
+        "description": "Le backend /routers est disponible, mais la recuperation a echoue.",
+        "retry": "Reessayer"
+      },
+      "dialog": {
+        "createTitle": "Ajouter un routeur",
+        "editTitle": "Editer le routeur",
+        "description": "Renseignez le contrat admin du routeur tel qu il sera consomme par les campagnes.",
+        "fields": {
+          "name": "Nom",
+          "externalId": "ID externe",
+          "numStop": "Numero STOP",
+          "isActive": "Routeur actif"
+        },
+        "placeholders": {
+          "name": "Ex. Sinch primaire",
+          "externalId": "Ex. 12",
+          "numStop": "Ex. 36063"
+        },
+        "help": {
+          "isActive": "Desactivez un routeur pour le retirer sans perdre l historique."
+        },
+        "validation": {
+          "name": "Le nom du routeur est requis."
+        },
+        "cancel": "Annuler",
+        "create": "Creer",
+        "save": "Enregistrer"
+      },
+      "deleteConfirm": {
+        "title": "Supprimer ce routeur ?",
+        "description": "Le routeur \"{name}\" sera supprime s il n est utilise par aucun partenaire ni aucune campagne.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "alerts": {
+        "deleteInUseTitle": "Suppression bloquee",
+        "deleteInUseDescription": "Ce routeur est encore reference. Desactivez-le plutot que de le supprimer."
+      },
+      "messages": {
+        "created": "Routeur cree",
+        "updated": "Routeur mis a jour",
+        "deleted": "Routeur supprime"
+      }
     },
     "variableSchemas": {
       "title": "Schemas de variables",

@@ -52,10 +52,72 @@
     "backToDashboard": "Back to dashboard",
     "routers": {
       "title": "SMS routers",
-      "description": "Admin entry point for the upcoming SMS router CRUD.",
-      "backendDescription": "Navigation is ready, but the public /routers API is still not exposed on main.",
-      "placeholderTitle": "Router management pending",
-      "placeholderDescription": "The CRUD will be connected once the backend exposes /routers endpoints, the policy and the OpenAPI contract."
+      "description": "Manage the routers exposed to SMS orchestration from the admin area.",
+      "create": "Add router",
+      "table": {
+        "name": "Name",
+        "externalId": "External ID",
+        "numStop": "STOP number",
+        "partners": "Partners",
+        "campaigns": "Campaigns",
+        "status": "Status",
+        "createdAt": "Created",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "empty": {
+        "title": "No routers configured",
+        "description": "Add a first router to prepare future delivery integrations.",
+        "action": "Add router"
+      },
+      "error": {
+        "title": "Unable to load routers",
+        "description": "The /routers backend exists, but loading failed.",
+        "retry": "Retry"
+      },
+      "dialog": {
+        "createTitle": "Add router",
+        "editTitle": "Edit router",
+        "description": "Fill in the admin router contract exactly as campaigns will consume it.",
+        "fields": {
+          "name": "Name",
+          "externalId": "External ID",
+          "numStop": "STOP number",
+          "isActive": "Router enabled"
+        },
+        "placeholders": {
+          "name": "e.g. Primary Sinch",
+          "externalId": "e.g. 12",
+          "numStop": "e.g. 36063"
+        },
+        "help": {
+          "isActive": "Disable a router to retire it without losing historical links."
+        },
+        "validation": {
+          "name": "Router name is required."
+        },
+        "cancel": "Cancel",
+        "create": "Create",
+        "save": "Save"
+      },
+      "deleteConfirm": {
+        "title": "Delete this router?",
+        "description": "Router \"{name}\" will be deleted only if no partner or campaign still uses it.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "alerts": {
+        "deleteInUseTitle": "Deletion blocked",
+        "deleteInUseDescription": "This router is still referenced. Disable it instead of deleting it."
+      },
+      "messages": {
+        "created": "Router created",
+        "updated": "Router updated",
+        "deleted": "Router deleted"
+      }
     },
     "variableSchemas": {
       "title": "Variable schemas",
