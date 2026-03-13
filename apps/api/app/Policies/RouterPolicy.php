@@ -13,4 +13,19 @@ class RouterPolicy
     {
         return $user->hasPermissionTo('view routers', 'api');
     }
+
+    public function create(User $user): bool
+    {
+        return $user->hasPermissionTo('manage routers', 'api');
+    }
+
+    public function update(User $user, Router $router): bool
+    {
+        return $user->hasPermissionTo('manage routers', 'api');
+    }
+
+    public function delete(User $user, Router $router): bool
+    {
+        return $user->hasPermissionTo('manage routers', 'api');
+    }
 }

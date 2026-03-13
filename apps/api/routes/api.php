@@ -55,7 +55,7 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     });
 
     Route::apiResource('partners', PartnersController::class);
-    Route::get('routers', [RouterController::class, 'index']);
+    Route::apiResource('routers', RouterController::class)->except(['show']);
     Route::apiResource('shops', ShopsController::class);
     Route::apiResource('users', UsersController::class);
 

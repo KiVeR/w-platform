@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Router\StoreRouterRequest;
+use App\Http\Requests\Router\UpdateRouterRequest;
 use App\Http\Resources\RouterResource;
 use App\Models\Router;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -26,5 +29,32 @@ class RouterController extends Controller
             ->paginate(15);
 
         return RouterResource::collection($routers);
+    }
+
+    public function store(StoreRouterRequest $request): RouterResource
+    {
+        $this->authorize('create', Router::class);
+
+        $router = Router::create($request->validated());
+
+        return new RouterResource($router->refresh());
+    }
+
+    public function update(UpdateRouterRequest $request, Router $router): RouterResource
+    {
+        $this->authorize('update', $router);
+
+        $router->update($request->validated());
+
+        return new RouterResource($router->refresh());
+    }
+
+    public function destroy(Router $router): JsonResponse
+    {
+        $this->authorize('delete', $router);
+
+        $router->delete();
+
+        return new JsonResponse(['message' => 'Router deleted.']);
     }
 }

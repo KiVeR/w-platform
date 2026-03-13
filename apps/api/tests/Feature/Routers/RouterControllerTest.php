@@ -105,3 +105,119 @@ it('sorts routers by name', function (): void {
         ->assertJsonPath('data.0.name', 'Alpha')
         ->assertJsonPath('data.1.name', 'Zeta');
 });
+
+it('allows admin to create a router', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $response = $this->postJson('/api/routers', [
+        'name' => 'Highconnexion',
+        'external_id' => 3,
+        'num_stop' => '36173',
+    ]);
+
+    $response->assertCreated()
+        ->assertJsonPath('data.name', 'Highconnexion')
+        ->assertJsonPath('data.external_id', 3)
+        ->assertJsonPath('data.num_stop', '36173')
+        ->assertJsonPath('data.is_active', true);
+
+    $this->assertDatabaseHas('routers', [
+        'name' => 'Highconnexion',
+        'external_id' => 3,
+        'num_stop' => '36173',
+        'is_active' => true,
+    ]);
+});
+
+it('validates router payload on store', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    Router::factory()->create(['name' => 'Taken']);
+
+    $this->postJson('/api/routers', [
+        'name' => 'Taken',
+        'external_id' => 'abc',
+    ])->assertUnprocessable()
+        ->assertJsonValidationErrors(['name', 'external_id']);
+});
+
+it('denies employee from creating a router', function (): void {
+    $user = User::factory()->create();
+    $user->assignRole('employee');
+    Passport::actingAs($user);
+
+    $this->postJson('/api/routers', [
+        'name' => 'Denied',
+    ])->assertForbidden();
+});
+
+it('allows admin to update a router', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $router = Router::factory()->create([
+        'name' => 'Infobip',
+        'external_id' => 2,
+        'num_stop' => '36111',
+        'is_active' => true,
+    ]);
+
+    $response = $this->putJson("/api/routers/{$router->id}", [
+        'name' => 'Infobip Updated',
+        'external_id' => 22,
+        'is_active' => false,
+    ]);
+
+    $response->assertOk()
+        ->assertJsonPath('data.name', 'Infobip Updated')
+        ->assertJsonPath('data.external_id', 22)
+        ->assertJsonPath('data.is_active', false);
+
+    $this->assertDatabaseHas('routers', [
+        'id' => $router->id,
+        'name' => 'Infobip Updated',
+        'external_id' => 22,
+        'is_active' => false,
+    ]);
+});
+
+it('denies employee from updating a router', function (): void {
+    $user = User::factory()->create();
+    $user->assignRole('employee');
+    Passport::actingAs($user);
+
+    $router = Router::factory()->create(['name' => 'Infobip']);
+
+    $this->putJson("/api/routers/{$router->id}", [
+        'name' => 'Blocked',
+    ])->assertForbidden();
+});
+
+it('allows admin to delete a router', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $router = Router::factory()->create(['name' => 'Disposable']);
+
+    $this->deleteJson("/api/routers/{$router->id}")
+        ->assertOk()
+        ->assertJsonPath('message', 'Router deleted.');
+
+    $this->assertDatabaseMissing('routers', ['id' => $router->id]);
+});
+
+it('denies employee from deleting a router', function (): void {
+    $user = User::factory()->create();
+    $user->assignRole('employee');
+    Passport::actingAs($user);
+
+    $router = Router::factory()->create(['name' => 'Protected']);
+
+    $this->deleteJson("/api/routers/{$router->id}")->assertForbidden();
+});
