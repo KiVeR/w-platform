@@ -65,7 +65,7 @@ onMounted(async () => {
       await auth.loginWithGoogle(response.credential)
       if (!auth.error) await navigateTo('/')
     })
-    renderGoogleButton(googleButtonRef.value, { width: 368 })
+    renderGoogleButton(googleButtonRef.value as unknown as HTMLElement, { width: 368 })
     showGoogleButton.value = true
   } catch {
     // GIS SDK load failure — silent, email/password still available

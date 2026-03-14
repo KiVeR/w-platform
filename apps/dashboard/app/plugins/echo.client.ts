@@ -1,6 +1,13 @@
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
+import type { ChannelAuthorizationCallback } from 'pusher-js'
 import { tokenRefreshManager } from '@/services/tokenRefreshManager'
+
+interface BroadcastAuthPayload {
+  auth: string
+  channel_data?: string
+  shared_secret?: string
+}
 
 declare module '#app' {
   interface NuxtApp {
@@ -18,7 +25,7 @@ async function authorizeChannel(
   apiUrl: string,
   channelName: string,
   socketId: string,
-): Promise<{ auth: string }> {
+): Promise<BroadcastAuthPayload> {
   const token = tokenRefreshManager.getAccessToken()
   if (!token) {
     throw new Error('missing_access_token')
@@ -41,7 +48,7 @@ async function authorizeChannel(
     throw new Error(`broadcast_auth_failed:${response.status}`)
   }
 
-  return response.json() as Promise<{ auth: string }>
+  return response.json() as Promise<BroadcastAuthPayload>
 }
 
 export default defineNuxtPlugin(() => {
@@ -66,14 +73,14 @@ export default defineNuxtPlugin(() => {
     forceTLS: pusher.scheme === 'https',
     enabledTransports: ['ws', 'wss'],
     authorizer: (channel: { name: string }) => ({
-      authorize: async (socketId: string, callback: (error: Error | null, data?: { auth: string }) => void) => {
-        try {
-          const response = await authorizeChannel(config.public.apiUrl, channel.name, socketId)
-          callback(null, response)
-        }
-        catch (error) {
-          callback(error as Error)
-        }
+      authorize: (socketId: string, callback: ChannelAuthorizationCallback) => {
+        void authorizeChannel(config.public.apiUrl, channel.name, socketId)
+          .then((response) => {
+            callback(null, response)
+          })
+          .catch((error) => {
+            callback(error as Error, null)
+          })
       },
     }),
   })

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { Search } from 'lucide-vue-next'
+import type { AcceptableValue } from 'reka-ui'
 import CampaignDateRangeFilter from '@/components/campaigns/CampaignDateRangeFilter.vue'
 import CampaignMultiStatusFilter from '@/components/campaigns/CampaignMultiStatusFilter.vue'
 import { Input } from '@/components/ui/input'
@@ -41,8 +42,9 @@ function onStatusesChange(value: CampaignStatus[]) {
   emit('update:filters', { statuses: value })
 }
 
-function onTypeChange(val: string) {
-  emit('update:filters', { type: val === 'all' ? '' : val })
+function onTypeChange(value: AcceptableValue) {
+  const nextValue = typeof value === 'string' ? value : String(value ?? '')
+  emit('update:filters', { type: nextValue === 'all' ? '' : nextValue })
 }
 
 function onDateRangeChange(value: { from: string, to: string }) {

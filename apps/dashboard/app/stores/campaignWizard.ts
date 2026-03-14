@@ -1,10 +1,24 @@
 import { ref, computed, watch } from 'vue'
-import { useDebounceFn } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { BarChart3, Megaphone, MessageSquare, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
 import { usePartnerStore } from '@/stores/partner'
 import type { CampaignDraft, CampaignEstimate, WizardStep } from '@/types/campaign'
+
+function createDebouncedFn(fn: () => void | Promise<void>, delay: number): () => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+  return () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+
+    timeoutId = setTimeout(() => {
+      timeoutId = null
+      void fn()
+    }, delay)
+  }
+}
 
 function freshDraft(): CampaignDraft {
   return {
@@ -103,7 +117,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   })
 
   // QW2: Auto-estimate with debounce after targeting changes
-  const debouncedEstimate = useDebounceFn(() => {
+  const debouncedEstimate = createDebouncedFn(() => {
     if (hasValidTargeting.value) requestEstimate()
   }, 1500)
 
@@ -173,7 +187,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
       const { data, error } = await api.POST('/campaigns', {
         body: campaignBody(),
       } as never)
-      if (error) return false
+      if (error || !data) return false
       const raw = data as { data: { id: string } }
       campaignId.value = Number(raw.data.id)
       return true

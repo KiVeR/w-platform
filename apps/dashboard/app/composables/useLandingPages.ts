@@ -25,13 +25,13 @@ export function useLandingPages() {
     isLoading.value = true
     hasError.value = false
     try {
-      const { data, error } = await api.GET('/landing-pages', {
+      const { data, error } = await api.GET('/landing-pages' as never, {
         params: {
           query: withPartnerScope({
             'filter[status]': 'published',
           }),
-        } as { query: Record<string, unknown> },
-      })
+        },
+      } as never)
       if (error) {
         hasError.value = true
         return

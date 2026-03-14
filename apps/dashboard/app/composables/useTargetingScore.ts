@@ -1,4 +1,4 @@
-import { computed, type MaybeRef, toValue } from 'vue'
+import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 
 export type TargetingLevel = 'too_targeted' | 'targeted' | 'optimal' | 'broad' | 'too_broad'
 
@@ -21,7 +21,7 @@ const BAND_WIDTH = 100 / THRESHOLDS.length
 
 function computePosition(volume: number): number {
   for (let i = 0; i < THRESHOLDS.length; i++) {
-    const threshold = THRESHOLDS[i]
+    const threshold = THRESHOLDS[i]!
     const prevMax = THRESHOLDS[i - 1]?.max ?? 0
     if (volume <= threshold.max) {
       const localRatio = threshold.max === Infinity
@@ -33,12 +33,12 @@ function computePosition(volume: number): number {
   return 100
 }
 
-export function useTargetingScore(volume: MaybeRef<number>) {
+export function useTargetingScore(volume: MaybeRefOrGetter<number>) {
   const { t } = useI18n()
 
   return computed<TargetingScore>(() => {
     const v = toValue(volume)
-    const threshold = THRESHOLDS.find(th => v <= th.max) ?? THRESHOLDS[4]
+    const threshold = THRESHOLDS.find(th => v <= th.max) ?? THRESHOLDS[THRESHOLDS.length - 1]!
     return {
       level: threshold.level,
       label: t(threshold.labelKey),

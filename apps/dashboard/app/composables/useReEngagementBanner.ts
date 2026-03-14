@@ -62,8 +62,8 @@ export function useReEngagementBanner() {
       })
       if (error || !data) return
       const raw = data as { data: Record<string, unknown>[] }
-      if (raw.data.length === 0) return
       const c = raw.data[0]
+      if (!c) return
       lastCampaign.value = {
         id: Number(c.id),
         name: String(c.name ?? ''),

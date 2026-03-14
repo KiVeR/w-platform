@@ -51,7 +51,11 @@ import PageSkeleton from '@/components/shared/PageSkeleton.vue'
 import CampaignStatusBadge from '@/components/shared/CampaignStatusBadge.vue'
 import type { CampaignStatus } from '@/components/shared/CampaignStatusBadge.vue'
 
-const { isDark, apply: applyColorMode } = useColorMode()
+const { isDark, setMode } = useColorMode()
+
+function applyColorMode(value: boolean) {
+  setMode(value ? 'dark' : 'light')
+}
 
 // Color palette data
 const orangeScale = [

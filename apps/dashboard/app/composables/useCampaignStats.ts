@@ -1,10 +1,10 @@
-import { ref, toValue, type MaybeRef } from 'vue'
+import { ref, toValue, type MaybeRefOrGetter } from 'vue'
 import { useApi } from '@/composables/useApi'
 import type { CampaignStats } from '@/types/campaign'
 
 export type CampaignStatsErrorType = 'not_yet' | 'provider' | 'only_sent' | null
 
-export function useCampaignStats(campaignId: MaybeRef<number>) {
+export function useCampaignStats(campaignId: MaybeRefOrGetter<number>) {
   const api = useApi()
 
   const stats = ref<CampaignStats | null>(null)

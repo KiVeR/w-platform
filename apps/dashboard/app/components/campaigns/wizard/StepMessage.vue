@@ -30,27 +30,6 @@ const smsLabels = computed(() => ({
   previewPlaceholder: t('wizard.message.previewEmpty'),
 }))
 
-const smsErrors = computed<SmsEditorErrors | undefined>(() => {
-  if (!wizard.showValidation) return undefined
-  const errors: SmsEditorErrors = {}
-  if (wizard.campaign.name.trim().length === 0) {
-    errors.name = t('wizard.validation.nameRequired')
-  }
-  if (wizard.campaign.message.trim().length === 0) {
-    errors.message = t('wizard.validation.messageRequired')
-  }
-  else if (isForbiddenMessage(wizard.campaign.message)) {
-    errors.message = t('wizard.validation.messageForbidden')
-  }
-  if (wizard.campaign.sender.trim().length === 0) {
-    errors.sender = t('wizard.validation.senderRequired')
-  }
-  else if (!/^[a-zA-Z0-9 .\-']{3,11}$/.test(wizard.campaign.sender)) {
-    errors.sender = t('wizard.validation.senderInvalid')
-  }
-  return Object.keys(errors).length > 0 ? errors : undefined
-})
-
 function onUpdateName(value: string) {
   wizard.campaign.name = value
   wizard.isDirty = true
@@ -80,7 +59,6 @@ function onUpdateMessage(value: string) {
       :variables="variables"
       :labels="smsLabels"
       :show-preview="false"
-      :errors="smsErrors"
       @update:name="onUpdateName"
       @update:sender="onUpdateSender"
       @update:message="onUpdateMessage"

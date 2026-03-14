@@ -22,7 +22,18 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css', 'vue-sonner/style.css', 'leaflet/dist/leaflet.css'],
 
   vite: {
-    plugins: [tailwindcss()],
+    resolve: {
+      preserveSymlinks: true,
+    },
+    plugins: [tailwindcss() as never],
+  },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        preserveSymlinks: true,
+      },
+    },
   },
 
   runtimeConfig: {
@@ -52,7 +63,6 @@ export default defineNuxtConfig({
       { code: 'en', name: 'English', file: 'en.json' },
     ],
     defaultLocale: 'fr',
-    lazy: true,
     langDir: 'locales',
   },
 

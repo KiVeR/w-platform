@@ -1,4 +1,4 @@
-import { ref, type MaybeRef, toValue } from 'vue'
+import { ref, type MaybeRefOrGetter, toValue } from 'vue'
 import { useApi } from '@/composables/useApi'
 import type { LogActivityRow } from '@/types/campaign'
 
@@ -18,7 +18,7 @@ function mapActivity(raw: Record<string, unknown>): LogActivityRow {
   }
 }
 
-export function useCampaignActivities(campaignId: MaybeRef<number>) {
+export function useCampaignActivities(campaignId: MaybeRefOrGetter<number>) {
   const api = useApi()
 
   const activities = ref<LogActivityRow[]>([])

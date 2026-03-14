@@ -62,11 +62,19 @@ const styles = computed(() =>
   props.steps.map((_, i) => computeStepStyle(i)),
 )
 
+function styleFor(index: number): StepStyle {
+  return styles.value[index] ?? computeStepStyle(index)
+}
+
+function isStepValid(index: number): boolean {
+  return props.validation[index] ?? false
+}
+
 function dividerClass(index: number): string {
   if (index > props.currentStep) return 'bg-border'
   if (index === props.currentStep) return 'bg-primary'
 
-  const bothValid = props.validation[index - 1] && props.validation[index]
+  const bothValid = isStepValid(index - 1) && isStepValid(index)
   return bothValid ? 'bg-success-500' : 'bg-warning-500'
 }
 
@@ -95,17 +103,17 @@ const { t } = useI18n()
             <button
               type="button"
               :data-step="step.key"
-              :data-step-valid="validation[index] ? 'true' : 'false'"
+              :data-step-valid="isStepValid(index) ? 'true' : 'false'"
               class="flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
-              :class="[styles[index].state, styles[index].button]"
+              :class="[styleFor(index).state, styleFor(index).button]"
               @click="handleClick(index)"
             >
               <span
                 class="flex size-7 items-center justify-center rounded-full text-xs transition-colors duration-200"
-                :class="styles[index].circle"
+                :class="styleFor(index).circle"
               >
                 <template v-if="index < currentStep">
-                  <Check v-if="validation[index]" class="size-4" />
+                  <Check v-if="isStepValid(index)" class="size-4" />
                   <AlertTriangle v-else class="size-4" />
                 </template>
                 <component :is="step.icon" v-else class="size-4" />
@@ -127,13 +135,13 @@ const { t } = useI18n()
           type="button"
           :data-step="step.key"
           class="flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
-          :class="[styles[index].state, styles[index].button]"
+          :class="[styleFor(index).state, styleFor(index).button]"
           :disabled="index > currentStep"
           @click="handleClick(index)"
         >
           <span
             class="flex size-7 items-center justify-center rounded-full text-xs transition-colors duration-200"
-            :class="styles[index].circle"
+            :class="styleFor(index).circle"
           >
             <component :is="step.icon" class="size-4" />
           </span>

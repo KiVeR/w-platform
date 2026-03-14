@@ -11,6 +11,8 @@ export function canonicalToUi(canonical: CanonicalTargeting): CampaignTargeting 
     method: canonical.method,
     departments: (input.departments as string[]) ?? [],
     postcodes: (input.postcodes as string[]) ?? [],
+    communes: (input.communes as string[]) ?? [],
+    iris_codes: (input.iris_codes as string[]) ?? [],
     address: (input.address as string) ?? null,
     lat: (input.lat as number) ?? null,
     lng: (input.lng as number) ?? null,

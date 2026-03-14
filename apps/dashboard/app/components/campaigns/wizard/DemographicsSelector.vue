@@ -24,13 +24,14 @@ function selectGender(gender: Gender) {
 }
 
 const ageRange = computed({
-  get: () => [props.modelValue.age_min ?? 18, props.modelValue.age_max ?? 100],
-  set: (val: number[]) => {
-    const isDefault = val[0] === 18 && val[1] === 100
+  get: (): number[] => [props.modelValue.age_min ?? 18, props.modelValue.age_max ?? 100],
+  set: (value: number[]) => {
+    const [min = 18, max = 100] = value
+    const isDefault = min === 18 && max === 100
     emit('update:modelValue', {
       ...props.modelValue,
-      age_min: isDefault ? null : val[0],
-      age_max: isDefault ? null : val[1],
+      age_min: isDefault ? null : min,
+      age_max: isDefault ? null : max,
     })
   },
 })
@@ -54,7 +55,11 @@ function isPresetActive(preset: typeof agePresets[number]) {
 }
 
 function applyPreset(preset: typeof agePresets[number]) {
-  ageRange.value = [preset.min, preset.max]
+  emit('update:modelValue', {
+    ...props.modelValue,
+    age_min: preset.min === 18 && preset.max === 100 ? null : preset.min,
+    age_max: preset.min === 18 && preset.max === 100 ? null : preset.max,
+  })
 }
 </script>
 

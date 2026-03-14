@@ -1,4 +1,4 @@
-import { ref, type MaybeRef, toValue } from 'vue'
+import { ref, type MaybeRefOrGetter, toValue } from 'vue'
 import { useApi } from '@/composables/useApi'
 import type { CampaignRecipientRow, CampaignRecipientStatus, RecipientFilters, RecipientPagination } from '@/types/campaign'
 
@@ -27,7 +27,7 @@ function mapRecipient(raw: Record<string, unknown>): CampaignRecipientRow {
   }
 }
 
-export function useCampaignRecipients(campaignId: MaybeRef<number>) {
+export function useCampaignRecipients(campaignId: MaybeRefOrGetter<number>) {
   const api = useApi()
 
   const recipients = ref<CampaignRecipientRow[]>([])

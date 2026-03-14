@@ -31,14 +31,14 @@ export function usePartnerShops() {
   async function fetchShops(partnerId: number): Promise<void> {
     isLoading.value = true
     try {
-      const { data, error } = await api.GET('/shops', {
+      const { data, error } = await api.GET('/shops' as never, {
         params: {
           query: {
             'filter[partner_id]': partnerId,
             'filter[is_active]': true,
           },
-        } as { query: Record<string, unknown> },
-      })
+        },
+      } as never)
       if (error || !data) return
       const raw = data as { data: Record<string, unknown>[] }
       shops.value = raw.data.map(mapShop)

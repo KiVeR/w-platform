@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Info, MousePointerClick, Search, Users } from 'lucide-vue-next'
+import type { AcceptableValue } from 'reka-ui'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -122,8 +123,8 @@ async function applyFilter(key: FilterKey): Promise<void> {
   await fetchRecipients()
 }
 
-async function handlePerPageChange(value: string | number): Promise<void> {
-  await setPerPage(Number(value))
+async function handlePerPageChange(value: AcceptableValue): Promise<void> {
+  await setPerPage(Number(value ?? pagination.value.perPage))
 }
 
 watch(searchQuery, (value) => {

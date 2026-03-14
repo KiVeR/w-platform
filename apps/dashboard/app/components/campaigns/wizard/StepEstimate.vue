@@ -166,6 +166,26 @@ function clearAddress(): void {
   wizard.isDirty = true
 }
 
+function updateRadius(value: number | null): void {
+  wizard.campaign.targeting.radius = value
+  wizard.isDirty = true
+}
+
+function updateAddress(value: string | null): void {
+  wizard.campaign.targeting.address = value
+  wizard.isDirty = true
+}
+
+function updateLat(value: number | null): void {
+  wizard.campaign.targeting.lat = value
+  wizard.isDirty = true
+}
+
+function updateLng(value: number | null): void {
+  wizard.campaign.targeting.lng = value
+  wizard.isDirty = true
+}
+
 function handleTemplateSelect(targeting: CampaignTargeting): void {
   wizard.campaign.targeting = { ...targeting }
   wizard.isDirty = true
@@ -237,7 +257,7 @@ function handleSectorNudge(nudge: TargetingNudge): void {
         @remove-department="removeDepartment"
         @remove-postcode="removePostcode"
         @clear-address="clearAddress"
-        @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
+        @update:radius="updateRadius"
       />
     </template>
 
@@ -317,10 +337,10 @@ function handleSectorNudge(nudge: TargetingNudge): void {
         :lat="wizard.campaign.targeting.lat"
         :lng="wizard.campaign.targeting.lng"
         :radius="wizard.campaign.targeting.radius"
-        @update:address="v => { wizard.campaign.targeting.address = v; wizard.isDirty = true }"
-        @update:lat="v => { wizard.campaign.targeting.lat = v; wizard.isDirty = true }"
-        @update:lng="v => { wizard.campaign.targeting.lng = v; wizard.isDirty = true }"
-        @update:radius="v => { wizard.campaign.targeting.radius = v; wizard.isDirty = true }"
+        @update:address="updateAddress"
+        @update:lat="updateLat"
+        @update:lng="updateLng"
+        @update:radius="updateRadius"
       />
     </div>
 

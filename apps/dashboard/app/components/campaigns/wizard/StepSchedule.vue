@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { CalendarIcon, Clock, Zap, CalendarClock, Info, AlertTriangle } from 'lucide-vue-next'
-import { CalendarDate, today, getLocalTimeZone } from '@internationalized/date'
+import { today, getLocalTimeZone } from '@internationalized/date'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -20,7 +20,8 @@ const wizard = useCampaignWizardStore()
 const { t } = useI18n()
 
 const tz = getLocalTimeZone()
-const selectedDate = ref<CalendarDate | undefined>(undefined)
+// Reka and @internationalized/date currently leak incompatible private date types here.
+const selectedDate = ref<any>(undefined)
 const selectedTime = ref<string>('')
 
 const timeSlots = Array.from({ length: 25 }, (_, i) => {
@@ -33,11 +34,11 @@ const todayDate = today(tz)
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 
-function isDateDisabled(date: CalendarDate): boolean {
+function isDateDisabled(date: any): boolean {
   return date.toDate(tz).getDay() === 0
 }
 
-function formatDate(date: CalendarDate): string {
+function formatDate(date: any): string {
   return date.toDate(tz).toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
@@ -65,7 +66,7 @@ const quickPicks = computed(() => {
   ]
 })
 
-function applyQuickPick(pick: { date: CalendarDate, time: string }) {
+function applyQuickPick(pick: { date: any, time: string }) {
   selectedDate.value = pick.date
   selectedTime.value = pick.time
   wizard.isDirty = true
@@ -79,7 +80,7 @@ const isFarFuture = computed(() => {
 
 watch([selectedDate, selectedTime], ([date, time]) => {
   if (date && time) {
-    const [hours, minutes] = time.split(':').map(Number)
+    const [hours = 0, minutes = 0] = time.split(':').map(Number)
     const jsDate = date.toDate(tz)
     jsDate.setHours(hours, minutes, 0, 0)
     wizard.campaign.scheduled_at = jsDate.toISOString()

@@ -11,7 +11,7 @@ defineOptions({
 const props = defineProps<{ modelValue?: AcceptableValue | AcceptableValue[], class?: HTMLAttributes["class"] }>()
 
 const emit = defineEmits<{
-  "update:modelValue": AcceptableValue
+  "update:modelValue": [value: AcceptableValue]
 }>()
 
 const modelValue = useVModel(props, "modelValue", emit, {

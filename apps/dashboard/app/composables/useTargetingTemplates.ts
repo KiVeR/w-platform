@@ -31,14 +31,14 @@ export function useTargetingTemplates() {
     isLoading.value = true
     hasError.value = false
     try {
-      const { data, error } = await api.GET('/targeting-templates', {
+      const { data, error } = await api.GET('/targeting-templates' as never, {
         params: {
           query: withPartnerScope({
             'filter[is_preset]': 0,
             'sort': '-last_used_at',
           }),
-        } as { query: Record<string, unknown> },
-      })
+        },
+      } as never)
       if (error) {
         hasError.value = true
         return
@@ -52,11 +52,11 @@ export function useTargetingTemplates() {
       if (activityType) {
         presetQuery['filter[category]'] = activityType
       }
-      const { data: presetData, error: presetError } = await api.GET('/targeting-templates', {
+      const { data: presetData, error: presetError } = await api.GET('/targeting-templates' as never, {
         params: {
           query: presetQuery,
-        } as { query: Record<string, unknown> },
-      })
+        },
+      } as never)
       if (!presetError && presetData) {
         const raw = presetData as { data: Record<string, unknown>[] }
         presets.value = raw.data.map(mapTemplate)
@@ -71,8 +71,8 @@ export function useTargetingTemplates() {
   }
 
   async function useTemplate(id: number): Promise<CampaignTargeting | null> {
-    const { data, error } = await api.POST('/targeting-templates/{targeting_template}/use', {
-      params: { path: { targeting_template: id } },
+    const { data, error } = await api.POST('/targeting-templates/{targetingTemplate}/use' as never, {
+      params: { path: { targetingTemplate: id } },
     } as never)
     if (error || !data) return null
     const raw = (data as { data: Record<string, unknown> }).data
@@ -80,8 +80,8 @@ export function useTargetingTemplates() {
   }
 
   async function deleteTemplate(id: number): Promise<boolean> {
-    const { error } = await api.DELETE('/targeting-templates/{targeting_template}', {
-      params: { path: { targeting_template: id } },
+    const { error } = await api.DELETE('/targeting-templates/{targetingTemplate}' as never, {
+      params: { path: { targetingTemplate: id } },
     } as never)
     if (error) return false
     templates.value = templates.value.filter(t => t.id !== id)
