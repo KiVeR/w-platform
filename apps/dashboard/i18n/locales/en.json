@@ -259,8 +259,8 @@
           "description": "Provide sample data to preview how the variables will render.",
           "globalData": "global_data",
           "recipientPreview": "recipient_preview_data",
-          "globalPlaceholder": "{\n  \"sender\": \"WELLPACK\"\n}",
-          "recipientPlaceholder": "{\n  \"first_name\": \"Marie\",\n  \"city\": \"Paris\"\n}",
+          "globalPlaceholder": "Example: sender = WELLPACK",
+          "recipientPlaceholder": "Example: first_name = Marie, city = Paris",
           "jsonError": "JSON must be a valid object."
         }
       }

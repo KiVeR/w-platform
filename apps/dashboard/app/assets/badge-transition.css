@@ -1,0 +1,10 @@
+.badge-enter-active,
+.badge-leave-active {
+  transition: all 0.2s ease;
+}
+
+.badge-enter-from,
+.badge-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}

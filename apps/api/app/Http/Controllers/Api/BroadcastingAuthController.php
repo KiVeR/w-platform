@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Pusher\Pusher;
 use Symfony\Component\HttpFoundation\Response;
 
 class BroadcastingAuthController extends Controller
@@ -31,10 +32,9 @@ class BroadcastingAuthController extends Controller
             abort(Response::HTTP_FORBIDDEN);
         }
 
+        /** @var Pusher $pusher */
         $pusher = $broadcastManager->connection('pusher')->getPusher();
-        $response = method_exists($pusher, 'authorizeChannel')
-            ? $pusher->authorizeChannel($validated['channel_name'], $validated['socket_id'])
-            : $pusher->socket_auth($validated['channel_name'], $validated['socket_id']);
+        $response = $pusher->authorizeChannel($validated['channel_name'], $validated['socket_id']);
 
         /** @var array{auth: string} $payload */
         $payload = json_decode($response, true, flags: JSON_THROW_ON_ERROR);

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Jobs\SmsRouting;
 
-use App\Events\CampaignRefresh;
 use App\Enums\CampaignRecipientStatus;
+use App\Events\CampaignRefresh;
 use App\Models\CampaignRecipient;
 use App\Models\DeliveryReport;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
