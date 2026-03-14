@@ -4,6 +4,7 @@ import DashboardChart from '@/components/dashboard/DashboardChart.vue'
 import DashboardKpiGrid from '@/components/dashboard/DashboardKpiGrid.vue'
 import DashboardPeriodSelector from '@/components/dashboard/DashboardPeriodSelector.vue'
 import DashboardRecentCampaigns from '@/components/dashboard/DashboardRecentCampaigns.vue'
+import { useCampaignSync } from '@/composables/useCampaignSync'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import type { DashboardPeriod } from '@/composables/useDashboardStats'
 
@@ -21,9 +22,22 @@ const {
   refreshDashboard,
   setPeriod,
 } = useDashboardStats()
+const { onCampaignCreated, onCampaignRefresh, onCampaignUpdated } = useCampaignSync()
 
 onMounted(() => {
   refreshDashboard()
+})
+
+onCampaignCreated(() => {
+  void refreshDashboard()
+})
+
+onCampaignUpdated(() => {
+  void refreshDashboard()
+})
+
+onCampaignRefresh(() => {
+  void refreshDashboard()
 })
 
 async function handlePeriodChange(nextPeriod: DashboardPeriod) {

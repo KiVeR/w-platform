@@ -6,6 +6,7 @@ import CampaignFilters from '@/components/campaigns/CampaignFilters.vue'
 import CampaignDataTable from '@/components/campaigns/CampaignDataTable.vue'
 import ReEngagementBanner from '@/components/campaigns/ReEngagementBanner.vue'
 import { useCampaigns } from '@/composables/useCampaigns'
+import { useCampaignSync } from '@/composables/useCampaignSync'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
 import { useApi } from '@/composables/useApi'
 import type { CampaignFilters as CampaignFiltersState } from '@/types/campaign'
@@ -27,8 +28,21 @@ const {
   setSort,
   setFilters,
 } = useCampaigns()
+const { onCampaignCreated, onCampaignUpdated, onCampaignRefresh } = useCampaignSync()
 
 onMounted(() => fetchCampaigns())
+
+onCampaignCreated(() => {
+  void fetchCampaigns()
+})
+
+onCampaignUpdated(() => {
+  void fetchCampaigns()
+})
+
+onCampaignRefresh(() => {
+  void fetchCampaigns()
+})
 
 async function handleDelete(id: number) {
   const success = await deleteCampaign(id)

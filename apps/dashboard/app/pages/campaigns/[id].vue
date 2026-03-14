@@ -35,6 +35,7 @@ import SectionTimeline from '@/components/campaigns/detail/SectionTimeline.vue'
 import CampaignStatusBadge from '@/components/shared/CampaignStatusBadge.vue'
 import { useCampaignActions } from '@/composables/useCampaignActions'
 import { useCampaignDetail } from '@/composables/useCampaignDetail'
+import { useCampaignSync } from '@/composables/useCampaignSync'
 import { useCampaignStats } from '@/composables/useCampaignStats'
 import { useCollapsibleSections } from '@/composables/useCollapsibleSections'
 import { usePermission } from '@/composables/usePermission'
@@ -56,6 +57,7 @@ const { can, hasRole } = usePermission()
 const campaignId = computed(() => Number(route.params.id))
 const isMobile = useMediaQuery('(max-width: 767px)')
 const isDesktop = useMediaQuery('(min-width: 1024px)')
+const { onCampaignRefresh, onCampaignUpdated } = useCampaignSync()
 
 const {
   campaign,
@@ -183,6 +185,16 @@ watch(() => [campaign.value?.id, campaign.value?.status] as const, async ([id, s
   if (!id || status !== 'sent') return
   await fetchStats()
 }, { immediate: true })
+
+onCampaignUpdated((updatedId) => {
+  if (updatedId === campaignId.value) {
+    void fetchCampaign()
+  }
+})
+
+onCampaignRefresh(() => {
+  void fetchCampaign()
+})
 </script>
 
 <template>

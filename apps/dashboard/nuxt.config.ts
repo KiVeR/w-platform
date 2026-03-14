@@ -29,6 +29,15 @@ export default defineNuxtConfig({
     public: {
       apiUrl: 'http://localhost:8000',
       googleClientId: '',
+      pusher: {
+        appKey: process.env.NUXT_PUBLIC_PUSHER_APP_KEY || '',
+        cluster: process.env.NUXT_PUBLIC_PUSHER_CLUSTER || 'eu',
+        host: process.env.NUXT_PUBLIC_PUSHER_HOST || '',
+        port: Number(process.env.NUXT_PUBLIC_PUSHER_PORT || '443'),
+        scheme: process.env.NUXT_PUBLIC_PUSHER_SCHEME || 'https',
+        enabled: process.env.NUXT_PUBLIC_PUSHER_ENABLED || 'false',
+        logToConsole: process.env.NUXT_PUBLIC_PUSHER_LOG_TO_CONSOLE || 'false',
+      },
     },
   },
 

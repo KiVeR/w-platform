@@ -5,9 +5,17 @@ import { Sonner } from '@/components/ui/sonner'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import { useColorMode } from '@/composables/useColorMode'
+import { useCampaignSync } from '@/composables/useCampaignSync'
 
 const { isDark } = useColorMode()
 const sonnerTheme = computed(() => isDark.value ? 'dark' : 'light')
+const { isEnabled, setup } = useCampaignSync()
+
+onMounted(() => {
+  if (isEnabled.value) {
+    setup()
+  }
+})
 </script>
 
 <template>
