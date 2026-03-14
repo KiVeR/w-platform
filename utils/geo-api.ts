@@ -1,4 +1,4 @@
-import type { GeoFeature, AddressResult, SmartSearchResult } from '@/types/targeting'
+import type { GeoFeature, AddressResult, SmartSearchResult } from '#targeting/types/targeting'
 
 export async function fetchAddresses(query: string, signal: AbortSignal, limit = 5): Promise<AddressResult[]> {
   const response = await fetch(

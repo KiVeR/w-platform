@@ -36,13 +36,16 @@ export function sliderToKm(position: number): number {
   for (let i = 0; i < BREAKPOINTS.length - 1; i++) {
     const curr = BREAKPOINTS[i]
     const next = BREAKPOINTS[i + 1]
+    if (!curr || !next)
+      continue
+
     if (clamped >= curr.pos && clamped <= next.pos) {
       const raw = interpolate(clamped, curr.pos, next.pos, curr.km, next.km)
       return snapToStep(raw)
     }
   }
 
-  return BREAKPOINTS[BREAKPOINTS.length - 1].km
+  return BREAKPOINTS.at(-1)?.km ?? 50
 }
 
 export function kmToSlider(km: number): number {
@@ -51,10 +54,13 @@ export function kmToSlider(km: number): number {
   for (let i = 0; i < BREAKPOINTS.length - 1; i++) {
     const curr = BREAKPOINTS[i]
     const next = BREAKPOINTS[i + 1]
+    if (!curr || !next)
+      continue
+
     if (clamped >= curr.km && clamped <= next.km) {
       return Math.round(interpolate(clamped, curr.km, next.km, curr.pos, next.pos))
     }
   }
 
-  return BREAKPOINTS[BREAKPOINTS.length - 1].pos
+  return BREAKPOINTS.at(-1)?.pos ?? 100
 }

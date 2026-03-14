@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { LMap, LTileLayer, LGeoJson, LCircle, LMarker } from '@vue-leaflet/vue-leaflet'
-import { Badge } from '@/components/ui/badge'
-import departmentsGeo from '@/data/departments-geo.json'
-import departmentsPopulation from '@/data/departments-population.json'
-import type { CommuneFeatureProperties, TargetingMethod } from '@/types/targeting'
-import { deptCodeFromPostcode } from '@/utils/departments'
+import { Badge } from '#targeting/components/ui/badge'
+import departmentsGeo from '#targeting/data/departments-geo.json'
+import departmentsPopulation from '#targeting/data/departments-population.json'
+import type { CommuneFeatureProperties, TargetingMethod } from '#targeting/types/targeting'
+import { deptCodeFromPostcode } from '#targeting/utils/departments'
 
 interface CommuneGeoJson {
   type: 'FeatureCollection'
@@ -108,6 +108,9 @@ function computeBoundsFromFeatures(features: { geometry: any }[]): [[number, num
       : feature.geometry.coordinates
     for (const ring of rings) {
       for (const [lng, lat] of ring) {
+        if (typeof lat !== 'number' || typeof lng !== 'number')
+          continue
+
         if (lat < minLat) minLat = lat
         if (lat > maxLat) maxLat = lat
         if (lng < minLng) minLng = lng

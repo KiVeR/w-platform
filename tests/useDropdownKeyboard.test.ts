@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 vi.stubGlobal('onScopeDispose', vi.fn())
 
-const { useDropdownKeyboard } = await import('@/composables/useDropdownKeyboard')
+const { useDropdownKeyboard } = await import('#targeting/composables/useDropdownKeyboard')
 
 describe('useDropdownKeyboard', () => {
   beforeEach(() => {

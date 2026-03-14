@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 import { useCommuneSearch } from './useCommuneSearch'
 import { useDropdownKeyboard } from './useDropdownKeyboard'
-import { isValidCommuneQuery } from '@/utils/commune-validation'
-import type { CommuneSearchResult } from '@/types/targeting'
+import { isValidCommuneQuery } from '#targeting/utils/commune-validation'
+import type { CommuneSearchResult } from '#targeting/types/targeting'
 
 export function useGeoSearchInput(onSelect: (commune: CommuneSearchResult) => void) {
   const inputValue = ref('')

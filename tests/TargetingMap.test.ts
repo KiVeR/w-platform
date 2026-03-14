@@ -14,7 +14,7 @@ vi.mock('@vue-leaflet/vue-leaflet', () => ({
   LMarker: { template: '<div data-marker />', props: ['latLng'] },
 }))
 
-const TargetingMap = (await import('@/components/targeting/TargetingMap.vue')).default
+const TargetingMap = (await import('#targeting/components/targeting/TargetingMap.vue')).default
 
 const baseStubs = {
   Badge: { template: '<span data-map-counter v-bind="$attrs"><slot /></span>', inheritAttrs: true },

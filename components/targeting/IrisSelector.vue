@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { X, Loader2, Layers } from 'lucide-vue-next'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
-import { useGeoSearchInput } from '@/composables/useGeoSearchInput'
-import type { CommuneSearchResult } from '@/types/targeting'
+import { Badge } from '#targeting/components/ui/badge'
+import { Input } from '#targeting/components/ui/input'
+import { Checkbox } from '#targeting/components/ui/checkbox'
+import { useGeoSearchInput } from '#targeting/composables/useGeoSearchInput'
+import type { CommuneSearchResult } from '#targeting/types/targeting'
 
 const props = defineProps<{
   modelValue: string[]

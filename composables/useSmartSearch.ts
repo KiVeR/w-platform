@@ -1,8 +1,8 @@
 import { ref, computed, watch } from 'vue'
-import departments from '@/data/departments.json'
-import { fetchAddresses, fetchMunicipalities } from '@/utils/geo-api'
-import { createDebouncedFetcher } from '@/utils/debounce-lifecycle'
-import type { SmartSearchResult } from '@/types/targeting'
+import departments from '#targeting/data/departments.json'
+import { fetchAddresses, fetchMunicipalities } from '#targeting/utils/geo-api'
+import { createDebouncedFetcher } from '#targeting/utils/debounce-lifecycle'
+import type { SmartSearchResult } from '#targeting/types/targeting'
 
 interface DepartmentEntry {
   code: string

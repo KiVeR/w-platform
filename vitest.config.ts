@@ -9,8 +9,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@/': `${resolve(currentDir)}/`,
-      '~/': `${resolve(currentDir)}/`,
+      '#targeting': resolve(currentDir),
     },
   },
   test: {

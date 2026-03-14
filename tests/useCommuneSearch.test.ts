@@ -11,7 +11,7 @@ vi.stubGlobal('watch', watch)
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
 
-const { useCommuneSearch } = await import('@/composables/useCommuneSearch')
+const { useCommuneSearch } = await import('#targeting/composables/useCommuneSearch')
 
 describe('useCommuneSearch', () => {
   beforeEach(() => {
@@ -65,7 +65,7 @@ describe('useCommuneSearch', () => {
       expect.any(Object),
     )
     expect(results.value).toHaveLength(1)
-    expect(results.value[0].nom).toBe('Paris')
+    expect(results.value.at(0)?.nom).toBe('Paris')
   })
 
   it('caches results', async () => {
@@ -112,7 +112,7 @@ describe('useCommuneSearch', () => {
       expect.any(Object),
     )
     expect(results.value).toHaveLength(1)
-    expect(results.value[0].nom).toBe('Lyon')
+    expect(results.value.at(0)?.nom).toBe('Lyon')
   })
 
   it('rejects single digit queries', async () => {
@@ -143,7 +143,7 @@ describe('useCommuneSearch', () => {
     )
     // Only Lyon matches prefix '6912'
     expect(results.value).toHaveLength(1)
-    expect(results.value[0].code).toBe('69123')
+    expect(results.value.at(0)?.code).toBe('69123')
   })
 
   it('searches by 2-digit department code', async () => {

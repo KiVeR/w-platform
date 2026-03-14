@@ -12,7 +12,7 @@ const mockAddressResults = ref<any[]>([])
 const mockPostcodeResults = ref<any[]>([])
 const mockClear = vi.fn()
 
-vi.mock('@/composables/useSmartSearch', () => ({
+vi.mock('#targeting/composables/useSmartSearch', () => ({
   useSmartSearch: () => ({
     query: mockQuery,
     isSearching: mockIsSearching,
@@ -30,12 +30,12 @@ vi.mock('@/composables/useSmartSearch', () => ({
   }),
 }))
 
-vi.mock('@/composables/useLogarithmicRadius', () => ({
+vi.mock('#targeting/composables/useLogarithmicRadius', () => ({
   sliderToKm: (pos: number) => pos,
   kmToSlider: (km: number) => km,
 }))
 
-const SmartSearch = (await import('@/components/targeting/SmartSearch.vue')).default
+const SmartSearch = (await import('#targeting/components/targeting/SmartSearch.vue')).default
 
 const slotStub = { template: '<div><slot /></div>' }
 
@@ -130,7 +130,7 @@ describe('SmartSearch', () => {
 
     await wrapper.find('[data-search-result]').trigger('mousedown')
     expect(wrapper.emitted('select')).toBeTruthy()
-    expect(wrapper.emitted('select')![0][0]).toEqual(dept)
+    expect(wrapper.emitted('select')?.at(0)?.[0]).toEqual(dept)
     expect(mockClear).toHaveBeenCalled()
   })
 

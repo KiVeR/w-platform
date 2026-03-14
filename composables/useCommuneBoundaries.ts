@@ -1,7 +1,7 @@
 import { ref, watch, type Ref } from 'vue'
-import { createLruCache } from '@/utils/lru-cache'
-import { createDebouncedFetcher } from '@/utils/debounce-lifecycle'
-import type { CommuneFeatureProperties } from '@/types/targeting'
+import { createLruCache } from '#targeting/utils/lru-cache'
+import { createDebouncedFetcher } from '#targeting/utils/debounce-lifecycle'
+import type { CommuneFeatureProperties } from '#targeting/types/targeting'
 
 interface GeoJsonFeature {
   type: 'Feature'

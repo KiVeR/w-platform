@@ -1,4 +1,4 @@
-import type { CommuneSearchResult } from '@/types/targeting'
+import type { CommuneSearchResult } from '#targeting/types/targeting'
 
 export const PARIS: CommuneSearchResult = { nom: 'Paris', code: '75056', codesPostaux: ['75001', '75002'], population: 2161000 }
 export const LYON: CommuneSearchResult = { nom: 'Lyon', code: '69123', codesPostaux: ['69001'], population: 516092 }

@@ -1,8 +1,8 @@
 import { ref, watch } from 'vue'
-import { isValidCommuneQuery } from '@/utils/commune-validation'
-import { createLruCache } from '@/utils/lru-cache'
-import { createDebouncedFetcher } from '@/utils/debounce-lifecycle'
-import type { CommuneSearchResult } from '@/types/targeting'
+import { isValidCommuneQuery } from '#targeting/utils/commune-validation'
+import { createLruCache } from '#targeting/utils/lru-cache'
+import { createDebouncedFetcher } from '#targeting/utils/debounce-lifecycle'
+import type { CommuneSearchResult } from '#targeting/types/targeting'
 
 const cache = createLruCache<CommuneSearchResult[]>(200)
 

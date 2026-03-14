@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { X, Loader2 } from 'lucide-vue-next'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { useGeoSearchInput } from '@/composables/useGeoSearchInput'
-import type { CommuneSearchResult } from '@/types/targeting'
+import { Badge } from '#targeting/components/ui/badge'
+import { Input } from '#targeting/components/ui/input'
+import { useGeoSearchInput } from '#targeting/composables/useGeoSearchInput'
+import type { CommuneSearchResult } from '#targeting/types/targeting'
 
 const props = defineProps<{
   modelValue: string[]
@@ -96,7 +96,7 @@ function remove(code: string) {
           <span>
             {{ commune.nom }}
             <span class="text-muted-foreground">(INSEE: {{ commune.code }})</span>
-            <span v-if="commune.codesPostaux.length > 0" class="text-xs text-muted-foreground"> — {{ commune.codesPostaux[0].slice(0, 2) }}</span>
+            <span v-if="commune.codesPostaux.length > 0" class="text-xs text-muted-foreground"> — {{ commune.codesPostaux[0]?.slice(0, 2) }}</span>
           </span>
           <span v-if="commune.population" class="text-xs text-muted-foreground">
             {{ commune.population.toLocaleString('fr-FR') }} hab.

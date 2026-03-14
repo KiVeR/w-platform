@@ -12,7 +12,7 @@ const mockResults = ref([
 const mockIsSearching = ref(false)
 const mockClear = vi.fn()
 
-vi.mock('@/composables/useAddressSearch', () => ({
+vi.mock('#targeting/composables/useAddressSearch', () => ({
   useAddressSearch: () => ({
     query: mockQuery,
     results: mockResults,
@@ -21,7 +21,7 @@ vi.mock('@/composables/useAddressSearch', () => ({
   }),
 }))
 
-const AddressRadius = (await import('@/components/targeting/AddressRadius.vue')).default
+const AddressRadius = (await import('#targeting/components/targeting/AddressRadius.vue')).default
 
 // Slider emits internal position [40] → sliderToKm(40) = 5 km
 const SliderStub = {

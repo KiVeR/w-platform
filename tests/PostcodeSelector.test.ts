@@ -10,7 +10,7 @@ const mockCommuneResults = ref<Array<{ nom: string, code: string, codesPostaux: 
 const mockCommuneQuery = ref('')
 const mockIsSearching = ref(false)
 
-vi.mock('@/composables/useCommuneSearch', () => ({
+vi.mock('#targeting/composables/useCommuneSearch', () => ({
   useCommuneSearch: () => ({
     query: mockCommuneQuery,
     results: mockCommuneResults,
@@ -19,7 +19,7 @@ vi.mock('@/composables/useCommuneSearch', () => ({
   }),
 }))
 
-const PostcodeSelector = (await import('@/components/targeting/PostcodeSelector.vue')).default
+const PostcodeSelector = (await import('#targeting/components/targeting/PostcodeSelector.vue')).default
 
 const InputStub = {
   template: '<input :value="modelValue" v-bind="$attrs" @input="$emit(\'update:modelValue\', $event.target.value)" />',
@@ -62,7 +62,7 @@ describe('PostcodeSelector', () => {
 
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).toEqual(['75001'])
+    expect(emitted.at(-1)?.[0]).toEqual(['75001'])
   })
 
   it('rejects invalid postcode (not 5 digits)', async () => {
@@ -116,7 +116,7 @@ describe('PostcodeSelector', () => {
     await input.trigger('keydown', { key: 'Enter' })
 
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).toEqual(['75001', '13001'])
+    expect(emitted.at(-1)?.[0]).toEqual(['75001', '13001'])
   })
 
   it('shows border-destructive class when error', async () => {
@@ -169,7 +169,7 @@ describe('PostcodeSelector', () => {
     await option.trigger('mousedown')
 
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).toEqual(['13080', '13090', '13100'])
+    expect(emitted.at(-1)?.[0]).toEqual(['13080', '13090', '13100'])
   })
 
   it('no dropdown for numeric input', async () => {
@@ -224,6 +224,6 @@ describe('PostcodeSelector', () => {
 
     const emitted = wrapper.emitted('update:modelValue')!
     // Should only add 13002 and 13003, not duplicate 13001
-    expect(emitted[emitted.length - 1][0]).toEqual(['13001', '13002', '13003'])
+    expect(emitted.at(-1)?.[0]).toEqual(['13001', '13002', '13003'])
   })
 })

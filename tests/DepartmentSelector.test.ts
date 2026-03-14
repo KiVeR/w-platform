@@ -4,7 +4,7 @@ import { mockUseI18n } from './helpers/stubs'
 
 mockUseI18n()
 
-const DepartmentSelector = (await import('@/components/targeting/DepartmentSelector.vue')).default
+const DepartmentSelector = (await import('#targeting/components/targeting/DepartmentSelector.vue')).default
 
 const slotStub = { template: '<div><slot /></div>' }
 
@@ -39,7 +39,7 @@ describe('DepartmentSelector', () => {
 
     const items = wrapper.findAll('[data-dept-item]')
     expect(items.length).toBeGreaterThan(0)
-    await items[0].trigger('click')
+    await items[0]!.trigger('click')
 
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()
   })
@@ -55,7 +55,7 @@ describe('DepartmentSelector', () => {
     await removeBtn.trigger('click')
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).not.toContain('75')
+    expect(emitted.at(-1)?.[0]).not.toContain('75')
   })
 
   it('search filters departments by name', () => {
@@ -79,7 +79,7 @@ describe('DepartmentSelector', () => {
     expect(unselected).toBeDefined()
     await unselected!.trigger('click')
     const emitted = wrapper.emitted('update:modelValue')!
-    const payload = emitted[emitted.length - 1][0] as string[]
+    const payload = emitted.at(-1)?.[0] as string[]
     expect(payload).toContain('75')
     expect(payload.length).toBe(2)
   })
@@ -103,7 +103,7 @@ describe('DepartmentSelector', () => {
     await selectAllBtn.trigger('click')
 
     const emitted = wrapper.emitted('update:modelValue')!
-    const codes = emitted[emitted.length - 1][0] as string[]
+    const codes = emitted.at(-1)?.[0] as string[]
     expect(codes.length).toBe(101)
   })
 
@@ -117,6 +117,6 @@ describe('DepartmentSelector', () => {
     await deselectBtn.trigger('click')
 
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).toEqual([])
+    expect(emitted.at(-1)?.[0]).toEqual([])
   })
 })

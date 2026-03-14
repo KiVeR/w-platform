@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isAlphaQuery, isValidCommuneQuery } from '@/utils/commune-validation'
+import { isAlphaQuery, isValidCommuneQuery } from '#targeting/utils/commune-validation'
 
 describe('isAlphaQuery', () => {
   it('accepts alphabetic strings', () => {

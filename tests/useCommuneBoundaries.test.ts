@@ -7,9 +7,9 @@ vi.stubGlobal('watch', watch)
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
 
-vi.mock('@/types/targeting', () => ({}))
+vi.mock('#targeting/types/targeting', () => ({}))
 
-const { useCommuneBoundaries } = await import('@/composables/useCommuneBoundaries')
+const { useCommuneBoundaries } = await import('#targeting/composables/useCommuneBoundaries')
 
 function makeCommuneResponse(code: string, nom: string, codesPostaux: string[], population: number) {
   return {
@@ -97,13 +97,13 @@ describe('useCommuneBoundaries', () => {
     expect(communeGeoJson.value!.type).toBe('FeatureCollection')
     expect(communeGeoJson.value!.features).toHaveLength(1)
 
-    const feature = communeGeoJson.value!.features[0]
-    expect(feature.type).toBe('Feature')
-    expect(feature.properties.nom).toBe('Melun')
-    expect(feature.properties.code).toBe('77288')
-    expect(feature.properties.selectedPostcodes).toEqual(['77000'])
-    expect(feature.properties.population).toBe(42000)
-    expect(feature.geometry).toBeDefined()
+    const feature = communeGeoJson.value!.features.at(0)
+    expect(feature?.type).toBe('Feature')
+    expect(feature?.properties.nom).toBe('Melun')
+    expect(feature?.properties.code).toBe('77288')
+    expect(feature?.properties.selectedPostcodes).toEqual(['77000'])
+    expect(feature?.properties.population).toBe(42000)
+    expect(feature?.geometry).toBeDefined()
   })
 
   it('deduplicates communes by INSEE code', async () => {
@@ -122,7 +122,7 @@ describe('useCommuneBoundaries', () => {
     await nextTick()
 
     expect(communeGeoJson.value!.features).toHaveLength(1)
-    expect(communeGeoJson.value!.features[0].properties.selectedPostcodes).toEqual(['75001', '75002'])
+    expect(communeGeoJson.value!.features.at(0)?.properties.selectedPostcodes).toEqual(['75001', '75002'])
   })
 
   it('handles fetch error gracefully', async () => {
@@ -169,7 +169,7 @@ describe('useCommuneBoundaries', () => {
     await nextTick()
 
     expect(communeGeoJson.value!.features).toHaveLength(1)
-    expect(communeGeoJson.value!.features[0].properties.nom).toBe('Melun')
+    expect(communeGeoJson.value!.features.at(0)?.properties.nom).toBe('Melun')
   })
 
   it('loading state is false after fetch completes', async () => {

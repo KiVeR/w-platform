@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { deptCodeFromPostcode } from '@/utils/departments'
+import { deptCodeFromPostcode } from '#targeting/utils/departments'
 
 describe('deptCodeFromPostcode', () => {
   it('extracts 2-digit code for mainland France', () => {

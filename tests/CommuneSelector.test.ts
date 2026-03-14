@@ -10,7 +10,7 @@ const mockCommuneResults = ref<Array<{ nom: string, code: string, codesPostaux: 
 const mockCommuneQuery = ref('')
 const mockIsSearching = ref(false)
 
-vi.mock('@/composables/useCommuneSearch', () => ({
+vi.mock('#targeting/composables/useCommuneSearch', () => ({
   useCommuneSearch: () => ({
     query: mockCommuneQuery,
     results: mockCommuneResults,
@@ -19,7 +19,7 @@ vi.mock('@/composables/useCommuneSearch', () => ({
   }),
 }))
 
-const CommuneSelector = (await import('@/components/targeting/CommuneSelector.vue')).default
+const CommuneSelector = (await import('#targeting/components/targeting/CommuneSelector.vue')).default
 
 const InputStub = {
   template: '<input :value="modelValue" v-bind="$attrs" @input="$emit(\'update:modelValue\', $event.target.value)" />',
@@ -85,7 +85,7 @@ describe('CommuneSelector', () => {
     await wrapper.find('[data-commune-option]').trigger('mousedown')
 
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).toEqual(['17109'])
+    expect(emitted.at(-1)?.[0]).toEqual(['17109'])
   })
 
   it('prevents duplicate commune selection', async () => {
@@ -205,6 +205,6 @@ describe('CommuneSelector', () => {
     await wrapper.find('[data-commune-option]').trigger('mousedown')
 
     const emitted = wrapper.emitted('update:modelValue')!
-    expect(emitted[emitted.length - 1][0]).toEqual(['17109', '69123'])
+    expect(emitted.at(-1)?.[0]).toEqual(['17109', '69123'])
   })
 })

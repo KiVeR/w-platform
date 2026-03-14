@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { MapPin, X, Loader2 } from 'lucide-vue-next'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Slider } from '@/components/ui/slider'
-import { useAddressSearch } from '@/composables/useAddressSearch'
-import { useDropdownKeyboard } from '@/composables/useDropdownKeyboard'
-import { sliderToKm, kmToSlider } from '@/composables/useLogarithmicRadius'
-import type { AddressResult } from '@/types/targeting'
+import { Button } from '#targeting/components/ui/button'
+import { Card, CardContent } from '#targeting/components/ui/card'
+import { Input } from '#targeting/components/ui/input'
+import { Label } from '#targeting/components/ui/label'
+import { Slider } from '#targeting/components/ui/slider'
+import { useAddressSearch } from '#targeting/composables/useAddressSearch'
+import { useDropdownKeyboard } from '#targeting/composables/useDropdownKeyboard'
+import { sliderToKm, kmToSlider } from '#targeting/composables/useLogarithmicRadius'
+import type { AddressResult } from '#targeting/types/targeting'
 
 const props = defineProps<{
   address: string | null
@@ -55,8 +55,12 @@ function clearAddress() {
 
 const sliderPosition = computed(() => [kmToSlider(props.radius ?? 10)])
 
-function onSliderChange(value: number[]) {
-  emit('update:radius', sliderToKm(value[0]))
+function onSliderChange(value?: number[]) {
+  const nextValue = value?.[0]
+  if (nextValue === undefined)
+    return
+
+  emit('update:radius', sliderToKm(nextValue))
 }
 </script>
 

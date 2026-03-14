@@ -69,8 +69,8 @@ describe('useSmartSearch', () => {
     await nextTick()
     // Department filtering is instant (not debounced)
     expect(groupedResults.value.departments.length).toBeGreaterThan(0)
-    expect(groupedResults.value.departments[0].departmentCode).toBe('75')
-    expect(groupedResults.value.departments[0].type).toBe('department')
+    expect(groupedResults.value.departments.at(0)?.departmentCode).toBe('75')
+    expect(groupedResults.value.departments.at(0)?.type).toBe('department')
   })
 
   it('filters departments locally by name', async () => {
@@ -105,8 +105,8 @@ describe('useSmartSearch', () => {
       expect.any(Object),
     )
     expect(groupedResults.value.addresses).toHaveLength(1)
-    expect(groupedResults.value.addresses[0].type).toBe('address')
-    expect(groupedResults.value.addresses[0].lat).toBe(45.75)
+    expect(groupedResults.value.addresses.at(0)?.type).toBe('address')
+    expect(groupedResults.value.addresses.at(0)?.lat).toBe(45.75)
   })
 
   it('searches municipalities for postcode-like input', async () => {
@@ -125,8 +125,8 @@ describe('useSmartSearch', () => {
     await vi.advanceTimersByTimeAsync(400)
 
     expect(groupedResults.value.postcodes).toHaveLength(1)
-    expect(groupedResults.value.postcodes[0].type).toBe('postcode')
-    expect(groupedResults.value.postcodes[0].postcode).toBe('75001')
+    expect(groupedResults.value.postcodes.at(0)?.type).toBe('postcode')
+    expect(groupedResults.value.postcodes.at(0)?.postcode).toBe('75001')
   })
 
   it('searches municipalities for department code input', async () => {

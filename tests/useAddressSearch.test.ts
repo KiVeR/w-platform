@@ -8,9 +8,9 @@ const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
 
 // Import type used in composable
-vi.mock('@/types/targeting', () => ({}))
+vi.mock('#targeting/types/targeting', () => ({}))
 
-const { useAddressSearch } = await import('@/composables/useAddressSearch')
+const { useAddressSearch } = await import('#targeting/composables/useAddressSearch')
 
 describe('useAddressSearch', () => {
   beforeEach(() => {
@@ -84,11 +84,11 @@ describe('useAddressSearch', () => {
     await nextTick()
 
     expect(results.value).toHaveLength(1)
-    expect(results.value[0].label).toBe('1 Rue de Paris, 75001 Paris')
-    expect(results.value[0].lat).toBe(48.86)
-    expect(results.value[0].lng).toBe(2.34)
-    expect(results.value[0].postcode).toBe('75001')
-    expect(results.value[0].city).toBe('Paris')
+    expect(results.value.at(0)?.label).toBe('1 Rue de Paris, 75001 Paris')
+    expect(results.value.at(0)?.lat).toBe(48.86)
+    expect(results.value.at(0)?.lng).toBe(2.34)
+    expect(results.value.at(0)?.postcode).toBe('75001')
+    expect(results.value.at(0)?.city).toBe('Paris')
   })
 
   it('clears results on clear()', async () => {

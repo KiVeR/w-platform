@@ -27,7 +27,9 @@ export function useDropdownKeyboard<T>(
     if (event.key === 'Enter') {
       event.preventDefault()
       if (highlightedIndex.value >= 0) {
-        onSelect(items.value[highlightedIndex.value])
+        const item = items.value[highlightedIndex.value]
+        if (item !== undefined)
+          onSelect(item)
       }
       return true
     }

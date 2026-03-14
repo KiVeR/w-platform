@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
-import { fetchAddresses } from '@/utils/geo-api'
-import { createDebouncedFetcher } from '@/utils/debounce-lifecycle'
-import type { AddressResult } from '@/types/targeting'
+import { fetchAddresses } from '#targeting/utils/geo-api'
+import { createDebouncedFetcher } from '#targeting/utils/debounce-lifecycle'
+import type { AddressResult } from '#targeting/types/targeting'
 
 export function useAddressSearch() {
   const query = ref('')

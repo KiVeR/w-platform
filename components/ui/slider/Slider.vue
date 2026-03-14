@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SliderRootEmits, SliderRootProps } from "reka-ui"
-import { cn } from "@/lib/utils"
+import { cn } from "#targeting/lib/utils"
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack, useForwardPropsEmits } from "reka-ui"
 
 const props = defineProps<SliderRootProps>()

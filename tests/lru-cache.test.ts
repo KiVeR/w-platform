@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createLruCache } from '@/utils/lru-cache'
+import { createLruCache } from '#targeting/utils/lru-cache'
 
 describe('createLruCache', () => {
   it('stores and retrieves values', () => {

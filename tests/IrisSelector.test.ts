@@ -10,7 +10,7 @@ const mockCommuneResults = ref<Array<{ nom: string, code: string, codesPostaux: 
 const mockCommuneQuery = ref('')
 const mockIsSearching = ref(false)
 
-vi.mock('@/composables/useCommuneSearch', () => ({
+vi.mock('#targeting/composables/useCommuneSearch', () => ({
   useCommuneSearch: () => ({
     query: mockCommuneQuery,
     results: mockCommuneResults,
@@ -23,7 +23,7 @@ vi.mock('@/composables/useCommuneSearch', () => ({
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
 
-const IrisSelector = (await import('@/components/targeting/IrisSelector.vue')).default
+const IrisSelector = (await import('#targeting/components/targeting/IrisSelector.vue')).default
 
 const InputStub = {
   template: '<input :value="modelValue" v-bind="$attrs" @input="$emit(\'update:modelValue\', $event.target.value)" />',

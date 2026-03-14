@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { X, CheckSquare, Square } from 'lucide-vue-next'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import departments from '@/data/departments.json'
+import { Badge } from '#targeting/components/ui/badge'
+import { Button } from '#targeting/components/ui/button'
+import { Checkbox } from '#targeting/components/ui/checkbox'
+import { Input } from '#targeting/components/ui/input'
+import { ScrollArea } from '#targeting/components/ui/scroll-area'
+import departments from '#targeting/data/departments.json'
 
 const departmentMap = new Map(departments.map(d => [d.code, d.name]))
 
