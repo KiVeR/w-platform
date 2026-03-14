@@ -7,6 +7,8 @@ namespace App\Providers;
 use App\Contracts\AIDriverInterface;
 use App\Contracts\SmsRoutingDriverInterface;
 use App\Contracts\TargetingAdapterInterface;
+use App\Models\Campaign;
+use App\Observers\CampaignObserver;
 use App\Services\AI\AIGenerationManager;
 use App\Services\Geo\GeoApiService;
 use App\Services\SmsRouting\SmsRoutingManager;
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         EloquentSpatial::setDefaultSrid(Srid::WGS84);
+        Campaign::observe(CampaignObserver::class);
 
         Passport::tokensExpireIn(now()->addHours(24));
         Passport::refreshTokensExpireIn(now()->addDays(30));

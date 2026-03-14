@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\SmsRouting;
 
+use App\Events\CampaignRefresh;
 use App\Enums\CampaignRecipientStatus;
 use App\Models\CampaignRecipient;
 use App\Models\DeliveryReport;
@@ -31,11 +32,12 @@ class DigestDeliveryReportsJob implements ShouldBeUnique, ShouldQueue
     public function handle(): void
     {
         $processed = 0;
+        $hasRecipientUpdates = false;
 
         DeliveryReport::where('provider', $this->provider)
             ->where('digested', false)
             ->orderBy('id')
-            ->chunk(100, function ($reports) use (&$processed): void {
+            ->chunk(100, function ($reports) use (&$processed, &$hasRecipientUpdates): void {
                 $updates = [];
 
                 foreach ($reports as $report) {
@@ -55,8 +57,16 @@ class DigestDeliveryReportsJob implements ShouldBeUnique, ShouldQueue
                     CampaignRecipient::where('id', $recipientId)->update($update);
                 }
 
+                if ($updates !== []) {
+                    $hasRecipientUpdates = true;
+                }
+
                 $processed += $reports->count();
             });
+
+        if ($hasRecipientUpdates) {
+            CampaignRefresh::dispatch();
+        }
 
         Log::info("DigestDeliveryReportsJob: processed {$processed} {$this->provider} reports");
     }

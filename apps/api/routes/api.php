@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\AIContentController;
 use App\Http\Controllers\Api\AIGenerationController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BroadcastingAuthController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\ExternalCampaignController;
@@ -49,6 +50,8 @@ Route::prefix('auth')->middleware('throttle:auth')->group(function (): void {
 });
 
 Route::middleware(['auth:api', 'active'])->group(function (): void {
+    Route::post('broadcasting/auth', BroadcastingAuthController::class);
+
     Route::prefix('auth')->group(function (): void {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
