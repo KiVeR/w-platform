@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\VariableField;
 use App\Models\VariableSchema;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -135,20 +136,32 @@ class VariableSchemaController extends Controller
         return new VariableSchemaResource($clone->load('variableFields'));
     }
 
-    public function markUsed(VariableSchema $variableSchema): VariableSchemaResource
+    public function markUsed(Request $request, VariableSchema $variableSchema): VariableSchemaResource
     {
         $this->authorize('update', $variableSchema);
 
-        $variableSchema->variableFields()->update(['is_used' => true]);
+        /** @var array{variables?: list<string>} $payload */
+        $payload = $request->validate([
+            'variables' => ['sometimes', 'array', 'min:1'],
+            'variables.*' => ['string', 'max:255'],
+        ]);
+
+        $variableSchema->syncUsage($payload['variables'] ?? null, true);
 
         return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
     }
 
-    public function markUnused(VariableSchema $variableSchema): VariableSchemaResource
+    public function markUnused(Request $request, VariableSchema $variableSchema): VariableSchemaResource
     {
         $this->authorize('update', $variableSchema);
 
-        $variableSchema->variableFields()->update(['is_used' => false]);
+        /** @var array{variables?: list<string>} $payload */
+        $payload = $request->validate([
+            'variables' => ['sometimes', 'array', 'min:1'],
+            'variables.*' => ['string', 'max:255'],
+        ]);
+
+        $variableSchema->syncUsage($payload['variables'] ?? null, false);
 
         return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
     }

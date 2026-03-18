@@ -3,9 +3,13 @@
 declare(strict_types=1);
 
 use App\Enums\CampaignStatus;
+use App\Enums\CampaignRoutingStatus;
 use App\Models\Campaign;
+use App\Models\CampaignRecipient;
 use App\Models\Partner;
+use App\Models\Router;
 use App\Models\User;
+use App\Models\VariableSchema;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Laravel\Passport\Passport;
 
@@ -339,6 +343,37 @@ it('includes interestGroups on show', function (): void {
 
     $response->assertOk()
         ->assertJsonStructure(['data' => ['interest_groups']]);
+});
+
+it('includes routing metadata, router relation and recipients_count on show', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $partner = Partner::factory()->create();
+    $router = Router::factory()->create(['name' => 'Sinch FR']);
+    $schema = VariableSchema::factory()->forPartner($partner)->create();
+    $routingAt = now()->subMinutes(5)->startOfSecond();
+
+    $campaign = Campaign::factory()->forPartner($partner)->create([
+        'routing_status' => CampaignRoutingStatus::RoutingInProgress,
+        'router_id' => $router->id,
+        'variable_schema_id' => $schema->id,
+        'routing_at' => $routingAt,
+    ]);
+
+    CampaignRecipient::factory()->count(2)->for($campaign)->create();
+
+    $response = $this->getJson("/api/campaigns/{$campaign->id}?include=router");
+
+    $response->assertOk()
+        ->assertJsonPath('data.routing_status', CampaignRoutingStatus::RoutingInProgress->value)
+        ->assertJsonPath('data.router_id', $router->id)
+        ->assertJsonPath('data.variable_schema_id', $schema->id)
+        ->assertJsonPath('data.routing_at', $routingAt->toJSON())
+        ->assertJsonPath('data.recipients_count', 2)
+        ->assertJsonPath('data.router.id', $router->id)
+        ->assertJsonPath('data.router.name', 'Sinch FR');
 });
 
 // --- UPDATE ---

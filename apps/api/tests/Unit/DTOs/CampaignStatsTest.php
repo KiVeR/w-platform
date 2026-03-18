@@ -85,3 +85,17 @@ it('handles empty trigger api response with zeros', function (): void {
         ->and($stats->clicks)->toBe(0)
         ->and($stats->ctr)->toBe(0.0);
 });
+
+it('builds local performance stats with legacy-compatible ratios', function (): void {
+    $stats = CampaignStats::fromLocalPerformance(
+        sent: 3,
+        delivered: 2,
+        clicks: 1,
+    );
+
+    expect($stats->sent)->toBe(3)
+        ->and($stats->delivered)->toBe(2)
+        ->and($stats->clicks)->toBe(1)
+        ->and($stats->deliverabilityRate)->toBe(66.67)
+        ->and($stats->ctr)->toBe(50.0);
+});

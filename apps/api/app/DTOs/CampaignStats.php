@@ -45,16 +45,25 @@ readonly class CampaignStats
         $total = (int) ($stats['total'] ?? 0);
         $delivered = (int) ($stats['delivered'] ?? 0);
 
-        return new self(
+        return self::fromLocalPerformance(
             sent: $total,
+            delivered: $delivered,
+            clicks: (int) ($stats['clicks'] ?? 0),
+        );
+    }
+
+    public static function fromLocalPerformance(int $sent, int $delivered, int $clicks): self
+    {
+        return new self(
+            sent: $sent,
             delivered: $delivered,
             undeliverable: 0,
             rejected: 0,
             expired: 0,
             stop: 0,
-            clicks: (int) ($stats['clicks'] ?? 0),
-            deliverabilityRate: (float) ($stats['deliverability_rate'] ?? 0.0),
-            ctr: (float) ($stats['ctr'] ?? 0.0),
+            clicks: $clicks,
+            deliverabilityRate: $sent > 0 ? round(($delivered / $sent) * 100, 2) : 0.0,
+            ctr: $delivered > 0 ? round(($clicks / $delivered) * 100, 2) : 0.0,
         );
     }
 }

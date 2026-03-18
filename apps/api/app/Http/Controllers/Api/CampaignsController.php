@@ -114,7 +114,8 @@ class CampaignsController extends Controller
         $this->authorize('view', $campaign);
 
         $campaign = QueryBuilder::for(Campaign::where('id', $campaign->id))
-            ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
+            ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage', 'router', 'variableSchema'])
+            ->withCount('campaignRecipients')
             ->firstOrFail();
 
         return new CampaignResource($campaign);

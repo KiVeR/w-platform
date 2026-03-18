@@ -90,6 +90,62 @@ it('can filter short urls by is_enabled', function (): void {
     }
 });
 
+it('can filter disabled short urls with is_enabled=0', function (): void {
+    ShortUrl::factory()->count(2)->create(['is_enabled' => true]);
+    ShortUrl::factory()->count(3)->create(['is_enabled' => false]);
+
+    $response = $this->getJson('/api/short-urls?is_enabled=0');
+
+    $response->assertOk();
+
+    $data = $response->json('data');
+    expect($data)->toHaveCount(3);
+
+    foreach ($data as $item) {
+        expect($item['is_enabled'])->toBeFalse();
+    }
+});
+
+it('can filter short urls by ids', function (): void {
+    $first = ShortUrl::factory()->create();
+    $second = ShortUrl::factory()->create();
+    ShortUrl::factory()->count(2)->create();
+
+    $response = $this->getJson("/api/short-urls?ids[]={$first->id}&ids[]={$second->id}");
+
+    $response->assertOk()
+        ->assertJsonCount(2, 'data');
+
+    expect(collect($response->json('data'))->pluck('id')->all())
+        ->toContain($first->id, $second->id);
+});
+
+it('can filter short urls by import_id', function (): void {
+    ShortUrl::factory()->create(['import_id' => 'import-a']);
+    ShortUrl::factory()->create(['import_id' => 'import-b']);
+    ShortUrl::factory()->create(['import_id' => null]);
+
+    $response = $this->getJson('/api/short-urls?import_id=import-a');
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.import_id', 'import-a');
+});
+
+it('can filter internal short urls with no-link flag', function (): void {
+    ShortUrl::factory()->count(2)->create(['link' => null]);
+    ShortUrl::factory()->count(2)->create(['link' => 'https://example.com']);
+
+    $response = $this->getJson('/api/short-urls?no-link=1');
+
+    $response->assertOk()
+        ->assertJsonCount(2, 'data');
+
+    foreach ($response->json('data') as $item) {
+        expect($item['link'])->toBeNull();
+    }
+});
+
 // --- STORE ---
 
 it('can create short url with auto-generated slug', function (): void {

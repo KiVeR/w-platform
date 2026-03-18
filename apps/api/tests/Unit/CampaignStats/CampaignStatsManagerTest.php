@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Contracts\CampaignStatsProviderInterface;
 use App\Services\CampaignStats\CampaignStatsManager;
+use App\Services\CampaignStats\Drivers\LocalCampaignStatsDriver;
 use App\Services\CampaignStats\Drivers\StubDriver;
-use App\Services\CampaignStats\Drivers\TriggerApiDriver;
 use App\Services\CampaignStats\Drivers\WepakDriver;
 
 it('resolves stub driver', function (): void {
@@ -15,6 +15,13 @@ it('resolves stub driver', function (): void {
     $driver = $manager->driver();
 
     expect($driver)->toBeInstanceOf(StubDriver::class);
+});
+
+it('resolves local driver', function (): void {
+    $manager = app(CampaignStatsManager::class);
+    $driver = $manager->driver('local');
+
+    expect($driver)->toBeInstanceOf(LocalCampaignStatsDriver::class);
 });
 
 it('resolves wepak driver', function (): void {
@@ -30,18 +37,6 @@ it('resolves wepak driver', function (): void {
     $driver = $manager->driver('wepak');
 
     expect($driver)->toBeInstanceOf(WepakDriver::class);
-});
-
-it('resolves trigger_api driver', function (): void {
-    config([
-        'campaign-stats.drivers.trigger_api.base_url' => 'https://trigger.example.com',
-        'campaign-stats.drivers.trigger_api.api_key' => 'test-token',
-    ]);
-
-    $manager = app(CampaignStatsManager::class);
-    $driver = $manager->driver('trigger_api');
-
-    expect($driver)->toBeInstanceOf(TriggerApiDriver::class);
 });
 
 it('respects CAMPAIGN_STATS_DRIVER env', function (): void {

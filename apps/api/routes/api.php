@@ -6,11 +6,15 @@ use App\Http\Controllers\Api\AIContentController;
 use App\Http\Controllers\Api\AIGenerationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BroadcastingAuthController;
+use App\Http\Controllers\Api\CampaignActivitiesController;
+use App\Http\Controllers\Api\CampaignLogsController;
+use App\Http\Controllers\Api\CampaignRecipientsController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\ExternalCampaignController;
 use App\Http\Controllers\Api\GeoController;
 use App\Http\Controllers\Api\ImportableLinkController;
+use App\Http\Controllers\Api\InternalVariableSchemaController;
 use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
@@ -29,6 +33,13 @@ use Illuminate\Support\Facades\Route;
 // External API — Client Credentials OAuth2 (machine-to-machine, e.g. Wepak PUSH)
 Route::middleware(['client'])->prefix('external')->group(function (): void {
     Route::post('campaigns', [ExternalCampaignController::class, 'store']);
+});
+
+Route::middleware(['client'])->prefix('internal')->group(function (): void {
+    Route::get('variable-schemas', [InternalVariableSchemaController::class, 'index']);
+    Route::get('variable-schemas/{variableSchema}', [InternalVariableSchemaController::class, 'show']);
+    Route::post('variable-schemas/{variableSchema}/mark-used', [InternalVariableSchemaController::class, 'markUsed']);
+    Route::post('variable-schemas/{variableSchema}/mark-unused', [InternalVariableSchemaController::class, 'markUnused']);
 });
 
 // SMS provider webhooks — public, no auth
@@ -71,6 +82,9 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
     Route::get('campaigns/{campaign}/stats', [CampaignsController::class, 'stats']);
     Route::get('campaigns/{campaign}/export', [CampaignsController::class, 'export']);
+    Route::get('campaigns/{campaign}/activities', [CampaignActivitiesController::class, 'index']);
+    Route::get('campaigns/{campaign}/logs', [CampaignLogsController::class, 'index']);
+    Route::get('campaigns/{campaign}/recipients', [CampaignRecipientsController::class, 'index']);
 
     Route::apiResource('targeting-templates', TargetingTemplatesController::class);
     Route::post('targeting-templates/{targeting_template}/use', [TargetingTemplatesController::class, 'useTemplate']);

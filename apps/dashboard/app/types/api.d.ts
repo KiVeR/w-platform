@@ -282,6 +282,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/broadcasting/auth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["broadcastingAuth"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/campaigns/{campaign}/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["campaignActivities.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/campaigns/{campaign}/logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["campaignLogs.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/campaigns/{campaign}/recipients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["campaignRecipients.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/campaigns": {
         parameters: {
             query?: never;
@@ -810,6 +874,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/routers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["routers.index"];
+        put?: never;
+        post: operations["routers.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/routers/{router}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["routers.update"];
+        post?: never;
+        delete: operations["routers.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/shops": {
         parameters: {
             query?: never;
@@ -1214,6 +1310,30 @@ export interface components {
          * @enum {string}
          */
         CampaignChannel: "sms" | "email";
+        /** CampaignLogResource */
+        CampaignLogResource: {
+            id: number;
+            campaign_id: number;
+            data: unknown[];
+            created_at: string;
+        };
+        /** CampaignRecipientResource */
+        CampaignRecipientResource: {
+            id: number;
+            campaign_id: number;
+            status: string;
+            phone_number: string;
+            message_preview: string | null;
+            message_preview_length: number | null;
+            short_url_suffix: string | null;
+            short_url_slug: string | null;
+            short_url_click: number;
+            additional_information: {
+                [key: string]: unknown;
+            };
+            stop_requested_at: string;
+            delivered_at: string;
+        };
         /** CampaignResource */
         CampaignResource: {
             id: number;
@@ -1222,6 +1342,7 @@ export interface components {
             type: string;
             channel: string;
             status: string;
+            routing_status: string;
             is_demo: boolean;
             name: string;
             targeting: unknown[] | null;
@@ -1239,10 +1360,16 @@ export interface components {
             unit_price: number | null;
             total_price: number | null;
             landing_page_id: number | null;
+            variable_schema_id: number | null;
+            router_id: number | null;
+            /** Format: date-time */
+            routing_at: string | null;
+            recipients_count?: number;
             /** Format: date-time */
             created_at: string | null;
             partner?: components["schemas"]["PartnerResource"];
             creator?: components["schemas"]["UserResource"];
+            router?: components["schemas"]["RouterResource"];
             landing_page?: components["schemas"]["LandingPageResource"];
             interest_groups?: components["schemas"]["InterestGroupResource"][];
         };
@@ -1364,6 +1491,16 @@ export interface components {
          * @enum {string}
          */
         LandingPageStatus: "draft" | "published" | "archived";
+        /** LogActivityResource */
+        LogActivityResource: {
+            id: number;
+            event: string;
+            model_type: string | null;
+            model_id: number | null;
+            old_values: unknown[] | null;
+            new_values: unknown[] | null;
+            created_at: string;
+        };
         /** LoginRequest */
         LoginRequest: {
             /** Format: email */
@@ -1421,6 +1558,20 @@ export interface components {
             code: string;
             name: string;
             geometry?: string | null;
+        };
+        /** RouterResource */
+        RouterResource: {
+            id: number;
+            name: string;
+            external_id: number | null;
+            num_stop: string | null;
+            is_active: boolean;
+            partners_count?: number;
+            campaigns_count?: number;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
         };
         /** SaveDesignRequest */
         SaveDesignRequest: {
@@ -1509,6 +1660,13 @@ export interface components {
             /** Format: uri */
             logo_url?: string | null;
             euro_credits?: number | null;
+            is_active?: boolean | null;
+        };
+        /** StoreRouterRequest */
+        StoreRouterRequest: {
+            name: string;
+            external_id?: number | null;
+            num_stop?: string | null;
             is_active?: boolean | null;
         };
         /** StoreShortUrlRequest */
@@ -1643,6 +1801,13 @@ export interface components {
                 age_min?: number | null;
                 age_max?: number | null;
             };
+        };
+        /** UpdateRouterRequest */
+        UpdateRouterRequest: {
+            name?: string;
+            external_id?: number | null;
+            num_stop?: string | null;
+            is_active?: boolean | null;
         };
         /** UpdateShopRequest */
         UpdateShopRequest: {
@@ -2499,6 +2664,158 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    broadcastingAuth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    socket_id: string;
+                    channel_name: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never> | null;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "campaignActivities.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The campaign ID */
+                campaign: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `LogActivityResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LogActivityResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "campaignLogs.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The campaign ID */
+                campaign: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `CampaignLogResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CampaignLogResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "campaignRecipients.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The campaign ID */
+                campaign: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `CampaignRecipientResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CampaignRecipientResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
     };
     "campaigns.index": {
@@ -4025,6 +4342,156 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
             404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "routers.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `RouterResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["RouterResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "routers.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreRouterRequest"];
+            };
+        };
+        responses: {
+            /** @description `RouterResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["RouterResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "routers.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The router ID */
+                router: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateRouterRequest"];
+            };
+        };
+        responses: {
+            /** @description `RouterResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["RouterResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "routers.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The router ID */
+                router: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Router deleted.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Router is in use. Disable it instead.";
+                    };
+                };
+            };
         };
     };
     "shops.index": {

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Jobs\IncrementClickCountJob;
+use App\Http\Controllers\RedirectController;
 use App\Models\ShortUrl;
 use App\Models\ShortUrlSuffix;
 use Illuminate\Support\Facades\Bus;
@@ -117,4 +118,23 @@ it('builds internal redirect URL when link is null', function (): void {
     }
 
     $response->assertRedirect($expectedUrl);
+});
+
+it('registers redirect routes for the configured short-url domains', function (): void {
+    $domains = collect(app('router')->getRoutes()->getRoutes())
+        ->filter(fn ($route): bool => $route->uri() === '{slug}' && ltrim($route->getActionName(), '\\') === RedirectController::class.'@redirect')
+        ->map(fn ($route): ?string => $route->getDomain())
+        ->values()
+        ->all();
+
+    $expectedDomains = collect([
+        parse_url((string) config('short-url.redirect_external_url'), PHP_URL_HOST),
+        parse_url((string) config('short-url.redirect_internal_url'), PHP_URL_HOST),
+    ])->filter()->values();
+
+    foreach ($expectedDomains as $expectedDomain) {
+        expect($domains)->toContain($expectedDomain);
+    }
+
+    expect($domains)->toContain(null);
 });

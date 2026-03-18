@@ -737,6 +737,25 @@ it('allows partner to mark used on own schema', function (): void {
     )->toBe(2);
 });
 
+it('marks only selected fields as used when variables are provided', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $schema = VariableSchema::factory()->create();
+    VariableField::factory()->forSchema($schema)->create(['name' => 'prenom', 'is_used' => false]);
+    VariableField::factory()->forSchema($schema)->create(['name' => 'nom', 'is_used' => false]);
+
+    $response = $this->postJson("/api/variable-schemas/{$schema->uuid}/mark-used", [
+        'variables' => ['prenom'],
+    ]);
+
+    $response->assertOk();
+
+    expect($schema->refresh()->variableFields()->where('name', 'prenom')->first()?->is_used)->toBeTrue()
+        ->and($schema->variableFields()->where('name', 'nom')->first()?->is_used)->toBeFalse();
+});
+
 it('denies partner from marking used on other partner schema', function (): void {
     $partner1 = Partner::factory()->create();
     $partner2 = Partner::factory()->create();
@@ -785,6 +804,25 @@ it('allows partner to mark unused on own schema', function (): void {
             ->where('is_used', false)
             ->count()
     )->toBe(2);
+});
+
+it('marks only selected fields as unused when variables are provided', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $schema = VariableSchema::factory()->create();
+    VariableField::factory()->forSchema($schema)->create(['name' => 'prenom', 'is_used' => true]);
+    VariableField::factory()->forSchema($schema)->create(['name' => 'nom', 'is_used' => true]);
+
+    $response = $this->postJson("/api/variable-schemas/{$schema->uuid}/mark-unused", [
+        'variables' => ['nom'],
+    ]);
+
+    $response->assertOk();
+
+    expect($schema->refresh()->variableFields()->where('name', 'prenom')->first()?->is_used)->toBeTrue()
+        ->and($schema->variableFields()->where('name', 'nom')->first()?->is_used)->toBeFalse();
 });
 
 it('denies partner from marking unused on other partner schema', function (): void {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Services\CampaignStats;
 
 use App\Services\CampaignSending\WepakClient;
+use App\Services\CampaignStats\Drivers\LocalCampaignStatsDriver;
 use App\Services\CampaignStats\Drivers\StubDriver;
-use App\Services\CampaignStats\Drivers\TriggerApiDriver;
 use App\Services\CampaignStats\Drivers\WepakDriver;
 use Illuminate\Support\Manager;
 
@@ -23,6 +23,11 @@ class CampaignStatsManager extends Manager
         return new StubDriver;
     }
 
+    protected function createLocalDriver(): LocalCampaignStatsDriver
+    {
+        return new LocalCampaignStatsDriver;
+    }
+
     protected function createWepakDriver(): WepakDriver
     {
         /** @var array{base_url: string, api_key: string, timeout: int, estimate_timeout: int} $config */
@@ -36,15 +41,5 @@ class CampaignStatsManager extends Manager
         );
 
         return new WepakDriver($client);
-    }
-
-    protected function createTriggerApiDriver(): TriggerApiDriver
-    {
-        /** @var string $baseUrl */
-        $baseUrl = $this->config->get('campaign-stats.drivers.trigger_api.base_url', '');
-        /** @var string $apiKey */
-        $apiKey = $this->config->get('campaign-stats.drivers.trigger_api.api_key', '');
-
-        return new TriggerApiDriver($baseUrl, $apiKey);
     }
 }
