@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event)
 
-  // Build query string for trigger-api, forwarding pagination and filter params
+  // Forward pagination and filters to the platform internal compat endpoint.
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(query)) {
     if (value !== undefined && value !== null)
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const qs = params.toString()
-  const path = `/api/variable-schemas${qs ? `?${qs}` : ''}`
+  const path = `/api/internal/variable-schemas${qs ? `?${qs}` : ''}`
 
-  return triggerApiFetch(event, path)
+  return platformApiFetch(event, path)
 })

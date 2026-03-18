@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
 
-  return triggerApiFetch(event, `/api/variable-schemas/${uuid}/mark-used`, {
+  return platformApiFetch(event, `/api/internal/variable-schemas/${uuid}/mark-used`, {
     method: 'POST',
     body,
   })
