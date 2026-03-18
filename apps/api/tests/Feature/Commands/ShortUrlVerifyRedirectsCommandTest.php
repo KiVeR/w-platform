@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Models\ShortUrl;
 use Illuminate\Support\Facades\Http;
 
-it('requires both legacy and platform urls', function (): void {
+it('requires both baseline and platform urls', function (): void {
     $this->artisan('short-url:verify-redirects')
         ->expectsOutputToContain('Both --old-url and --new-url options are required.')
         ->assertFailed();
@@ -32,7 +32,7 @@ it('reports success when all enabled short urls match', function (): void {
         '--new-url' => 'https://platform-api.test',
         '--limit' => 10,
     ])
-        ->expectsOutputToContain('All redirects match. Safe to proceed with DNS cutover.')
+        ->expectsOutputToContain('All redirects match. Safe to proceed with cutover.')
         ->assertSuccessful();
 });
 
@@ -55,6 +55,6 @@ it('fails when a redirect mismatch is detected', function (): void {
         '--limit' => 1,
     ])
         ->expectsOutputToContain("MISMATCH: /{$shortUrl->slug}")
-        ->expectsOutputToContain('Redirect mismatches or errors detected. Do NOT proceed with DNS cutover.')
+        ->expectsOutputToContain('Redirect mismatches or errors detected. Do NOT proceed with cutover.')
         ->assertFailed();
 });

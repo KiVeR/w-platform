@@ -14,7 +14,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Merged port of RequestContentMessageJob + InsertContentMessageJob from trigger-api.
+ * Generates message previews for queued campaign recipients.
  *
  * Retrieves the campaign message template, iterates over recipients,
  * interpolates variables from VariableSchema global_data + recipient

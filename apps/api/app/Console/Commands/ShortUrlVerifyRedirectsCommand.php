@@ -12,12 +12,15 @@ class ShortUrlVerifyRedirectsCommand extends Command
 {
     /** @var string */
     protected $signature = 'short-url:verify-redirects
-        {--old-url= : Base URL of the legacy short-url-api (e.g. https://short.wellpack.fr)}
-        {--new-url= : Base URL of the platform-api (e.g. https://api.wellpack.fr)}
+        {--old-url= : Baseline redirect URL to compare before cutover (e.g. https://short.wellpack.fr)}
+        {--new-url= : Platform redirect URL under validation (e.g. https://api.wellpack.fr)}
         {--limit=100 : Number of random short URLs to verify}';
 
     /** @var string */
-    protected $description = 'Compare redirect responses between the old short-url-api and the new platform-api';
+    protected $description = 'Compare baseline and platform redirect responses before cutover';
+
+    /** @var string */
+    protected $help = 'Cutover guardrail only. Archive this command once the short-url redirect migration is fully signed off.';
 
     public function handle(): int
     {
@@ -51,8 +54,8 @@ class ShortUrlVerifyRedirectsCommand extends Command
         }
 
         $this->info("Verifying {$shortUrls->count()} short URLs between:");
-        $this->line("  Old: {$oldUrl}");
-        $this->line("  New: {$newUrl}");
+        $this->line("  Baseline: {$oldUrl}");
+        $this->line("  Platform: {$newUrl}");
         $this->newLine();
 
         $matches = 0;
@@ -81,8 +84,8 @@ class ShortUrlVerifyRedirectsCommand extends Command
                     $mismatches++;
                     $this->newLine();
                     $this->warn("  MISMATCH: /{$shortUrl->slug}");
-                    $this->line("    Old: HTTP {$oldStatus} → {$oldLocation}");
-                    $this->line("    New: HTTP {$newStatus} → {$newLocation}");
+                    $this->line("    Baseline: HTTP {$oldStatus} -> {$oldLocation}");
+                    $this->line("    Platform: HTTP {$newStatus} -> {$newLocation}");
                 }
             } catch (\Throwable $e) {
                 $errors++;
@@ -109,12 +112,12 @@ class ShortUrlVerifyRedirectsCommand extends Command
         $this->newLine();
 
         if ($mismatches === 0 && $errors === 0) {
-            $this->info('All redirects match. Safe to proceed with DNS cutover.');
+            $this->info('All redirects match. Safe to proceed with cutover.');
 
             return self::SUCCESS;
         }
 
-        $this->error('Redirect mismatches or errors detected. Do NOT proceed with DNS cutover.');
+        $this->error('Redirect mismatches or errors detected. Do NOT proceed with cutover.');
 
         return self::FAILURE;
     }

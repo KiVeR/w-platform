@@ -16,7 +16,7 @@ use libphonenumber\PhoneNumberUtil;
  * Ported from:
  * - front/app/Rules/PhoneNumber.php (libphonenumber validation)
  * - admin/app/Helpers/helpers.php (cleanPhones function)
- * - trigger-api/app/Services/CampaignRecipientService.php (E.164 formatting)
+ * - legacy recipient import formatting rules (E.164 normalization)
  */
 class PhoneValidationService
 {

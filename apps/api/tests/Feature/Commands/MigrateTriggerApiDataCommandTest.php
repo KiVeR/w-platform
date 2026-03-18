@@ -23,8 +23,8 @@ it('has the expected options', function () {
     expect($definition->hasOption('skip-reports'))->toBeTrue();
     expect($definition->hasOption('skip-logs'))->toBeTrue();
 
-    expect($definition->getOption('source-mysql')->getDefault())->toBe('trigger-api');
-    expect($definition->getOption('source-mongo')->getDefault())->toBe('mongodb');
+    expect($definition->getOption('source-mysql')->getDefault())->toBe('legacy-mysql');
+    expect($definition->getOption('source-mongo')->getDefault())->toBe('legacy-mongo');
 });
 
 it('fails gracefully when source MySQL connection is unavailable', function () {
@@ -44,7 +44,7 @@ it('extracts campaign IDs correctly via the extractCampaignId method', function 
     $method = new ReflectionMethod($command, 'extractCampaignId');
     $method->setAccessible(true);
 
-    // Campaign ID map: trigger-api ID 100 => platform-api ID 1
+    // Campaign ID map: legacy ID 100 => platform-api ID 1
     $campaignIdMap = [100 => 1, 200 => 2, 300 => 3];
 
     // Document with Campaign model_type and known model_id

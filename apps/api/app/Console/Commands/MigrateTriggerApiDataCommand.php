@@ -16,14 +16,17 @@ class MigrateTriggerApiDataCommand extends Command
 {
     /** @var string */
     protected $signature = 'app:migrate-trigger-api-data
-        {--source-mysql=trigger-api : Source MySQL connection name}
-        {--source-mongo=mongodb : Source MongoDB connection name}
+        {--source-mysql=legacy-mysql : Source MySQL connection name}
+        {--source-mongo=legacy-mongo : Source MongoDB connection name}
         {--dry-run : Show counts without migrating}
         {--skip-reports : Skip delivery reports migration}
         {--skip-logs : Skip campaign logs and log activities migration}';
 
     /** @var string */
-    protected $description = 'Migrate data from trigger-api (MySQL + MongoDB) to platform-api (PostgreSQL)';
+    protected $description = 'Import legacy campaign data (MySQL + MongoDB) into platform-api';
+
+    /** @var string */
+    protected $help = 'One-shot archival migration utility. This command is not part of the steady-state platform runtime.';
 
     private const CHUNK_SIZE = 500;
 
@@ -47,7 +50,7 @@ class MigrateTriggerApiDataCommand extends Command
         $skipReports = (bool) $this->option('skip-reports');
         $skipLogs = (bool) $this->option('skip-logs');
 
-        $this->info('=== Trigger-API Data Migration ===');
+        $this->info('=== Legacy Campaign Data Migration ===');
         $this->newLine();
 
         // Validate connections
@@ -59,7 +62,7 @@ class MigrateTriggerApiDataCommand extends Command
             return $this->dryRun($sourceMysql, $sourceMongo, $skipReports, $skipLogs);
         }
 
-        // Build campaign ID mapping (trigger-api external_id → platform-api id)
+        // Build campaign ID mapping (legacy external_id -> platform-api id)
         $campaignIdMap = $this->buildCampaignIdMap();
         $this->info(sprintf('Campaign ID mapping built: %d campaigns found.', count($campaignIdMap)));
         $this->newLine();
@@ -173,9 +176,9 @@ class MigrateTriggerApiDataCommand extends Command
     }
 
     /**
-     * Build a mapping from trigger-api campaign ID (stored as external_id) to platform-api campaign ID.
+     * Build a mapping from legacy campaign ID (stored as external_id) to platform-api campaign ID.
      *
-     * @return array<int, int> trigger-api ID => platform-api ID
+     * @return array<int, int> legacy ID => platform-api ID
      */
     private function buildCampaignIdMap(): array
     {
@@ -300,7 +303,7 @@ class MigrateTriggerApiDataCommand extends Command
 
     /**
      * Extract campaign_id from a MongoDB campaign log document.
-     * Maps trigger-api campaign ID to platform-api campaign ID using the external_id mapping.
+     * Maps a legacy campaign ID to a platform-api campaign ID using the external_id mapping.
      *
      * @param  array<string, mixed>|object  $doc
      * @param  array<int, int>  $campaignIdMap
@@ -403,11 +406,11 @@ class MigrateTriggerApiDataCommand extends Command
                 $inserts = [];
 
                 foreach ($rows as $row) {
-                    $triggerCampaignId = (int) $row->campaign_id;
-                    $platformCampaignId = $campaignIdMap[$triggerCampaignId] ?? null;
+                    $legacyCampaignId = (int) $row->campaign_id;
+                    $platformCampaignId = $campaignIdMap[$legacyCampaignId] ?? null;
 
                     if ($platformCampaignId === null) {
-                        $this->warn("  Warning: No platform campaign found for trigger-api campaign_id={$triggerCampaignId}. Skipping.");
+                        $this->warn("  Warning: No platform campaign found for legacy campaign_id={$legacyCampaignId}. Skipping.");
                         $skipped++;
                         $bar->advance();
 
