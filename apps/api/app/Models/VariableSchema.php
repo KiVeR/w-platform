@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\VariableSchemaFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +20,13 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property array<string, mixed>|null $global_data
  * @property array<string, mixed>|null $recipient_preview_data
+ * @property-read Collection<int, VariableField> $global_variables
+ * @property-read Collection<int, VariableField> $recipient_variables
+ * @property-read Collection<int, VariableField> $used_variables
+ * @property-read Collection<int, VariableField> $unused_variables
+ * @property-read list<array{key: string, data: array<string, mixed>}> $global_data_sets
+ * @property-read list<array{key: string, data: array<string, mixed>}> $recipient_preview_data_sets
+ * @property-read array<string, mixed> $merged_preview_data
  */
 class VariableSchema extends Model
 {
@@ -90,6 +97,7 @@ class VariableSchema extends Model
         return $this->hasMany(LandingPage::class);
     }
 
+    /** @return Attribute<Collection<int, VariableField>, never> */
     protected function globalVariables(): Attribute
     {
         return Attribute::make(
@@ -97,6 +105,7 @@ class VariableSchema extends Model
         );
     }
 
+    /** @return Attribute<Collection<int, VariableField>, never> */
     protected function recipientVariables(): Attribute
     {
         return Attribute::make(
@@ -104,6 +113,7 @@ class VariableSchema extends Model
         );
     }
 
+    /** @return Attribute<Collection<int, VariableField>, never> */
     protected function usedVariables(): Attribute
     {
         return Attribute::make(
@@ -111,6 +121,7 @@ class VariableSchema extends Model
         );
     }
 
+    /** @return Attribute<Collection<int, VariableField>, never> */
     protected function unusedVariables(): Attribute
     {
         return Attribute::make(
@@ -147,11 +158,6 @@ class VariableSchema extends Model
             get: function (): array {
                 $recipientPreviewDataSets = $this->recipient_preview_data_sets;
                 $firstDataSet = $recipientPreviewDataSets[0]['data'] ?? [];
-
-                if (! is_array($firstDataSet)) {
-                    return [];
-                }
-
                 $globalKey = $firstDataSet['global_parameters_key'] ?? null;
                 unset($firstDataSet['global_parameters_key']);
 
@@ -177,17 +183,22 @@ class VariableSchema extends Model
         $globalData = $this->global_data ?? [];
 
         if (isset($globalData[$key]) && is_array($globalData[$key])) {
-            /** @var array<string, mixed> */
-            return $globalData[$key];
+            return $this->normalizeDataPayload($globalData[$key]);
         }
 
         foreach ($globalData as $item) {
-            if (! is_array($item) || ($item['key'] ?? null) !== $key || ! is_array($item['data'] ?? null)) {
+            if (! is_array($item)) {
                 continue;
             }
 
-            /** @var array<string, mixed> */
-            return $item['data'];
+            $itemKey = $item['key'] ?? null;
+            $itemData = $item['data'] ?? null;
+
+            if ($itemKey !== $key || ! is_array($itemData)) {
+                continue;
+            }
+
+            return $this->normalizeDataPayload($itemData);
         }
 
         return [];
@@ -203,7 +214,7 @@ class VariableSchema extends Model
         if ($variableNames !== null) {
             $variableNames = array_values(array_unique(array_filter(
                 $variableNames,
-                static fn (mixed $name): bool => is_string($name) && $name !== '',
+                static fn (string $name): bool => $name !== '',
             )));
 
             if ($variableNames === []) {
@@ -222,38 +233,51 @@ class VariableSchema extends Model
      */
     private function normalizeDataSets(?array $source, string $defaultKey): array
     {
-        if (! is_array($source) || $source === []) {
+        if ($source === null || $source === []) {
             return [];
         }
 
         if ($this->isListDataSetFormat($source)) {
-            return collect($source)
-                ->filter(static fn (mixed $item): bool => is_array($item) && is_string($item['key'] ?? null))
-                ->map(static fn (array $item): array => [
-                    'key' => (string) $item['key'],
-                    'data' => is_array($item['data'] ?? null) ? $item['data'] : [],
-                ])
-                ->values()
-                ->all();
+            $normalized = [];
+
+            foreach ($source as $item) {
+                if (! is_array($item)) {
+                    continue;
+                }
+
+                $itemKey = $item['key'] ?? null;
+                $itemData = $item['data'] ?? [];
+
+                if (! is_string($itemKey)) {
+                    continue;
+                }
+
+                $normalized[] = [
+                    'key' => $itemKey,
+                    'data' => is_array($itemData) ? $this->normalizeDataPayload($itemData) : [],
+                ];
+            }
+
+            return $normalized;
         }
 
-        $firstKey = array_key_first($source);
-        $firstValue = $firstKey !== null ? $source[$firstKey] : null;
+        $normalized = [];
 
-        if (is_string($firstKey) && is_array($firstValue)) {
-            return collect($source)
-                ->map(static fn (mixed $data, string $key): array => [
-                    'key' => $key,
-                    'data' => is_array($data) ? $data : [],
-                ])
-                ->values()
-                ->all();
+        foreach ($source as $key => $data) {
+            if (! is_array($data)) {
+                return [[
+                    'key' => $defaultKey,
+                    'data' => $this->normalizeDataPayload($source),
+                ]];
+            }
+
+            $normalized[] = [
+                'key' => $key,
+                'data' => $this->normalizeDataPayload($data),
+            ];
         }
 
-        return [[
-            'key' => $defaultKey,
-            'data' => $source,
-        ]];
+        return $normalized;
     }
 
     /**
@@ -272,5 +296,20 @@ class VariableSchema extends Model
         }
 
         return true;
+    }
+
+    /**
+     * @param  array<mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeDataPayload(array $data): array
+    {
+        $normalized = [];
+
+        foreach ($data as $key => $value) {
+            $normalized[(string) $key] = $value;
+        }
+
+        return $normalized;
     }
 }

@@ -18,7 +18,7 @@ class CampaignLogResource extends JsonResource
             'id' => $this->id,
             'campaign_id' => $this->campaign_id,
             'data' => $this->data,
-            'created_at' => $this->created_at?->toIso8601String(),
+            'created_at' => $this->created_at->toIso8601String(),
         ];
     }
 }

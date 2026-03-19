@@ -86,15 +86,12 @@ class CampaignRecipient extends Model
         $globalKey = $info['global_parameters_key'] ?? null;
         unset($info['global_parameters_key']);
 
-        if ($globalKey === null) {
+        if (! is_string($globalKey) || $globalKey === '') {
             return $info;
         }
 
         $schema = $this->campaign?->variableSchema;
-        /** @var array<string, mixed> $globalData */
-        $globalData = ($schema !== null && method_exists($schema, 'getGlobalDataByKey'))
-            ? $schema->getGlobalDataByKey($globalKey)
-            : [];
+        $globalData = $schema?->getGlobalDataByKey($globalKey) ?? [];
 
         return array_merge($globalData, $info);
     }

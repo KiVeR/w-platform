@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Enums\CampaignStatus;
 use App\Enums\CampaignRoutingStatus;
+use App\Enums\CampaignStatus;
 use App\Models\Campaign;
 use App\Models\CampaignRecipient;
 use App\Models\Partner;

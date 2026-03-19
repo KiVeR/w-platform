@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Jobs\IncrementClickCountJob;
 use App\Http\Controllers\RedirectController;
+use App\Jobs\IncrementClickCountJob;
 use App\Models\ShortUrl;
 use App\Models\ShortUrlSuffix;
 use Illuminate\Support\Facades\Bus;
