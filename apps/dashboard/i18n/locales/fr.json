@@ -14,7 +14,6 @@
     "settings": "Paramètres",
     "groups": {
       "main": "Principal",
-      "analysis": "Analyse",
       "config": "Configuration",
       "admin": "Administration"
     }
@@ -977,6 +976,7 @@
         "description": "Créez votre première Landing Page pour l'associer à vos campagnes."
       },
       "createNew": "Créer une nouvelle Landing Page",
+      "managedExternally": "Creation geree dans Kreo",
       "selected": "Sélectionnée",
       "refresh": "Rafraîchir",
       "published": "Publiée"

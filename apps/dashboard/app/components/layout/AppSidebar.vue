@@ -2,9 +2,6 @@
 import {
   Home,
   Send,
-  MapPin,
-  Layout,
-  BarChart3,
   Settings,
   Router,
   FileCode,
@@ -65,14 +62,6 @@ const navGroups = computed<NavGroup[]>(() => [
     items: [
       { label: t('nav.dashboard'), icon: Home, to: '/' },
       { label: t('nav.campaigns'), icon: Send, to: '/campaigns' },
-      { label: t('nav.shops'), icon: MapPin, to: '/shops' },
-      { label: t('nav.landingPages'), icon: Layout, to: '/landing-pages' },
-    ],
-  },
-  {
-    label: t('nav.groups.analysis'),
-    items: [
-      { label: t('nav.stats'), icon: BarChart3, to: '/stats' },
     ],
   },
   {

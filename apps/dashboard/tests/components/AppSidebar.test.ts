@@ -103,12 +103,14 @@ describe('AppSidebar', () => {
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
-  it('renders 3 navigation groups', () => {
+  it('renders 2 navigation groups for the shipped scope', () => {
     const wrapper = mountSidebar()
     expect(wrapper.text()).toContain('nav.groups.main')
-    expect(wrapper.text()).toContain('nav.groups.analysis')
     expect(wrapper.text()).toContain('nav.groups.config')
     expect(wrapper.text()).not.toContain('nav.groups.admin')
+    expect(wrapper.text()).not.toContain('nav.shops')
+    expect(wrapper.text()).not.toContain('nav.landingPages')
+    expect(wrapper.text()).not.toContain('nav.stats')
   })
 
   it('renders admin navigation group and links for admins', () => {

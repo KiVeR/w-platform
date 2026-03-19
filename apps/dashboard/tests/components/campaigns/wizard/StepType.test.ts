@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { computed, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { setActivePinia, createPinia } from 'pinia'
@@ -31,15 +31,16 @@ describe('StepType', () => {
     setActivePinia(createPinia())
   })
 
-  it('render 3 cards type', () => {
+  it('renders only the shipped campaign type card', () => {
     const wrapper = mount(StepType, {
       global: { stubs: baseStubs },
     })
 
     const text = wrapper.text()
     expect(text).toContain('wizard.type.prospection.title')
-    expect(text).toContain('wizard.type.fidelisation.title')
-    expect(text).toContain('wizard.type.comptage.title')
+    expect(text).not.toContain('wizard.type.fidelisation.title')
+    expect(text).not.toContain('wizard.type.comptage.title')
+    expect(wrapper.findAll('[data-card]')).toHaveLength(1)
   })
 
   it('sélection Prospection met à jour le store', async () => {
@@ -54,16 +55,6 @@ describe('StepType', () => {
     expect(wizard.campaign.type).toBe('prospection')
   })
 
-  it('types désactivés affichent badge "Bientôt"', () => {
-    const wrapper = mount(StepType, {
-      global: { stubs: baseStubs },
-    })
-
-    const badges = wrapper.findAll('[data-badge]')
-    expect(badges.length).toBeGreaterThanOrEqual(2)
-    expect(wrapper.text()).toContain('wizard.type.comingSoon')
-  })
-
   it('affiche badge canal SMS sur la carte Prospection', () => {
     const wrapper = mount(StepType, {
       global: { stubs: baseStubs },
@@ -72,14 +63,5 @@ describe('StepType', () => {
     const channelBadge = wrapper.find('[data-channel-badge]')
     expect(channelBadge.exists()).toBe(true)
     expect(channelBadge.text()).toBe('SMS')
-  })
-
-  it('affiche overlay disabled sur les 2 cartes désactivées', () => {
-    const wrapper = mount(StepType, {
-      global: { stubs: baseStubs },
-    })
-
-    const overlays = wrapper.findAll('[data-disabled-overlay]')
-    expect(overlays).toHaveLength(2)
   })
 })

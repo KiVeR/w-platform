@@ -132,7 +132,7 @@ describe('StepLandingPage', () => {
     expect(wrapper.find('[data-empty-state]').exists()).toBe(true)
   })
 
-  it('create link points to /landing-pages/new with target _blank', async () => {
+  it('shows that landing page creation is managed externally', async () => {
     const wrapper = mount(StepLandingPage, {
       global: { stubs: baseStubs },
     })
@@ -140,9 +140,9 @@ describe('StepLandingPage', () => {
     await wrapper.find('[data-mode-with]').trigger('click')
     await wrapper.vm.$nextTick()
 
-    const link = wrapper.find('a[href="/landing-pages/new"]')
-    expect(link.exists()).toBe(true)
-    expect(link.attributes('target')).toBe('_blank')
+    const helper = wrapper.find('[data-lp-managed-externally]')
+    expect(helper.exists()).toBe(true)
+    expect(helper.text()).toContain('wizard.landingPage.managedExternally')
   })
 
   it('refresh button triggers fetchLandingPages', async () => {

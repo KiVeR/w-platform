@@ -131,7 +131,7 @@ function selectLandingPage(id: number) {
           </Card>
         </div>
 
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-4">
           <Button
             data-refresh-button
             variant="ghost"
@@ -142,14 +142,13 @@ function selectLandingPage(id: number) {
             {{ t('wizard.landingPage.refresh') }}
           </Button>
 
-          <NuxtLink
-            to="/landing-pages/new"
-            target="_blank"
-            class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+          <p
+            data-lp-managed-externally
+            class="flex items-center gap-1.5 text-right text-sm text-muted-foreground"
           >
-            <ExternalLink class="size-3.5" />
-            {{ t('wizard.landingPage.createNew') }}
-          </NuxtLink>
+            <ExternalLink class="size-3.5 shrink-0" />
+            {{ t('wizard.landingPage.managedExternally') }}
+          </p>
         </div>
       </template>
     </template>

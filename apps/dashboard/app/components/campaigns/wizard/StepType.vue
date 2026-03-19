@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Megaphone, Users, Calculator, Check } from 'lucide-vue-next'
+import { Megaphone, Check } from 'lucide-vue-next'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
@@ -9,9 +9,7 @@ const wizard = useCampaignWizardStore()
 const { t } = useI18n()
 
 const types = [
-  { key: 'prospection' as CampaignType, icon: Megaphone, enabled: true },
-  { key: 'fidelisation' as CampaignType, icon: Users, enabled: false },
-  { key: 'comptage' as CampaignType, icon: Calculator, enabled: false },
+  { key: 'prospection' as CampaignType, icon: Megaphone },
 ]
 
 function selectType(type: CampaignType) {
@@ -29,14 +27,12 @@ function selectType(type: CampaignType) {
         :key="item.key"
         class="group relative cursor-pointer transition-all duration-200"
         :class="[
-          item.enabled && wizard.campaign.type === item.key
+          wizard.campaign.type === item.key
             ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
             : '',
-          item.enabled
-            ? 'hover:scale-[1.02] hover:shadow-md hover:border-primary/50'
-            : 'cursor-default',
+          'hover:scale-[1.02] hover:shadow-md hover:border-primary/50',
         ]"
-        @click="item.enabled && selectType(item.key)"
+        @click="selectType(item.key)"
       >
         <CardHeader>
           <div class="flex items-center justify-between">
@@ -48,7 +44,7 @@ function selectType(type: CampaignType) {
                 SMS
               </Badge>
               <Check
-                v-if="item.enabled && wizard.campaign.type === item.key"
+                v-if="wizard.campaign.type === item.key"
                 class="size-5 text-primary"
               />
             </div>
@@ -60,17 +56,6 @@ function selectType(type: CampaignType) {
             {{ t(`wizard.type.${item.key}.description`) }}
           </CardDescription>
         </CardHeader>
-
-        <!-- Disabled overlay -->
-        <div
-          v-if="!item.enabled"
-          data-disabled-overlay
-          class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-muted/60 backdrop-blur-[1px]"
-        >
-          <Badge variant="secondary">
-            {{ t('wizard.type.comingSoon') }}
-          </Badge>
-        </div>
       </Card>
     </div>
   </div>
