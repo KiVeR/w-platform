@@ -6,7 +6,7 @@
  *   output    - Output path (default: generated-lp-preview.png)
  *   --token   - JWT access token (skips login form, avoids rate limits)
  *
- * Requires dev server running on port 5174.
+ * Requires Kreo running locally (default: http://localhost:8002).
  */
 import { mkdir } from 'node:fs/promises'
 import { dirname } from 'node:path'
@@ -32,7 +32,7 @@ if (!contentId) {
 // Ensure output directory exists
 await mkdir(dirname(output), { recursive: true })
 
-const BASE = 'http://localhost:5174'
+const BASE = process.env.KREO_BASE_URL || `http://localhost:${process.env.KREO_PORT || '8002'}`
 
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })

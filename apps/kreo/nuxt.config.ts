@@ -59,9 +59,9 @@ export default defineNuxtConfig({
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-in-production',
     jwtAccessExpiration: process.env.JWT_ACCESS_EXPIRATION || '15m',
     databaseUrl: process.env.DATABASE_URL,
-    platformApiUrl: process.env.PLATFORM_API_URL || process.env.TRIGGER_API_URL || '',
-    platformApiClientId: process.env.PLATFORM_API_CLIENT_ID || process.env.TRIGGER_API_CLIENT_ID || '',
-    platformApiClientSecret: process.env.PLATFORM_API_CLIENT_SECRET || process.env.TRIGGER_API_CLIENT_SECRET || '',
+    platformApiUrl: process.env.PLATFORM_API_URL || '',
+    platformApiClientId: process.env.PLATFORM_API_CLIENT_ID || '',
+    platformApiClientSecret: process.env.PLATFORM_API_CLIENT_SECRET || '',
 
     // Public (exposed to client)
     public: {
@@ -85,7 +85,7 @@ export default defineNuxtConfig({
 
   // Dev server
   devServer: {
-    port: 5174,
+    port: Number(process.env.KREO_PORT || '3000'),
   },
 
   // Auto-imports

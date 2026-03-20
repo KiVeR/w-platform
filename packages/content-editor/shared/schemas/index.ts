@@ -1,6 +1,0 @@
-export * from './ai.schema'
-export * from './auth.schema'
-export * from './content.schema'
-export * from './design.schema'
-export * from './palette.schema'
-export * from './version.schema'

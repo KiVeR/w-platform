@@ -1,111 +1,42 @@
-import process from 'node:process'
-import tailwindcss from '@tailwindcss/vite'
-import { visualizer } from 'rollup-plugin-visualizer'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
+const currentDir = dirname(fileURLToPath(import.meta.url))
+
 export default defineNuxtConfig({
-  // Extend the editor layer (shared editor core)
-  extends: ['@wellpack/content-editor'],
+  compatibilityDate: '2025-07-15',
 
-  ssr: false,
-  devtools: { enabled: true },
-  compatibilityDate: '2025-01-01',
+  // Note: tokens.css and animations.css are NOT loaded here.
+  // The consuming app must @import them AFTER @import "tailwindcss"
+  // to ensure Kreo design tokens override Tailwind v4 defaults
+  // (--font-sans, --text-*, --radius-*, --shadow-*, --color-neutral-*).
 
-  // App configuration
-  app: {
-    head: {
-      title: 'Kreo',
-      titleTemplate: '%s — Kreo',
-      link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-      ],
-    },
-  },
-
-  // Nuxt 4 auto-detects app/ as srcDir and server/ as serverDir
-
-  // Modules
   modules: [
     '@pinia/nuxt',
+    '@vueuse/nuxt',
   ],
 
-  // Vite configuration for Tailwind v4
-  vite: {
-    plugins: [
-      tailwindcss(),
-      ...(process.env.ANALYZE
-        ? [visualizer({ filename: 'dist/stats.html', open: true, gzipSize: true, brotliSize: true })]
-        : []),
-    ],
-    optimizeDeps: {
-      include: ['vuedraggable'],
-    },
-    build: {
-      rollupOptions: {
-        external: ['@anthropic-ai/sdk', 'openai', 'bcryptjs', 'jsonwebtoken', '@prisma/client'],
-      },
-    },
-  },
-
-  // CSS
-  css: ['~/assets/css/tailwind.css'],
-
-  // Runtime config (env variables)
-  runtimeConfig: {
-    // Server-only secrets
-    jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
-    jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-in-production',
-    jwtAccessExpiration: process.env.JWT_ACCESS_EXPIRATION || '15m',
-    databaseUrl: process.env.DATABASE_URL,
-    platformApiUrl: process.env.PLATFORM_API_URL || process.env.TRIGGER_API_URL || '',
-    platformApiClientId: process.env.PLATFORM_API_CLIENT_ID || process.env.TRIGGER_API_CLIENT_ID || '',
-    platformApiClientSecret: process.env.PLATFORM_API_CLIENT_SECRET || process.env.TRIGGER_API_CLIENT_SECRET || '',
-
-    // Public (exposed to client)
-    public: {
-      apiBase: '/api/v1',
-    },
-  },
-
-  // TypeScript
-  typescript: {
-    strict: true,
-    shim: false,
-  },
-
-  // Nitro server config
-  nitro: {
-    // Enable experimental tasks for background jobs
-    experimental: {
-      tasks: true,
-    },
-  },
-
-  // Dev server
-  devServer: {
-    port: 5174,
-  },
-
-  // Auto-imports
   imports: {
     dirs: [
-      'composables/**',
-      'stores/**',
+      join(currentDir, './composables'),
+      join(currentDir, './stores'),
+      join(currentDir, './constants'),
+      join(currentDir, './services'),
+      join(currentDir, './config'),
+      join(currentDir, './utils'),
+      join(currentDir, './types'),
+      join(currentDir, './schemas'),
     ],
   },
 
-  // Components auto-import
   components: [
     {
-      path: '~/components',
+      path: join(currentDir, './components'),
       pathPrefix: false,
     },
   ],
 
-  // Pinia
   pinia: {
-    storesDirs: ['./app/stores/**'],
+    storesDirs: [join(currentDir, './stores/**')],
   },
 })

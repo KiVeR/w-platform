@@ -1,9 +1,7 @@
 # Dependencies
 node_modules/
+.pnpm-store/
 vendor/
-
-# Packages (separate git repos)
-packages/
 
 # Nuxt
 .nuxt/

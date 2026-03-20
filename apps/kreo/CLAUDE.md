@@ -9,7 +9,7 @@ Kreo - Visual content editor in Vue 3 with drag-and-drop interface. Create landi
 ## Commands
 
 ```bash
-pnpm dev          # Dev server (port 5174)
+pnpm dev:kreo     # Dev server (port 8002 by default)
 pnpm build        # Compile TypeScript + Vite build
 pnpm lint         # ESLint
 pnpm lint:fix     # ESLint with auto-fix

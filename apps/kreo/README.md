@@ -18,24 +18,23 @@
 ## Installation
 
 ```bash
-# Cloner le projet
-git clone <repository-url>
-cd kreo
+# Depuis le monorepo v2
+cd v2/platform
 
-# Installer les dépendances
+# Installer les dépendances workspace
 pnpm install
 
-# Lancer le serveur de développement
-pnpm dev
+# Lancer Kreo seul en local
+pnpm dev:kreo
 ```
 
 ## Commandes
 
 ```bash
-pnpm dev          # Serveur de développement (port 5174)
-pnpm build        # Compilation TypeScript + build Vite
-pnpm lint         # ESLint
-pnpm lint:fix     # ESLint avec auto-fix
+pnpm dev:kreo         # Serveur de développement (port 8002 par défaut)
+pnpm build:kreo       # Build de l'app Kreo
+pnpm typecheck:kreo   # Vérification Nuxt/TypeScript
+pnpm lint:kreo        # ESLint
 ```
 
 ---

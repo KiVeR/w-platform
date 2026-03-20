@@ -24,7 +24,7 @@ import { validateDesignTokens } from '../../shared/utils/design-tokens'
 // Constants
 // ---------------------------------------------------------------------------
 
-const BASE_URL = 'http://localhost:5174'
+const BASE_URL = process.env.KREO_BASE_URL || `http://localhost:${process.env.KREO_PORT || '8002'}`
 const AUTH_EMAIL = 'admin@test.com'
 const AUTH_PASSWORD = 'Admin123!'
 const BATCH_BASE = resolve('.claude/batch/runs')

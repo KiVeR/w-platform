@@ -5,14 +5,14 @@
   "private": true,
   "packageManager": "pnpm@10.28.0",
   "scripts": {
-    "dev": "nuxt dev --port 5174",
+    "dev": "nuxt dev --port ${KREO_PORT:-3000}",
     "build": "nuxt build",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "nuxt preview --port ${KREO_PORT:-3000}",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky",
+    "typecheck": "nuxt typecheck",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -30,7 +30,7 @@
     "@prisma/client": "^6.0.0",
     "@vueuse/core": "^12.0.0",
     "@vueuse/nuxt": "^12.0.0",
-    "@wellpack/content-editor": "github:KiVeR/content-editor#main",
+    "@wellpack/content-editor": "workspace:*",
     "bcryptjs": "^2.4.0",
     "jsonwebtoken": "^9.0.0",
     "lucide-vue-next": "^0.460.0",
@@ -57,7 +57,6 @@
     "citty": "^0.1.6",
     "eslint": "^9.0.0",
     "happy-dom": "^17.0.0",
-    "husky": "^9.0.0",
     "lint-staged": "^16.0.0",
     "nuxt": "^4.0.0",
     "prisma": "6.19.2",
@@ -65,16 +64,8 @@
     "tailwindcss": "^4.0.0",
     "tsx": "^4.21.0",
     "typescript": "~5.8.0",
-    "vitest": "^3.0.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "@prisma/client",
-      "@prisma/engines",
-      "esbuild",
-      "prisma"
-    ]
+    "vitest": "^3.0.0",
+    "vue-tsc": "^3.2.5"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"

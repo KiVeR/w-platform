@@ -1,9 +1,11 @@
 import { mkdir } from 'node:fs/promises'
-import { dirname } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import process from 'node:process'
 import { chromium } from '@playwright/test'
 
 const token = process.argv[2]
-const output = '/Users/KiVeR/Sites/wllp/kreo/.claude/batch/runs/7/screenshots/prevalia-assurance-auto-jeune-beautified.png'
+const output = resolve('apps/kreo/.claude/batch/runs/7/screenshots/prevalia-assurance-auto-jeune-beautified.png')
+const baseUrl = process.env.KREO_BASE_URL || `http://localhost:${process.env.KREO_PORT || '8002'}`
 await mkdir(dirname(output), { recursive: true })
 
 const browser = await chromium.launch()
@@ -11,13 +13,13 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 
 try {
   // Inject token via localStorage then navigate to editor
-  await page.goto('http://localhost:5174/login', { waitUntil: 'networkidle' })
+  await page.goto(`${baseUrl}/login`, { waitUntil: 'networkidle' })
   await page.evaluate((t) => {
     localStorage.setItem('accessToken', t)
   }, token)
 
   // Navigate to editor page
-  await page.goto('http://localhost:5174/lp/130', { waitUntil: 'networkidle', timeout: 20000 })
+  await page.goto(`${baseUrl}/lp/130`, { waitUntil: 'networkidle', timeout: 20000 })
   await page.waitForTimeout(3000)
 
   console.log('Current URL:', page.url())
