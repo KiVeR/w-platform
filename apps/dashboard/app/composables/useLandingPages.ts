@@ -27,9 +27,7 @@ export function useLandingPages() {
     try {
       const { data, error } = await api.GET('/landing-pages' as never, {
         params: {
-          query: withPartnerScope({
-            'filter[status]': 'published',
-          }),
+          query: withPartnerScope({}),
         },
       } as never)
       if (error) {
@@ -38,7 +36,9 @@ export function useLandingPages() {
       }
       if (data) {
         const raw = data as { data: Record<string, unknown>[] }
-        landingPages.value = raw.data.map(mapLandingPage)
+        landingPages.value = raw.data
+          .map(mapLandingPage)
+          .filter(lp => lp.status !== 'archived')
       }
     }
     catch {

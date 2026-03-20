@@ -15,7 +15,7 @@ beforeEach(() => {
 const { useLandingPages } = await import('@/composables/useLandingPages')
 
 describe('useLandingPages', () => {
-  it('fetchLandingPages calls GET /landing-pages with partner scope and status filter', async () => {
+  it('fetchLandingPages calls GET /landing-pages with partner scope', async () => {
     mockGet.mockResolvedValue({
       data: { data: fakeLandingPageList(2) },
     })
@@ -25,9 +25,7 @@ describe('useLandingPages', () => {
 
     expect(mockGet).toHaveBeenCalledWith('/landing-pages', expect.objectContaining({
       params: expect.objectContaining({
-        query: expect.objectContaining({
-          'filter[status]': 'published',
-        }),
+        query: expect.objectContaining({}),
       }),
     }))
   })
@@ -48,6 +46,23 @@ describe('useLandingPages', () => {
     expect(landingPages.value[0].id).toBe(5)
     expect(typeof landingPages.value[0].id).toBe('number')
     expect(landingPages.value[0].status).toBe('published')
+  })
+
+  it('filters archived landing pages from the picker', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        data: [
+          { id: '5', name: 'Draft LP', status: 'draft', is_active: 'true', created_at: '2026-01-01T00:00:00Z' },
+          { id: '6', name: 'Archived LP', status: 'archived', is_active: 'false', created_at: '2026-01-01T00:00:00Z' },
+        ],
+      },
+    })
+
+    const { landingPages, fetchLandingPages } = useLandingPages()
+    await fetchLandingPages()
+
+    expect(landingPages.value).toHaveLength(1)
+    expect(landingPages.value[0].name).toBe('Draft LP')
   })
 
   it('sets hasError on API error', async () => {

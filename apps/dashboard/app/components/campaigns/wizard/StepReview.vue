@@ -198,8 +198,12 @@ async function handleTest(): Promise<void> {
           </template>
 
           <template v-else-if="section.key === 'landingPage'">
-            <span class="text-sm">
-              {{ wizard.campaign.landing_page_id ? `LP #${wizard.campaign.landing_page_id}` : t('wizard.review.noLandingPage') }}
+            <div v-if="wizard.landingPageSummary" class="flex items-center gap-2">
+              <span class="text-sm font-medium">{{ wizard.landingPageSummary.name }}</span>
+              <Badge variant="outline">{{ wizard.landingPageSummary.status }}</Badge>
+            </div>
+            <span v-else class="text-sm">
+              {{ t('wizard.review.noLandingPage') }}
             </span>
           </template>
 

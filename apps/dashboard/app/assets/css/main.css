@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import "@wellpack/content-editor/assets/css/tokens.css";
+@import "@wellpack/content-editor/assets/css/animations.css";
 
 @theme {
   /* ==================== FONTS ==================== */

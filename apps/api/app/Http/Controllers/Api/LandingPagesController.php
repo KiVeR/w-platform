@@ -149,10 +149,16 @@ class LandingPagesController extends Controller
 
     private function designResponse(LandingPage $landingPage): JsonResponse
     {
+        $landingPage->loadMissing('variableSchema');
+
         return new JsonResponse([
             'data' => [
                 'id' => $landingPage->id,
+                'title' => $landingPage->name,
+                'status' => $landingPage->status->value,
+                'variableSchemaUuid' => $landingPage->variableSchema?->uuid,
                 'design' => $landingPage->design,
+                'updatedAt' => $landingPage->updated_at?->toISOString(),
             ],
         ]);
     }

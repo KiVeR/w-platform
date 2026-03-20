@@ -81,6 +81,30 @@ describe('useCampaignWizardStore', () => {
     })
   })
 
+  describe('landing page helpers', () => {
+    it('selectLandingPage stores summary and marks draft dirty', () => {
+      const wizard = useCampaignWizardStore()
+
+      wizard.selectLandingPage({ id: 12, name: 'LP inline', status: 'draft' })
+
+      expect(wizard.campaign.landing_page_id).toBe(12)
+      expect(wizard.landingPageSummary).toEqual({ id: 12, name: 'LP inline', status: 'draft' })
+      expect(wizard.isDirty).toBe(true)
+    })
+
+    it('clearLandingPage clears link, summary and closes editor mode', () => {
+      const wizard = useCampaignWizardStore()
+
+      wizard.selectLandingPage({ id: 12, name: 'LP inline', status: 'draft' })
+      wizard.openLandingPageEditor()
+      wizard.clearLandingPage()
+
+      expect(wizard.campaign.landing_page_id).toBeNull()
+      expect(wizard.landingPageSummary).toBeNull()
+      expect(wizard.landingPageEditorMode).toBe('browse')
+    })
+  })
+
   describe('validation', () => {
     it('step 0 (estimate) always returns true', () => {
       const wizard = useCampaignWizardStore()

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { BarChart3, Megaphone, MessageSquare, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
 import { usePartnerStore } from '@/stores/partner'
-import type { CampaignDraft, CampaignEstimate, WizardStep } from '@/types/campaign'
+import type { CampaignDraft, CampaignEstimate, CampaignLandingPageSummary, WizardStep } from '@/types/campaign'
 
 function createDebouncedFn(fn: () => void | Promise<void>, delay: number): () => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null
@@ -63,6 +63,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const scheduleMode = ref<'now' | 'schedule'>('now')
   const reviewChecks = ref({ messageVerified: false, sendConfirmed: false })
   const showValidation = ref(false)
+  const landingPageSummary = ref<CampaignLandingPageSummary | null>(null)
+  const landingPageEditorMode = ref<'browse' | 'edit'>('browse')
 
   const STEPS: WizardStep[] = [
     { key: 'estimate', labelKey: 'wizard.steps.estimate', icon: BarChart3 },
@@ -89,6 +91,31 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
 
   function campaignPath(): { params: { path: { campaign: number } } } {
     return { params: { path: { campaign: campaignId.value! } } }
+  }
+
+  function setLandingPageSummary(summary: CampaignLandingPageSummary | null): void {
+    landingPageSummary.value = summary
+  }
+
+  function selectLandingPage(summary: CampaignLandingPageSummary): void {
+    campaign.value.landing_page_id = summary.id
+    landingPageSummary.value = summary
+    isDirty.value = true
+  }
+
+  function clearLandingPage(): void {
+    campaign.value.landing_page_id = null
+    landingPageSummary.value = null
+    landingPageEditorMode.value = 'browse'
+    isDirty.value = true
+  }
+
+  function openLandingPageEditor(): void {
+    landingPageEditorMode.value = 'edit'
+  }
+
+  function closeLandingPageEditor(): void {
+    landingPageEditorMode.value = 'browse'
   }
 
   function goToStep(step: number): void {
@@ -288,7 +315,10 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
 
   async function loadDraft(draftId: number): Promise<boolean> {
     const { data, error } = await api.GET('/campaigns/{campaign}', {
-      params: { path: { campaign: draftId } },
+      params: {
+        path: { campaign: draftId },
+        query: { include: 'landingPage' },
+      },
     } as never)
     if (error || !data) return false
     const raw = (data as { data: Record<string, unknown> }).data
@@ -301,6 +331,14 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     if (raw.message) campaign.value.message = raw.message as string
     if (raw.scheduled_at) campaign.value.scheduled_at = raw.scheduled_at as string
     if (raw.landing_page_id) campaign.value.landing_page_id = raw.landing_page_id as number
+    const rawLandingPage = raw.landing_page as Record<string, unknown> | null | undefined
+    if (rawLandingPage) {
+      landingPageSummary.value = {
+        id: Number(rawLandingPage.id),
+        name: String(rawLandingPage.name ?? ''),
+        status: String(rawLandingPage.status ?? 'draft') as CampaignLandingPageSummary['status'],
+      }
+    }
     campaign.value.is_demo = !!raw.is_demo
     campaign.value.additional_phone = (raw.additional_phone as string | null) ?? null
     const targeting = raw.targeting ? { ...(raw.targeting as CampaignDraft['targeting']) } : freshDraft().targeting
@@ -322,6 +360,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     scheduleMode.value = 'now'
     reviewChecks.value = { messageVerified: false, sendConfirmed: false }
     showValidation.value = false
+    landingPageSummary.value = null
+    landingPageEditorMode.value = 'browse'
     isPreFilled.value = false
   }
 
@@ -337,6 +377,8 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     scheduleMode,
     reviewChecks,
     showValidation,
+    landingPageSummary,
+    landingPageEditorMode,
     STEPS,
     goToStep,
     nextStep,
@@ -352,6 +394,11 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     scheduleCampaign,
     sendCampaign,
     isPreFilled,
+    setLandingPageSummary,
+    selectLandingPage,
+    clearLandingPage,
+    openLandingPageEditor,
+    closeLandingPageEditor,
     initFromCampaign,
     loadDraft,
     reset,

@@ -10,9 +10,12 @@ const mockGet = vi.fn()
 stubAuthGlobals({ $api: { POST: vi.fn(), PUT: vi.fn(), GET: mockGet } })
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('ref', ref)
+vi.stubGlobal('navigateTo', vi.fn())
+vi.stubGlobal('createEditorApiClient', vi.fn(() => ({})))
 mockUseI18n()
 
 const mockFetchLandingPages = vi.fn()
+const mockCreateContent = vi.fn()
 const mockLandingPages = ref(fakeLandingPageList(3))
 const mockIsLoading = ref(false)
 const mockHasError = ref(false)
@@ -23,6 +26,20 @@ vi.mock('@/composables/useLandingPages', () => ({
     isLoading: mockIsLoading,
     hasError: mockHasError,
     fetchLandingPages: mockFetchLandingPages,
+  }),
+}))
+
+vi.mock('@/composables/useLandingPageEditorAdapter', () => ({
+  useLandingPageEditorAdapter: () => ({
+    buildContentAdapter: () => ({
+      createContent: mockCreateContent,
+      loadDesign: vi.fn(),
+      saveDesign: vi.fn(),
+      updateContent: vi.fn(),
+      deleteContent: vi.fn(),
+      attachSchema: vi.fn(),
+      detachSchema: vi.fn(),
+    }),
   }),
 }))
 
@@ -41,6 +58,7 @@ const baseStubs = {
   Button: { template: '<button data-button @click="$emit(\'click\')"><slot /></button>', emits: ['click'] },
   NuxtLink: NuxtLinkStub,
   EmptyState: { template: '<div data-empty-state />' },
+  CampaignLandingPageEditor: { template: '<div data-inline-editor />' },
 }
 
 describe('StepLandingPage', () => {
@@ -63,9 +81,9 @@ describe('StepLandingPage', () => {
     expect(text).toContain('wizard.landingPage.withoutLp')
   })
 
-  it('mode "none" sets landing_page_id to null', async () => {
+  it('mode "none" clears landing page summary and id', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.landing_page_id = 1
+    wizard.selectLandingPage({ id: 1, name: 'Landing Page 1', status: 'draft' })
 
     const wrapper = mount(StepLandingPage, {
       global: { stubs: baseStubs },
@@ -73,6 +91,7 @@ describe('StepLandingPage', () => {
 
     await wrapper.find('[data-mode-none]').trigger('click')
     expect(wizard.campaign.landing_page_id).toBeNull()
+    expect(wizard.landingPageSummary).toBeNull()
   })
 
   it('mode "with" fetches landing pages on activation', async () => {
@@ -98,8 +117,9 @@ describe('StepLandingPage', () => {
     const lpCards = wrapper.findAll('[data-lp-card]')
     expect(lpCards.length).toBeGreaterThan(0)
 
-    await lpCards[0].trigger('click')
+    await lpCards[0]!.trigger('click')
     expect(wizard.campaign.landing_page_id).toBe(1)
+    expect(wizard.landingPageSummary?.name).toBe('Landing Page 1')
   })
 
   it('selected LP card has active styling', async () => {
@@ -132,17 +152,25 @@ describe('StepLandingPage', () => {
     expect(wrapper.find('[data-empty-state]').exists()).toBe(true)
   })
 
-  it('shows that landing page creation is managed externally', async () => {
+  it('create button creates a draft LP and opens inline editor', async () => {
+    mockCreateContent.mockResolvedValueOnce({
+      id: 99,
+      type: 'landing-page',
+      title: 'Nouvelle LP',
+      status: 'DRAFT',
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    })
+
     const wrapper = mount(StepLandingPage, {
       global: { stubs: baseStubs },
     })
 
     await wrapper.find('[data-mode-with]').trigger('click')
-    await wrapper.vm.$nextTick()
+    await wrapper.find('[data-create-lp-button]').trigger('click')
 
-    const helper = wrapper.find('[data-lp-managed-externally]')
-    expect(helper.exists()).toBe(true)
-    expect(helper.text()).toContain('wizard.landingPage.managedExternally')
+    expect(mockCreateContent).toHaveBeenCalled()
+    expect(wrapper.find('[data-inline-editor]').exists()).toBe(true)
   })
 
   it('refresh button triggers fetchLandingPages', async () => {
@@ -186,7 +214,7 @@ describe('StepLandingPage', () => {
 
   it('selected LP has checkmark indicator', async () => {
     const wizard = useCampaignWizardStore()
-    wizard.campaign.landing_page_id = 1
+    wizard.selectLandingPage({ id: 1, name: 'Landing Page 1', status: 'draft' })
 
     const wrapper = mount(StepLandingPage, {
       global: { stubs: baseStubs },
@@ -196,5 +224,19 @@ describe('StepLandingPage', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.find('[data-lp-selected]').exists()).toBe(true)
+  })
+
+  it('edit button opens inline editor for selected landing page', async () => {
+    const wizard = useCampaignWizardStore()
+    wizard.selectLandingPage({ id: 2, name: 'Landing Page 2', status: 'published' })
+
+    const wrapper = mount(StepLandingPage, {
+      global: { stubs: baseStubs },
+    })
+
+    await wrapper.find('[data-mode-with]').trigger('click')
+    await wrapper.find('[data-edit-lp-button]').trigger('click')
+
+    expect(wrapper.find('[data-inline-editor]').exists()).toBe(true)
   })
 })
