@@ -15,8 +15,11 @@
     "groups": {
       "main": "Principal",
       "config": "Configuration",
-      "admin": "Administration"
-    }
+      "admin": "Administration",
+      "adv": "ADV"
+    },
+    "operations": "Opérations",
+    "billing": "Facturation"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",

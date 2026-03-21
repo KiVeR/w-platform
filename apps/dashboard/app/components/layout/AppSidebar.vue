@@ -7,6 +7,8 @@ import {
   FileCode,
   LogOut,
   ChevronsUpDown,
+  ClipboardList,
+  Receipt,
 } from 'lucide-vue-next'
 import {
   Sidebar,
@@ -33,35 +35,39 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { useAuthStore } from '@/stores/auth'
 import { usePartnerStore } from '@/stores/partner'
+import { usePermission } from '@/composables/usePermission'
+import type { NavGroup } from '@/types/navigation'
 import AppLogo from './AppLogo.vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const auth = useAuthStore()
 const partner = usePartnerStore()
+const { can, hasAnyRole } = usePermission()
 
 async function handleLogout() {
   await auth.logout()
   await navigateTo('/login')
 }
 
-interface NavItem {
-  label: string
-  icon: typeof Home
-  to: string
-}
-
-interface NavGroup {
-  label: string
-  items: NavItem[]
-}
-
-const navGroups = computed<NavGroup[]>(() => [
+/**
+ * Full navigation definition — each group/item declares its access requirements.
+ * Admin users always see everything; other roles are filtered below.
+ */
+const allNavGroups = computed<NavGroup[]>(() => [
   {
     label: t('nav.groups.main'),
     items: [
       { label: t('nav.dashboard'), icon: Home, to: '/' },
       { label: t('nav.campaigns'), icon: Send, to: '/campaigns' },
+    ],
+  },
+  {
+    label: t('nav.groups.adv'),
+    requiredPermissions: ['view operations'],
+    items: [
+      { label: t('nav.operations'), icon: ClipboardList, to: '/operations', requiredPermissions: ['view operations'] },
+      { label: t('nav.billing'), icon: Receipt, to: '/billing', requiredPermissions: ['view operations'] },
     ],
   },
   {
@@ -80,6 +86,30 @@ const navGroups = computed<NavGroup[]>(() => [
       }]
     : []),
 ])
+
+/**
+ * Filter groups and items by role/permissions.
+ * Admins bypass all restrictions (handled by allNavGroups already including admin group).
+ */
+const navGroups = computed<NavGroup[]>(() => {
+  return allNavGroups.value
+    .filter((group) => {
+      if (auth.isAdmin) return true
+      if (group.requiredRoles?.length && !hasAnyRole(group.requiredRoles)) return false
+      if (group.requiredPermissions?.length && !group.requiredPermissions.every(p => can(p))) return false
+      return true
+    })
+    .map(group => ({
+      ...group,
+      items: group.items.filter((item) => {
+        if (auth.isAdmin) return true
+        if (item.requiredRoles?.length && !hasAnyRole(item.requiredRoles)) return false
+        if (item.requiredPermissions?.length && !item.requiredPermissions.every(p => can(p))) return false
+        return true
+      }),
+    }))
+    .filter(group => group.items.length > 0)
+})
 
 function isActive(to: string): boolean {
   if (to === '/') return route.path === '/'

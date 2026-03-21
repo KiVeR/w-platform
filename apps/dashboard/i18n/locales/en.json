@@ -15,8 +15,11 @@
     "groups": {
       "main": "Main",
       "config": "Configuration",
-      "admin": "Administration"
-    }
+      "admin": "Administration",
+      "adv": "ADV"
+    },
+    "operations": "Operations",
+    "billing": "Billing"
   },
   "sidebar": {
     "toggle": "Toggle sidebar",

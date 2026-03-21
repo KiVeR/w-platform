@@ -103,11 +103,12 @@ describe('AppSidebar', () => {
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
-  it('renders 2 navigation groups for the shipped scope', () => {
+  it('renders 2 navigation groups for the shipped scope (no ADV, no admin)', () => {
     const wrapper = mountSidebar()
     expect(wrapper.text()).toContain('nav.groups.main')
     expect(wrapper.text()).toContain('nav.groups.config')
     expect(wrapper.text()).not.toContain('nav.groups.admin')
+    expect(wrapper.text()).not.toContain('nav.groups.adv')
     expect(wrapper.text()).not.toContain('nav.shops')
     expect(wrapper.text()).not.toContain('nav.landingPages')
     expect(wrapper.text()).not.toContain('nav.stats')
@@ -126,6 +127,57 @@ describe('AppSidebar', () => {
     const links = wrapper.findAll('a').map(link => link.attributes('href'))
     expect(links).toContain('/admin/routers')
     expect(links).toContain('/admin/variable-schemas')
+  })
+
+  describe('ADV navigation group', () => {
+    const fakeAdvUser = {
+      ...fakeAdminUser,
+      id: 10,
+      firstname: 'Alice',
+      lastname: 'ADV',
+      full_name: 'Alice ADV',
+      email: 'alice@adv.fr',
+      partner_id: null,
+      roles: ['adv' as const],
+      permissions: ['view operations' as const, 'manage operations' as const, 'transition operations' as const],
+    }
+
+    it('shows ADV group for user with view operations permission', () => {
+      const auth = useAuthStore()
+      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdvUser })
+
+      const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
+
+      expect(wrapper.text()).toContain('nav.groups.adv')
+      expect(wrapper.text()).toContain('nav.operations')
+      expect(wrapper.text()).toContain('nav.billing')
+    })
+
+    it('hides ADV group for partner without view operations permission', () => {
+      const wrapper = mountSidebar() // fakeUser has no 'view operations'
+
+      expect(wrapper.text()).not.toContain('nav.groups.adv')
+      expect(wrapper.text()).not.toContain('nav.operations')
+      expect(wrapper.text()).not.toContain('nav.billing')
+    })
+
+    it('shows ADV group for admin (admin bypass)', () => {
+      const auth = useAuthStore()
+      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+
+      const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
+
+      expect(wrapper.text()).toContain('nav.groups.adv')
+      expect(wrapper.text()).toContain('nav.operations')
+    })
+
+    it('always shows main navigation group', () => {
+      const wrapper = mountSidebar()
+
+      expect(wrapper.text()).toContain('nav.groups.main')
+      expect(wrapper.text()).toContain('nav.dashboard')
+      expect(wrapper.text()).toContain('nav.campaigns')
+    })
   })
 
   describe('partner badge', () => {

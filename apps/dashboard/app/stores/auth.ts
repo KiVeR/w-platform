@@ -1,7 +1,39 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { tokenRefreshManager } from '@/services/tokenRefreshManager'
-import type { AuthUser, Role } from '@/types/auth'
+import type { AuthUser, Role, Permission } from '@/types/auth'
+
+/**
+ * Role priority — lower number = higher priority.
+ * Used to pick the "primary" role when a user has multiple roles.
+ */
+const ROLE_PRIORITY: Record<Role, number> = {
+  admin: 0,
+  adv: 1,
+  direction: 2,
+  programmer: 3,
+  commercial: 4,
+  marketing_manager: 5,
+  graphiste: 6,
+  partner: 7,
+  merchant: 8,
+  employee: 9,
+}
+
+/**
+ * Default redirect route after login, per primary role.
+ * ADV-track roles land on /operations; partner-track on /campaigns.
+ */
+const ROLE_DEFAULT_ROUTES: Partial<Record<Role, string>> = {
+  admin: '/',
+  adv: '/operations',
+  programmer: '/operations',
+  partner: '/campaigns',
+  merchant: '/campaigns',
+  commercial: '/campaigns',
+  direction: '/',
+  employee: '/',
+}
 
 interface LoginResponse {
   access_token: string
@@ -22,9 +54,22 @@ export const useAuthStore = defineStore('auth', () => {
     const last = user.value.lastname?.[0] ?? ''
     return `${first}${last}`.toUpperCase()
   })
-  const role = computed<Role | null>(() => user.value?.roles?.[0] ?? null)
+  const primaryRole = computed<Role | null>(() =>
+    user.value?.roles?.slice().sort(
+      (a, b) => (ROLE_PRIORITY[a] ?? 99) - (ROLE_PRIORITY[b] ?? 99),
+    )[0] ?? null,
+  )
+  // Alias kept for backward compatibility
+  const role = computed<Role | null>(() => primaryRole.value)
   const partnerId = computed(() => user.value?.partner_id ?? null)
-  const isAdmin = computed(() => role.value === 'admin')
+  const isAdmin = computed(() => primaryRole.value === 'admin')
+  const defaultRoute = computed<string>(() =>
+    ROLE_DEFAULT_ROUTES[primaryRole.value ?? 'employee'] ?? '/',
+  )
+
+  function hasPermission(permission: Permission): boolean {
+    return user.value?.permissions.includes(permission) ?? false
+  }
 
   function setAuth(data: LoginResponse) {
     tokenRefreshManager.saveTokens({
@@ -116,8 +161,11 @@ export const useAuthStore = defineStore('auth', () => {
     fullName,
     initials,
     role,
+    primaryRole,
     partnerId,
     isAdmin,
+    defaultRoute,
+    hasPermission,
     setAuth,
     clearAuth,
     login,
