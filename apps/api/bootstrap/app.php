@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'client' => \App\Http\Middleware\EnsureClientIsResourceOwner::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'deprecate' => \App\Http\Middleware\DeprecateEndpoint::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

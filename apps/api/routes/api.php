@@ -81,7 +81,8 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('interest-groups', [InterestGroupsController::class, 'index']);
     Route::apiResource('partner-pricings', PartnerPricingsController::class);
     Route::post('estimate', EstimateController::class);
-    Route::apiResource('campaigns', CampaignsController::class);
+    Route::post('campaigns', [CampaignsController::class, 'store'])->middleware('deprecate:2026-09-01');
+    Route::apiResource('campaigns', CampaignsController::class)->except(['store']);
     Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
     Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
