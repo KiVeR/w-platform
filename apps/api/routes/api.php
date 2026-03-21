@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\ExternalCampaignController;
 use App\Http\Controllers\Api\GeoController;
 use App\Http\Controllers\Api\ImportableLinkController;
+use App\Http\Controllers\Api\InvoicesController;
+
 use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\InternalVariableSchemaController;
 use App\Http\Controllers\Api\IrisZonesController;
@@ -28,6 +30,7 @@ use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\ShortUrlSuffixRequestController;
 use App\Http\Controllers\Api\SmsWebhookController;
 use App\Http\Controllers\Api\TargetingTemplatesController;
+use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VariableSchemaController;
 use Illuminate\Support\Facades\Route;
@@ -118,6 +121,10 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::delete('short-url-requests', [ShortUrlSuffixRequestController::class, 'destroy']);
     Route::post('importable-links/upload', [ImportableLinkController::class, 'upload']);
     Route::post('importable-links/import/{uuid}', [ImportableLinkController::class, 'import']);
+
+    Route::apiResource('invoices', InvoicesController::class)->only(['index', 'show']);
+    Route::get('partners/{partner}/balance', [TransactionsController::class, 'balance']);
+    Route::get('partners/{partner}/transactions', [TransactionsController::class, 'index']);
 
     Route::prefix('geo')->name('geo.')->group(function (): void {
         Route::get('departments', [GeoController::class, 'departments'])->name('departments.index');

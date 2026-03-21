@@ -184,6 +184,12 @@ class Operation extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /** @return HasMany<InvoiceLine, $this> */
+    public function invoiceLines(): HasMany
+    {
+        return $this->hasMany(InvoiceLine::class);
+    }
+
     /** @param Builder<Operation> $query */
     public function scopeForUser(Builder $query, User $user): void
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\BillingMode;
 use App\Enums\PartnerFeatureKey;
 use Database\Factories\PartnerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +32,7 @@ class Partner extends Model
         'euro_credits',
         'router_id',
         'activity_type',
+        'billing_mode',
     ];
 
     /** @return array<string, string> */
@@ -39,6 +41,7 @@ class Partner extends Model
         return [
             'is_active' => 'boolean',
             'euro_credits' => 'decimal:2',
+            'billing_mode' => BillingMode::class,
         ];
     }
 
@@ -100,6 +103,18 @@ class Partner extends Model
     public function features(): HasMany
     {
         return $this->hasMany(PartnerFeature::class);
+    }
+
+    /** @return HasMany<Transaction, $this> */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /** @return HasMany<Invoice, $this> */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     public function hasFeature(PartnerFeatureKey $key): bool
