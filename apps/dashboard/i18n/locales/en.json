@@ -1061,7 +1061,47 @@
       "empty": "No transitions recorded."
     },
     "billing": {
-      "coming_soon": "Billing module coming soon."
+      "title": "Billing",
+      "loading": "Loading invoices...",
+      "empty": "No invoices.",
+      "error": "Error loading invoices.",
+      "detail_loading": "Loading invoice...",
+      "back_to_list": "Back to invoices",
+      "overdue_warning": "This invoice is overdue.",
+      "notes": "Notes",
+      "subtotal": "Subtotal excl. tax",
+      "tax": "Tax",
+      "total_ttc": "Total incl. tax",
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "paid": "Paid",
+        "credited": "Credit note",
+        "overdue": "Overdue"
+      },
+      "columns": {
+        "invoice_number": "Invoice #",
+        "invoice_date": "Date",
+        "due_date": "Due date",
+        "subtotal_ht": "Excl. tax",
+        "total_ttc": "Incl. tax",
+        "status": "Status"
+      },
+      "line": {
+        "description": "Description",
+        "quantity": "Qty",
+        "unit_price": "Unit price",
+        "total_ht": "Total excl. tax"
+      },
+      "balance": {
+        "title": "Prepaid balance",
+        "loading": "Loading..."
+      },
+      "queue": {
+        "title": "To invoice",
+        "loading": "Loading...",
+        "description": "operations pending invoicing"
+      }
     }
   }
 }

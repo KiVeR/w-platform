@@ -1061,7 +1061,47 @@
       "empty": "Aucune transition enregistrée."
     },
     "billing": {
-      "coming_soon": "Module de facturation bientôt disponible."
+      "title": "Facturation",
+      "loading": "Chargement des factures...",
+      "empty": "Aucune facture.",
+      "error": "Erreur lors du chargement des factures.",
+      "detail_loading": "Chargement de la facture...",
+      "back_to_list": "Retour aux factures",
+      "overdue_warning": "Cette facture est en retard de paiement.",
+      "notes": "Notes",
+      "subtotal": "Sous-total HT",
+      "tax": "TVA",
+      "total_ttc": "Total TTC",
+      "status": {
+        "draft": "Brouillon",
+        "sent": "Envoyee",
+        "paid": "Payee",
+        "credited": "Avoir",
+        "overdue": "En retard"
+      },
+      "columns": {
+        "invoice_number": "N° Facture",
+        "invoice_date": "Date",
+        "due_date": "Echeance",
+        "subtotal_ht": "HT",
+        "total_ttc": "TTC",
+        "status": "Statut"
+      },
+      "line": {
+        "description": "Description",
+        "quantity": "Qte",
+        "unit_price": "P.U.",
+        "total_ht": "Total HT"
+      },
+      "balance": {
+        "title": "Solde prepaye",
+        "loading": "Chargement..."
+      },
+      "queue": {
+        "title": "A facturer",
+        "loading": "Chargement...",
+        "description": "operations en attente de facturation"
+      }
     }
   }
 }
