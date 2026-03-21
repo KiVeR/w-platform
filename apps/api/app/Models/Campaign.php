@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $routing_at
  * @property string|null $routing_batch_id
  * @property string|null $wp_routing_id
+ * @property int|null $operation_id
  */
 class Campaign extends Model
 {
@@ -79,6 +80,7 @@ class Campaign extends Model
         'routing_at',
         'routing_batch_id',
         'wp_routing_id',
+        'operation_id',
     ];
 
     /** @return array<string, string> */
@@ -140,6 +142,12 @@ class Campaign extends Model
     public function router(): BelongsTo
     {
         return $this->belongsTo(Router::class);
+    }
+
+    /** @return BelongsTo<Operation, $this> */
+    public function operation(): BelongsTo
+    {
+        return $this->belongsTo(Operation::class);
     }
 
     /** @return HasMany<CampaignRecipient, $this> */

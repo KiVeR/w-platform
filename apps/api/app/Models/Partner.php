@@ -66,6 +66,12 @@ class Partner extends Model
         return $this->hasMany(Campaign::class);
     }
 
+    /** @return HasMany<Demande, $this> */
+    public function demandes(): HasMany
+    {
+        return $this->hasMany(Demande::class);
+    }
+
     /** @return HasMany<PartnerPricing, $this> */
     public function pricings(): HasMany
     {
