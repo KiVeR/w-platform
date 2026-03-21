@@ -45,7 +45,7 @@ enum BillingStatus: string
             self::PAID           => [self::INVOICED, self::OVERDUE],
             self::OVERDUE        => [self::INVOICED],
             self::CREDITED       => [self::PAID, self::INVOICED],
-            self::PREPAID        => [],
+            self::PREPAID        => [self::PENDING],
         };
     }
 }

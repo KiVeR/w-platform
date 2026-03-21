@@ -14,6 +14,7 @@ use App\Enums\OperationType;
 use App\Enums\PreparationStep;
 use App\Enums\Priority;
 use App\Enums\ProcessingStatus;
+use App\Services\Production\ReadinessService;
 use Database\Factories\OperationFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -196,6 +197,17 @@ class Operation extends Model
         if (! $user->hasRole('admin')) {
             $query->whereHas('demande', fn (Builder $q) => $q->where('partner_id', $user->partner_id));
         }
+    }
+
+    public function isReadyForScheduling(): bool
+    {
+        return app(ReadinessService::class)->isReady($this);
+    }
+
+    public function isBillable(): bool
+    {
+        return $this->type->requiresBilling()
+            && $this->billing_status === BillingStatus::PENDING;
     }
 
     /** @param Builder<Operation> $query */
