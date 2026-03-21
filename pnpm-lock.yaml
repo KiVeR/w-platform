@@ -7,6 +7,7 @@ settings:
 overrides:
   '@wellpack/content-editor': workspace:*
   '@wellpack/targeting': workspace:*
+  '@wellpack/operations': workspace:*
 
 importers:
 
@@ -41,6 +42,9 @@ importers:
       '@wellpack/content-editor':
         specifier: workspace:*
         version: link:../../packages/content-editor
+      '@wellpack/operations':
+        specifier: workspace:*
+        version: link:../../packages/operations
       '@wellpack/targeting':
         specifier: workspace:*
         version: link:../../packages/targeting

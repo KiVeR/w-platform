@@ -4,7 +4,8 @@
   "pnpm": {
     "overrides": {
       "@wellpack/content-editor": "workspace:*",
-      "@wellpack/targeting": "workspace:*"
+      "@wellpack/targeting": "workspace:*",
+      "@wellpack/operations": "workspace:*"
     }
   },
   "scripts": {

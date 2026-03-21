@@ -984,5 +984,84 @@
       "refresh": "Refresh",
       "published": "Published"
     }
+  },
+  "operations": {
+    "loading": "Loading operations...",
+    "empty": "No operations found.",
+    "error": "Error loading operations.",
+    "back_to_list": "Back to list",
+    "status": {
+      "draft": "Draft",
+      "preparing": "Preparing",
+      "on_hold": "On Hold",
+      "ready": "Ready",
+      "scheduled": "Scheduled",
+      "processing": "Processing",
+      "delivered": "Delivered",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "type": {
+      "loc": "Location",
+      "fid": "Loyalty",
+      "rloc": "Re-location",
+      "acq": "Acquisition",
+      "qual": "Qualification",
+      "rep": "Replay",
+      "enrich": "Enrichment",
+      "valid": "Validation",
+      "filtre": "Filtering"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "blocked": "Blocked",
+      "delivered": "Delivered"
+    },
+    "columns": {
+      "ref": "Ref.",
+      "name": "Name",
+      "type": "Type",
+      "status": "Status",
+      "scheduled": "Scheduled",
+      "created": "Created"
+    },
+    "pagination": {
+      "total": "{count} operation(s)",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "tabs": {
+      "summary": "Summary",
+      "timeline": "Timeline",
+      "billing": "Billing"
+    },
+    "detail": {
+      "error": "Unable to load operation.",
+      "demande": "Request",
+      "partner": "Partner",
+      "advertiser": "Advertiser",
+      "assigned": "Assigned to",
+      "volume_estimated": "Estimated volume",
+      "volume_sent": "Sent volume",
+      "unit_price": "Unit price",
+      "total_price": "Total price",
+      "message": "Message"
+    },
+    "transitions": {
+      "none": "No transitions available.",
+      "confirm_title": "Confirm transition",
+      "confirm_message": "Move from {from} to {to}?",
+      "reason_placeholder": "Reason (optional)...",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "timeline": {
+      "loading": "Loading timeline...",
+      "empty": "No transitions recorded."
+    },
+    "billing": {
+      "coming_soon": "Billing module coming soon."
+    }
   }
 }

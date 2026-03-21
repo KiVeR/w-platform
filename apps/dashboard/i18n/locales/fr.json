@@ -984,5 +984,84 @@
       "refresh": "Rafraîchir",
       "published": "Publiée"
     }
+  },
+  "operations": {
+    "loading": "Chargement des opérations...",
+    "empty": "Aucune opération trouvée.",
+    "error": "Erreur lors du chargement des opérations.",
+    "back_to_list": "Retour à la liste",
+    "status": {
+      "draft": "Brouillon",
+      "preparing": "En préparation",
+      "on_hold": "En pause",
+      "ready": "Prête",
+      "scheduled": "Planifiée",
+      "processing": "En cours",
+      "delivered": "Livrée",
+      "completed": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "type": {
+      "loc": "Location",
+      "fid": "Fidélisation",
+      "rloc": "Repasse Location",
+      "acq": "Acquisition",
+      "qual": "Qualification",
+      "rep": "Repasse",
+      "enrich": "Enrichissement",
+      "valid": "Validation",
+      "filtre": "Filtrage"
+    },
+    "filters": {
+      "all": "Toutes",
+      "active": "En cours",
+      "blocked": "Bloquées",
+      "delivered": "Livrées"
+    },
+    "columns": {
+      "ref": "Réf.",
+      "name": "Nom",
+      "type": "Type",
+      "status": "Statut",
+      "scheduled": "Planifiée le",
+      "created": "Créée le"
+    },
+    "pagination": {
+      "total": "{count} opération(s)",
+      "prev": "Précédent",
+      "next": "Suivant"
+    },
+    "tabs": {
+      "summary": "Résumé",
+      "timeline": "Historique",
+      "billing": "Facturation"
+    },
+    "detail": {
+      "error": "Impossible de charger l'opération.",
+      "demande": "Demande",
+      "partner": "Partenaire",
+      "advertiser": "Annonceur",
+      "assigned": "Assigné à",
+      "volume_estimated": "Volume estimé",
+      "volume_sent": "Volume envoyé",
+      "unit_price": "Prix unitaire",
+      "total_price": "Prix total",
+      "message": "Message"
+    },
+    "transitions": {
+      "none": "Aucune transition disponible.",
+      "confirm_title": "Confirmer la transition",
+      "confirm_message": "Passer de {from} à {to} ?",
+      "reason_placeholder": "Raison (optionnel)...",
+      "cancel": "Annuler",
+      "confirm": "Confirmer"
+    },
+    "timeline": {
+      "loading": "Chargement de l'historique...",
+      "empty": "Aucune transition enregistrée."
+    },
+    "billing": {
+      "coming_soon": "Module de facturation bientôt disponible."
+    }
   }
 }
