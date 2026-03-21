@@ -34,6 +34,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage variable-schemas',
             'view ai-contents',
             'manage ai-contents',
+            'view demandes',
+            'manage demandes',
+            'view operations',
+            'manage operations',
+            'transition operations',
         ];
 
         foreach ($permissions as $permission) {
@@ -59,6 +64,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage variable-schemas',
                 'view ai-contents',
                 'manage ai-contents',
+                'view demandes',
+                'view operations',
             ]);
 
         Role::findOrCreate('merchant', 'api')
@@ -74,8 +81,50 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage variable-schemas',
                 'view ai-contents',
                 'manage ai-contents',
+                'view demandes',
+                'view operations',
             ]);
 
         Role::findOrCreate('employee', 'api');
+
+        // ADV-specific roles
+        Role::findOrCreate('adv', 'api')
+            ->givePermissionTo([
+                'view demandes',
+                'manage demandes',
+                'view operations',
+                'manage operations',
+                'transition operations',
+            ]);
+
+        Role::findOrCreate('programmer', 'api')
+            ->givePermissionTo([
+                'view demandes',
+                'view operations',
+                'transition operations',
+            ]);
+
+        Role::findOrCreate('commercial', 'api')
+            ->givePermissionTo([
+                'view demandes',
+                'manage demandes',
+                'view operations',
+            ]);
+
+        Role::findOrCreate('graphiste', 'api')
+            ->givePermissionTo([
+                'view operations',
+            ]);
+
+        Role::findOrCreate('marketing_manager', 'api')
+            ->givePermissionTo([
+                'view operations',
+            ]);
+
+        Role::findOrCreate('direction', 'api')
+            ->givePermissionTo([
+                'view demandes',
+                'view operations',
+            ]);
     }
 }

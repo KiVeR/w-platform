@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\CampaignActivitiesController;
 use App\Http\Controllers\Api\CampaignLogsController;
 use App\Http\Controllers\Api\CampaignRecipientsController;
 use App\Http\Controllers\Api\CampaignsController;
+use App\Http\Controllers\Api\DemandesController;
 use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\ExternalCampaignController;
 use App\Http\Controllers\Api\GeoController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\InternalVariableSchemaController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
+use App\Http\Controllers\Api\OperationsController;
 use App\Http\Controllers\Api\PartnerPricingsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\RouterController;
@@ -85,6 +87,11 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('campaigns/{campaign}/activities', [CampaignActivitiesController::class, 'index']);
     Route::get('campaigns/{campaign}/logs', [CampaignLogsController::class, 'index']);
     Route::get('campaigns/{campaign}/recipients', [CampaignRecipientsController::class, 'index']);
+
+    Route::apiResource('demandes', DemandesController::class);
+    Route::apiResource('operations', OperationsController::class);
+    Route::post('operations/{operation}/transition', [OperationsController::class, 'transition']);
+    Route::get('operations/{operation}/transitions', [OperationsController::class, 'transitions']);
 
     Route::apiResource('targeting-templates', TargetingTemplatesController::class);
     Route::post('targeting-templates/{targeting_template}/use', [TargetingTemplatesController::class, 'useTemplate']);
