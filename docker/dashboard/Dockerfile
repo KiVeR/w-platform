@@ -7,10 +7,14 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
+ENV PNPM_STORE_DIR=/pnpm/store
+
+COPY docker/node/ensure-workspace-deps.sh /usr/local/bin/ensure-workspace-deps
+RUN chmod +x /usr/local/bin/ensure-workspace-deps
+
 EXPOSE 3000
 
-# pnpm install si node_modules vide ou nuxt absent, puis dev server
-CMD ["sh", "-c", "if [ ! -f 'node_modules/.package-lock.json' ] && [ ! -f 'node_modules/.modules.yaml' ]; then pnpm install --frozen-lockfile; fi && pnpm dev:dashboard --host 0.0.0.0"]
+CMD ["sh", "-c", "ensure-workspace-deps /app/apps/dashboard/node_modules/.bin/nuxt && rm -rf /app/apps/dashboard/node_modules/.cache/vite /app/apps/dashboard/.nuxt && pnpm dev:dashboard --host 0.0.0.0"]
 
 # =============================================================================
 # Stage: build — production build
@@ -20,6 +24,8 @@ FROM node:22-alpine AS build
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
+
+ENV PNPM_STORE_DIR=/pnpm/store
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/dashboard/package.json apps/dashboard/

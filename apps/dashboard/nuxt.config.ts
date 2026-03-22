@@ -1,3 +1,4 @@
+import process from 'node:process'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -22,6 +23,24 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css', 'vue-sonner/style.css', 'leaflet/dist/leaflet.css'],
 
   vite: {
+    optimizeDeps: {
+      include: [
+        'reka-ui',
+        'reka-ui/date',
+        'aria-hidden',
+        '@floating-ui/vue',
+        '@tanstack/vue-virtual',
+        '@internationalized/number',
+        '@internationalized/date',
+        '@vue-leaflet/vue-leaflet',
+        '@swc/helpers/_/_class_private_field_init',
+        'leaflet',
+        'zod',
+        'uuid',
+        'sortablejs',
+        'vuedraggable',
+      ],
+    },
     resolve: {
       preserveSymlinks: true,
     },
@@ -38,7 +57,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiUrl: 'http://localhost:8000',
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8000',
       googleClientId: '',
       pusher: {
         appKey: process.env.NUXT_PUBLIC_PUSHER_APP_KEY || '',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Copy, Download, XCircle } from 'lucide-vue-next'
+import { Copy, Download, Pencil, XCircle } from 'lucide-vue-next'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +24,7 @@ import type { CampaignDetailEnriched } from '@/types/campaign'
 
 const props = withDefaults(defineProps<{
   campaign: CampaignDetailEnriched
+  showEdit?: boolean
   showDuplicate?: boolean
   showExport?: boolean
   showCancel?: boolean
@@ -31,6 +32,7 @@ const props = withDefaults(defineProps<{
   isCancelling?: boolean
   cancelError?: string | null
 }>(), {
+  showEdit: false,
   showDuplicate: false,
   showExport: false,
   showCancel: false,
@@ -40,6 +42,7 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
+  edit: []
   duplicate: []
   export: []
   cancel: []
@@ -69,6 +72,17 @@ const { t } = useI18n()
           {{ t('campaigns.detail.actionsPanel.cancelError') }}
         </AlertDescription>
       </Alert>
+
+      <Button
+        v-if="showEdit"
+        data-action-edit
+        variant="outline"
+        class="w-full justify-start"
+        @click="emit('edit')"
+      >
+        <Pencil class="mr-2 size-4" />
+        {{ t('campaigns.detail.editDraft') }}
+      </Button>
 
       <Button
         v-if="showDuplicate"

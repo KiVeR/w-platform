@@ -46,6 +46,12 @@ export interface LandingPageRow {
   created_at: string
 }
 
+export interface CampaignLandingPageSummary {
+  id: number
+  name: string
+  status: LandingPageStatus
+}
+
 export interface CampaignDraft {
   type: CampaignType
   channel: CampaignChannel

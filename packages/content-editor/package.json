@@ -1,0 +1,26 @@
+{
+  "name": "@wellpack/content-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "sortablejs": "^1.15.6",
+    "vuedraggable": "^4.1.0",
+    "lucide-vue-next": "^0.460.0",
+    "zod": "^3.24.0",
+    "uuid": "^11.0.0",
+    "pinia": "^3.0.0",
+    "@vueuse/core": "^12.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0",
+    "@vue/test-utils": "^2.4.0",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "happy-dom": "^17.0.0",
+    "vue": "^3.5.0"
+  }
+}

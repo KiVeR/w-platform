@@ -1,17 +1,59 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { LayoutTemplate, Check, ExternalLink, FileX, CheckCircle2, RefreshCw } from 'lucide-vue-next'
+import { computed, ref, watch } from 'vue'
+import {
+  LayoutTemplate,
+  Check,
+  FileX,
+  CheckCircle2,
+  RefreshCw,
+  Pencil,
+  Plus,
+  Loader2,
+} from 'lucide-vue-next'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import EmptyState from '@/components/shared/EmptyState.vue'
+import CampaignLandingPageEditor from '@/components/campaigns/wizard/CampaignLandingPageEditor.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
+import { useAuthStore } from '@/stores/auth'
+import { usePartnerStore } from '@/stores/partner'
 import { useLandingPages } from '@/composables/useLandingPages'
+import { useLandingPageEditorAdapter } from '@/composables/useLandingPageEditorAdapter'
+import { tokenRefreshManager } from '@/services/tokenRefreshManager'
 
 const wizard = useCampaignWizardStore()
+const auth = useAuthStore()
+const partner = usePartnerStore()
 const { t } = useI18n()
+const runtimeConfig = useRuntimeConfig()
 const { landingPages, isLoading, hasError, fetchLandingPages } = useLandingPages()
+const { buildContentAdapter } = useLandingPageEditorAdapter()
 
 const mode = ref<'none' | 'with'>(wizard.campaign.landing_page_id ? 'with' : 'none')
+const isCreating = ref(false)
+const requiresPartnerScope = computed(() =>
+  auth.isAdmin && partner.effectivePartnerId === null,
+)
+
+const editorApi = createEditorApiClient({
+  apiBaseUrl: `${runtimeConfig.public.apiUrl}/api`,
+  getAuthToken: () => tokenRefreshManager.getAccessToken(),
+  refreshToken: () => tokenRefreshManager.refreshToken(),
+  onAuthFailure: () => {
+    navigateTo('/login')
+  },
+})
+const landingPageAdapter = buildContentAdapter(editorApi)
+
+const selectedLandingPage = computed(() =>
+  landingPages.value.find(lp => lp.id === wizard.campaign.landing_page_id) ?? wizard.landingPageSummary,
+)
+
+watch(mode, async (value) => {
+  if (value === 'with')
+    await fetchLandingPages()
+})
 
 function getInitials(name: string): string {
   return name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
@@ -26,19 +68,68 @@ function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-function selectMode(m: 'none' | 'with') {
-  mode.value = m
-  if (m === 'none') {
-    wizard.campaign.landing_page_id = null
+function selectMode(nextMode: 'none' | 'with') {
+  mode.value = nextMode
+
+  if (nextMode === 'none') {
+    wizard.clearLandingPage()
+    return
   }
-  else {
-    fetchLandingPages()
+
+  if (wizard.campaign.landing_page_id)
+    wizard.closeLandingPageEditor()
+}
+
+function selectLandingPage(id: number, name: string, status: 'draft' | 'published' | 'archived') {
+  wizard.selectLandingPage({ id, name, status })
+}
+
+async function createLandingPageAndEdit() {
+  if (requiresPartnerScope.value)
+    return
+
+  isCreating.value = true
+
+  try {
+    const created = await landingPageAdapter.createContent({
+      type: 'landing-page',
+      title: wizard.campaign.name.trim() || `${t('campaigns.new')} LP`,
+    })
+
+    if (!created)
+      return
+
+    wizard.selectLandingPage({
+      id: created.id,
+      name: created.title,
+      status: created.status.toLowerCase() as 'draft' | 'published' | 'archived',
+    })
+    wizard.openLandingPageEditor()
+
+    if (wizard.isDirty)
+      await wizard.persistDraftNow()
+
+    await fetchLandingPages()
+  }
+  finally {
+    isCreating.value = false
   }
 }
 
-function selectLandingPage(id: number) {
-  wizard.campaign.landing_page_id = id
-  wizard.isDirty = true
+async function openEditor() {
+  if (!wizard.campaign.landing_page_id)
+    return
+
+  wizard.openLandingPageEditor()
+  if (landingPages.value.length === 0)
+    await fetchLandingPages()
+}
+
+async function continueFromEditor() {
+  wizard.closeLandingPageEditor()
+  if (wizard.isDirty)
+    await wizard.persistDraftNow()
+  wizard.nextStep()
 }
 </script>
 
@@ -85,6 +176,58 @@ function selectLandingPage(id: number) {
     </div>
 
     <template v-if="mode === 'with'">
+      <Alert v-if="requiresPartnerScope" data-lp-partner-warning variant="destructive">
+        <AlertTitle>{{ t('wizard.landingPage.partnerScope.title') }}</AlertTitle>
+        <AlertDescription>{{ t('wizard.landingPage.partnerScope.description') }}</AlertDescription>
+      </Alert>
+
+      <Alert v-else-if="auth.isAdmin && partner.currentPartnerName" data-lp-partner-scope>
+        <AlertTitle>{{ t('wizard.landingPage.partnerScope.scopedTitle') }}</AlertTitle>
+        <AlertDescription>
+          {{ t('wizard.landingPage.partnerScope.scopedDescription', { name: partner.currentPartnerName }) }}
+        </AlertDescription>
+      </Alert>
+
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <Button
+            data-create-lp-button
+            size="sm"
+            :disabled="requiresPartnerScope || isCreating"
+            @click="createLandingPageAndEdit"
+          >
+            <Loader2 v-if="isCreating" class="mr-2 size-4 animate-spin" />
+            <Plus v-else class="mr-2 size-4" />
+            {{ t('wizard.landingPage.empty.action') }}
+          </Button>
+
+          <Button
+            v-if="selectedLandingPage"
+            data-edit-lp-button
+            variant="outline"
+            size="sm"
+            @click="openEditor"
+          >
+            <Pencil class="mr-2 size-4" />
+            {{ t('wizard.review.edit') }}
+          </Button>
+
+          <Button
+            data-refresh-button
+            variant="ghost"
+            size="sm"
+            @click="fetchLandingPages()"
+          >
+            <RefreshCw class="mr-1.5 size-3.5" />
+            {{ t('wizard.landingPage.refresh') }}
+          </Button>
+        </div>
+
+        <p v-if="selectedLandingPage" class="text-sm text-muted-foreground">
+          {{ selectedLandingPage.name }}
+        </p>
+      </div>
+
       <div v-if="isLoading" class="flex justify-center py-8">
         <div class="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
@@ -97,7 +240,10 @@ function selectLandingPage(id: number) {
       />
 
       <template v-else>
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          v-if="wizard.landingPageEditorMode !== 'edit'"
+          class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        >
           <Card
             v-for="lp in landingPages"
             :key="lp.id"
@@ -106,7 +252,7 @@ function selectLandingPage(id: number) {
             :class="wizard.campaign.landing_page_id === lp.id
               ? 'border-primary bg-primary/5 ring-2 ring-primary/30'
               : 'hover:border-primary/50'"
-            @click="selectLandingPage(lp.id)"
+            @click="selectLandingPage(lp.id, lp.name, lp.status)"
           >
             <CardHeader>
               <div class="flex items-center gap-3">
@@ -131,26 +277,33 @@ function selectLandingPage(id: number) {
           </Card>
         </div>
 
-        <div class="flex items-center justify-between gap-4">
-          <Button
-            data-refresh-button
-            variant="ghost"
-            size="sm"
-            @click="fetchLandingPages()"
-          >
-            <RefreshCw class="mr-1.5 size-3.5" />
-            {{ t('wizard.landingPage.refresh') }}
-          </Button>
-
-          <p
-            data-lp-managed-externally
-            class="flex items-center gap-1.5 text-right text-sm text-muted-foreground"
-          >
-            <ExternalLink class="size-3.5 shrink-0" />
-            {{ t('wizard.landingPage.managedExternally') }}
-          </p>
+        <div v-else-if="wizard.campaign.landing_page_id" class="lp-editor-stage">
+          <CampaignLandingPageEditor
+            :landing-page-id="wizard.campaign.landing_page_id"
+            @back="wizard.closeLandingPageEditor()"
+            @continue="continueFromEditor"
+          />
         </div>
       </template>
     </template>
   </div>
 </template>
+
+<style scoped>
+.lp-editor-stage :deep(.editor-inline-shell) {
+  min-height: 0;
+}
+
+.lp-editor-stage :deep(.editor-inline-frame) {
+  height: clamp(34rem, 72vh, 52rem);
+  min-height: 34rem;
+  max-height: 52rem;
+}
+
+@media (max-width: 1023px) {
+  .lp-editor-stage :deep(.editor-inline-frame) {
+    height: min(70vh, 42rem);
+    min-height: 28rem;
+  }
+}
+</style>

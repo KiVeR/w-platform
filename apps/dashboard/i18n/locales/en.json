@@ -421,6 +421,7 @@
     },
     "actions": {
       "view": "View",
+      "editDraft": "Resume draft",
       "delete": "Delete",
       "duplicate": "Relaunch"
     },
@@ -444,6 +445,7 @@
     },
     "detail": {
       "back": "Back to campaigns",
+      "editDraft": "Resume draft",
       "export": "Export CSV",
       "duplicate": "Duplicate",
       "cancel": "Cancel campaign",
@@ -982,7 +984,13 @@
       "managedExternally": "Creation is managed in Kreo",
       "selected": "Selected",
       "refresh": "Refresh",
-      "published": "Published"
+      "published": "Published",
+      "partnerScope": {
+        "title": "Partner required",
+        "description": "Select a partner in the header before creating a landing page.",
+        "scopedTitle": "Active partner",
+        "scopedDescription": "The landing page will be created in the context of {name}."
+      }
     }
   },
   "operations": {

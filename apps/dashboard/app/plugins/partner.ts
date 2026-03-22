@@ -4,7 +4,7 @@ export default defineNuxtPlugin({
   name: 'partner',
   dependsOn: ['auth'],
   setup() {
-    const partner = usePartnerStore()
+    const partner = usePartnerStore(usePinia())
     partner.init()
   },
 })

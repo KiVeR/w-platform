@@ -7,9 +7,10 @@ import { useAuthStore } from '@/stores/auth'
 export default defineNuxtPlugin({
   name: 'api',
   setup() {
+    const pinia = usePinia()
     const config = useRuntimeConfig()
     const router = useRouter()
-    const auth = useAuthStore()
+    const auth = useAuthStore(pinia)
 
     const client = createClient<paths>({
       baseUrl: `${config.public.apiUrl}/api`,

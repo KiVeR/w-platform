@@ -25,13 +25,7 @@ if [ "$APP_ENV" = "local" ]; then
 
     php artisan migrate --force --no-interaction 2>/dev/null || true
 
-    # Create Passport personal access client if none exists
-    php -r "
-        require 'vendor/autoload.php';
-        \$app = require 'bootstrap/app.php';
-        \$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-        exit(\Laravel\Passport\Client::where('personal_access_client', true)->exists() ? 0 : 1);
-    " 2>/dev/null || php artisan passport:client --personal --name="Wellpack" --no-interaction 2>/dev/null || true
+    php scripts/ensure_passport_personal_access_client.php Wellpack users 2>/dev/null || true
 fi
 
 # Start php-fpm as daemon, nginx in foreground

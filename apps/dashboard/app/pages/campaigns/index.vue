@@ -78,6 +78,10 @@ async function handleDuplicate(id: number) {
   wizard.initFromCampaign(raw)
   navigateTo('/campaigns/new')
 }
+
+function handleEdit(id: number) {
+  navigateTo(`/campaigns/new?draft=${id}`)
+}
 </script>
 
 <template>
@@ -120,6 +124,7 @@ async function handleDuplicate(id: number) {
       @page="handlePage"
       @delete="handleDelete"
       @view="handleView"
+      @edit="handleEdit"
       @duplicate="handleDuplicate"
       @retry="fetchCampaigns"
     />

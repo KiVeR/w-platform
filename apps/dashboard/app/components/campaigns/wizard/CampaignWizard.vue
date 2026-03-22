@@ -34,6 +34,9 @@ const progressPercent = computed(() => `${((wizard.currentStep + 1) / 6) * 100}%
 const transitionDirection = ref<'forward' | 'backward'>('forward')
 const transitionName = computed(() => `slide-${transitionDirection.value}`)
 const mobileSheetOpen = ref(false)
+const isInlineLandingPageEditorOpen = computed(() =>
+  wizard.currentStep === 3 && wizard.landingPageEditorMode === 'edit',
+)
 
 const autosaveLabel = computed(() => {
   if (wizard.saveError) return t('wizard.autosave.error')
@@ -59,8 +62,8 @@ async function handleNext() {
     })
     return
   }
-  if (wizard.campaignId && wizard.isDirty) {
-    await wizard.saveDraft()
+  if (wizard.isDirty) {
+    await wizard.persistDraftNow()
   }
   transitionDirection.value = 'forward'
   wizard.nextStep()
@@ -71,7 +74,7 @@ async function handleNext() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl space-y-6">
+  <div class="mx-auto max-w-[88rem] space-y-6 px-4 xl:px-6">
     <div class="flex items-center gap-4">
       <div class="min-w-0 flex-1">
         <WizardStepper
@@ -99,14 +102,14 @@ async function handleNext() {
       </Badge>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-[1fr_280px]">
+    <div class="grid gap-6" :class="isInlineLandingPageEditorOpen ? 'lg:grid-cols-1' : 'lg:grid-cols-[1fr_280px]'">
       <div class="relative min-h-100 overflow-x-clip">
         <Transition :name="transitionName" mode="out-in">
           <component :is="stepComponents[wizard.currentStep]" :key="wizard.currentStep" />
         </Transition>
       </div>
 
-      <aside class="hidden lg:block">
+      <aside v-if="!isInlineLandingPageEditorOpen" class="hidden lg:block">
         <div class="sticky top-6 space-y-4">
           <WizardSidebarPreview v-if="wizard.currentStep >= 1 && wizard.currentStep <= 2" />
           <WizardEstimatePanel />
@@ -114,7 +117,7 @@ async function handleNext() {
       </aside>
     </div>
 
-    <div class="sticky bottom-0 z-10 -mx-4 md:-mx-6" data-wizard-nav>
+    <div v-if="!isInlineLandingPageEditorOpen" class="sticky bottom-0 z-10 -mx-4 xl:-mx-6" data-wizard-nav>
       <div class="h-0.5 bg-primary/20">
         <div class="h-full bg-primary transition-all duration-300" :style="{ width: progressPercent }" data-progress-bar />
       </div>
@@ -139,6 +142,7 @@ async function handleNext() {
 
     <!-- Mobile estimate FAB + Sheet (visible only under lg breakpoint) -->
     <Button
+      v-if="!isInlineLandingPageEditorOpen"
       data-mobile-estimate-fab
       class="fixed bottom-20 right-4 z-20 size-12 rounded-full shadow-lg lg:hidden"
       @click="mobileSheetOpen = true"

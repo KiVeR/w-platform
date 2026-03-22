@@ -1,3 +1,10 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+publicHoistPattern:
+  - 'aria-hidden'
+  - '@floating-ui/*'
+  - '@tanstack/*'
+  - '@internationalized/*'
+  - '@swc/helpers'

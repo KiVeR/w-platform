@@ -4,7 +4,7 @@ export default defineNuxtPlugin({
   name: 'auth',
   dependsOn: ['api'],
   async setup() {
-    const auth = useAuthStore()
+    const auth = useAuthStore(usePinia())
     await auth.init()
   },
 })

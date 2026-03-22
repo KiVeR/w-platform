@@ -7,14 +7,26 @@
       "@wellpack/targeting": "workspace:*",
       "@wellpack/operations": "workspace:*",
       "@wellpack/billing": "workspace:*"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma"
+    ]
   },
   "scripts": {
     "dev:dashboard": "pnpm --filter dashboard dev",
+    "dev:kreo": "pnpm --filter kreo dev",
     "build:dashboard": "pnpm --filter dashboard build",
+    "build:kreo": "pnpm --filter kreo build",
     "test:dashboard": "pnpm --filter dashboard test",
+    "test:kreo": "pnpm --filter kreo test",
     "lint:dashboard": "pnpm --filter dashboard lint",
+    "lint:kreo": "pnpm --filter kreo lint",
     "typecheck:dashboard": "pnpm --filter dashboard typecheck",
+    "typecheck:kreo": "pnpm --filter kreo typecheck",
     "generate:types": "pnpm --filter dashboard generate:types",
     "dev:api": "cd apps/api && php artisan serve"
   }
