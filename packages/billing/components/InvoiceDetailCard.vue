@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { InvoiceDetail } from '#billing/types/billing'
 import { isOverdue } from '#billing/types/billing'
 
@@ -8,7 +9,7 @@ const props = defineProps<{
 
 const { t, locale } = useI18n()
 
-const overdue = isOverdue(props.invoice)
+const overdue = computed(() => isOverdue(props.invoice))
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '-'

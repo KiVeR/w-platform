@@ -2,7 +2,7 @@
 import type { InvoiceRow, InvoiceStatus } from '#billing/types/billing'
 import { isOverdue } from '#billing/types/billing'
 
-const props = defineProps<{
+defineProps<{
   invoices: InvoiceRow[]
   isLoading: boolean
 }>()

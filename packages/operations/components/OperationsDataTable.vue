@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { OperationRow, LifecycleStatus, OperationType } from '#operations/types/operations'
 import { OPERATION_TYPE_CONFIG } from '#operations/types/operations'
 
-const props = defineProps<{
+defineProps<{
   operations: OperationRow[]
   isLoading: boolean
 }>()

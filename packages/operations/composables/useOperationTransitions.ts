@@ -70,9 +70,9 @@ export function useOperationTransitions() {
           to_state: String(t.to_state ?? ''),
           user_id: t.user_id != null ? Number(t.user_id) : null,
           reason: t.reason ? String(t.reason) : null,
-          metadata: t.metadata as Record<string, unknown> | null ?? null,
+          metadata: (t.metadata as Record<string, unknown> | null) ?? null,
           created_at: String(t.created_at ?? ''),
-          user: t.user as OperationTransition['user'] ?? null,
+          user: (t.user as OperationTransition['user']) ?? null,
         }))
       }
     }

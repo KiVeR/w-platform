@@ -24,7 +24,7 @@ function onFilterStatus(status: LifecycleStatus | undefined) {
 }
 
 function onSelect(id: number) {
-  navigateTo('/operations/' + id)
+  navigateTo(`/operations/${id}`)
 }
 
 onMounted(() => {

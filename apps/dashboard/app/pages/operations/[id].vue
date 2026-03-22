@@ -33,9 +33,11 @@ async function onTransition(toState: string, reason?: string) {
   }
 }
 
-onMounted(async () => {
-  await fetchOperation(operationId)
-  await fetchTransitionHistory(operationId)
+onMounted(() => {
+  Promise.all([
+    fetchOperation(operationId),
+    fetchTransitionHistory(operationId),
+  ])
 })
 </script>
 

@@ -29,7 +29,7 @@ onMounted(async () => {
 })
 
 function onSelectInvoice(id: number) {
-  navigateTo('/billing/' + id)
+  navigateTo(`/billing/${id}`)
 }
 </script>
 

@@ -34,13 +34,13 @@ export function useOperationDetail() {
       preparation_step: raw.preparation_step ? String(raw.preparation_step) : null,
       processing_status: raw.processing_status ? String(raw.processing_status) : null,
       cancellation_type: raw.cancellation_type ? String(raw.cancellation_type) : null,
-      targeting: raw.targeting as Record<string, unknown> | null ?? null,
+      targeting: (raw.targeting as Record<string, unknown> | null) ?? null,
       message: raw.message ? String(raw.message) : null,
       sender: raw.sender ? String(raw.sender) : null,
       external_ref: raw.external_ref ? String(raw.external_ref) : null,
       demande: raw.demande as OperationDetail['demande'],
-      campaign: raw.campaign as OperationDetail['campaign'] ?? null,
-      assigned_user: raw.assigned_user as OperationDetail['assigned_user'] ?? null,
+      campaign: (raw.campaign as OperationDetail['campaign']) ?? null,
+      assigned_user: (raw.assigned_user as OperationDetail['assigned_user']) ?? null,
     }
   }
 

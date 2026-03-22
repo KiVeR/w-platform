@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { OperationTransition } from '#operations/types/operations'
+import type { OperationTransition, LifecycleStatus } from '#operations/types/operations'
 import { LIFECYCLE_CONFIG } from '#operations/types/operations'
-import type { LifecycleStatus } from '#operations/types/operations'
 
 defineProps<{
   transitions: OperationTransition[]
