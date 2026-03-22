@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { LifecycleStatus } from '#operations/types/operations'
 import { LIFECYCLE_CONFIG, LIFECYCLE_TRANSITIONS } from '#operations/types/operations'
 
@@ -7,6 +7,7 @@ const props = defineProps<{
   currentStatus: LifecycleStatus
   operationId: number
   isTransitioning: boolean
+  transitionError?: string | null
 }>()
 
 const emit = defineEmits<{
@@ -19,7 +20,7 @@ const showConfirm = ref(false)
 const pendingTransition = ref<LifecycleStatus | null>(null)
 const reason = ref('')
 
-const allowedTargets = LIFECYCLE_TRANSITIONS[props.currentStatus] ?? []
+const allowedTargets = computed(() => LIFECYCLE_TRANSITIONS[props.currentStatus] ?? [])
 
 function requestTransition(toState: LifecycleStatus) {
   pendingTransition.value = toState
@@ -45,6 +46,9 @@ function cancelTransition() {
 
 <template>
   <div class="relative" data-testid="transition-menu">
+    <!-- Transition error -->
+    <p v-if="transitionError" class="text-sm text-destructive mt-1" data-testid="transition-error">{{ transitionError }}</p>
+
     <!-- Transition buttons -->
     <div v-if="allowedTargets.length > 0" class="flex flex-wrap gap-2">
       <button

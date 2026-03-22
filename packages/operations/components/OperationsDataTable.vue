@@ -13,7 +13,7 @@ const emit = defineEmits<{
   'filter-status': [status: LifecycleStatus | undefined]
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const activeFilter = ref<string>('all')
 
@@ -28,7 +28,7 @@ function getTypeLabel(type: OperationType): string {
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '-'
-  return new Date(dateStr).toLocaleDateString('fr-FR', {
+  return new Date(dateStr).toLocaleDateString(locale.value, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

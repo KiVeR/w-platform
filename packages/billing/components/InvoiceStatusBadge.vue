@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { InvoiceRow } from '#billing/types/billing'
 import { INVOICE_STATUS_CONFIG, OVERDUE_CONFIG, isOverdue } from '#billing/types/billing'
 
@@ -8,8 +9,8 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const overdue = isOverdue(props.invoice)
-const config = overdue ? OVERDUE_CONFIG : INVOICE_STATUS_CONFIG[props.invoice.status]
+const overdue = computed(() => isOverdue(props.invoice))
+const config = computed(() => overdue.value ? OVERDUE_CONFIG : INVOICE_STATUS_CONFIG[props.invoice.status])
 
 const colorClasses: Record<string, string> = {
   gray: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',

@@ -1,7 +1,7 @@
 export type LifecycleStatus = 'draft' | 'preparing' | 'on_hold' | 'ready' | 'scheduled' | 'processing' | 'delivered' | 'completed' | 'cancelled'
 export type OperationType = 'loc' | 'fid' | 'rloc' | 'acq' | 'qual' | 'rep' | 'enrich' | 'valid' | 'filtre'
 export type CreativeStatus = 'not_applicable' | 'pending' | 'in_progress' | 'pending_approval' | 'revision_requested' | 'approved'
-export type BillingStatus = 'not_applicable' | 'pending' | 'invoiced' | 'paid' | 'overdue' | 'credited' | 'prepaid'
+export type BillingStatus = 'not_applicable' | 'pending' | 'invoiced' | 'paid' | 'credited' | 'prepaid'
 export type RoutingStatus = 'not_applicable' | 'pending' | 'in_progress' | 'completed' | 'failed'
 export type Priority = 'high' | 'medium' | 'low'
 
@@ -98,8 +98,8 @@ export const LIFECYCLE_TRANSITIONS: Partial<Record<LifecycleStatus, LifecycleSta
   draft: ['preparing', 'cancelled'],
   preparing: ['on_hold', 'ready', 'cancelled'],
   on_hold: ['preparing', 'cancelled'],
-  ready: ['scheduled', 'cancelled'],
-  scheduled: ['processing', 'cancelled'],
+  ready: ['on_hold', 'scheduled', 'cancelled'],
+  scheduled: ['on_hold', 'processing', 'cancelled'],
   processing: ['delivered', 'cancelled'],
   delivered: ['completed'],
 }

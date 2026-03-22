@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { OperationTransition, LifecycleStatus } from '#operations/types/operations'
 import { LIFECYCLE_TRANSITIONS } from '#operations/types/operations'
 
@@ -9,6 +9,7 @@ export function useOperationTransitions() {
   const isTransitioning = ref(false)
   const isLoadingHistory = ref(false)
   const hasError = ref(false)
+  const transitionError = ref<string | null>(null)
 
   function allowedTransitions(currentStatus: LifecycleStatus): LifecycleStatus[] {
     return LIFECYCLE_TRANSITIONS[currentStatus] ?? []
@@ -22,6 +23,7 @@ export function useOperationTransitions() {
   ): Promise<boolean> {
     isTransitioning.value = true
     hasError.value = false
+    transitionError.value = null
     try {
       const body: Record<string, unknown> = { track, to_state: toState }
       if (reason) {
@@ -33,12 +35,14 @@ export function useOperationTransitions() {
       })
       if (error) {
         hasError.value = true
+        transitionError.value = (error as { message?: string }).message ?? 'Transition failed'
         return false
       }
       return true
     }
-    catch {
+    catch (err) {
       hasError.value = true
+      transitionError.value = err instanceof Error ? err.message : 'Transition failed'
       return false
     }
     finally {
@@ -85,6 +89,7 @@ export function useOperationTransitions() {
     isTransitioning,
     isLoadingHistory,
     hasError,
+    transitionError,
     allowedTransitions,
     applyTransition,
     fetchTransitionHistory,

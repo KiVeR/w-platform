@@ -8,7 +8,7 @@ defineProps<{
   isLoading: boolean
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 function getStatusLabel(state: string): string {
   const config = LIFECYCLE_CONFIG[state as LifecycleStatus]
@@ -16,7 +16,7 @@ function getStatusLabel(state: string): string {
 }
 
 function formatDateTime(dateStr: string): string {
-  return new Date(dateStr).toLocaleString('fr-FR', {
+  return new Date(dateStr).toLocaleString(locale.value, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

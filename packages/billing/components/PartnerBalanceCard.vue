@@ -4,10 +4,10 @@ const props = defineProps<{
   isLoading: boolean
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount)
+  return new Intl.NumberFormat(locale.value, { style: 'currency', currency: 'EUR' }).format(amount)
 }
 </script>
 

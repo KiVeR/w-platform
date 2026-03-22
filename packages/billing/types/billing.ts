@@ -60,7 +60,10 @@ export const OVERDUE_CONFIG = { label: 'En retard', color: 'red', i18nKey: 'bill
  * An invoice is overdue when its status is 'sent' and due_date is in the past.
  */
 export function isOverdue(invoice: InvoiceRow): boolean {
-  return invoice.status === 'sent' && new Date(invoice.due_date) < new Date()
+  if (invoice.status !== 'sent') return false
+  const [year, month, day] = invoice.due_date.split('-').map(Number)
+  const dueDate = new Date(year, month - 1, day, 23, 59, 59)
+  return new Date() > dueDate
 }
 
 export interface PartnerBalance {

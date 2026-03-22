@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { LifecycleStatus } from '#operations/types/operations'
 import { LIFECYCLE_CONFIG } from '#operations/types/operations'
 
@@ -8,7 +9,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const config = LIFECYCLE_CONFIG[props.status]
+const config = computed(() => LIFECYCLE_CONFIG[props.status])
 
 const colorClasses: Record<string, string> = {
   gray: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',

@@ -6,7 +6,7 @@ import { vi } from 'vitest'
  */
 export function mockUseI18n() {
   const t = (key: string) => key
-  vi.stubGlobal('useI18n', () => ({ t }))
+  vi.stubGlobal('useI18n', () => ({ t, locale: { value: 'fr-FR' } }))
 }
 
 /**

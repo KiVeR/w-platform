@@ -6,13 +6,13 @@ const props = defineProps<{
   invoice: InvoiceDetail
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const overdue = isOverdue(props.invoice)
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return '-'
-  return new Date(dateStr).toLocaleDateString('fr-FR', {
+  return new Date(dateStr).toLocaleDateString(locale.value, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -20,7 +20,7 @@ function formatDate(dateStr: string | null): string {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount)
+  return new Intl.NumberFormat(locale.value, { style: 'currency', currency: 'EUR' }).format(amount)
 }
 </script>
 

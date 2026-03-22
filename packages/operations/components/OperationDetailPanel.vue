@@ -14,7 +14,7 @@ const emit = defineEmits<{
   transition: [toState: string, reason?: string]
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const activeTab = ref<'summary' | 'timeline' | 'billing'>('summary')
 
@@ -25,12 +25,12 @@ function getTypeLabel(): string {
 
 function formatPrice(value: number | null): string {
   if (value == null) return '-'
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value)
+  return new Intl.NumberFormat(locale.value, { style: 'currency', currency: 'EUR' }).format(value)
 }
 
 function formatVolume(value: number | null): string {
   if (value == null) return '-'
-  return new Intl.NumberFormat('fr-FR').format(value)
+  return new Intl.NumberFormat(locale.value).format(value)
 }
 </script>
 
