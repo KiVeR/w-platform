@@ -46,7 +46,11 @@ class OperationPolicy
             return false;
         }
 
-        return $user->hasRole('admin');
+        if ($user->can('manage operations')) {
+            return true;
+        }
+
+        return $operation->demande->partner_id === $user->partner_id;
     }
 
     public function transition(User $user, Operation $operation): bool

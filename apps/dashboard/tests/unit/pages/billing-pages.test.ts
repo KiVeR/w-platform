@@ -42,6 +42,10 @@ vi.stubGlobal('usePartnerBalance', () => ({
   fetchBalance,
 }))
 
+vi.stubGlobal('usePartnerStore', () => ({
+  effectivePartnerId: 42,
+}))
+
 // Stubs for billing detail page
 const invoice = ref<any>(null)
 const isLoadingDetail = ref(false)

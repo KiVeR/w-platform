@@ -27,8 +27,7 @@ class DemandePolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin')
-            || ($user->hasPermissionTo('manage demandes', 'api') && $user->partner_id !== null);
+        return $user->can('manage demandes');
     }
 
     public function update(User $user, Demande $demande): bool

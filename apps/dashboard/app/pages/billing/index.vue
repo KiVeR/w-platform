@@ -12,14 +12,15 @@ const { balance, isLoading: isLoadingBalance, fetchBalance } = usePartnerBalance
 const pendingCount = ref(0)
 const isLoadingQueue = ref(false)
 
+const partnerStore = usePartnerStore()
+
 onMounted(async () => {
   await fetchInvoices()
   // Balance and queue loading are best-effort
   try {
-    // Partner balance requires a partner context — use partner store if available
-    const partnerStore = useNuxtApp().$pinia?.state?.value?.partner
-    if (partnerStore?.current?.id) {
-      await fetchBalance(partnerStore.current.id)
+    const partnerId = partnerStore.effectivePartnerId
+    if (partnerId) {
+      await fetchBalance(partnerId)
     }
   }
   catch {
