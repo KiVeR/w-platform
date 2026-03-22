@@ -10,6 +10,12 @@ export default defineNuxtConfig({
     '#targeting': currentDir,
   },
 
+  vite: {
+    optimizeDeps: {
+      include: ['@vue-leaflet/vue-leaflet', 'leaflet', 'reka-ui', 'reka-ui/date', '@internationalized/date'],
+    },
+  },
+
   imports: {
     dirs: [
       join(currentDir, './composables'),

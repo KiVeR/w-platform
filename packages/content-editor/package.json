@@ -8,6 +8,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "sortablejs": "^1.15.6",
     "vuedraggable": "^4.1.0",
     "lucide-vue-next": "^0.460.0",
     "zod": "^3.24.0",

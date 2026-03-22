@@ -3,7 +3,7 @@ import type { NitroFetchOptions } from 'nitropack'
 const DEFAULT_TIMEOUT = 10000
 
 type FetchOptions = NitroFetchOptions<string> & { timeout?: number }
-type EditorApiConfig = Pick<EditorConfig, 'apiBaseUrl' | 'getAuthToken' | 'refreshToken' | 'onAuthFailure'>
+type EditorApiConfig = Pick<EditorConfig, 'apiBaseUrl' | 'credentials' | 'getAuthToken' | 'refreshToken' | 'onAuthFailure'>
 
 /**
  * Unified HTTP client for the editor layer.
@@ -31,7 +31,7 @@ export function createEditorApiClient(config: EditorApiConfig) {
     try {
       return await $fetch<T>(url, {
         ...fetchOptions,
-        credentials: 'include',
+        ...(config.credentials ? { credentials: config.credentials } : {}),
         headers,
         timeout,
       })

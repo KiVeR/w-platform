@@ -5,13 +5,25 @@ import { localStorageMock, stubAuthGlobals } from '../../helpers/auth-stubs'
 const mockPost = vi.fn()
 const mockPut = vi.fn()
 const mockGet = vi.fn()
+let mockPartnerId: number | null = 42
+let mockIsAdmin = true
 
 stubAuthGlobals({ $api: { POST: mockPost, PUT: mockPut, GET: mockGet } })
 vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
 
+vi.mock('@/stores/auth', () => ({
+  useAuthStore: () => ({
+    get isAdmin() {
+      return mockIsAdmin
+    },
+  }),
+}))
+
 vi.mock('@/stores/partner', () => ({
   usePartnerStore: () => ({
-    effectivePartnerId: 42,
+    get effectivePartnerId() {
+      return mockPartnerId
+    },
   }),
 }))
 
@@ -20,7 +32,10 @@ const { useCampaignWizardStore } = await import('@/stores/campaignWizard')
 describe('useCampaignWizardStore', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useRealTimers()
     localStorageMock.clear()
+    mockIsAdmin = true
+    mockPartnerId = 42
     setActivePinia(createPinia())
   })
 
@@ -365,6 +380,151 @@ describe('useCampaignWizardStore', () => {
         params: { path: { campaign: 99 } },
       }))
       expect(result).toBe(true)
+    })
+
+    it('persistDraftNow creates a draft when none exists', async () => {
+      mockPost.mockResolvedValue({ data: { data: { id: '99' } }, error: null })
+
+      const wizard = useCampaignWizardStore()
+      wizard.isDirty = true
+      wizard.campaign.name = 'Autosave draft'
+
+      const result = await wizard.persistDraftNow()
+
+      expect(result).toBe(true)
+      expect(mockPost).toHaveBeenCalledWith('/campaigns', expect.anything())
+      expect(wizard.campaignId).toBe(99)
+      expect(wizard.isDirty).toBe(false)
+    })
+
+    it('persistDraftNow updates an existing draft', async () => {
+      mockPut.mockResolvedValue({ data: {}, error: null })
+
+      const wizard = useCampaignWizardStore()
+      wizard.campaignId = 44
+      wizard.isDirty = true
+      wizard.campaign.name = 'Updated draft'
+
+      const result = await wizard.persistDraftNow()
+
+      expect(result).toBe(true)
+      expect(mockPut).toHaveBeenCalledWith('/campaigns/{campaign}', expect.objectContaining({
+        params: { path: { campaign: 44 } },
+      }))
+      expect(wizard.isDirty).toBe(false)
+    })
+
+    it('autosaves after debounce when draft is dirty', async () => {
+      vi.useFakeTimers()
+      mockPost.mockResolvedValue({ data: { data: { id: '101' } }, error: null })
+
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Autosaved campaign'
+      wizard.isDirty = true
+
+      vi.advanceTimersByTime(1200)
+      await vi.runAllTimersAsync()
+
+      expect(mockPost).toHaveBeenCalledWith('/campaigns', expect.anything())
+      expect(wizard.campaignId).toBe(101)
+      expect(wizard.isDirty).toBe(false)
+    })
+
+    it('does not autosave for admin without partner scope', async () => {
+      vi.useFakeTimers()
+      mockPartnerId = null
+
+      const wizard = useCampaignWizardStore()
+      wizard.campaign.name = 'Blocked autosave'
+      wizard.isDirty = true
+
+      vi.advanceTimersByTime(2000)
+      await vi.runAllTimersAsync()
+
+      expect(mockPost).not.toHaveBeenCalled()
+      expect(mockPut).not.toHaveBeenCalled()
+      expect(wizard.campaignId).toBeNull()
+      expect(wizard.isDirty).toBe(true)
+    })
+
+    it('loadDraft resumes the persisted current step when available', async () => {
+      localStorage.setItem('wellpack-campaign-draft-step:77', '4')
+      mockGet.mockResolvedValue({
+        data: {
+          data: {
+            id: 77,
+            type: 'prospection',
+            channel: 'sms',
+            name: 'Draft campaign',
+            message: 'Bonjour',
+            sender: 'WELLPACK',
+            targeting: {
+              method: 'postcode',
+              departments: [],
+              postcodes: ['75001'],
+              communes: [],
+              iris_codes: [],
+              address: null,
+              lat: null,
+              lng: null,
+              radius: null,
+              gender: null,
+              age_min: null,
+              age_max: null,
+            },
+          },
+        },
+        error: null,
+      })
+
+      const wizard = useCampaignWizardStore()
+      const result = await wizard.loadDraft(77)
+
+      expect(result).toBe(true)
+      expect(wizard.currentStep).toBe(4)
+    })
+
+    it('loadDraft falls back to inferred review step when scheduling is already set', async () => {
+      mockGet.mockResolvedValue({
+        data: {
+          data: {
+            id: 88,
+            type: 'prospection',
+            channel: 'sms',
+            name: 'Scheduled draft',
+            message: 'Bonjour',
+            sender: 'WELLPACK',
+            scheduled_at: '2026-03-23T09:00:00Z',
+            landing_page_id: 15,
+            targeting: {
+              method: 'postcode',
+              departments: [],
+              postcodes: ['75001'],
+              communes: [],
+              iris_codes: [],
+              address: null,
+              lat: null,
+              lng: null,
+              radius: null,
+              gender: null,
+              age_min: null,
+              age_max: null,
+            },
+            landing_page: {
+              id: 15,
+              name: 'Promo LP',
+              status: 'draft',
+            },
+          },
+        },
+        error: null,
+      })
+
+      const wizard = useCampaignWizardStore()
+      const result = await wizard.loadDraft(88)
+
+      expect(result).toBe(true)
+      expect(wizard.currentStep).toBe(5)
     })
   })
 

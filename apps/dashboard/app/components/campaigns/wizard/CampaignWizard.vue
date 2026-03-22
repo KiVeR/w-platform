@@ -62,8 +62,8 @@ async function handleNext() {
     })
     return
   }
-  if (wizard.campaignId && wizard.isDirty) {
-    await wizard.saveDraft()
+  if (wizard.isDirty) {
+    await wizard.persistDraftNow()
   }
   transitionDirection.value = 'forward'
   wizard.nextStep()
@@ -74,7 +74,7 @@ async function handleNext() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl space-y-6">
+  <div class="mx-auto max-w-[88rem] space-y-6 px-4 xl:px-6">
     <div class="flex items-center gap-4">
       <div class="min-w-0 flex-1">
         <WizardStepper
@@ -117,7 +117,7 @@ async function handleNext() {
       </aside>
     </div>
 
-    <div v-if="!isInlineLandingPageEditorOpen" class="sticky bottom-0 z-10 -mx-4 md:-mx-6" data-wizard-nav>
+    <div v-if="!isInlineLandingPageEditorOpen" class="sticky bottom-0 z-10 -mx-4 xl:-mx-6" data-wizard-nav>
       <div class="h-0.5 bg-primary/20">
         <div class="h-full bg-primary transition-all duration-300" :style="{ width: progressPercent }" data-progress-bar />
       </div>

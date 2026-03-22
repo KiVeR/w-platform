@@ -26,11 +26,19 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         'reka-ui',
+        'reka-ui/date',
         'aria-hidden',
         '@floating-ui/vue',
         '@tanstack/vue-virtual',
         '@internationalized/number',
+        '@internationalized/date',
+        '@vue-leaflet/vue-leaflet',
         '@swc/helpers/_/_class_private_field_init',
+        'leaflet',
+        'zod',
+        'uuid',
+        'sortablejs',
+        'vuedraggable',
       ],
     },
     resolve: {

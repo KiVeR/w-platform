@@ -32,6 +32,9 @@ export interface EditorTheme {
 export interface EditorConfig {
   // HTTP — base URL for API calls (e.g., '/api/v1' or 'https://api.wellpack.fr/api')
   apiBaseUrl: string
+  // Optional fetch credentials mode. Dashboard uses bearer-only cross-origin calls,
+  // while some hosts may still need cookies for same-origin requests.
+  credentials?: RequestCredentials
   // Auth token provider — each app has its own auth system
   getAuthToken: () => string | null
   // Optional token refresh — returns new token or null if refresh fails

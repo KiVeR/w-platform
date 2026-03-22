@@ -14,7 +14,7 @@ RUN chmod +x /usr/local/bin/ensure-workspace-deps
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "ensure-workspace-deps /app/apps/dashboard/node_modules/.bin/nuxt && pnpm dev:dashboard --host 0.0.0.0"]
+CMD ["sh", "-c", "ensure-workspace-deps /app/apps/dashboard/node_modules/.bin/nuxt && rm -rf /app/apps/dashboard/node_modules/.cache/vite /app/apps/dashboard/.nuxt && pnpm dev:dashboard --host 0.0.0.0"]
 
 # =============================================================================
 # Stage: build — production build

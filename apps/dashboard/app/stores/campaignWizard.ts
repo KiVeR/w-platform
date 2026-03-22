@@ -2,6 +2,7 @@ import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { BarChart3, Megaphone, MessageSquare, LayoutTemplate, Calendar, CheckCircle } from 'lucide-vue-next'
 import { useApi } from '@/composables/useApi'
+import { useAuthStore } from '@/stores/auth'
 import { usePartnerStore } from '@/stores/partner'
 import type { CampaignDraft, CampaignEstimate, CampaignLandingPageSummary, WizardStep } from '@/types/campaign'
 
@@ -19,6 +20,9 @@ function createDebouncedFn(fn: () => void | Promise<void>, delay: number): () =>
     }, delay)
   }
 }
+
+const AUTOSAVE_DELAY = 1200
+const DRAFT_STEP_STORAGE_KEY = 'wellpack-campaign-draft-step'
 
 function freshDraft(): CampaignDraft {
   return {
@@ -50,6 +54,7 @@ function freshDraft(): CampaignDraft {
 
 export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const api = useApi()
+  const auth = useAuthStore()
   const partnerStore = usePartnerStore()
 
   const currentStep = ref(0)
@@ -65,6 +70,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   const showValidation = ref(false)
   const landingPageSummary = ref<CampaignLandingPageSummary | null>(null)
   const landingPageEditorMode = ref<'browse' | 'edit'>('browse')
+  let autosaveTimeoutId: ReturnType<typeof setTimeout> | null = null
 
   const STEPS: WizardStep[] = [
     { key: 'estimate', labelKey: 'wizard.steps.estimate', icon: BarChart3 },
@@ -74,6 +80,82 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     { key: 'schedule', labelKey: 'wizard.steps.schedule', icon: Calendar },
     { key: 'review', labelKey: 'wizard.steps.review', icon: CheckCircle },
   ]
+
+  function clampStep(step: number): number {
+    return Math.min(Math.max(step, 0), STEPS.length - 1)
+  }
+
+  function draftStepStorageKey(id: number): string {
+    return `${DRAFT_STEP_STORAGE_KEY}:${id}`
+  }
+
+  function canUseLocalStorage(): boolean {
+    return typeof localStorage !== 'undefined'
+  }
+
+  function persistCurrentStep(step = currentStep.value): void {
+    if (!campaignId.value || !canUseLocalStorage())
+      return
+
+    localStorage.setItem(draftStepStorageKey(campaignId.value), String(clampStep(step)))
+  }
+
+  function readPersistedStep(id: number): number | null {
+    if (!canUseLocalStorage())
+      return null
+
+    const raw = localStorage.getItem(draftStepStorageKey(id))
+    if (raw === null)
+      return null
+
+    const parsed = Number(raw)
+    if (!Number.isInteger(parsed))
+      return null
+
+    return clampStep(parsed)
+  }
+
+  function hasMeaningfulTargeting(): boolean {
+    const t = campaign.value.targeting
+    return (
+      t.departments.length > 0
+      || t.postcodes.length > 0
+      || t.communes.length > 0
+      || t.iris_codes.length > 0
+      || !!t.address
+      || t.lat !== null
+      || t.lng !== null
+      || t.radius !== null
+      || t.gender !== null
+      || t.age_min !== null
+      || t.age_max !== null
+    )
+  }
+
+  function isMessageStepComplete(): boolean {
+    return validateStep(2)
+  }
+
+  function inferResumeStep(): number {
+    if (campaign.value.scheduled_at)
+      return 5
+
+    if (campaign.value.landing_page_id !== null)
+      return 4
+
+    if (
+      campaign.value.name.trim().length > 0
+      || campaign.value.message.trim().length > 0
+      || campaign.value.sender.trim().length > 0
+    ) {
+      return isMessageStepComplete() ? 3 : 2
+    }
+
+    if (hasMeaningfulTargeting())
+      return 1
+
+    return 0
+  }
 
   async function withSaving<T>(fn: () => Promise<T>, fallback: T, onError?: () => void): Promise<T> {
     isSaving.value = true
@@ -91,6 +173,24 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
 
   function campaignPath(): { params: { path: { campaign: number } } } {
     return { params: { path: { campaign: campaignId.value! } } }
+  }
+
+  function clearAutosave(): void {
+    if (!autosaveTimeoutId)
+      return
+
+    clearTimeout(autosaveTimeoutId)
+    autosaveTimeoutId = null
+  }
+
+  function canPersistDraft(): boolean {
+    if (!isDirty.value)
+      return false
+
+    if (auth.isAdmin && partnerStore.effectivePartnerId === null)
+      return false
+
+    return true
   }
 
   function setLandingPageSummary(summary: CampaignLandingPageSummary | null): void {
@@ -122,15 +222,22 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     if (step >= 0 && step <= 5) {
       currentStep.value = step
       showValidation.value = false
+      persistCurrentStep(step)
     }
   }
 
   function nextStep(): void {
-    if (currentStep.value < 5) currentStep.value++
+    if (currentStep.value < 5) {
+      currentStep.value++
+      persistCurrentStep()
+    }
   }
 
   function prevStep(): void {
-    if (currentStep.value > 0) currentStep.value--
+    if (currentStep.value > 0) {
+      currentStep.value--
+      persistCurrentStep()
+    }
   }
 
   const hasValidTargeting = computed(() => {
@@ -211,12 +318,15 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
 
   async function createDraft(): Promise<boolean> {
     return withSaving(async () => {
+      saveError.value = null
       const { data, error } = await api.POST('/campaigns', {
         body: campaignBody(),
       } as never)
       if (error || !data) return false
       const raw = data as { data: { id: string } }
       campaignId.value = Number(raw.data.id)
+      persistCurrentStep()
+      isDirty.value = false
       return true
     }, false)
   }
@@ -236,6 +346,30 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
       isDirty.value = false
       return true
     }, false, () => { saveError.value = 'save_failed' })
+  }
+
+  async function persistDraftNow(): Promise<boolean> {
+    clearAutosave()
+
+    if (!canPersistDraft())
+      return false
+
+    if (campaignId.value)
+      return saveDraft()
+
+    return createDraft()
+  }
+
+  function scheduleAutosave(): void {
+    clearAutosave()
+
+    if (!canPersistDraft())
+      return
+
+    autosaveTimeoutId = setTimeout(() => {
+      autosaveTimeoutId = null
+      void persistDraftNow()
+    }, AUTOSAVE_DELAY)
   }
 
   async function requestEstimate(): Promise<void> {
@@ -314,10 +448,11 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
   }
 
   async function loadDraft(draftId: number): Promise<boolean> {
+    clearAutosave()
     const { data, error } = await api.GET('/campaigns/{campaign}', {
       params: {
         path: { campaign: draftId },
-        query: { include: 'landingPage' },
+        query: { include: 'landingPage,partner' },
       },
     } as never)
     if (error || !data) return false
@@ -339,16 +474,22 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
         status: String(rawLandingPage.status ?? 'draft') as CampaignLandingPageSummary['status'],
       }
     }
+    const rawPartner = raw.partner as Record<string, unknown> | null | undefined
+    if (auth.isAdmin && rawPartner?.id != null && rawPartner?.name != null) {
+      partnerStore.setPartner(Number(rawPartner.id), String(rawPartner.name))
+    }
     campaign.value.is_demo = !!raw.is_demo
     campaign.value.additional_phone = (raw.additional_phone as string | null) ?? null
     const targeting = raw.targeting ? { ...(raw.targeting as CampaignDraft['targeting']) } : freshDraft().targeting
     if (targeting.radius != null) targeting.radius = targeting.radius / 1000
     campaign.value.targeting = targeting
     isPreFilled.value = true
+    currentStep.value = readPersistedStep(campaignId.value) ?? inferResumeStep()
     return true
   }
 
   function reset(): void {
+    clearAutosave()
     currentStep.value = 0
     campaignId.value = null
     campaign.value = freshDraft()
@@ -364,6 +505,15 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     landingPageEditorMode.value = 'browse'
     isPreFilled.value = false
   }
+
+  watch([isDirty, () => partnerStore.effectivePartnerId], ([dirty]) => {
+    if (!dirty) {
+      clearAutosave()
+      return
+    }
+
+    scheduleAutosave()
+  })
 
   return {
     currentStep,
@@ -391,6 +541,7 @@ export const useCampaignWizardStore = defineStore('campaignWizard', () => {
     ensureDraft,
     hasValidTargeting,
     requestEstimate,
+    persistDraftNow,
     scheduleCampaign,
     sendCampaign,
     isPreFilled,

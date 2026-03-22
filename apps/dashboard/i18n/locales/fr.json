@@ -418,6 +418,7 @@
     },
     "actions": {
       "view": "Voir",
+      "editDraft": "Reprendre le brouillon",
       "delete": "Supprimer",
       "duplicate": "Relancer"
     },
@@ -441,6 +442,7 @@
     },
     "detail": {
       "back": "Retour aux campagnes",
+      "editDraft": "Reprendre le brouillon",
       "export": "Exporter CSV",
       "duplicate": "Dupliquer",
       "cancel": "Annuler la campagne",
@@ -979,7 +981,13 @@
       "managedExternally": "Creation geree dans Kreo",
       "selected": "Sélectionnée",
       "refresh": "Rafraîchir",
-      "published": "Publiée"
+      "published": "Publiée",
+      "partnerScope": {
+        "title": "Partenaire requis",
+        "description": "Sélectionnez un partenaire dans l'en-tête avant de créer une landing page.",
+        "scopedTitle": "Partenaire actif",
+        "scopedDescription": "La landing page sera créée dans le contexte de {name}."
+      }
     }
   }
 }

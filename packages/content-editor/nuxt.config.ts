@@ -16,6 +16,12 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
+  vite: {
+    optimizeDeps: {
+      include: ['uuid', 'sortablejs', 'vuedraggable'],
+    },
+  },
+
   imports: {
     dirs: [
       join(currentDir, './composables'),

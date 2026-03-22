@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Copy, Download, Eye, MoreHorizontal, XCircle } from 'lucide-vue-next'
+import { ArrowLeft, Copy, Download, Eye, MoreHorizontal, Pencil, XCircle } from 'lucide-vue-next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
@@ -124,6 +124,7 @@ const canViewRecipients = computed(() => isAdmin.value || can('view campaigns'))
 const canManageCampaigns = computed(() => isAdmin.value || can('manage campaigns'))
 
 const availableActions = computed(() => ({
+  edit: !!campaign.value && canManageCampaigns.value && campaign.value.status === 'draft',
   duplicate: !!campaign.value && canManageCampaigns.value && campaign.value.status !== 'draft',
   export: !!campaign.value && canManageCampaigns.value && campaign.value.status === 'sent',
   cancel: !!campaign.value && canManageCampaigns.value && campaign.value.status === 'scheduled',
@@ -167,6 +168,11 @@ async function handleDuplicate(): Promise<void> {
   const raw = (data as { data: Record<string, unknown> }).data
   wizard.initFromCampaign(raw)
   navigateTo('/campaigns/new')
+}
+
+function handleEdit(): void {
+  if (!campaign.value) return
+  navigateTo(`/campaigns/new?draft=${campaign.value.id}`)
 }
 
 async function handleCancel(): Promise<void> {
@@ -265,6 +271,15 @@ onCampaignRefresh(() => {
 
           <DropdownMenuContent align="end">
             <DropdownMenuItem
+              v-if="availableActions.edit"
+              data-mobile-edit
+              @select="handleEdit"
+            >
+              <Pencil class="mr-2 size-4" />
+              {{ t('campaigns.detail.editDraft') }}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
               v-if="availableActions.duplicate"
               data-mobile-duplicate
               @select="handleDuplicate"
@@ -350,12 +365,14 @@ onCampaignRefresh(() => {
             <CampaignActionsPanel
               v-if="!isMobile"
               :campaign="campaign"
+              :show-edit="availableActions.edit"
               :show-duplicate="availableActions.duplicate"
               :show-export="availableActions.export"
               :show-cancel="availableActions.cancel"
               :is-exporting="isExporting"
               :is-cancelling="isCancelling"
               :cancel-error="cancelError"
+              @edit="handleEdit"
               @duplicate="handleDuplicate"
               @export="exportCampaign"
               @cancel="handleCancel"
@@ -398,12 +415,14 @@ onCampaignRefresh(() => {
 
           <CampaignActionsPanel
             :campaign="campaign"
+            :show-edit="availableActions.edit"
             :show-duplicate="availableActions.duplicate"
             :show-export="availableActions.export"
             :show-cancel="availableActions.cancel"
             :is-exporting="isExporting"
             :is-cancelling="isCancelling"
             :cancel-error="cancelError"
+            @edit="handleEdit"
             @duplicate="handleDuplicate"
             @export="exportCampaign"
             @cancel="handleCancel"

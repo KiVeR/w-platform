@@ -15,6 +15,7 @@ export function useEditorSetup(options: UseEditorSetupOptions) {
   const config = useRuntimeConfig()
   const editorBaseConfig = {
     apiBaseUrl: `${config.public.apiUrl}/api`,
+    credentials: 'omit' as const,
     getAuthToken: () => tokenRefreshManager.getAccessToken(),
     refreshToken: () => tokenRefreshManager.refreshToken(),
     features: {

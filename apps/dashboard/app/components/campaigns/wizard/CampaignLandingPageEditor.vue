@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   back: []
+  continue: []
 }>()
 
 const wizard = useCampaignWizardStore()
@@ -87,10 +88,15 @@ onUnmounted(() => {
 <template>
   <div class="editor-inline-shell">
     <div class="editor-inline-toolbar">
-      <Button variant="outline" size="sm" @click="emit('back')">
-        <ArrowLeft class="mr-2 size-4" />
-        {{ t('wizard.nav.back') }}
-      </Button>
+      <div class="flex items-center gap-2">
+        <Button variant="outline" size="sm" @click="emit('back')">
+          <ArrowLeft class="mr-2 size-4" />
+          {{ t('wizard.nav.back') }}
+        </Button>
+        <Button size="sm" :disabled="isLoading" @click="emit('continue')">
+          {{ t('wizard.nav.next') }}
+        </Button>
+      </div>
       <p class="text-sm text-muted-foreground">
         {{ t('wizard.landingPage.title') }}
       </p>

@@ -10,16 +10,21 @@ import {
   Plus,
   Loader2,
 } from 'lucide-vue-next'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import CampaignLandingPageEditor from '@/components/campaigns/wizard/CampaignLandingPageEditor.vue'
 import { useCampaignWizardStore } from '@/stores/campaignWizard'
+import { useAuthStore } from '@/stores/auth'
+import { usePartnerStore } from '@/stores/partner'
 import { useLandingPages } from '@/composables/useLandingPages'
 import { useLandingPageEditorAdapter } from '@/composables/useLandingPageEditorAdapter'
 import { tokenRefreshManager } from '@/services/tokenRefreshManager'
 
 const wizard = useCampaignWizardStore()
+const auth = useAuthStore()
+const partner = usePartnerStore()
 const { t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const { landingPages, isLoading, hasError, fetchLandingPages } = useLandingPages()
@@ -27,6 +32,9 @@ const { buildContentAdapter } = useLandingPageEditorAdapter()
 
 const mode = ref<'none' | 'with'>(wizard.campaign.landing_page_id ? 'with' : 'none')
 const isCreating = ref(false)
+const requiresPartnerScope = computed(() =>
+  auth.isAdmin && partner.effectivePartnerId === null,
+)
 
 const editorApi = createEditorApiClient({
   apiBaseUrl: `${runtimeConfig.public.apiUrl}/api`,
@@ -77,6 +85,9 @@ function selectLandingPage(id: number, name: string, status: 'draft' | 'publishe
 }
 
 async function createLandingPageAndEdit() {
+  if (requiresPartnerScope.value)
+    return
+
   isCreating.value = true
 
   try {
@@ -95,8 +106,8 @@ async function createLandingPageAndEdit() {
     })
     wizard.openLandingPageEditor()
 
-    if (wizard.campaignId)
-      await wizard.saveDraft()
+    if (wizard.isDirty)
+      await wizard.persistDraftNow()
 
     await fetchLandingPages()
   }
@@ -112,6 +123,13 @@ async function openEditor() {
   wizard.openLandingPageEditor()
   if (landingPages.value.length === 0)
     await fetchLandingPages()
+}
+
+async function continueFromEditor() {
+  wizard.closeLandingPageEditor()
+  if (wizard.isDirty)
+    await wizard.persistDraftNow()
+  wizard.nextStep()
 }
 </script>
 
@@ -158,11 +176,24 @@ async function openEditor() {
     </div>
 
     <template v-if="mode === 'with'">
+      <Alert v-if="requiresPartnerScope" data-lp-partner-warning variant="destructive">
+        <AlertTitle>{{ t('wizard.landingPage.partnerScope.title') }}</AlertTitle>
+        <AlertDescription>{{ t('wizard.landingPage.partnerScope.description') }}</AlertDescription>
+      </Alert>
+
+      <Alert v-else-if="auth.isAdmin && partner.currentPartnerName" data-lp-partner-scope>
+        <AlertTitle>{{ t('wizard.landingPage.partnerScope.scopedTitle') }}</AlertTitle>
+        <AlertDescription>
+          {{ t('wizard.landingPage.partnerScope.scopedDescription', { name: partner.currentPartnerName }) }}
+        </AlertDescription>
+      </Alert>
+
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-2">
           <Button
             data-create-lp-button
             size="sm"
+            :disabled="requiresPartnerScope || isCreating"
             @click="createLandingPageAndEdit"
           >
             <Loader2 v-if="isCreating" class="mr-2 size-4 animate-spin" />
@@ -246,12 +277,33 @@ async function openEditor() {
           </Card>
         </div>
 
-        <CampaignLandingPageEditor
-          v-else-if="wizard.campaign.landing_page_id"
-          :landing-page-id="wizard.campaign.landing_page_id"
-          @back="wizard.closeLandingPageEditor()"
-        />
+        <div v-else-if="wizard.campaign.landing_page_id" class="lp-editor-stage">
+          <CampaignLandingPageEditor
+            :landing-page-id="wizard.campaign.landing_page_id"
+            @back="wizard.closeLandingPageEditor()"
+            @continue="continueFromEditor"
+          />
+        </div>
       </template>
     </template>
   </div>
 </template>
+
+<style scoped>
+.lp-editor-stage :deep(.editor-inline-shell) {
+  min-height: 0;
+}
+
+.lp-editor-stage :deep(.editor-inline-frame) {
+  height: clamp(34rem, 72vh, 52rem);
+  min-height: 34rem;
+  max-height: 52rem;
+}
+
+@media (max-width: 1023px) {
+  .lp-editor-stage :deep(.editor-inline-frame) {
+    height: min(70vh, 42rem);
+    min-height: 28rem;
+  }
+}
+</style>
