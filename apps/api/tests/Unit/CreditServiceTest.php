@@ -9,7 +9,7 @@ use App\Services\CreditService;
 it('has enough credits when balance is sufficient', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
 
     expect($service->hasEnoughCredits($partner, 50.0))->toBeTrue();
 });
@@ -17,7 +17,7 @@ it('has enough credits when balance is sufficient', function (): void {
 it('does not have enough credits when balance is insufficient', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '10.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
 
     expect($service->hasEnoughCredits($partner, 50.0))->toBeFalse();
 });
@@ -25,7 +25,7 @@ it('does not have enough credits when balance is insufficient', function (): voi
 it('has enough credits at exact balance', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '50.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
 
     expect($service->hasEnoughCredits($partner, 50.0))->toBeTrue();
 });
@@ -33,7 +33,7 @@ it('has enough credits at exact balance', function (): void {
 it('deducts credits atomically', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->deduct($partner, 30.0);
 
     $partner->refresh();
@@ -43,7 +43,7 @@ it('deducts credits atomically', function (): void {
 it('deducts exact balance to zero', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '50.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->deduct($partner, 50.0);
 
     $partner->refresh();
@@ -53,14 +53,14 @@ it('deducts exact balance to zero', function (): void {
 it('throws InsufficientCreditsException when balance is too low', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '10.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->deduct($partner, 50.0);
 })->throws(InsufficientCreditsException::class);
 
 it('does not deduct when amount is zero', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->deduct($partner, 0);
 
     $partner->refresh();
@@ -70,7 +70,7 @@ it('does not deduct when amount is zero', function (): void {
 it('does not deduct when amount is negative', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->deduct($partner, -10.0);
 
     $partner->refresh();
@@ -80,7 +80,7 @@ it('does not deduct when amount is negative', function (): void {
 it('refunds credits correctly', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '50.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->refund($partner, 30.0);
 
     $partner->refresh();
@@ -90,7 +90,7 @@ it('refunds credits correctly', function (): void {
 it('does not refund when amount is zero', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '50.00']);
 
-    $service = new CreditService;
+    $service = app(CreditService::class);
     $service->refund($partner, 0);
 
     $partner->refresh();

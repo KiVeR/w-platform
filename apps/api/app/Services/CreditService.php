@@ -7,11 +7,21 @@ namespace App\Services;
 use App\Exceptions\InsufficientCreditsException;
 use App\Models\Partner;
 
+/**
+ * Compatibility facade — delegates to BalanceService.
+ *
+ * Keeps the public interface used by CampaignsController and
+ * ProcessCampaignSendingJob unchanged while adding ledger tracking.
+ */
 class CreditService
 {
+    public function __construct(
+        private readonly BalanceService $balanceService,
+    ) {}
+
     public function hasEnoughCredits(Partner $partner, float $amount): bool
     {
-        return (float) $partner->euro_credits >= $amount;
+        return $this->balanceService->hasEnoughCredits($partner, $amount);
     }
 
     /**
@@ -23,13 +33,7 @@ class CreditService
             return;
         }
 
-        $partner->refresh();
-
-        if (! $this->hasEnoughCredits($partner, $amount)) {
-            throw new InsufficientCreditsException($amount, (float) $partner->euro_credits);
-        }
-
-        $partner->decrement('euro_credits', $amount);
+        $this->balanceService->debit($partner, $amount, 'Débit campagne SMS');
     }
 
     public function refund(Partner $partner, float $amount): void
@@ -38,6 +42,6 @@ class CreditService
             return;
         }
 
-        $partner->increment('euro_credits', $amount);
+        $this->balanceService->refund($partner, $amount, 'Remboursement campagne SMS');
     }
 }

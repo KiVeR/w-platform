@@ -10,14 +10,17 @@ use App\Http\Controllers\Api\CampaignActivitiesController;
 use App\Http\Controllers\Api\CampaignLogsController;
 use App\Http\Controllers\Api\CampaignRecipientsController;
 use App\Http\Controllers\Api\CampaignsController;
+use App\Http\Controllers\Api\DemandesController;
 use App\Http\Controllers\Api\EstimateController;
 use App\Http\Controllers\Api\ExternalCampaignController;
 use App\Http\Controllers\Api\GeoController;
 use App\Http\Controllers\Api\ImportableLinkController;
 use App\Http\Controllers\Api\InterestGroupsController;
 use App\Http\Controllers\Api\InternalVariableSchemaController;
+use App\Http\Controllers\Api\InvoicesController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
+use App\Http\Controllers\Api\OperationsController;
 use App\Http\Controllers\Api\PartnerPricingsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\RouterController;
@@ -26,6 +29,7 @@ use App\Http\Controllers\Api\ShortUrlController;
 use App\Http\Controllers\Api\ShortUrlSuffixRequestController;
 use App\Http\Controllers\Api\SmsWebhookController;
 use App\Http\Controllers\Api\TargetingTemplatesController;
+use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VariableSchemaController;
 use Illuminate\Support\Facades\Route;
@@ -76,7 +80,8 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('interest-groups', [InterestGroupsController::class, 'index']);
     Route::apiResource('partner-pricings', PartnerPricingsController::class);
     Route::post('estimate', EstimateController::class);
-    Route::apiResource('campaigns', CampaignsController::class);
+    Route::post('campaigns', [CampaignsController::class, 'store'])->middleware('deprecate:2026-09-01');
+    Route::apiResource('campaigns', CampaignsController::class)->except(['store']);
     Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
     Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
     Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
@@ -85,6 +90,11 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('campaigns/{campaign}/activities', [CampaignActivitiesController::class, 'index']);
     Route::get('campaigns/{campaign}/logs', [CampaignLogsController::class, 'index']);
     Route::get('campaigns/{campaign}/recipients', [CampaignRecipientsController::class, 'index']);
+
+    Route::apiResource('demandes', DemandesController::class);
+    Route::apiResource('operations', OperationsController::class);
+    Route::post('operations/{operation}/transition', [OperationsController::class, 'transition']);
+    Route::get('operations/{operation}/transitions', [OperationsController::class, 'transitions']);
 
     Route::apiResource('targeting-templates', TargetingTemplatesController::class);
     Route::post('targeting-templates/{targeting_template}/use', [TargetingTemplatesController::class, 'useTemplate']);
@@ -111,6 +121,10 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::delete('short-url-requests', [ShortUrlSuffixRequestController::class, 'destroy']);
     Route::post('importable-links/upload', [ImportableLinkController::class, 'upload']);
     Route::post('importable-links/import/{uuid}', [ImportableLinkController::class, 'import']);
+
+    Route::apiResource('invoices', InvoicesController::class)->only(['index', 'show']);
+    Route::get('partners/{partner}/balance', [TransactionsController::class, 'balance']);
+    Route::get('partners/{partner}/transactions', [TransactionsController::class, 'index']);
 
     Route::prefix('geo')->name('geo.')->group(function (): void {
         Route::get('departments', [GeoController::class, 'departments'])->name('departments.index');

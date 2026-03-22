@@ -7,6 +7,8 @@ settings:
 overrides:
   '@wellpack/content-editor': workspace:*
   '@wellpack/targeting': workspace:*
+  '@wellpack/operations': workspace:*
+  '@wellpack/billing': workspace:*
 
 importers:
 
@@ -38,9 +40,15 @@ importers:
       '@vueuse/nuxt':
         specifier: ^14.2.1
         version: 14.2.1(magicast@0.5.2)(nuxt@4.3.1(@parcel/watcher@2.5.6)(@types/node@25.2.2)(@vue/compiler-sfc@3.5.28)(cac@6.7.14)(db0@0.3.4)(eslint@10.0.0(jiti@2.6.1))(ioredis@5.9.2)(lightningcss@1.30.2)(magicast@0.5.2)(optionator@0.9.4)(rollup@4.57.1)(terser@5.46.0)(tsx@4.21.0)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))(vue-tsc@3.2.5(typescript@5.9.3))(yaml@2.8.2))(vue@3.5.28(typescript@5.9.3))
+      '@wellpack/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@wellpack/content-editor':
         specifier: workspace:*
         version: link:../../packages/content-editor
+      '@wellpack/operations':
+        specifier: workspace:*
+        version: link:../../packages/operations
       '@wellpack/targeting':
         specifier: workspace:*
         version: link:../../packages/targeting
@@ -162,9 +170,6 @@ importers:
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@5.8.3)(vue@3.5.28(typescript@5.8.3))
-      sortablejs:
-        specifier: ^1.15.6
-        version: 1.15.7
       vue:
         specifier: ^3.5.0
         version: 3.5.28(typescript@5.8.3)
@@ -250,6 +255,31 @@ importers:
       vue-tsc:
         specifier: ^3.2.5
         version: 3.2.5(typescript@5.8.3)
+
+  packages/billing:
+    dependencies:
+      lucide-vue-next:
+        specifier: ^0.563.0
+        version: 0.563.0(vue@3.5.28(typescript@5.8.3))
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.4
+        version: 6.0.4(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.8.3))
+      '@vue/test-utils':
+        specifier: ^2.4.6
+        version: 2.4.6
+      happy-dom:
+        specifier: ^20.5.3
+        version: 20.5.3
+      typescript:
+        specifier: ^5.8.0
+        version: 5.8.3
+      vitest:
+        specifier: ^4.0.18
+        version: 4.0.18(@types/node@25.2.2)(happy-dom@20.5.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
+      vue:
+        specifier: ^3.5.27
+        version: 3.5.28(typescript@5.8.3)
 
   packages/content-editor:
     dependencies:
@@ -8739,6 +8769,7 @@ snapshots:
   '@types/node@25.2.2':
     dependencies:
       undici-types: 7.16.0
+    optional: true
 
   '@types/resolve@1.20.2': {}
 
@@ -10648,7 +10679,7 @@ snapshots:
 
   happy-dom@20.5.3:
     dependencies:
-      '@types/node': 25.2.2
+      '@types/node': 22.19.15
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       entities: 6.0.1
@@ -13016,7 +13047,8 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici-types@7.16.0: {}
+  undici-types@7.16.0:
+    optional: true
 
   unenv@2.0.0-rc.24:
     dependencies:

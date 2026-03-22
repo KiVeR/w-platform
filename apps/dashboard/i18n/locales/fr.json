@@ -15,8 +15,11 @@
     "groups": {
       "main": "Principal",
       "config": "Configuration",
-      "admin": "Administration"
-    }
+      "admin": "Administration",
+      "adv": "ADV"
+    },
+    "operations": "Opérations",
+    "billing": "Facturation"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",
@@ -988,6 +991,169 @@
         "scopedTitle": "Partenaire actif",
         "scopedDescription": "La landing page sera créée dans le contexte de {name}."
       }
+    }
+  },
+  "operations": {
+    "loading": "Chargement des opérations...",
+    "empty": "Aucune opération trouvée.",
+    "error": "Erreur lors du chargement des opérations.",
+    "back_to_list": "Retour à la liste",
+    "status": {
+      "draft": "Brouillon",
+      "preparing": "En préparation",
+      "on_hold": "En pause",
+      "ready": "Prête",
+      "scheduled": "Planifiée",
+      "processing": "En cours",
+      "delivered": "Livrée",
+      "completed": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "type": {
+      "loc": "Location",
+      "fid": "Fidélisation",
+      "rloc": "Repasse Location",
+      "acq": "Acquisition",
+      "qual": "Qualification",
+      "rep": "Repasse",
+      "enrich": "Enrichissement",
+      "valid": "Validation",
+      "filtre": "Filtrage"
+    },
+    "filters": {
+      "all": "Toutes",
+      "active": "En cours",
+      "blocked": "Bloquées",
+      "delivered": "Livrées"
+    },
+    "columns": {
+      "ref": "Réf.",
+      "name": "Nom",
+      "type": "Type",
+      "status": "Statut",
+      "scheduled": "Planifiée le",
+      "created": "Créée le"
+    },
+    "pagination": {
+      "total": "{count} opération(s)",
+      "prev": "Précédent",
+      "next": "Suivant"
+    },
+    "tabs": {
+      "summary": "Résumé",
+      "timeline": "Historique",
+      "billing": "Facturation"
+    },
+    "detail": {
+      "error": "Impossible de charger l'opération.",
+      "demande": "Demande",
+      "partner": "Partenaire",
+      "advertiser": "Annonceur",
+      "assigned": "Assigné à",
+      "volume_estimated": "Volume estimé",
+      "volume_sent": "Volume envoyé",
+      "unit_price": "Prix unitaire",
+      "total_price": "Prix total",
+      "message": "Message"
+    },
+    "transitions": {
+      "none": "Aucune transition disponible.",
+      "confirm_title": "Confirmer la transition",
+      "confirm_message": "Passer de {from} à {to} ?",
+      "reason_placeholder": "Raison (optionnel)...",
+      "cancel": "Annuler",
+      "confirm": "Confirmer"
+    },
+    "timeline": {
+      "loading": "Chargement de l'historique...",
+      "empty": "Aucune transition enregistrée."
+    },
+    "billing": {
+      "title": "Facturation",
+      "loading": "Chargement des factures...",
+      "empty": "Aucune facture.",
+      "error": "Erreur lors du chargement des factures.",
+      "detail_loading": "Chargement de la facture...",
+      "back_to_list": "Retour aux factures",
+      "overdue_warning": "Cette facture est en retard de paiement.",
+      "notes": "Notes",
+      "subtotal": "Sous-total HT",
+      "tax": "TVA",
+      "total_ttc": "Total TTC",
+      "status": {
+        "draft": "Brouillon",
+        "sent": "Envoyee",
+        "paid": "Payee",
+        "credited": "Avoir",
+        "overdue": "En retard"
+      },
+      "columns": {
+        "invoice_number": "N° Facture",
+        "invoice_date": "Date",
+        "due_date": "Echeance",
+        "subtotal_ht": "HT",
+        "total_ttc": "TTC",
+        "status": "Statut"
+      },
+      "line": {
+        "description": "Description",
+        "quantity": "Qte",
+        "unit_price": "P.U.",
+        "total_ht": "Total HT"
+      },
+      "balance": {
+        "title": "Solde prepaye",
+        "loading": "Chargement..."
+      },
+      "queue": {
+        "title": "A facturer",
+        "loading": "Chargement...",
+        "description": "operations en attente de facturation"
+      }
+    }
+  },
+  "billing": {
+    "title": "Facturation",
+    "coming_soon": "Bientôt disponible",
+    "loading": "Chargement des factures...",
+    "empty": "Aucune facture.",
+    "error": "Erreur lors du chargement des factures.",
+    "detail_loading": "Chargement de la facture...",
+    "back_to_list": "Retour aux factures",
+    "overdue_warning": "Cette facture est en retard de paiement.",
+    "notes": "Notes",
+    "subtotal": "Sous-total HT",
+    "tax": "TVA",
+    "total_ttc": "Total TTC",
+    "status": {
+      "draft": "Brouillon",
+      "sent": "Envoyee",
+      "paid": "Payee",
+      "credited": "Avoir",
+      "overdue": "En retard"
+    },
+    "columns": {
+      "invoice_number": "N° Facture",
+      "invoice_date": "Date",
+      "due_date": "Echeance",
+      "subtotal_ht": "HT",
+      "total_ttc": "TTC",
+      "status": "Statut"
+    },
+    "line": {
+      "description": "Description",
+      "quantity": "Qte",
+      "unit_price": "P.U.",
+      "total_ht": "Total HT"
+    },
+    "balance": {
+      "title": "Solde prepaye",
+      "loading": "Chargement..."
+    },
+    "queue": {
+      "title": "A facturer",
+      "loading": "Chargement...",
+      "description": "operations en attente de facturation"
     }
   }
 }
