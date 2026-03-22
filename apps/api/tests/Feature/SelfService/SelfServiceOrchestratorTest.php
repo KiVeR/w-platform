@@ -9,7 +9,6 @@ use App\Enums\CancellationType;
 use App\Enums\LifecycleStatus;
 use App\Enums\OperationType;
 use App\Models\Campaign;
-use App\Models\Demande;
 use App\Models\Operation;
 use App\Models\Partner;
 use App\Services\SelfServiceOrchestrator;
@@ -17,7 +16,7 @@ use App\Services\SelfServiceOrchestrator;
 /**
  * Helper: create a campaign without triggering the observer (so we can test the orchestrator in isolation).
  *
- * @param array<string, mixed> $attributes
+ * @param  array<string, mixed>  $attributes
  */
 function createCampaignWithoutEvents(array $attributes = []): Campaign
 {

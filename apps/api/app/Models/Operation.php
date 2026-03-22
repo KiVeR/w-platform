@@ -31,10 +31,10 @@ class Operation extends Model
 
     /** @var array<string, string> */
     protected $attributes = [
-        'lifecycle_status'  => 'draft',
-        'creative_status'   => 'not_applicable',
-        'billing_status'    => 'not_applicable',
-        'routing_status'    => 'not_applicable',
+        'lifecycle_status' => 'draft',
+        'creative_status' => 'not_applicable',
+        'billing_status' => 'not_applicable',
+        'routing_status' => 'not_applicable',
     ];
 
     /** @var list<string> */
@@ -72,23 +72,23 @@ class Operation extends Model
     protected function casts(): array
     {
         return [
-            'type'               => OperationType::class,
-            'priority'           => Priority::class,
-            'lifecycle_status'   => LifecycleStatus::class,
-            'creative_status'    => CreativeStatus::class,
-            'billing_status'     => BillingStatus::class,
-            'routing_status'     => OperationRoutingStatus::class,
-            'hold_reason'        => HoldReason::class,
-            'preparation_step'   => PreparationStep::class,
-            'processing_status'  => ProcessingStatus::class,
-            'cancellation_type'  => CancellationType::class,
-            'targeting'          => 'array',
-            'volume_estimated'   => 'integer',
-            'volume_sent'        => 'integer',
-            'unit_price'         => 'float',
-            'total_price'        => 'float',
-            'scheduled_at'       => 'datetime',
-            'delivered_at'       => 'datetime',
+            'type' => OperationType::class,
+            'priority' => Priority::class,
+            'lifecycle_status' => LifecycleStatus::class,
+            'creative_status' => CreativeStatus::class,
+            'billing_status' => BillingStatus::class,
+            'routing_status' => OperationRoutingStatus::class,
+            'hold_reason' => HoldReason::class,
+            'preparation_step' => PreparationStep::class,
+            'processing_status' => ProcessingStatus::class,
+            'cancellation_type' => CancellationType::class,
+            'targeting' => 'array',
+            'volume_estimated' => 'integer',
+            'volume_sent' => 'integer',
+            'unit_price' => 'float',
+            'total_price' => 'float',
+            'scheduled_at' => 'datetime',
+            'delivered_at' => 'datetime',
         ];
     }
 
@@ -121,7 +121,7 @@ class Operation extends Model
             }
         }
 
-        return 'OP-' . $date . '-' . strtoupper(substr(md5(uniqid('', true)), 0, 6));
+        return 'OP-'.$date.'-'.strtoupper(substr(md5(uniqid('', true)), 0, 6));
     }
 
     public function initializeTrackStatuses(): void
@@ -194,9 +194,15 @@ class Operation extends Model
     /** @param Builder<Operation> $query */
     public function scopeForUser(Builder $query, User $user): void
     {
-        if (! $user->hasRole('admin')) {
-            $query->whereHas('demande', fn (Builder $q) => $q->where('partner_id', $user->partner_id));
+        // Internal users (no partner_id) with permission see all operations
+        if ($user->hasRole('admin') || ($user->partner_id === null && $user->can('view operations'))) {
+            return;
         }
+
+        // Partners see only their own
+        $query->whereHas('demande', function (Builder $q) use ($user): void {
+            $q->where('partner_id', $user->partner_id);
+        });
     }
 
     public function isReadyForScheduling(): bool

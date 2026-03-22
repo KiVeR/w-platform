@@ -52,9 +52,9 @@ final class TransitionMap
 
         return match ($track) {
             'lifecycle' => self::assertLifecycleStatus($operation->lifecycle_status),
-            'creative'  => self::assertCreativeStatus($operation->creative_status),
-            'billing'   => self::assertBillingStatus($operation->billing_status),
-            'routing'   => self::assertRoutingStatus($operation->routing_status),
+            'creative' => self::assertCreativeStatus($operation->creative_status),
+            'billing' => self::assertBillingStatus($operation->billing_status),
+            'routing' => self::assertRoutingStatus($operation->routing_status),
         };
     }
 
@@ -64,9 +64,9 @@ final class TransitionMap
 
         match ($track) {
             'lifecycle' => $operation->lifecycle_status = self::assertLifecycleStatus($toState),
-            'creative'  => $operation->creative_status = self::assertCreativeStatus($toState),
-            'billing'   => $operation->billing_status = self::assertBillingStatus($toState),
-            'routing'   => $operation->routing_status = self::assertRoutingStatus($toState),
+            'creative' => $operation->creative_status = self::assertCreativeStatus($toState),
+            'billing' => $operation->billing_status = self::assertBillingStatus($toState),
+            'routing' => $operation->routing_status = self::assertRoutingStatus($toState),
         };
     }
 
@@ -94,10 +94,10 @@ final class TransitionMap
     {
         return match ($track) {
             'lifecycle' => LifecycleStatus::class,
-            'creative'  => CreativeStatus::class,
-            'billing'   => BillingStatus::class,
-            'routing'   => OperationRoutingStatus::class,
-            default     => throw new InvalidArgumentException("Unknown track: {$track}"),
+            'creative' => CreativeStatus::class,
+            'billing' => BillingStatus::class,
+            'routing' => OperationRoutingStatus::class,
+            default => throw new InvalidArgumentException("Unknown track: {$track}"),
         };
     }
 

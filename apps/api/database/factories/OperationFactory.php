@@ -19,8 +19,8 @@ class OperationFactory extends Factory
     {
         return [
             'demande_id' => Demande::factory(),
-            'type'       => OperationType::LOC->value,
-            'name'       => fake()->sentence(3),
+            'type' => OperationType::LOC->value,
+            'name' => fake()->sentence(3),
         ];
     }
 

@@ -19,7 +19,7 @@ beforeEach(function (): void {
 it('creates draft invoice from operation', function (): void {
     $operation = Operation::factory()->forDemande($this->demande)->create([
         'volume_estimated' => 1000,
-        'unit_price'       => 0.05,
+        'unit_price' => 0.05,
     ]);
 
     $invoice = $this->service->createDraftFromOperation($operation);
@@ -43,7 +43,7 @@ it('adds line from operation with correct amounts', function (): void {
 
     $operation = Operation::factory()->forDemande($this->demande)->create([
         'volume_sent' => 500,
-        'unit_price'  => 0.08,
+        'unit_price' => 0.08,
     ]);
 
     $line = $this->service->addLineFromOperation($invoice, $operation);
@@ -60,7 +60,7 @@ it('applies TVA exoneration with tax_rate 0', function (): void {
     ]);
     $operation = Operation::factory()->forDemande($demande)->create([
         'volume_estimated' => 1000,
-        'unit_price'       => 0.10,
+        'unit_price' => 0.10,
     ]);
 
     $invoice = $this->service->createDraftFromOperation($operation);
@@ -73,16 +73,16 @@ it('applies TVA exoneration with tax_rate 0', function (): void {
 it('finalizes invoice and calculates totals', function (): void {
     $invoice = Invoice::factory()->forPartner($this->partner)->draft()->create([
         'subtotal_ht' => '0.00',
-        'tax_amount'  => '0.00',
-        'total_ttc'   => '0.00',
+        'tax_amount' => '0.00',
+        'total_ttc' => '0.00',
     ]);
 
     InvoiceLine::factory()->forInvoice($invoice)->create([
-        'total_ht'   => '100.00',
+        'total_ht' => '100.00',
         'tax_amount' => '20.00',
     ]);
     InvoiceLine::factory()->forInvoice($invoice)->create([
-        'total_ht'   => '50.00',
+        'total_ht' => '50.00',
         'tax_amount' => '10.00',
     ]);
 
@@ -107,13 +107,13 @@ it('marks invoice as paid', function (): void {
 it('creates credit note from original invoice', function (): void {
     $original = Invoice::factory()->forPartner($this->partner)->paid()->create([
         'subtotal_ht' => '100.00',
-        'tax_amount'  => '20.00',
-        'total_ttc'   => '120.00',
+        'tax_amount' => '20.00',
+        'total_ttc' => '120.00',
     ]);
     InvoiceLine::factory()->forInvoice($original)->create([
         'description' => 'Test line',
-        'total_ht'    => '100.00',
-        'tax_amount'  => '20.00',
+        'total_ht' => '100.00',
+        'tax_amount' => '20.00',
     ]);
 
     $creditNote = $this->service->createCreditNote($original, 'Client error');
@@ -135,7 +135,7 @@ it('creates credit note from original invoice', function (): void {
 it('is idempotent: double createDraftFromOperation does not duplicate', function (): void {
     $operation = Operation::factory()->forDemande($this->demande)->create([
         'volume_estimated' => 500,
-        'unit_price'       => 0.06,
+        'unit_price' => 0.06,
     ]);
 
     $invoice1 = $this->service->createDraftFromOperation($operation);
@@ -149,7 +149,7 @@ it('is idempotent: double addLineFromOperation does not duplicate', function ():
     $invoice = Invoice::factory()->forPartner($this->partner)->create();
     $operation = Operation::factory()->forDemande($this->demande)->create([
         'volume_sent' => 200,
-        'unit_price'  => 0.05,
+        'unit_price' => 0.05,
     ]);
 
     $line1 = $this->service->addLineFromOperation($invoice, $operation);
@@ -172,8 +172,8 @@ it('generates unique invoice numbers', function (): void {
 it('uses volume_sent over volume_estimated when available', function (): void {
     $operation = Operation::factory()->forDemande($this->demande)->create([
         'volume_estimated' => 1000,
-        'volume_sent'      => 800,
-        'unit_price'       => 0.10,
+        'volume_sent' => 800,
+        'unit_price' => 0.10,
     ]);
 
     $invoice = $this->service->createDraftFromOperation($operation);

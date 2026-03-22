@@ -6,10 +6,8 @@ use App\Enums\BillingStatus;
 use App\Enums\CreativeStatus;
 use App\Enums\LifecycleStatus;
 use App\Enums\OperationRoutingStatus;
-use App\Enums\OperationType;
 use App\Models\Demande;
 use App\Models\Operation;
-use App\Models\User;
 
 it('defaults to draft lifecycle_status', function (): void {
     $operation = Operation::factory()->create();

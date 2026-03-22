@@ -20,9 +20,9 @@ it('POST /campaigns returns X-Deprecated header', function (): void {
 
     $response = $this->postJson('/api/campaigns', [
         'partner_id' => $partner->id,
-        'type'       => 'prospection',
-        'channel'    => 'sms',
-        'name'       => 'Test Deprecated',
+        'type' => 'prospection',
+        'channel' => 'sms',
+        'name' => 'Test Deprecated',
     ]);
 
     $response->assertCreated();
@@ -40,9 +40,9 @@ it('POST /campaigns still creates the campaign (route remains functional)', func
 
     $response = $this->postJson('/api/campaigns', [
         'partner_id' => $partner->id,
-        'type'       => 'prospection',
-        'channel'    => 'sms',
-        'name'       => 'Functional Campaign',
+        'type' => 'prospection',
+        'channel' => 'sms',
+        'name' => 'Functional Campaign',
     ]);
 
     $response->assertCreated()

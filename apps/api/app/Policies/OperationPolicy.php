@@ -17,8 +17,13 @@ class OperationPolicy
 
     public function view(User $user, Operation $operation): bool
     {
-        return $user->hasRole('admin')
-            || $user->partner_id === $operation->demande?->partner_id;
+        // Internal users (no partner_id) with permission can view all operations
+        if ($user->partner_id === null && $user->can('view operations')) {
+            return true;
+        }
+
+        // Partners can only view their own
+        return $operation->demande->partner_id === $user->partner_id;
     }
 
     public function create(User $user): bool
@@ -28,8 +33,11 @@ class OperationPolicy
 
     public function update(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('manage operations', 'api')
-            && ($user->hasRole('admin') || $user->partner_id === $operation->demande?->partner_id);
+        if ($user->partner_id === null && $user->can('manage operations')) {
+            return true;
+        }
+
+        return $operation->demande->partner_id === $user->partner_id;
     }
 
     public function delete(User $user, Operation $operation): bool
@@ -43,7 +51,6 @@ class OperationPolicy
 
     public function transition(User $user, Operation $operation): bool
     {
-        return $user->hasPermissionTo('transition operations', 'api')
-            && ($user->hasRole('admin') || $user->partner_id === $operation->demande?->partner_id);
+        return $user->can('transition operations');
     }
 }

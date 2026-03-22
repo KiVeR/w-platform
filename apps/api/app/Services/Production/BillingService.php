@@ -11,6 +11,15 @@ use App\Services\BalanceService;
 use App\Services\StateMachine\TransitionService;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Handles billing for delivered operations.
+ *
+ * MVP Phase 1: Only PREPAID mode is implemented (debit from partner balance).
+ * IMMEDIATE and END_OF_MONTH modes log a message and return without action.
+ * These modes will be implemented in Phase 2.
+ *
+ * @see plans/track-adv-v2-mvp/step-4-production-readiness-minimale.md
+ */
 final class BillingService
 {
     public function __construct(
@@ -18,6 +27,12 @@ final class BillingService
         private readonly TransitionService $transitionService,
     ) {}
 
+    /**
+     * Bill an operation upon delivery.
+     *
+     * Only operations with PENDING billing status and a billable type are processed.
+     * The billing mode is determined by the partner's billing_mode setting (defaults to PREPAID).
+     */
     public function billOnDelivery(Operation $operation): void
     {
         if ($operation->billing_status !== BillingStatus::PENDING) {

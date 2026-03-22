@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Enums\BillingMode;
 use App\Enums\BillingStatus;
-use App\Enums\CampaignStatus;
 use App\Enums\CreativeStatus;
 use App\Enums\LifecycleStatus;
 use App\Models\Campaign;
@@ -43,13 +42,13 @@ it('completes the full MVP lifecycle flow', function (): void {
 
     // 2. Fill in all required fields for readiness
     $operation->update([
-        'targeting'        => ['departments' => ['75']],
-        'message'          => 'Promo -20% ce weekend !',
+        'targeting' => ['departments' => ['75']],
+        'message' => 'Promo -20% ce weekend !',
         'volume_estimated' => 5000,
-        'unit_price'       => 0.04,
-        'total_price'      => 200.00,
-        'assigned_to'      => $user->id,
-        'creative_status'  => CreativeStatus::APPROVED,
+        'unit_price' => 0.04,
+        'total_price' => 200.00,
+        'assigned_to' => $user->id,
+        'creative_status' => CreativeStatus::APPROVED,
     ]);
 
     // 3. Verify readiness
@@ -76,7 +75,7 @@ it('completes the full MVP lifecycle flow', function (): void {
     // 6. Create a campaign that is "sent" — simulate delivery
     Campaign::factory()->sent()->create([
         'operation_id' => $operation->id,
-        'partner_id'   => $partner->id,
+        'partner_id' => $partner->id,
     ]);
 
     // 7. Run AutoTransition -> delivered

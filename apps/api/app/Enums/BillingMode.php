@@ -6,15 +6,15 @@ namespace App\Enums;
 
 enum BillingMode: string
 {
-    case PREPAID      = 'prepaid';
-    case IMMEDIATE    = 'immediate';
+    case PREPAID = 'prepaid';
+    case IMMEDIATE = 'immediate';
     case END_OF_MONTH = 'end_of_month';
 
     public function label(): string
     {
-        return match($this) {
-            self::PREPAID      => 'Prépayé',
-            self::IMMEDIATE    => 'Facturation immédiate',
+        return match ($this) {
+            self::PREPAID => 'Prépayé',
+            self::IMMEDIATE => 'Facturation immédiate',
             self::END_OF_MONTH => 'Facturation fin de mois',
         };
     }

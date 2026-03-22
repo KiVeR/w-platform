@@ -30,10 +30,10 @@ class InvoiceLine extends Model
     protected function casts(): array
     {
         return [
-            'quantity'   => 'integer',
+            'quantity' => 'integer',
             'unit_price' => 'decimal:4',
-            'total_ht'   => 'decimal:2',
-            'tax_rate'   => 'decimal:2',
+            'total_ht' => 'decimal:2',
+            'tax_rate' => 'decimal:2',
             'tax_amount' => 'decimal:2',
         ];
     }

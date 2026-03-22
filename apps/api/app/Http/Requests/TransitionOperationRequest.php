@@ -16,9 +16,9 @@ class TransitionOperationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'track'    => ['required', 'string', Rule::in(TransitionMap::VALID_TRACKS)],
+            'track' => ['required', 'string', Rule::in(TransitionMap::VALID_TRACKS)],
             'to_state' => ['required', 'string'],
-            'reason'   => ['nullable', 'string'],
+            'reason' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
     }

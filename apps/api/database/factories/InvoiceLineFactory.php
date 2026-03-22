@@ -23,13 +23,13 @@ class InvoiceLineFactory extends Factory
         $taxAmount = round($totalHt * $taxRate / 100, 2);
 
         return [
-            'invoice_id'  => Invoice::factory(),
+            'invoice_id' => Invoice::factory(),
             'description' => fake()->sentence(),
-            'quantity'     => $quantity,
-            'unit_price'   => number_format($unitPrice, 4, '.', ''),
-            'total_ht'     => number_format($totalHt, 2, '.', ''),
-            'tax_rate'     => number_format($taxRate, 2, '.', ''),
-            'tax_amount'   => number_format($taxAmount, 2, '.', ''),
+            'quantity' => $quantity,
+            'unit_price' => number_format($unitPrice, 4, '.', ''),
+            'total_ht' => number_format($totalHt, 2, '.', ''),
+            'tax_rate' => number_format($taxRate, 2, '.', ''),
+            'tax_amount' => number_format($taxAmount, 2, '.', ''),
         ];
     }
 

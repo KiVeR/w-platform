@@ -35,11 +35,11 @@ class Transaction extends Model
     protected function casts(): array
     {
         return [
-            'type'          => TransactionType::class,
-            'amount'        => 'decimal:2',
+            'type' => TransactionType::class,
+            'amount' => 'decimal:2',
             'balance_after' => 'decimal:2',
-            'metadata'      => 'array',
-            'created_at'    => 'datetime',
+            'metadata' => 'array',
+            'created_at' => 'datetime',
         ];
     }
 
@@ -56,8 +56,8 @@ class Transaction extends Model
     }
 
     /**
-     * @param array<string, mixed> $attributes
-     * @param array<string, mixed> $options
+     * @param  array<string, mixed>  $attributes
+     * @param  array<string, mixed>  $options
      */
     public function update(array $attributes = [], array $options = []): never
     {

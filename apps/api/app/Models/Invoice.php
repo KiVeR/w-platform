@@ -40,14 +40,14 @@ class Invoice extends Model
     protected function casts(): array
     {
         return [
-            'status'       => InvoiceStatus::class,
+            'status' => InvoiceStatus::class,
             'invoice_date' => 'date',
-            'due_date'     => 'date',
-            'subtotal_ht'  => 'decimal:2',
-            'tax_rate'     => 'decimal:2',
-            'tax_amount'   => 'decimal:2',
-            'total_ttc'    => 'decimal:2',
-            'paid_at'      => 'datetime',
+            'due_date' => 'date',
+            'subtotal_ht' => 'decimal:2',
+            'tax_rate' => 'decimal:2',
+            'tax_amount' => 'decimal:2',
+            'total_ttc' => 'decimal:2',
+            'paid_at' => 'datetime',
         ];
     }
 

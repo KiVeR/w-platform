@@ -28,9 +28,9 @@ describe('BillingService', function (): void {
 
         $operation = Operation::factory()->loc()->forDemande($demande)->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'billing_status'   => BillingStatus::PENDING,
-            'total_price'      => 100.00,
-            'unit_price'       => 0.05,
+            'billing_status' => BillingStatus::PENDING,
+            'total_price' => 100.00,
+            'unit_price' => 0.05,
         ]);
 
         $this->billingService->billOnDelivery($operation);
@@ -70,8 +70,8 @@ describe('BillingService', function (): void {
 
         $operation = Operation::factory()->loc()->forDemande($demande)->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'billing_status'   => BillingStatus::PREPAID,
-            'total_price'      => 100.00,
+            'billing_status' => BillingStatus::PREPAID,
+            'total_price' => 100.00,
         ]);
 
         $this->billingService->billOnDelivery($operation);
@@ -92,9 +92,9 @@ describe('BillingService', function (): void {
 
         $operation = Operation::factory()->loc()->forDemande($demande)->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'billing_status'   => BillingStatus::PENDING,
-            'total_price'      => 100.00,
-            'unit_price'       => 0.05,
+            'billing_status' => BillingStatus::PENDING,
+            'total_price' => 100.00,
+            'unit_price' => 0.05,
         ]);
 
         $this->billingService->billOnDelivery($operation);
@@ -119,9 +119,9 @@ describe('BillingService', function (): void {
 
         $operation = Operation::factory()->loc()->forDemande($demande)->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'billing_status'   => BillingStatus::PENDING,
-            'total_price'      => 100.00,
-            'unit_price'       => 0.05,
+            'billing_status' => BillingStatus::PENDING,
+            'total_price' => 100.00,
+            'unit_price' => 0.05,
         ]);
 
         $this->billingService->billOnDelivery($operation);
@@ -144,9 +144,9 @@ describe('BillingService', function (): void {
 
         $operation = Operation::factory()->loc()->forDemande($demande)->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'billing_status'   => BillingStatus::PENDING,
-            'total_price'      => 0,
-            'unit_price'       => 0.05,
+            'billing_status' => BillingStatus::PENDING,
+            'total_price' => 0,
+            'unit_price' => 0.05,
         ]);
 
         $this->billingService->billOnDelivery($operation);

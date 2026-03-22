@@ -48,7 +48,7 @@ class TransactionsController extends Controller
 
         return response()->json([
             'data' => [
-                'partner_id'   => $partner->id,
+                'partner_id' => $partner->id,
                 'euro_credits' => $balanceService->getBalance($partner),
             ],
         ]);

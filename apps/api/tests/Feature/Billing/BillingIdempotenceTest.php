@@ -14,7 +14,7 @@ it('prevents double invoice creation for same operation', function (): void {
     $demande = Demande::factory()->forPartner($partner)->create();
     $operation = Operation::factory()->forDemande($demande)->create([
         'volume_estimated' => 500,
-        'unit_price'       => 0.05,
+        'unit_price' => 0.05,
     ]);
 
     $service = new InvoiceService;
@@ -30,11 +30,11 @@ it('transaction update throws LogicException', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
     $tx = Transaction::create([
-        'partner_id'    => $partner->id,
-        'type'          => 'credit',
-        'amount'        => '100.00',
+        'partner_id' => $partner->id,
+        'type' => 'credit',
+        'amount' => '100.00',
         'balance_after' => '100.00',
-        'description'   => 'Test',
+        'description' => 'Test',
     ]);
 
     $tx->update(['description' => 'Modified']);
@@ -44,11 +44,11 @@ it('transaction delete throws LogicException', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
     $tx = Transaction::create([
-        'partner_id'    => $partner->id,
-        'type'          => 'credit',
-        'amount'        => '100.00',
+        'partner_id' => $partner->id,
+        'type' => 'credit',
+        'amount' => '100.00',
         'balance_after' => '100.00',
-        'description'   => 'Test',
+        'description' => 'Test',
     ]);
 
     $tx->delete();
@@ -58,11 +58,11 @@ it('Transaction has no updated_at column', function (): void {
     $partner = Partner::factory()->create(['euro_credits' => '100.00']);
 
     $tx = Transaction::create([
-        'partner_id'    => $partner->id,
-        'type'          => 'credit',
-        'amount'        => '100.00',
+        'partner_id' => $partner->id,
+        'type' => 'credit',
+        'amount' => '100.00',
         'balance_after' => '100.00',
-        'description'   => 'Immutable test',
+        'description' => 'Immutable test',
     ]);
 
     expect($tx->getUpdatedAtColumn())->toBeNull();

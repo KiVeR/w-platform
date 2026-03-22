@@ -61,7 +61,7 @@ class Demande extends Model
         }
 
         // Fallback with microsecond uniqueness
-        return 'DEM-' . $date . '-' . strtoupper(substr(md5(uniqid('', true)), 0, 4));
+        return 'DEM-'.$date.'-'.strtoupper(substr(md5(uniqid('', true)), 0, 4));
     }
 
     /** @return BelongsTo<Partner, $this> */
@@ -91,8 +91,10 @@ class Demande extends Model
     /** @param Builder<Demande> $query */
     public function scopeForUser(Builder $query, User $user): void
     {
-        if (! $user->hasRole('admin')) {
-            $query->where('partner_id', $user->partner_id);
+        if ($user->hasRole('admin') || ($user->partner_id === null && $user->can('view demandes'))) {
+            return;
         }
+
+        $query->where('partner_id', $user->partner_id);
     }
 }

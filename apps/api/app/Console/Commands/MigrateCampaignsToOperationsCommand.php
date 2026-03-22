@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Log;
  * - COMPTAGE campaigns are never migrated (they are estimate-only, not delivery operations).
  * - All grouped campaigns for a given partner share a single migrated Demande
  *   (identified by partner_id + information = 'Migrated from historical campaigns').
+ *
+ * @see docs/adv-migration-strategy.md for full migration strategy documentation
  */
 class MigrateCampaignsToOperationsCommand extends Command
 {
@@ -40,8 +42,11 @@ class MigrateCampaignsToOperationsCommand extends Command
     protected $description = 'Backfill existing campaigns into Demande + Operation model';
 
     private int $migrated = 0;
+
     private int $skipped = 0;
+
     private int $errors = 0;
+
     private int $comptageSkipped = 0;
 
     public function handle(): int
@@ -131,19 +136,19 @@ class MigrateCampaignsToOperationsCommand extends Command
                 $lifecycleStatus = $this->mapStatus($campaign);
 
                 $operation = Operation::create([
-                    'demande_id'       => $demande->id,
-                    'type'             => $operationType,
-                    'name'             => $campaign->name ?? 'Migrated campaign',
+                    'demande_id' => $demande->id,
+                    'type' => $operationType,
+                    'name' => $campaign->name ?? 'Migrated campaign',
                     'lifecycle_status' => $lifecycleStatus,
-                    'targeting'        => $campaign->targeting,
+                    'targeting' => $campaign->targeting,
                     'volume_estimated' => $campaign->volume_estimated,
-                    'volume_sent'      => $campaign->volume_sent,
-                    'unit_price'       => $campaign->unit_price,
-                    'total_price'      => $campaign->total_price,
-                    'message'          => $campaign->message,
-                    'sender'           => $campaign->sender,
-                    'scheduled_at'     => $campaign->scheduled_at,
-                    'delivered_at'     => $campaign->sent_at,
+                    'volume_sent' => $campaign->volume_sent,
+                    'unit_price' => $campaign->unit_price,
+                    'total_price' => $campaign->total_price,
+                    'message' => $campaign->message,
+                    'sender' => $campaign->sender,
+                    'scheduled_at' => $campaign->scheduled_at,
+                    'delivered_at' => $campaign->sent_at,
                 ]);
 
                 // Set billing to prepaid if campaign was sent (credits already deducted)
@@ -162,7 +167,7 @@ class MigrateCampaignsToOperationsCommand extends Command
             $this->error("  Error migrating campaign #{$campaign->id}: {$e->getMessage()}");
             Log::error('Campaign migration failed', [
                 'campaign_id' => $campaign->id,
-                'error'       => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
             $this->errors++;
         }
@@ -172,12 +177,12 @@ class MigrateCampaignsToOperationsCommand extends Command
     {
         return Demande::firstOrCreate(
             [
-                'partner_id'  => $campaign->partner_id,
+                'partner_id' => $campaign->partner_id,
                 'information' => 'Migrated from historical campaigns',
             ],
             [
                 'is_exoneration' => false,
-                'pays_id'        => 'FR',
+                'pays_id' => 'FR',
             ]
         );
     }
@@ -185,21 +190,21 @@ class MigrateCampaignsToOperationsCommand extends Command
     private function mapType(Campaign $campaign): OperationType
     {
         return match ($campaign->type) {
-            CampaignType::PROSPECTION  => OperationType::LOC,
+            CampaignType::PROSPECTION => OperationType::LOC,
             CampaignType::FIDELISATION => OperationType::FID,
-            CampaignType::COMPTAGE     => throw new \LogicException('COMPTAGE should be excluded before mapType()'),
+            CampaignType::COMPTAGE => throw new \LogicException('COMPTAGE should be excluded before mapType()'),
         };
     }
 
     private function mapStatus(Campaign $campaign): LifecycleStatus
     {
         return match ($campaign->status) {
-            CampaignStatus::DRAFT      => LifecycleStatus::DRAFT,
-            CampaignStatus::SCHEDULED  => LifecycleStatus::SCHEDULED,
-            CampaignStatus::SENDING    => LifecycleStatus::PROCESSING,
-            CampaignStatus::SENT       => LifecycleStatus::DELIVERED,
-            CampaignStatus::CANCELLED  => LifecycleStatus::CANCELLED,
-            CampaignStatus::FAILED     => LifecycleStatus::CANCELLED,
+            CampaignStatus::DRAFT => LifecycleStatus::DRAFT,
+            CampaignStatus::SCHEDULED => LifecycleStatus::SCHEDULED,
+            CampaignStatus::SENDING => LifecycleStatus::PROCESSING,
+            CampaignStatus::SENT => LifecycleStatus::DELIVERED,
+            CampaignStatus::CANCELLED => LifecycleStatus::CANCELLED,
+            CampaignStatus::FAILED => LifecycleStatus::CANCELLED,
         };
     }
 }

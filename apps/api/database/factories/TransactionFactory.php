@@ -18,18 +18,18 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'partner_id'    => Partner::factory(),
-            'type'          => TransactionType::CREDIT->value,
-            'amount'        => '100.00',
+            'partner_id' => Partner::factory(),
+            'type' => TransactionType::CREDIT->value,
+            'amount' => '100.00',
             'balance_after' => '100.00',
-            'description'   => fake()->sentence(),
+            'description' => fake()->sentence(),
         ];
     }
 
     public function credit(): static
     {
         return $this->state([
-            'type'   => TransactionType::CREDIT->value,
+            'type' => TransactionType::CREDIT->value,
             'amount' => '100.00',
         ]);
     }
@@ -37,7 +37,7 @@ class TransactionFactory extends Factory
     public function debit(): static
     {
         return $this->state([
-            'type'   => TransactionType::DEBIT->value,
+            'type' => TransactionType::DEBIT->value,
             'amount' => '-50.00',
         ]);
     }
@@ -45,7 +45,7 @@ class TransactionFactory extends Factory
     public function refund(): static
     {
         return $this->state([
-            'type'   => TransactionType::REFUND->value,
+            'type' => TransactionType::REFUND->value,
             'amount' => '25.00',
         ]);
     }

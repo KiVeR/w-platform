@@ -34,26 +34,26 @@ class InvoiceService
             $taxAmount = round($totalHt * $taxRate / 100, 2);
 
             $invoice = Invoice::create([
-                'partner_id'     => $demande?->partner_id,
+                'partner_id' => $demande?->partner_id,
                 'invoice_number' => $this->generateInvoiceNumber(),
-                'invoice_date'   => now()->toDateString(),
-                'due_date'       => now()->addDays(30)->toDateString(),
-                'subtotal_ht'    => $totalHt,
-                'tax_rate'       => $taxRate,
-                'tax_amount'     => $taxAmount,
-                'total_ttc'      => round($totalHt + $taxAmount, 2),
-                'status'         => InvoiceStatus::DRAFT,
+                'invoice_date' => now()->toDateString(),
+                'due_date' => now()->addDays(30)->toDateString(),
+                'subtotal_ht' => $totalHt,
+                'tax_rate' => $taxRate,
+                'tax_amount' => $taxAmount,
+                'total_ttc' => round($totalHt + $taxAmount, 2),
+                'status' => InvoiceStatus::DRAFT,
             ]);
 
             InvoiceLine::create([
-                'invoice_id'   => $invoice->id,
+                'invoice_id' => $invoice->id,
                 'operation_id' => $operation->id,
-                'description'  => "Opération {$operation->ref_operation} — {$operation->name}",
-                'quantity'     => $volume,
-                'unit_price'   => $unitPrice,
-                'total_ht'     => $totalHt,
-                'tax_rate'     => $taxRate,
-                'tax_amount'   => $taxAmount,
+                'description' => "Opération {$operation->ref_operation} — {$operation->name}",
+                'quantity' => $volume,
+                'unit_price' => $unitPrice,
+                'total_ht' => $totalHt,
+                'tax_rate' => $taxRate,
+                'tax_amount' => $taxAmount,
             ]);
 
             return $invoice;
@@ -82,14 +82,14 @@ class InvoiceService
             $taxAmount = round($totalHt * (float) $taxRate / 100, 2);
 
             $line = InvoiceLine::create([
-                'invoice_id'   => $invoice->id,
+                'invoice_id' => $invoice->id,
                 'operation_id' => $operation->id,
-                'description'  => "Opération {$operation->ref_operation} — {$operation->name}",
-                'quantity'     => $volume,
-                'unit_price'   => $unitPrice,
-                'total_ht'     => $totalHt,
-                'tax_rate'     => $taxRate,
-                'tax_amount'   => $taxAmount,
+                'description' => "Opération {$operation->ref_operation} — {$operation->name}",
+                'quantity' => $volume,
+                'unit_price' => $unitPrice,
+                'total_ht' => $totalHt,
+                'tax_rate' => $taxRate,
+                'tax_amount' => $taxAmount,
             ]);
 
             $this->recalculateTotals($invoice);
@@ -113,8 +113,8 @@ class InvoiceService
     public function markAsPaid(Invoice $invoice, string $method): Invoice
     {
         $invoice->update([
-            'status'         => InvoiceStatus::PAID,
-            'paid_at'        => now(),
+            'status' => InvoiceStatus::PAID,
+            'paid_at' => now(),
             'payment_method' => $method,
         ]);
 
@@ -126,29 +126,29 @@ class InvoiceService
     {
         return DB::transaction(function () use ($original, $reason): Invoice {
             $creditNote = Invoice::create([
-                'partner_id'          => $original->partner_id,
+                'partner_id' => $original->partner_id,
                 'credited_invoice_id' => $original->id,
-                'invoice_number'      => $this->generateInvoiceNumber(),
-                'invoice_date'        => now()->toDateString(),
-                'due_date'            => now()->toDateString(),
-                'subtotal_ht'         => -(float) $original->subtotal_ht,
-                'tax_rate'            => $original->tax_rate,
-                'tax_amount'          => -(float) $original->tax_amount,
-                'total_ttc'           => -(float) $original->total_ttc,
-                'status'              => InvoiceStatus::CREDITED,
-                'notes'               => $reason,
+                'invoice_number' => $this->generateInvoiceNumber(),
+                'invoice_date' => now()->toDateString(),
+                'due_date' => now()->toDateString(),
+                'subtotal_ht' => -(float) $original->subtotal_ht,
+                'tax_rate' => $original->tax_rate,
+                'tax_amount' => -(float) $original->tax_amount,
+                'total_ttc' => -(float) $original->total_ttc,
+                'status' => InvoiceStatus::CREDITED,
+                'notes' => $reason,
             ]);
 
             foreach ($original->lines as $line) {
                 InvoiceLine::create([
-                    'invoice_id'   => $creditNote->id,
+                    'invoice_id' => $creditNote->id,
                     'operation_id' => $line->operation_id,
-                    'description'  => "[Avoir] {$line->description}",
-                    'quantity'     => $line->quantity,
-                    'unit_price'   => $line->unit_price,
-                    'total_ht'     => -(float) $line->total_ht,
-                    'tax_rate'     => $line->tax_rate,
-                    'tax_amount'   => -(float) $line->tax_amount,
+                    'description' => "[Avoir] {$line->description}",
+                    'quantity' => $line->quantity,
+                    'unit_price' => $line->unit_price,
+                    'total_ht' => -(float) $line->total_ht,
+                    'tax_rate' => $line->tax_rate,
+                    'tax_amount' => -(float) $line->tax_amount,
                 ]);
             }
 
@@ -161,13 +161,13 @@ class InvoiceService
     /** Generate a unique invoice number: INV-YYMM-XXXX. */
     public function generateInvoiceNumber(): string
     {
-        $prefix = 'INV-' . now()->format('ym') . '-';
+        $prefix = 'INV-'.now()->format('ym').'-';
 
         return DB::transaction(function () use ($prefix): string {
             $maxAttempts = 10;
 
             for ($i = 0; $i < $maxAttempts; $i++) {
-                $number = $prefix . str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT);
+                $number = $prefix.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT);
 
                 if (! Invoice::where('invoice_number', $number)->exists()) {
                     return $number;
@@ -175,7 +175,7 @@ class InvoiceService
             }
 
             // Fallback with higher entropy
-            return $prefix . strtoupper(substr(md5(uniqid('', true)), 0, 4));
+            return $prefix.strtoupper(substr(md5(uniqid('', true)), 0, 4));
         });
     }
 
@@ -188,8 +188,8 @@ class InvoiceService
 
         $invoice->update([
             'subtotal_ht' => round($subtotalHt, 2),
-            'tax_amount'  => round($taxAmount, 2),
-            'total_ttc'   => round($subtotalHt + $taxAmount, 2),
+            'tax_amount' => round($taxAmount, 2),
+            'total_ttc' => round($subtotalHt + $taxAmount, 2),
         ]);
     }
 }

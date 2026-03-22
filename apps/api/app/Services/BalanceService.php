@@ -27,14 +27,14 @@ class BalanceService
             $partner->increment('euro_credits', $amount);
 
             return Transaction::create([
-                'partner_id'    => $partner->id,
-                'operation_id'  => $operationId,
-                'type'          => TransactionType::CREDIT,
-                'amount'        => $amount,
+                'partner_id' => $partner->id,
+                'operation_id' => $operationId,
+                'type' => TransactionType::CREDIT,
+                'amount' => $amount,
                 'balance_after' => $newBalance,
-                'description'   => $description,
-                'reference'     => $reference,
-                'metadata'      => $metadata,
+                'description' => $description,
+                'reference' => $reference,
+                'metadata' => $metadata,
             ]);
         });
     }
@@ -63,14 +63,14 @@ class BalanceService
             $partner->decrement('euro_credits', $amount);
 
             return Transaction::create([
-                'partner_id'    => $partner->id,
-                'operation_id'  => $operationId,
-                'type'          => TransactionType::DEBIT,
-                'amount'        => -$amount,
+                'partner_id' => $partner->id,
+                'operation_id' => $operationId,
+                'type' => TransactionType::DEBIT,
+                'amount' => -$amount,
                 'balance_after' => $newBalance,
-                'description'   => $description,
-                'reference'     => $reference,
-                'metadata'      => $metadata,
+                'description' => $description,
+                'reference' => $reference,
+                'metadata' => $metadata,
             ]);
         });
     }
@@ -90,14 +90,14 @@ class BalanceService
             $partner->increment('euro_credits', $amount);
 
             return Transaction::create([
-                'partner_id'    => $partner->id,
-                'operation_id'  => $operationId,
-                'type'          => TransactionType::REFUND,
-                'amount'        => $amount,
+                'partner_id' => $partner->id,
+                'operation_id' => $operationId,
+                'type' => TransactionType::REFUND,
+                'amount' => $amount,
                 'balance_after' => $newBalance,
-                'description'   => $description,
-                'reference'     => $reference,
-                'metadata'      => $metadata,
+                'description' => $description,
+                'reference' => $reference,
+                'metadata' => $metadata,
             ]);
         });
     }
@@ -129,13 +129,13 @@ class BalanceService
             }
 
             return Transaction::create([
-                'partner_id'    => $partner->id,
-                'type'          => TransactionType::ADJUSTMENT,
-                'amount'        => $signedAmount,
+                'partner_id' => $partner->id,
+                'type' => TransactionType::ADJUSTMENT,
+                'amount' => $signedAmount,
                 'balance_after' => $newBalance,
-                'description'   => $description,
-                'reference'     => $reference,
-                'metadata'      => $metadata,
+                'description' => $description,
+                'reference' => $reference,
+                'metadata' => $metadata,
             ]);
         });
     }

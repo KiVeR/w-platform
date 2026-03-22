@@ -17,10 +17,10 @@ class DemandeFactory extends Factory
     public function definition(): array
     {
         return [
-            'partner_id'     => Partner::factory(),
-            'information'    => fake()->sentence(),
+            'partner_id' => Partner::factory(),
+            'information' => fake()->sentence(),
             'is_exoneration' => false,
-            'pays_id'        => 'FR',
+            'pays_id' => 'FR',
         ];
     }
 

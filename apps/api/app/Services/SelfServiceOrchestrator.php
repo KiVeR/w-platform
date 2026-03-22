@@ -145,11 +145,11 @@ final class SelfServiceOrchestrator
 
         match ($campaign->status) {
             CampaignStatus::SCHEDULED => $this->advanceToScheduled($operation),
-            CampaignStatus::SENDING   => $this->advanceOnSend($operation),
-            CampaignStatus::SENT      => $this->advanceOnComplete($operation),
+            CampaignStatus::SENDING => $this->advanceOnSend($operation),
+            CampaignStatus::SENT => $this->advanceOnComplete($operation),
             CampaignStatus::CANCELLED => $this->advanceOnCancel($operation),
-            CampaignStatus::FAILED    => $this->advanceOnFail($operation),
-            default                   => null,
+            CampaignStatus::FAILED => $this->advanceOnFail($operation),
+            default => null,
         };
     }
 
@@ -180,7 +180,7 @@ final class SelfServiceOrchestrator
      * Advance through multiple lifecycle states sequentially.
      * Skips states already reached, stops at terminal states.
      *
-     * @param list<LifecycleStatus> $targets
+     * @param  list<LifecycleStatus>  $targets
      */
     private function advanceThrough(Operation $operation, array $targets): void
     {
@@ -323,8 +323,8 @@ final class SelfServiceOrchestrator
                 LifecycleStatus::DELIVERED,
             ]),
             CampaignStatus::CANCELLED => $this->advanceOnCancel($operation),
-            CampaignStatus::FAILED    => $this->advanceOnFail($operation),
-            default                   => null,
+            CampaignStatus::FAILED => $this->advanceOnFail($operation),
+            default => null,
         };
     }
 
@@ -343,9 +343,9 @@ final class SelfServiceOrchestrator
     private function mapCampaignTypeToOperationType(CampaignType $type): OperationType
     {
         return match ($type) {
-            CampaignType::PROSPECTION  => OperationType::LOC,
+            CampaignType::PROSPECTION => OperationType::LOC,
             CampaignType::FIDELISATION => OperationType::FID,
-            CampaignType::COMPTAGE     => OperationType::LOC,
+            CampaignType::COMPTAGE => OperationType::LOC,
         };
     }
 

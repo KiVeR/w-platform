@@ -5,8 +5,6 @@ declare(strict_types=1);
 use App\DTOs\ChecklistItem;
 use App\Enums\BillingStatus;
 use App\Enums\CreativeStatus;
-use App\Enums\OperationType;
-use App\Models\Demande;
 use App\Models\Operation;
 use App\Models\User;
 use App\Services\Production\ReadinessService;
@@ -21,12 +19,12 @@ describe('ReadinessService', function (): void {
     it('reports LOC operation as ready when all checks pass', function (): void {
         $user = User::factory()->create();
         $operation = Operation::factory()->loc()->create([
-            'targeting'        => ['departments' => ['75']],
-            'message'          => 'Hello SMS',
+            'targeting' => ['departments' => ['75']],
+            'message' => 'Hello SMS',
             'volume_estimated' => 1000,
-            'unit_price'       => 0.05,
-            'assigned_to'      => $user->id,
-            'creative_status'  => CreativeStatus::APPROVED,
+            'unit_price' => 0.05,
+            'assigned_to' => $user->id,
+            'creative_status' => CreativeStatus::APPROVED,
         ]);
 
         expect($this->service->isReady($operation))->toBeTrue();
@@ -36,12 +34,12 @@ describe('ReadinessService', function (): void {
     it('reports LOC operation as not ready when targeting is missing', function (): void {
         $user = User::factory()->create();
         $operation = Operation::factory()->loc()->create([
-            'targeting'        => null,
-            'message'          => 'Hello SMS',
+            'targeting' => null,
+            'message' => 'Hello SMS',
             'volume_estimated' => 1000,
-            'unit_price'       => 0.05,
-            'assigned_to'      => $user->id,
-            'creative_status'  => CreativeStatus::APPROVED,
+            'unit_price' => 0.05,
+            'assigned_to' => $user->id,
+            'creative_status' => CreativeStatus::APPROVED,
         ]);
 
         expect($this->service->isReady($operation))->toBeFalse();
@@ -54,12 +52,12 @@ describe('ReadinessService', function (): void {
     it('reports LOC operation as not ready when creative is not approved', function (): void {
         $user = User::factory()->create();
         $operation = Operation::factory()->loc()->create([
-            'targeting'        => ['departments' => ['75']],
-            'message'          => 'Hello SMS',
+            'targeting' => ['departments' => ['75']],
+            'message' => 'Hello SMS',
             'volume_estimated' => 1000,
-            'unit_price'       => 0.05,
-            'assigned_to'      => $user->id,
-            'creative_status'  => CreativeStatus::PENDING,
+            'unit_price' => 0.05,
+            'assigned_to' => $user->id,
+            'creative_status' => CreativeStatus::PENDING,
         ]);
 
         expect($this->service->isReady($operation))->toBeFalse();
@@ -72,8 +70,8 @@ describe('ReadinessService', function (): void {
     it('marks targeting as NA for FID operations', function (): void {
         $user = User::factory()->create();
         $operation = Operation::factory()->fid()->create([
-            'message'     => 'Hello FID',
-            'unit_price'  => 0.04,
+            'message' => 'Hello FID',
+            'unit_price' => 0.04,
             'assigned_to' => $user->id,
         ]);
 
@@ -100,8 +98,8 @@ describe('ReadinessService', function (): void {
     it('requires parent for REP operations', function (): void {
         $operation = Operation::factory()->rep()->create([
             'parent_operation_id' => null,
-            'message'             => 'Hello REP',
-            'assigned_to'         => User::factory()->create()->id,
+            'message' => 'Hello REP',
+            'assigned_to' => User::factory()->create()->id,
         ]);
 
         expect($this->service->isReady($operation))->toBeFalse();
@@ -116,8 +114,8 @@ describe('ReadinessService', function (): void {
         $user = User::factory()->create();
         $operation = Operation::factory()->rep()->forDemande($parent->demande)->create([
             'parent_operation_id' => $parent->id,
-            'message'             => 'Hello REP',
-            'assigned_to'         => $user->id,
+            'message' => 'Hello REP',
+            'assigned_to' => $user->id,
         ]);
 
         $blocking = $this->service->getBlockingItems($operation);
@@ -127,12 +125,12 @@ describe('ReadinessService', function (): void {
 
     it('returns correct blocking items for unready operation', function (): void {
         $operation = Operation::factory()->loc()->create([
-            'targeting'        => null,
-            'message'          => null,
+            'targeting' => null,
+            'message' => null,
             'volume_estimated' => 0,
-            'unit_price'       => 0,
-            'assigned_to'      => null,
-            'creative_status'  => CreativeStatus::PENDING,
+            'unit_price' => 0,
+            'assigned_to' => null,
+            'creative_status' => CreativeStatus::PENDING,
         ]);
 
         $blocking = $this->service->getBlockingItems($operation);
@@ -143,8 +141,8 @@ describe('ReadinessService', function (): void {
         $item = new ChecklistItem('test', 'pass', 'OK');
 
         expect($item->toArray())->toBe([
-            'name'    => 'test',
-            'status'  => 'pass',
+            'name' => 'test',
+            'status' => 'pass',
             'message' => 'OK',
         ]);
         expect($item->passes())->toBeTrue();
@@ -168,12 +166,12 @@ describe('Operation helpers', function (): void {
     it('isReadyForScheduling delegates to ReadinessService', function (): void {
         $user = User::factory()->create();
         $operation = Operation::factory()->loc()->create([
-            'targeting'        => ['departments' => ['75']],
-            'message'          => 'Hello',
+            'targeting' => ['departments' => ['75']],
+            'message' => 'Hello',
             'volume_estimated' => 1000,
-            'unit_price'       => 0.05,
-            'assigned_to'      => $user->id,
-            'creative_status'  => CreativeStatus::APPROVED,
+            'unit_price' => 0.05,
+            'assigned_to' => $user->id,
+            'creative_status' => CreativeStatus::APPROVED,
         ]);
 
         expect($operation->isReadyForScheduling())->toBeTrue();

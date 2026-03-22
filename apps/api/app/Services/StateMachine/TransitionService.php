@@ -22,7 +22,7 @@ final class TransitionService
     }
 
     /**
-     * @param array<string, mixed>|null $metadata
+     * @param  array<string, mixed>|null  $metadata
      */
     public function applyTransition(
         Operation $operation,
@@ -43,8 +43,8 @@ final class TransitionService
     }
 
     /**
-     * @param array<string, BackedEnum> $transitions
-     * @param array<string, mixed>|null $metadata
+     * @param  array<string, BackedEnum>  $transitions
+     * @param  array<string, mixed>|null  $metadata
      */
     public function applyMultipleTransitions(
         Operation $operation,
@@ -76,7 +76,7 @@ final class TransitionService
     }
 
     /**
-     * @param array<string, mixed>|null $metadata
+     * @param  array<string, mixed>|null  $metadata
      */
     private function performTransition(
         Operation $operation,
@@ -102,18 +102,18 @@ final class TransitionService
 
         OperationTransition::create([
             'operation_id' => $operation->id,
-            'track'        => $track,
-            'from_state'   => $fromState->value,
-            'to_state'     => $toState->value,
-            'user_id'      => $userId,
-            'reason'       => $reason,
-            'metadata'     => $metadata,
-            'created_at'   => now(),
+            'track' => $track,
+            'from_state' => $fromState->value,
+            'to_state' => $toState->value,
+            'user_id' => $userId,
+            'reason' => $reason,
+            'metadata' => $metadata,
+            'created_at' => now(),
         ]);
     }
 
     /**
-     * @param array<string, mixed>|null $metadata
+     * @param  array<string, mixed>|null  $metadata
      */
     private function handleLifecycleSubStates(
         Operation $operation,
@@ -146,7 +146,7 @@ final class TransitionService
     }
 
     /**
-     * @param array<string, mixed>|null $metadata
+     * @param  array<string, mixed>|null  $metadata
      */
     private function handleCancellation(Operation $operation, ?array $metadata): void
     {

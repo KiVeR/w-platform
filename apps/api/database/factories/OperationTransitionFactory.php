@@ -18,10 +18,10 @@ class OperationTransitionFactory extends Factory
     {
         return [
             'operation_id' => Operation::factory(),
-            'track'        => 'lifecycle',
-            'from_state'   => 'draft',
-            'to_state'     => 'preparing',
-            'created_at'   => now(),
+            'track' => 'lifecycle',
+            'from_state' => 'draft',
+            'to_state' => 'preparing',
+            'created_at' => now(),
         ];
     }
 }

@@ -18,22 +18,22 @@ enum OperationType: string
 
     public function label(): string
     {
-        return match($this) {
-            self::LOC    => 'Localisation',
-            self::FID    => 'Fidélisation',
-            self::RLOC   => 'Relocalisation',
-            self::ACQ    => 'Acquisition',
-            self::QUAL   => 'Qualification',
-            self::REP    => 'Répétition',
+        return match ($this) {
+            self::LOC => 'Localisation',
+            self::FID => 'Fidélisation',
+            self::RLOC => 'Relocalisation',
+            self::ACQ => 'Acquisition',
+            self::QUAL => 'Qualification',
+            self::REP => 'Répétition',
             self::ENRICH => 'Enrichissement',
-            self::VALID  => 'Validation',
+            self::VALID => 'Validation',
             self::FILTRE => 'Filtrage',
         };
     }
 
     public function requiresRouting(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::LOC, self::RLOC, self::ACQ, self::REP => true,
             default => false,
         };
@@ -41,7 +41,7 @@ enum OperationType: string
 
     public function requiresCreative(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::LOC, self::FID, self::RLOC, self::ACQ, self::REP => true,
             default => false,
         };
@@ -49,7 +49,7 @@ enum OperationType: string
 
     public function requiresScheduling(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::LOC, self::FID, self::RLOC, self::ACQ, self::REP => true,
             default => false,
         };
@@ -57,7 +57,7 @@ enum OperationType: string
 
     public function requiresCounting(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::LOC, self::RLOC, self::ACQ, self::QUAL, self::REP => true,
             default => false,
         };
@@ -65,7 +65,7 @@ enum OperationType: string
 
     public function requiresBilling(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::ENRICH, self::VALID, self::FILTRE => false,
             default => true,
         };
@@ -73,7 +73,7 @@ enum OperationType: string
 
     public function allowsParent(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::REP, self::RLOC => true,
             default => false,
         };
@@ -86,7 +86,7 @@ enum OperationType: string
 
     public function isDataOp(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::ENRICH, self::VALID, self::FILTRE => true,
             default => false,
         };

@@ -22,13 +22,47 @@ class AutoTransitionOperationsCommand extends Command
     /** @var string */
     protected $description = 'Automatically transition operations through their lifecycle';
 
+    private TransitionService $transitionService;
+
+    private int $transitioned = 0;
+
+    private int $skipped = 0;
+
+    private int $failed = 0;
+
     public function handle(TransitionService $transitionService): int
     {
+        $this->transitionService = $transitionService;
+
+        $this->transitionReadyToScheduled();
         $this->transitionScheduledToProcessing($transitionService);
         $this->transitionProcessingToDelivered($transitionService);
         $this->transitionDeliveredToCompleted($transitionService);
 
         return self::SUCCESS;
+    }
+
+    private function transitionReadyToScheduled(): void
+    {
+        Operation::where('lifecycle_status', LifecycleStatus::READY->value)
+            ->whereNotNull('scheduled_at')
+            ->where('scheduled_at', '<=', now())
+            ->each(function (Operation $operation): void {
+                try {
+                    $this->transitionService->applyTransition(
+                        $operation, 'lifecycle', LifecycleStatus::SCHEDULED,
+                        reason: 'Auto-scheduled: scheduled_at reached',
+                    );
+                    $this->transitioned++;
+                } catch (InvalidTransitionException) {
+                    $this->skipped++;
+                } catch (\Throwable $e) {
+                    Log::error('Auto-transition ready→scheduled failed', [
+                        'operation_id' => $operation->id, 'error' => $e->getMessage(),
+                    ]);
+                    $this->failed++;
+                }
+            });
     }
 
     private function transitionScheduledToProcessing(TransitionService $ts): void

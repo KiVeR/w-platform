@@ -73,7 +73,7 @@ it('sets hold_reason when transitioning to ON_HOLD', function (): void {
 it('clears hold_reason when leaving ON_HOLD', function (): void {
     $operation = Operation::factory()->create([
         'lifecycle_status' => LifecycleStatus::ON_HOLD->value,
-        'hold_reason'      => HoldReason::AWAITING_PAYMENT->value,
+        'hold_reason' => HoldReason::AWAITING_PAYMENT->value,
     ]);
 
     $service = new TransitionService;

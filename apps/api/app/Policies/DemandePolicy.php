@@ -16,8 +16,13 @@ class DemandePolicy
 
     public function view(User $user, Demande $demande): bool
     {
-        return $user->hasRole('admin')
-            || $user->partner_id === $demande->partner_id;
+        // Internal users (no partner_id) with permission can view all demandes
+        if ($user->partner_id === null && $user->can('view demandes')) {
+            return true;
+        }
+
+        // Partners can only view their own
+        return $user->partner_id === $demande->partner_id;
     }
 
     public function create(User $user): bool
@@ -28,13 +33,19 @@ class DemandePolicy
 
     public function update(User $user, Demande $demande): bool
     {
-        return $user->hasRole('admin')
-            || $user->partner_id === $demande->partner_id;
+        if ($user->partner_id === null && $user->can('manage demandes')) {
+            return true;
+        }
+
+        return $user->partner_id === $demande->partner_id;
     }
 
     public function delete(User $user, Demande $demande): bool
     {
-        return $user->hasRole('admin')
-            || $user->partner_id === $demande->partner_id;
+        if ($user->partner_id === null && $user->can('manage demandes')) {
+            return true;
+        }
+
+        return $user->partner_id === $demande->partner_id;
     }
 }

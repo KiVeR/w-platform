@@ -7,7 +7,7 @@ namespace App\DTOs;
 final readonly class ChecklistItem
 {
     /**
-     * @param 'pass'|'fail'|'na' $status
+     * @param  'pass'|'fail'|'na'  $status
      */
     public function __construct(
         public string $name,
@@ -34,8 +34,8 @@ final readonly class ChecklistItem
     public function toArray(): array
     {
         return [
-            'name'    => $this->name,
-            'status'  => $this->status,
+            'name' => $this->name,
+            'status' => $this->status,
             'message' => $this->message,
         ];
     }

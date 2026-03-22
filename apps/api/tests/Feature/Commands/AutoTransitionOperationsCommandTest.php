@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\CampaignStatus;
 use App\Enums\LifecycleStatus;
 use App\Models\Campaign;
 use App\Models\Operation;
@@ -19,7 +18,7 @@ describe('operations:auto-transition', function (): void {
 
         $operation = Operation::factory()->loc()->create([
             'lifecycle_status' => LifecycleStatus::SCHEDULED,
-            'scheduled_at'     => now()->subMinutes(5),
+            'scheduled_at' => now()->subMinutes(5),
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();
@@ -34,7 +33,7 @@ describe('operations:auto-transition', function (): void {
 
         $operation = Operation::factory()->loc()->create([
             'lifecycle_status' => LifecycleStatus::SCHEDULED,
-            'scheduled_at'     => now()->subMinutes(5),
+            'scheduled_at' => now()->subMinutes(5),
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();
@@ -49,7 +48,7 @@ describe('operations:auto-transition', function (): void {
 
         $operation = Operation::factory()->loc()->create([
             'lifecycle_status' => LifecycleStatus::SCHEDULED,
-            'scheduled_at'     => now()->addHour(),
+            'scheduled_at' => now()->addHour(),
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();
@@ -66,7 +65,7 @@ describe('operations:auto-transition', function (): void {
 
         Campaign::factory()->sent()->create([
             'operation_id' => $operation->id,
-            'partner_id'   => $operation->demande->partner_id,
+            'partner_id' => $operation->demande->partner_id,
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();
@@ -81,7 +80,7 @@ describe('operations:auto-transition', function (): void {
 
         Campaign::factory()->sending()->create([
             'operation_id' => $operation->id,
-            'partner_id'   => $operation->demande->partner_id,
+            'partner_id' => $operation->demande->partner_id,
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();
@@ -92,7 +91,7 @@ describe('operations:auto-transition', function (): void {
     it('transitions delivered to completed after 72h', function (): void {
         $operation = Operation::factory()->loc()->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'delivered_at'     => now()->subHours(73),
+            'delivered_at' => now()->subHours(73),
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();
@@ -103,7 +102,7 @@ describe('operations:auto-transition', function (): void {
     it('does not transition delivered before 72h', function (): void {
         $operation = Operation::factory()->loc()->create([
             'lifecycle_status' => LifecycleStatus::DELIVERED,
-            'delivered_at'     => now()->subHours(10),
+            'delivered_at' => now()->subHours(10),
         ]);
 
         $this->artisan('operations:auto-transition')->assertSuccessful();

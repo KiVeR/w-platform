@@ -8,7 +8,6 @@ use App\Enums\LifecycleStatus;
 use App\Enums\OperationType;
 use App\Models\Campaign;
 use App\Models\Operation;
-use App\Models\Partner;
 
 // --- Observer auto-creation ---
 

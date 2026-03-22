@@ -12,13 +12,13 @@ class StoreDemandeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'partner_id'    => ['required', 'integer', 'exists:partners,id'],
+            'partner_id' => ['required', 'integer', 'exists:partners,id'],
             'commercial_id' => ['nullable', 'integer', 'exists:users,id'],
-            'sdr_id'        => ['nullable', 'integer', 'exists:users,id'],
-            'ref_client'    => ['nullable', 'string', 'max:100'],
-            'information'   => ['nullable', 'string'],
+            'sdr_id' => ['nullable', 'integer', 'exists:users,id'],
+            'ref_client' => ['nullable', 'string', 'max:100'],
+            'information' => ['nullable', 'string'],
             'is_exoneration' => ['nullable', 'boolean'],
-            'pays_id'       => ['nullable', 'string', 'size:2'],
+            'pays_id' => ['nullable', 'string', 'size:2'],
         ];
     }
 }

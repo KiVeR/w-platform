@@ -20,15 +20,15 @@ class InvoiceFactory extends Factory
         $yymm = now()->format('ym');
 
         return [
-            'partner_id'     => Partner::factory(),
-            'invoice_number' => 'INV-' . $yymm . '-' . fake()->unique()->numerify('####'),
-            'invoice_date'   => now()->toDateString(),
-            'due_date'       => now()->addDays(30)->toDateString(),
-            'subtotal_ht'    => '100.00',
-            'tax_rate'       => '20.00',
-            'tax_amount'     => '20.00',
-            'total_ttc'      => '120.00',
-            'status'         => InvoiceStatus::DRAFT->value,
+            'partner_id' => Partner::factory(),
+            'invoice_number' => 'INV-'.$yymm.'-'.fake()->unique()->numerify('####'),
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addDays(30)->toDateString(),
+            'subtotal_ht' => '100.00',
+            'tax_rate' => '20.00',
+            'tax_amount' => '20.00',
+            'total_ttc' => '120.00',
+            'status' => InvoiceStatus::DRAFT->value,
         ];
     }
 
@@ -45,8 +45,8 @@ class InvoiceFactory extends Factory
     public function paid(): static
     {
         return $this->state([
-            'status'         => InvoiceStatus::PAID->value,
-            'paid_at'        => now(),
+            'status' => InvoiceStatus::PAID->value,
+            'paid_at' => now(),
             'payment_method' => 'prepaid',
         ]);
     }
