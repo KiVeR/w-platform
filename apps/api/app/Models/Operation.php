@@ -194,8 +194,8 @@ class Operation extends Model
     /** @param Builder<Operation> $query */
     public function scopeForUser(Builder $query, User $user): void
     {
-        // Users with 'view operations' permission see all operations (admins, internal staff)
-        if ($user->can('view operations')) {
+        // Internal users (no partner_id) with 'view operations' permission see all operations
+        if ($user->partner_id === null && $user->can('view operations')) {
             return;
         }
 

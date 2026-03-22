@@ -46,11 +46,8 @@ class OperationPolicy
             return false;
         }
 
-        if ($user->can('manage operations')) {
-            return true;
-        }
-
-        return $operation->demande->partner_id === $user->partner_id;
+        // Only internal users (no partner_id) with manage permission can delete
+        return $user->partner_id === null && $user->can('manage operations');
     }
 
     public function transition(User $user, Operation $operation): bool

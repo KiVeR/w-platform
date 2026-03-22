@@ -10,8 +10,11 @@ use App\Models\Partner;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 
-class BalanceService
+final class BalanceService
 {
+    /**
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function credit(
         Partner $partner,
         float $amount,
@@ -21,6 +24,7 @@ class BalanceService
         ?array $metadata = null,
     ): Transaction {
         return DB::transaction(function () use ($partner, $amount, $description, $operationId, $reference, $metadata): Transaction {
+            /** @var Partner $partner */
             $partner = Partner::lockForUpdate()->findOrFail($partner->id);
 
             $newBalance = (float) $partner->euro_credits + $amount;
@@ -40,6 +44,8 @@ class BalanceService
     }
 
     /**
+     * @param  array<string, mixed>|null  $metadata
+     *
      * @throws InsufficientCreditsException
      */
     public function debit(
@@ -51,6 +57,7 @@ class BalanceService
         ?array $metadata = null,
     ): Transaction {
         return DB::transaction(function () use ($partner, $amount, $description, $operationId, $reference, $metadata): Transaction {
+            /** @var Partner $partner */
             $partner = Partner::lockForUpdate()->findOrFail($partner->id);
 
             $currentBalance = (float) $partner->euro_credits;
@@ -75,6 +82,9 @@ class BalanceService
         });
     }
 
+    /**
+     * @param  array<string, mixed>|null  $metadata
+     */
     public function refund(
         Partner $partner,
         float $amount,
@@ -84,6 +94,7 @@ class BalanceService
         ?array $metadata = null,
     ): Transaction {
         return DB::transaction(function () use ($partner, $amount, $description, $operationId, $reference, $metadata): Transaction {
+            /** @var Partner $partner */
             $partner = Partner::lockForUpdate()->findOrFail($partner->id);
 
             $newBalance = (float) $partner->euro_credits + $amount;
@@ -103,6 +114,8 @@ class BalanceService
     }
 
     /**
+     * @param  array<string, mixed>|null  $metadata
+     *
      * @throws InsufficientCreditsException
      */
     public function adjustment(
@@ -113,6 +126,7 @@ class BalanceService
         ?array $metadata = null,
     ): Transaction {
         return DB::transaction(function () use ($partner, $signedAmount, $description, $reference, $metadata): Transaction {
+            /** @var Partner $partner */
             $partner = Partner::lockForUpdate()->findOrFail($partner->id);
 
             $currentBalance = (float) $partner->euro_credits;

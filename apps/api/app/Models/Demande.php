@@ -91,8 +91,8 @@ class Demande extends Model
     /** @param Builder<Demande> $query */
     public function scopeForUser(Builder $query, User $user): void
     {
-        // Users with 'view demandes' permission see all demandes (admins, internal staff)
-        if ($user->can('view demandes')) {
+        // Internal users (no partner_id) with 'view demandes' permission see all demandes
+        if ($user->partner_id === null && $user->can('view demandes')) {
             return;
         }
 

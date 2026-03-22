@@ -10,7 +10,7 @@ use App\Models\InvoiceLine;
 use App\Models\Operation;
 use Illuminate\Support\Facades\DB;
 
-class InvoiceService
+final class InvoiceService
 {
     /**
      * Create a draft invoice from an operation.
