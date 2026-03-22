@@ -35,9 +35,9 @@ class AutoTransitionOperationsCommand extends Command
         $this->transitionService = $transitionService;
 
         $this->transitionReadyToScheduled();
-        $this->transitionScheduledToProcessing($transitionService);
-        $this->transitionProcessingToDelivered($transitionService);
-        $this->transitionDeliveredToCompleted($transitionService);
+        $this->transitionScheduledToProcessing();
+        $this->transitionProcessingToDelivered();
+        $this->transitionDeliveredToCompleted();
 
         return self::SUCCESS;
     }
@@ -48,77 +48,62 @@ class AutoTransitionOperationsCommand extends Command
             ->whereNotNull('scheduled_at')
             ->where('scheduled_at', '<=', now())
             ->each(function (Operation $operation): void {
-                try {
-                    $this->transitionService->applyTransition(
-                        $operation, 'lifecycle', LifecycleStatus::SCHEDULED,
-                        reason: 'Auto-scheduled: scheduled_at reached',
-                    );
-                    $this->transitioned++;
-                } catch (InvalidTransitionException) {
-                    $this->skipped++;
-                } catch (\Throwable $e) {
-                    Log::error('Auto-transition ready→scheduled failed', [
-                        'operation_id' => $operation->id, 'error' => $e->getMessage(),
-                    ]);
-                    $this->failed++;
-                }
+                $this->safeTransition($operation, LifecycleStatus::SCHEDULED, 'ready->scheduled');
             });
     }
 
-    private function transitionScheduledToProcessing(TransitionService $ts): void
+    private function transitionScheduledToProcessing(): void
     {
         if (! $this->isWithinSendingWindow()) {
             return;
         }
 
-        $operations = Operation::query()
+        Operation::query()
             ->where('lifecycle_status', LifecycleStatus::SCHEDULED)
             ->where('scheduled_at', '<=', now())
-            ->get();
-
-        foreach ($operations as $operation) {
-            $this->safeTransition($ts, $operation, LifecycleStatus::PROCESSING, 'scheduled->processing');
-        }
+            ->each(function (Operation $operation): void {
+                $this->safeTransition($operation, LifecycleStatus::PROCESSING, 'scheduled->processing');
+            });
     }
 
-    private function transitionProcessingToDelivered(TransitionService $ts): void
+    private function transitionProcessingToDelivered(): void
     {
-        $operations = Operation::query()
+        Operation::query()
             ->where('lifecycle_status', LifecycleStatus::PROCESSING)
             ->whereHas('campaign', fn ($q) => $q->where('status', CampaignStatus::SENT))
-            ->get();
-
-        foreach ($operations as $operation) {
-            $this->safeTransition($ts, $operation, LifecycleStatus::DELIVERED, 'processing->delivered');
-        }
+            ->each(function (Operation $operation): void {
+                $this->safeTransition($operation, LifecycleStatus::DELIVERED, 'processing->delivered');
+            });
     }
 
-    private function transitionDeliveredToCompleted(TransitionService $ts): void
+    private function transitionDeliveredToCompleted(): void
     {
-        $operations = Operation::query()
+        Operation::query()
             ->where('lifecycle_status', LifecycleStatus::DELIVERED)
             ->where('delivered_at', '<=', now()->subHours(72))
-            ->get();
-
-        foreach ($operations as $operation) {
-            $this->safeTransition($ts, $operation, LifecycleStatus::COMPLETED, 'delivered->completed');
-        }
+            ->each(function (Operation $operation): void {
+                $this->safeTransition($operation, LifecycleStatus::COMPLETED, 'delivered->completed');
+            });
     }
 
     private function safeTransition(
-        TransitionService $ts,
         Operation $operation,
         LifecycleStatus $target,
         string $label,
     ): void {
         try {
-            $ts->applyTransition($operation, 'lifecycle', $target, null, "auto: {$label}");
+            $this->transitionService->applyTransition(
+                $operation, 'lifecycle', $target, null, "auto: {$label}",
+            );
+            $this->transitioned++;
         } catch (InvalidTransitionException $e) {
             Log::info("Auto-transition skipped ({$label}): {$e->getMessage()}");
+            $this->skipped++;
         } catch (Throwable $e) {
             Log::error("Auto-transition failed ({$label}): {$e->getMessage()}", [
                 'operation_id' => $operation->id,
             ]);
+            $this->failed++;
         }
     }
 

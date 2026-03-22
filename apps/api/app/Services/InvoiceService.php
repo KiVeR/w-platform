@@ -19,7 +19,7 @@ final class InvoiceService
     public function createDraftFromOperation(Operation $operation): Invoice
     {
         $existingLine = InvoiceLine::where('operation_id', $operation->id)->first();
-        if ($existingLine) {
+        if ($existingLine !== null) {
             return $existingLine->invoice;
         }
 
@@ -67,7 +67,7 @@ final class InvoiceService
     public function addLineFromOperation(Invoice $invoice, Operation $operation): InvoiceLine
     {
         $existing = $invoice->lines()->where('operation_id', $operation->id)->first();
-        if ($existing) {
+        if ($existing !== null) {
             return $existing;
         }
 

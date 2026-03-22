@@ -15,6 +15,8 @@ use App\Models\Operation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use LogicException;
+use Throwable;
 
 /**
  * Backfills historical campaigns into the Demande → Operation model.
@@ -163,7 +165,7 @@ class MigrateCampaignsToOperationsCommand extends Command
             });
 
             $this->migrated++;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->error("  Error migrating campaign #{$campaign->id}: {$e->getMessage()}");
             Log::error('Campaign migration failed', [
                 'campaign_id' => $campaign->id,
@@ -192,7 +194,7 @@ class MigrateCampaignsToOperationsCommand extends Command
         return match ($campaign->type) {
             CampaignType::PROSPECTION => OperationType::LOC,
             CampaignType::FIDELISATION => OperationType::FID,
-            CampaignType::COMPTAGE => throw new \LogicException('COMPTAGE should be excluded before mapType()'),
+            CampaignType::COMPTAGE => throw new LogicException('COMPTAGE should be excluded before mapType()'),
         };
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\StateMachine;
 
 use App\Enums\CancellationType;
+use App\Enums\HoldReason;
 use App\Enums\LifecycleStatus;
 use App\Exceptions\InvalidTransitionException;
 use App\Models\Operation;
@@ -125,7 +126,7 @@ final class TransitionService
         if ($toState === LifecycleStatus::ON_HOLD) {
             $holdReason = $metadata['hold_reason'] ?? null;
             if ($holdReason !== null) {
-                $operation->hold_reason = \App\Enums\HoldReason::tryFrom($holdReason);
+                $operation->hold_reason = HoldReason::tryFrom($holdReason);
             }
         }
 
@@ -152,10 +153,8 @@ final class TransitionService
     {
         $type = $metadata['cancellation_type'] ?? null;
 
-        if ($type !== null) {
-            $operation->cancellation_type = CancellationType::tryFrom($type) ?? CancellationType::ADMIN_DECISION;
-        } else {
-            $operation->cancellation_type = CancellationType::ADMIN_DECISION;
-        }
+        $operation->cancellation_type = $type !== null
+            ? (CancellationType::tryFrom($type) ?? CancellationType::ADMIN_DECISION)
+            : CancellationType::ADMIN_DECISION;
     }
 }
