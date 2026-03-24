@@ -1196,6 +1196,28 @@
     "progression": {
       "label": "{completed}/{total}",
       "complete": "Completed"
+    },
+    "form": {
+      "edit": "Edit",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "fields": {
+        "ref_demande": "Request reference",
+        "ref_client": "Client reference",
+        "information": "Information",
+        "is_exoneration": "Exoneration",
+        "partner": "Partner",
+        "commercial": "Commercial",
+        "sdr": "SDR"
+      }
+    },
+    "timeline": {
+      "empty": "No activity yet",
+      "see_more": "See more",
+      "transition": "{from} → {to}",
+      "by": "by {name}",
+      "loading": "Loading history..."
     }
   }
 }
