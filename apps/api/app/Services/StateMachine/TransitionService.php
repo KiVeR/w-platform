@@ -99,6 +99,7 @@ final class TransitionService
             $this->handleLifecycleSubStates($operation, $fromState, $toState, $metadata);
         }
 
+        $operation->last_transitioned_at = now();
         $operation->save();
 
         OperationTransition::create([

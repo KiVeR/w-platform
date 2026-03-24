@@ -45,6 +45,7 @@ class OperationResource extends JsonResource
             'external_ref' => $this->external_ref,
             'scheduled_at' => $this->scheduled_at,
             'delivered_at' => $this->delivered_at,
+            'last_transitioned_at' => $this->last_transitioned_at,
             'parent_operation_id' => $this->parent_operation_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
