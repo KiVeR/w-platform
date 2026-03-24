@@ -9,6 +9,7 @@ overrides:
   '@wellpack/targeting': workspace:*
   '@wellpack/operations': workspace:*
   '@wellpack/billing': workspace:*
+  '@wellpack/demandes': workspace:*
 
 importers:
 
@@ -46,6 +47,9 @@ importers:
       '@wellpack/content-editor':
         specifier: workspace:*
         version: link:../../packages/content-editor
+      '@wellpack/demandes':
+        specifier: workspace:*
+        version: link:../../packages/demandes
       '@wellpack/operations':
         specifier: workspace:*
         version: link:../../packages/operations
@@ -320,6 +324,31 @@ importers:
       vue:
         specifier: ^3.5.0
         version: 3.5.28(typescript@5.9.3)
+
+  packages/demandes:
+    dependencies:
+      lucide-vue-next:
+        specifier: ^0.563.0
+        version: 0.563.0(vue@3.5.28(typescript@5.8.3))
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.4
+        version: 6.0.4(vite@7.3.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))(vue@3.5.28(typescript@5.8.3))
+      '@vue/test-utils':
+        specifier: ^2.4.6
+        version: 2.4.6
+      happy-dom:
+        specifier: ^20.5.3
+        version: 20.5.3
+      typescript:
+        specifier: ^5.8.0
+        version: 5.8.3
+      vitest:
+        specifier: ^4.0.18
+        version: 4.0.18(@types/node@25.2.2)(happy-dom@20.5.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
+      vue:
+        specifier: ^3.5.27
+        version: 3.5.28(typescript@5.8.3)
 
   packages/operations:
     dependencies:

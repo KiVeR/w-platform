@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   // Extend shared layers (visual editor + SMS, targeting/geo)
-  extends: ['@wellpack/content-editor', '@wellpack/targeting', '@wellpack/operations', '@wellpack/billing'],
+  extends: ['@wellpack/content-editor', '@wellpack/targeting', '@wellpack/operations', '@wellpack/billing', '@wellpack/demandes'],
 
   // SPA mode — auth-first dashboard, pas de SEO nécessaire
   ssr: false,

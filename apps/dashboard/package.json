@@ -27,6 +27,7 @@
     "@wellpack/targeting": "workspace:*",
     "@wellpack/operations": "workspace:*",
     "@wellpack/billing": "workspace:*",
+    "@wellpack/demandes": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "laravel-echo": "2.3.1",
