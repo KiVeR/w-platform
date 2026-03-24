@@ -1234,6 +1234,34 @@
       "priority_label": "Priorité",
       "submit": "Créer",
       "cancel": "Annuler"
+    },
+    "config": {
+      "title": "Configuration opération",
+      "saved": "Opération mise à jour",
+      "save_error": "Erreur lors de la mise à jour",
+      "save_button": "Sauvegarder",
+      "close_button": "Fermer",
+      "sections": {
+        "identity": "Identité",
+        "message": "Message SMS",
+        "targeting": "Ciblage & Volume",
+        "scheduling": "Planification",
+        "billing": "Tarification"
+      },
+      "fields": {
+        "name": "Nom de l'opération",
+        "advertiser": "Annonceur",
+        "priority": "Priorité",
+        "external_ref": "Référence externe",
+        "message": "Message",
+        "sender": "Expéditeur",
+        "volume_estimated": "Volume estimé",
+        "configure_targeting": "Configurer le ciblage",
+        "scheduled_at": "Date planifiée",
+        "unit_price": "Prix unitaire",
+        "total_price": "Prix total"
+      },
+      "chars_count": "{count}/160 caractères"
     }
   }
 }

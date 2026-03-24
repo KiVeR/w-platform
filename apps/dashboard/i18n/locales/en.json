@@ -1234,6 +1234,34 @@
       "priority_label": "Priority",
       "submit": "Create",
       "cancel": "Cancel"
+    },
+    "config": {
+      "title": "Operation configuration",
+      "saved": "Operation updated",
+      "save_error": "Error updating operation",
+      "save_button": "Save",
+      "close_button": "Close",
+      "sections": {
+        "identity": "Identity",
+        "message": "SMS Message",
+        "targeting": "Targeting & Volume",
+        "scheduling": "Scheduling",
+        "billing": "Billing"
+      },
+      "fields": {
+        "name": "Operation name",
+        "advertiser": "Advertiser",
+        "priority": "Priority",
+        "external_ref": "External reference",
+        "message": "Message",
+        "sender": "Sender",
+        "volume_estimated": "Estimated volume",
+        "configure_targeting": "Configure targeting",
+        "scheduled_at": "Scheduled date",
+        "unit_price": "Unit price",
+        "total_price": "Total price"
+      },
+      "chars_count": "{count}/160 characters"
     }
   }
 }

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import type { DemandeDetail, DemandeOperationRow } from '#demandes/types/demandes'
 
 const props = defineProps<{
   demande: DemandeDetail
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   refresh: []
 }>()
 
@@ -17,6 +17,18 @@ const operations = computed(() =>
 )
 const completedCount = computed(() => props.demande.operations_completed_count)
 const totalCount = computed(() => props.demande.operations_count)
+
+const selectedOperation = ref<DemandeOperationRow | null>(null)
+const isSheetOpen = ref(false)
+
+function openConfigSheet(op: DemandeOperationRow) {
+  selectedOperation.value = op
+  isSheetOpen.value = true
+}
+
+function onSheetSaved() {
+  emit('refresh')
+}
 </script>
 
 <template>
@@ -55,7 +67,7 @@ const totalCount = computed(() => props.demande.operations_count)
         :key="op.id"
         class="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
         :data-testid="`operation-row-${op.id}`"
-        @click="$emit('select-operation', op)"
+        @click="openConfigSheet(op)"
       >
         <div class="flex items-center gap-3">
           <span class="font-mono text-sm" data-testid="op-ref">{{ op.ref_operation }}</span>
@@ -83,5 +95,11 @@ const totalCount = computed(() => props.demande.operations_count)
         </div>
       </div>
     </div>
+
+    <DemandeOperationConfigSheet
+      :operation="selectedOperation"
+      v-model:open="isSheetOpen"
+      @saved="onSheetSaved"
+    />
   </div>
 </template>
