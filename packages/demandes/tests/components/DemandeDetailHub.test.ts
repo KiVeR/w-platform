@@ -44,6 +44,17 @@ function makeDetail(overrides: Partial<DemandeDetail> = {}): DemandeDetail {
   }
 }
 
+const globalStubs = {
+  global: {
+    stubs: {
+      DemandeOperationQuickCreate: {
+        template: '<div data-testid="quick-create-stub" />',
+        props: ['demandeId'],
+      },
+    },
+  },
+}
+
 beforeEach(() => {
   vi.restoreAllMocks()
   mockUseI18n()
@@ -54,6 +65,7 @@ describe('DemandeDetailHub', () => {
   it('shows header with total count', () => {
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations_count: 5, operations: [] }) },
+      ...globalStubs,
     })
 
     expect(wrapper.find('[data-testid="total-count"]').text()).toContain('5')
@@ -62,6 +74,7 @@ describe('DemandeDetailHub', () => {
   it('shows progress counter as completed/total', () => {
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations_count: 8, operations_completed_count: 3, operations: [] }) },
+      ...globalStubs,
     })
 
     expect(wrapper.find('[data-testid="progress-counter"]').text()).toBe('3/8')
@@ -70,6 +83,7 @@ describe('DemandeDetailHub', () => {
   it('shows empty state when no operations', () => {
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations: [] }) },
+      ...globalStubs,
     })
 
     expect(wrapper.find('[data-testid="empty-state"]').exists()).toBe(true)
@@ -83,6 +97,7 @@ describe('DemandeDetailHub', () => {
     ]
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations, operations_count: 2 }) },
+      ...globalStubs,
     })
 
     expect(wrapper.find('[data-testid="operations-list"]').exists()).toBe(true)
@@ -97,6 +112,7 @@ describe('DemandeDetailHub', () => {
     ]
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations }) },
+      ...globalStubs,
     })
 
     const refs = wrapper.findAll('[data-testid="op-ref"]').map(el => el.text())
@@ -109,6 +125,7 @@ describe('DemandeDetailHub', () => {
     ]
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations }) },
+      ...globalStubs,
     })
 
     const badge = wrapper.find('[data-testid="op-status"]')
@@ -116,15 +133,12 @@ describe('DemandeDetailHub', () => {
     expect(badge.classes()).toContain('text-green-800')
   })
 
-  it('renders quick-create slot content', () => {
+  it('renders DemandeOperationQuickCreate component', () => {
     const wrapper = mount(DemandeDetailHub, {
       props: { demande: makeDetail({ operations: [] }) },
-      slots: {
-        'quick-create': '<button data-testid="add-op-btn">Ajouter</button>',
-      },
+      ...globalStubs,
     })
 
-    expect(wrapper.find('[data-testid="add-op-btn"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="add-op-btn"]').text()).toBe('Ajouter')
+    expect(wrapper.find('[data-testid="quick-create-stub"]').exists()).toBe(true)
   })
 })

@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '#demandes': resolve(currentDir),
+      'vue-sonner': resolve(currentDir, 'tests/__mocks__/vue-sonner.ts'),
     },
   },
   test: {

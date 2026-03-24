@@ -32,9 +32,12 @@ const totalCount = computed(() => props.demande.operations_count)
       </div>
     </div>
 
-    <!-- Bouton ajouter (placeholder pour step 5) -->
+    <!-- Quick create operation -->
     <div class="flex justify-end">
-      <slot name="quick-create" />
+      <DemandeOperationQuickCreate
+        :demande-id="demande.id"
+        @created="$emit('refresh')"
+      />
     </div>
 
     <!-- Liste opérations -->

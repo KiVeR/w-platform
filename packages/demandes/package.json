@@ -8,7 +8,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "lucide-vue-next": "^0.563.0"
+    "lucide-vue-next": "^0.563.0",
+    "vue-sonner": "^2.0.0"
   },
   "devDependencies": {
     "vitest": "^4.0.18",

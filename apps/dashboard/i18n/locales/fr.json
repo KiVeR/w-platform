@@ -1223,6 +1223,17 @@
       "operations_title": "Opérations",
       "no_operations": "Aucune opération — ajoutez la première",
       "add_operation": "Ajouter une opération"
+    },
+    "operations": {
+      "add_button": "Ajouter une opération",
+      "created": "Opération créée",
+      "create_error": "Erreur lors de la création",
+      "type_placeholder": "Choisir un type",
+      "name_placeholder": "Nom de l'opération",
+      "advertiser_placeholder": "Annonceur",
+      "priority_label": "Priorité",
+      "submit": "Créer",
+      "cancel": "Annuler"
     }
   }
 }
