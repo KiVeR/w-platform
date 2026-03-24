@@ -30,6 +30,9 @@ class DemandeResource extends JsonResource
             'commercial' => new UserResource($this->whenLoaded('commercial')),
             'sdr' => new UserResource($this->whenLoaded('sdr')),
             'operations' => OperationResource::collection($this->whenLoaded('operations')),
+            'operations_count' => $this->operations_count ?? 0,
+            'operations_completed_count' => $this->operations_completed_count ?? 0,
+            'operations_blocked_count' => $this->operations_blocked_count ?? 0,
         ];
     }
 }
