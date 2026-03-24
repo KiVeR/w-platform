@@ -19,7 +19,8 @@
       "adv": "ADV"
     },
     "operations": "Operations",
-    "billing": "Billing"
+    "billing": "Billing",
+    "demandes": "Requests"
   },
   "sidebar": {
     "toggle": "Toggle sidebar",
@@ -1154,6 +1155,47 @@
       "title": "To invoice",
       "loading": "Loading...",
       "description": "operations pending invoicing"
+    }
+  },
+  "demandes": {
+    "list": {
+      "title": "Requests",
+      "empty": "No requests found",
+      "search_placeholder": "Search by reference...",
+      "new_button": "New request",
+      "columns": {
+        "reference": "Reference",
+        "partner": "Partner",
+        "operations": "Operations",
+        "blocked": "Blocked",
+        "date": "Date"
+      }
+    },
+    "create": {
+      "title": "New request",
+      "success": "Request created successfully",
+      "fields": {
+        "ref_client": "Client reference",
+        "information": "Information",
+        "is_exoneration": "Exoneration",
+        "partner": "Partner",
+        "commercial": "Commercial",
+        "sdr": "SDR"
+      },
+      "submit": "Create request",
+      "cancel": "Cancel"
+    },
+    "detail": {
+      "title": "Request {ref}",
+      "tabs": {
+        "overview": "Overview",
+        "operations": "Operations",
+        "timeline": "History"
+      }
+    },
+    "progression": {
+      "label": "{completed}/{total}",
+      "complete": "Completed"
     }
   }
 }
