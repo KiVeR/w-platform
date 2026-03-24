@@ -23,6 +23,12 @@ class UpdateOperationRequest extends FormRequest
             'message' => ['nullable', 'string'],
             'sender' => ['nullable', 'string', 'max:11'],
             'parent_operation_id' => ['nullable', 'integer', 'exists:operations,id'],
+            'volume_estimated' => ['nullable', 'integer', 'min:0'],
+            'unit_price' => ['nullable', 'numeric', 'min:0'],
+            'total_price' => ['nullable', 'numeric', 'min:0'],
+            'scheduled_at' => ['nullable', 'date'],
+            'delivered_at' => ['nullable', 'date'],
+            'external_ref' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
