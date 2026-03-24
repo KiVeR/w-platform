@@ -1218,6 +1218,11 @@
       "transition": "{from} → {to}",
       "by": "by {name}",
       "loading": "Loading history..."
+    },
+    "hub": {
+      "operations_title": "Operations",
+      "no_operations": "No operations yet — add the first one",
+      "add_operation": "Add an operation"
     }
   }
 }
