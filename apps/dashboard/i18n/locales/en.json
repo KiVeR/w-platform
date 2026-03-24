@@ -1158,6 +1158,16 @@
     }
   },
   "demandes": {
+    "action_zone": {
+      "title": "To handle",
+      "operations_blocked": "{count} blocked operation(s)",
+      "no_operations": "No operations",
+      "stale": "Inactive for more than 7 days"
+    },
+    "aging": {
+      "stale_warning": "Inactive for more than 7 days",
+      "tooltip": "Last transition {days} days ago"
+    },
     "list": {
       "title": "Requests",
       "empty": "No requests found",

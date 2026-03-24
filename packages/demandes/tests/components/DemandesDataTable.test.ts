@@ -210,7 +210,67 @@ describe('DemandesDataTable', () => {
       global: globalStubs,
     })
 
-    const progressBar = wrapper.find('.bg-primary.h-1\\.5')
+    // bar is no longer bg-primary but a color class
+    const progressBar = wrapper.find('.h-1\\.5.rounded-full.transition-all')
     expect(progressBar.attributes('style')).toContain('width: 50%')
+  })
+
+  it('shows green bar when 100% complete', () => {
+    const wrapper = mount(DemandesDataTable, {
+      props: { demandes: [makeDemandeRow({ operations_count: 3, operations_completed_count: 3, operations_blocked_count: 0 })], isLoading: false, sort: '' },
+      global: globalStubs,
+    })
+
+    expect(wrapper.find('.bg-green-500').exists()).toBe(true)
+  })
+
+  it('shows orange bar when blocked', () => {
+    const wrapper = mount(DemandesDataTable, {
+      props: { demandes: [makeDemandeRow({ operations_count: 5, operations_completed_count: 2, operations_blocked_count: 1 })], isLoading: false, sort: '' },
+      global: globalStubs,
+    })
+
+    expect(wrapper.find('.bg-orange-500').exists()).toBe(true)
+  })
+
+  it('shows blue bar for in-progress', () => {
+    const wrapper = mount(DemandesDataTable, {
+      props: { demandes: [makeDemandeRow({ operations_count: 5, operations_completed_count: 2, operations_blocked_count: 0 })], isLoading: false, sort: '' },
+      global: globalStubs,
+    })
+
+    expect(wrapper.find('.bg-blue-500').exists()).toBe(true)
+  })
+
+  it('highlights row when blocked', () => {
+    const wrapper = mount(DemandesDataTable, {
+      props: { demandes: [makeDemandeRow({ operations_blocked_count: 2 })], isLoading: false, sort: '' },
+      global: globalStubs,
+    })
+
+    const rows = wrapper.findAll('tr')
+    const bodyRow = rows[rows.length - 1]
+    expect(bodyRow.classes()).toContain('bg-orange-50')
+  })
+
+  it('does not highlight row when not blocked', () => {
+    const wrapper = mount(DemandesDataTable, {
+      props: { demandes: [makeDemandeRow({ operations_blocked_count: 0 })], isLoading: false, sort: '' },
+      global: globalStubs,
+    })
+
+    const rows = wrapper.findAll('tr')
+    const bodyRow = rows[rows.length - 1]
+    expect(bodyRow.classes()).not.toContain('bg-orange-50')
+  })
+
+  it('handles zero operations count gracefully (bar at 0%)', () => {
+    const wrapper = mount(DemandesDataTable, {
+      props: { demandes: [makeDemandeRow({ operations_count: 0, operations_completed_count: 0, operations_blocked_count: 0 })], isLoading: false, sort: '' },
+      global: globalStubs,
+    })
+
+    const progressBar = wrapper.find('.h-1\\.5.rounded-full.transition-all')
+    expect(progressBar.attributes('style')).toContain('width: 0%')
   })
 })

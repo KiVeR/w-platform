@@ -51,6 +51,9 @@ onMounted(() => fetchDemandes())
       </NuxtLink>
     </div>
 
+    <!-- Action zone -->
+    <DemandeActionZone @select="onSelect" />
+
     <!-- Quick filters -->
     <div class="flex items-center gap-3 flex-wrap">
       <input

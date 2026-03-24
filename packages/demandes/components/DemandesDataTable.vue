@@ -43,6 +43,17 @@ function progressPercent(demande: DemandeRow): number {
   if (demande.operations_count === 0) return 0
   return Math.round((demande.operations_completed_count / demande.operations_count) * 100)
 }
+
+function progressBarColor(demande: DemandeRow): string {
+  if (progressPercent(demande) === 100) return 'bg-green-500'
+  if (demande.operations_blocked_count > 0) return 'bg-orange-500'
+  return 'bg-blue-500'
+}
+
+function rowHighlightClass(demande: DemandeRow): string {
+  if (demande.operations_blocked_count > 0) return 'bg-orange-50'
+  return ''
+}
 </script>
 
 <template>
@@ -81,6 +92,7 @@ function progressPercent(demande: DemandeRow): number {
           v-for="demande in demandes"
           :key="demande.id"
           class="cursor-pointer hover:bg-muted/50"
+          :class="rowHighlightClass(demande)"
           @click="emit('select', demande)"
         >
           <TableCell class="font-medium">{{ demande.ref_demande }}</TableCell>
@@ -90,7 +102,8 @@ function progressPercent(demande: DemandeRow): number {
               <span class="text-sm">{{ demande.operations_completed_count }}/{{ demande.operations_count }}</span>
               <div class="w-full bg-muted rounded-full h-1.5">
                 <div
-                  class="bg-primary h-1.5 rounded-full transition-all"
+                  class="h-1.5 rounded-full transition-all"
+                  :class="progressBarColor(demande)"
                   :style="{ width: `${progressPercent(demande)}%` }"
                 />
               </div>
