@@ -22,7 +22,8 @@ vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hub
 
 // API stub
 const mockPost = vi.fn()
-vi.stubGlobal('useNuxtApp', () => ({ $api: { POST: mockPost } }))
+const mockGet = vi.fn()
+vi.stubGlobal('useNuxtApp', () => ({ $api: { POST: mockPost, GET: mockGet } }))
 
 // PartnerStore stub — control admin vs non-admin
 const effectivePartnerId = ref<number | null>(null)
@@ -68,6 +69,14 @@ const NuxtLinkStub = {
   props: ['to'],
 }
 
+// AsyncCombobox stub — renders a simplified version that exposes data-testid and emits update:modelValue
+const AsyncComboboxStub = {
+  template: '<div :data-testid="$attrs[\'data-testid\']" data-stub="async-combobox"><slot /></div>',
+  props: ['modelValue', 'searchFn', 'placeholder', 'disabled', 'displayValue'],
+  emits: ['update:modelValue'],
+  inheritAttrs: true,
+}
+
 // Lucide icon stub
 const ArrowLeftStub = { template: '<span />' }
 
@@ -86,6 +95,7 @@ function mountPage() {
         Button: ButtonStub,
         NuxtLink: NuxtLinkStub,
         ArrowLeft: ArrowLeftStub,
+        AsyncCombobox: AsyncComboboxStub,
       },
     },
   })
@@ -121,7 +131,7 @@ describe('demandes/new page', () => {
     expect(wrapper.find('[data-testid="exoneration-switch"]').exists()).toBe(true)
   })
 
-  it('has partner select for admin', () => {
+  it('has partner combobox for admin', () => {
     // effectivePartnerId is null → admin
     effectivePartnerId.value = null
     vi.stubGlobal('usePartnerStore', () => ({
@@ -129,9 +139,10 @@ describe('demandes/new page', () => {
     }))
     const wrapper = mountPage()
     expect(wrapper.find('[data-testid="partner-field"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="partner-id-combobox"]').exists()).toBe(true)
   })
 
-  it('hides partner select for non-admin', () => {
+  it('hides partner combobox for non-admin', () => {
     // effectivePartnerId non-null → partner user
     effectivePartnerId.value = 5
     vi.stubGlobal('usePartnerStore', () => ({
@@ -139,6 +150,12 @@ describe('demandes/new page', () => {
     }))
     const wrapper = mountPage()
     expect(wrapper.find('[data-testid="partner-field"]').exists()).toBe(false)
+  })
+
+  it('has commercial and sdr comboboxes', () => {
+    const wrapper = mountPage()
+    expect(wrapper.find('[data-testid="commercial-id-combobox"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="sdr-id-combobox"]').exists()).toBe(true)
   })
 
   it('submits form successfully', async () => {

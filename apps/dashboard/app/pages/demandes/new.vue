@@ -3,6 +3,7 @@ import { ref, reactive, computed } from 'vue'
 import { toast } from 'vue-sonner'
 import { ArrowLeft } from 'lucide-vue-next'
 import { usePartnerStore } from '@/stores/partner'
+import AsyncCombobox from '@/components/shared/AsyncCombobox.vue'
 
 definePageMeta({
   middleware: ['role-guard'],
@@ -31,6 +32,21 @@ const form = reactive({
   commercial_id: null as number | null,
   sdr_id: null as number | null,
 })
+
+// --- Async search functions for comboboxes ---
+async function searchPartners(query: string) {
+  const { data } = await ($api as any).GET('/partners', {
+    params: { query: { 'filter[name]': query, per_page: 10 } },
+  })
+  return (data?.data ?? []).map((p: any) => ({ id: p.id, label: p.name }))
+}
+
+async function searchUsers(query: string) {
+  const { data } = await ($api as any).GET('/users', {
+    params: { query: { 'filter[search]': query, per_page: 10 } },
+  })
+  return (data?.data ?? []).map((u: any) => ({ id: u.id, label: u.full_name }))
+}
 
 // Basic client-side validation
 const canSubmit = computed(() => {
@@ -169,13 +185,12 @@ async function onSubmit() {
               {{ t('demandes.create.fields.partner') }}
               <span class="text-destructive">*</span>
             </Label>
-            <Input
-              id="partner_id"
-              :model-value="form.partner_id ?? undefined"
-              data-testid="partner-id-input"
-              type="number"
+            <AsyncCombobox
+              :model-value="form.partner_id"
+              :search-fn="searchPartners"
               :placeholder="t('demandes.create.fields.partner_placeholder')"
-              @update:model-value="(v: string | number) => form.partner_id = v != null && v !== '' ? Number(v) : null"
+              data-testid="partner-id-combobox"
+              @update:model-value="(v) => form.partner_id = v"
             />
             <p class="text-xs text-muted-foreground">
               {{ t('demandes.create.fields.partner_hint') }}
@@ -189,13 +204,12 @@ async function onSubmit() {
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div class="space-y-1.5">
               <Label for="commercial_id">{{ t('demandes.create.fields.commercial') }}</Label>
-              <Input
-                id="commercial_id"
-                :model-value="form.commercial_id ?? undefined"
-                data-testid="commercial-id-input"
-                type="number"
+              <AsyncCombobox
+                :model-value="form.commercial_id"
+                :search-fn="searchUsers"
                 :placeholder="t('demandes.create.fields.commercial_placeholder')"
-                @update:model-value="(v: string | number) => form.commercial_id = v != null && v !== '' ? Number(v) : null"
+                data-testid="commercial-id-combobox"
+                @update:model-value="(v) => form.commercial_id = v"
               />
               <p class="text-xs text-muted-foreground">
                 {{ t('demandes.create.fields.commercial_hint') }}
@@ -207,13 +221,12 @@ async function onSubmit() {
 
             <div class="space-y-1.5">
               <Label for="sdr_id">{{ t('demandes.create.fields.sdr') }}</Label>
-              <Input
-                id="sdr_id"
-                :model-value="form.sdr_id ?? undefined"
-                data-testid="sdr-id-input"
-                type="number"
+              <AsyncCombobox
+                :model-value="form.sdr_id"
+                :search-fn="searchUsers"
                 :placeholder="t('demandes.create.fields.sdr_placeholder')"
-                @update:model-value="(v: string | number) => form.sdr_id = v != null && v !== '' ? Number(v) : null"
+                data-testid="sdr-id-combobox"
+                @update:model-value="(v) => form.sdr_id = v"
               />
               <p class="text-xs text-muted-foreground">
                 {{ t('demandes.create.fields.sdr_hint') }}
