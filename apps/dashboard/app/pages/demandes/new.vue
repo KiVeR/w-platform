@@ -11,6 +11,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const router = useRouter()
+const { scopedRoute } = useScopedNavigation()
 const { $api } = useNuxtApp()
 const partnerStore = usePartnerStore()
 
@@ -41,7 +42,7 @@ async function onSubmit() {
       return
     }
     toast.success(t('demandes.create.success'))
-    router.push(`/demandes/${data.data.id}`)
+    router.push(scopedRoute(`/demandes/${data.data.id}`))
   } finally {
     isSubmitting.value = false
   }
@@ -52,7 +53,7 @@ async function onSubmit() {
   <div class="p-6 space-y-6">
     <!-- Header -->
     <div class="flex items-center gap-4">
-      <NuxtLink to="/demandes" class="text-sm text-muted-foreground hover:text-foreground">
+      <NuxtLink :to="scopedRoute('/demandes')" class="text-sm text-muted-foreground hover:text-foreground">
         ← {{ t('demandes.list.title') }}
       </NuxtLink>
       <h1 class="text-2xl font-semibold tracking-tight">
@@ -152,7 +153,7 @@ async function onSubmit() {
             >
               {{ t('demandes.create.submit') }}
             </Button>
-            <NuxtLink to="/demandes">
+            <NuxtLink :to="scopedRoute('/demandes')">
               <Button type="button" variant="ghost" data-testid="cancel-button">
                 {{ t('demandes.create.cancel') }}
               </Button>

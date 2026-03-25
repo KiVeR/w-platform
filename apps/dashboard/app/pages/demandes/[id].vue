@@ -9,6 +9,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const route = useRoute()
+const { scopedRoute } = useScopedNavigation()
 const demandeId = computed(() => Number(route.params.id))
 const { demande, isLoading, hasError, refreshDemande } = useDemandeDetail(demandeId)
 </script>
@@ -18,7 +19,7 @@ const { demande, isLoading, hasError, refreshDemande } = useDemandeDetail(demand
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <NuxtLink to="/demandes" class="text-sm text-muted-foreground hover:underline">
+        <NuxtLink :to="scopedRoute('/demandes')" class="text-sm text-muted-foreground hover:underline">
           {{ t('demandes.list.title') }}
         </NuxtLink>
         <h1 class="text-2xl font-bold">

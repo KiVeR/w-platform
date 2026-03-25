@@ -8,6 +8,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 
 const { invoices, isLoading, hasError, fetchInvoices } = useInvoices()
 const { balance, isLoading: isLoadingBalance, fetchBalance } = usePartnerBalance()
@@ -32,7 +33,7 @@ onMounted(async () => {
 })
 
 function onSelectInvoice(id: number) {
-  navigateTo(`/billing/${id}`)
+  navigateTo(scopedRoute(`/billing/${id}`))
 }
 </script>
 

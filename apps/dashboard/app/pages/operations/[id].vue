@@ -6,6 +6,7 @@ definePageMeta({
 
 const route = useRoute()
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 
 const operationId = Number(route.params.id)
 
@@ -46,7 +47,7 @@ onMounted(() => {
     <!-- Back link -->
     <button
       class="mb-4 text-sm text-muted-foreground hover:text-foreground"
-      @click="navigateTo('/operations')"
+      @click="navigateTo(scopedRoute('/operations'))"
     >
       &larr; {{ t('operations.back_to_list') }}
     </button>
