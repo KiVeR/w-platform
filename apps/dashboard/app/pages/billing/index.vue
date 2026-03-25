@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { usePartnerStore } from '@/stores/partner'
+
 definePageMeta({
   middleware: ['role-guard'],
   requiredPermissions: ['view operations'],

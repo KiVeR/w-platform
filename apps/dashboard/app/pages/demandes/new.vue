@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { toast } from 'vue-sonner'
+import { usePartnerStore } from '@/stores/partner'
 
 definePageMeta({
   middleware: ['role-guard'],
