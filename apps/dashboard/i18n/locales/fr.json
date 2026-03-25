@@ -16,11 +16,17 @@
       "main": "Principal",
       "config": "Configuration",
       "admin": "Administration",
-      "adv": "ADV"
+      "adv": "ADV",
+      "platform": "Plateforme",
+      "operations": "Operations",
+      "management": "Gestion"
     },
     "operations": "Opérations",
     "billing": "Facturation",
-    "demandes": "Demandes"
+    "demandes": "Demandes",
+    "hubDashboard": "Tableau de bord Hub",
+    "partners": "Partenaires",
+    "partnerSettings": "Parametres partenaire"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",
@@ -267,6 +273,11 @@
           "jsonError": "Le JSON doit etre un objet valide."
         }
       }
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "new": "Nouvel utilisateur",
+      "edit": "Modifier l utilisateur"
     }
   },
   "login": {
@@ -348,13 +359,13 @@
     }
   },
   "error": {
-    "404": {
-      "title": "Page introuvable",
-      "description": "Cette page n'existe pas ou a été déplacée."
-    },
     "403": {
       "title": "Accès non autorisé",
       "description": "Vous n'avez pas les permissions pour accéder à cette page."
+    },
+    "404": {
+      "title": "Page introuvable",
+      "description": "Cette page n'existe pas ou a été déplacée."
     },
     "500": {
       "title": "Erreur serveur",
@@ -370,7 +381,16 @@
   "partner": {
     "allPartners": "Tous les partenaires",
     "search": "Rechercher un partenaire…",
-    "noResults": "Aucun partenaire trouvé"
+    "noResults": "Aucun partenaire trouvé",
+    "credits": {
+      "title": "Credits",
+      "recharge": "Recharger",
+      "history": "Historique des credits"
+    },
+    "features": {
+      "title": "Fonctionnalites",
+      "toggle": "Activer / desactiver"
+    }
   },
   "campaigns": {
     "title": "Campagnes",
@@ -477,14 +497,14 @@
         "volumeSent": "Volume envoyé",
         "unitPrice": "Prix unitaire",
         "totalPrice": "Prix total",
-      "smsCount": "Nombre de SMS",
-      "shortUrl": "Lien court",
-      "showFull": "Voir complet",
-      "showLess": "Replier",
-      "emptyMessage": "Aucun message disponible",
-      "createdAt": "Créée le",
-      "scheduledAt": "Planifiée le",
-      "sentAt": "Envoyée le"
+        "smsCount": "Nombre de SMS",
+        "shortUrl": "Lien court",
+        "showFull": "Voir complet",
+        "showLess": "Replier",
+        "emptyMessage": "Aucun message disponible",
+        "createdAt": "Créée le",
+        "scheduledAt": "Planifiée le",
+        "sentAt": "Envoyée le"
       },
       "targeting": {
         "title": "Ciblage",
@@ -1282,5 +1302,42 @@
     "actions": "Actions",
     "newCampaign": "Nouvelle campagne",
     "newPartner": "Nouveau partenaire"
+  },
+  "hub": {
+    "dashboard": {
+      "title": "Tableau de bord",
+      "welcome": "Bienvenue, {firstname}",
+      "kpi": {
+        "activePartners": "Partenaires actifs",
+        "totalCredits": "Credits totaux",
+        "campaignsThisMonth": "Campagnes ce mois",
+        "pendingActions": "Actions en attente"
+      }
+    },
+    "partners": {
+      "title": "Partenaires",
+      "new": "Nouveau partenaire",
+      "enter": "Acceder au partenaire"
+    },
+    "alerts": {
+      "lowCredits": "Credits faibles — {name} a moins de {amount} EUR de credits restants",
+      "inactive": "Partenaire desactive — {name} est actuellement inactif"
+    },
+    "emptyPortfolio": {
+      "title": "Votre portefeuille est vide",
+      "description": "Contactez votre administrateur pour vous attribuer des partenaires."
+    }
+  },
+  "scope": {
+    "banner": {
+      "context": "Vous travaillez dans le contexte de {name}",
+      "exit": "Quitter le contexte",
+      "credits": "{amount} EUR de credits"
+    },
+    "inactive": {
+      "title": "Partenaire desactive",
+      "description": "Ce partenaire est actuellement desactive. Certaines actions ne sont pas disponibles.",
+      "reactivate": "Reactiver"
+    }
   }
 }

@@ -16,11 +16,17 @@
       "main": "Main",
       "config": "Configuration",
       "admin": "Administration",
-      "adv": "ADV"
+      "adv": "ADV",
+      "platform": "Platform",
+      "operations": "Operations",
+      "management": "Management"
     },
     "operations": "Operations",
     "billing": "Billing",
-    "demandes": "Requests"
+    "demandes": "Requests",
+    "hubDashboard": "Hub Dashboard",
+    "partners": "Partners",
+    "partnerSettings": "Partner settings"
   },
   "sidebar": {
     "toggle": "Toggle sidebar",
@@ -267,6 +273,11 @@
           "jsonError": "JSON must be a valid object."
         }
       }
+    },
+    "users": {
+      "title": "Users",
+      "new": "New user",
+      "edit": "Edit user"
     }
   },
   "login": {
@@ -348,13 +359,13 @@
     }
   },
   "error": {
-    "404": {
-      "title": "Page not found",
-      "description": "This page doesn't exist or has been moved."
-    },
     "403": {
       "title": "Access denied",
       "description": "You don't have permission to access this page."
+    },
+    "404": {
+      "title": "Page not found",
+      "description": "This page doesn't exist or has been moved."
     },
     "500": {
       "title": "Server error",
@@ -370,7 +381,16 @@
   "partner": {
     "allPartners": "All partners",
     "search": "Search a partner…",
-    "noResults": "No partner found"
+    "noResults": "No partner found",
+    "credits": {
+      "title": "Credits",
+      "recharge": "Recharge",
+      "history": "Credits history"
+    },
+    "features": {
+      "title": "Features",
+      "toggle": "Enable / disable"
+    }
   },
   "campaigns": {
     "title": "Campaigns",
@@ -477,14 +497,14 @@
         "volumeSent": "Volume sent",
         "unitPrice": "Unit price",
         "totalPrice": "Total price",
-      "smsCount": "SMS count",
-      "shortUrl": "Short link",
-      "showFull": "View full message",
-      "showLess": "Collapse",
-      "emptyMessage": "No message available",
-      "createdAt": "Created on",
-      "scheduledAt": "Scheduled on",
-      "sentAt": "Sent on"
+        "smsCount": "SMS count",
+        "shortUrl": "Short link",
+        "showFull": "View full message",
+        "showLess": "Collapse",
+        "emptyMessage": "No message available",
+        "createdAt": "Created on",
+        "scheduledAt": "Scheduled on",
+        "sentAt": "Sent on"
       },
       "targeting": {
         "title": "Targeting",
@@ -1282,5 +1302,42 @@
     "actions": "Actions",
     "newCampaign": "New campaign",
     "newPartner": "New partner"
+  },
+  "hub": {
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome, {firstname}",
+      "kpi": {
+        "activePartners": "Active partners",
+        "totalCredits": "Total credits",
+        "campaignsThisMonth": "Campaigns this month",
+        "pendingActions": "Pending actions"
+      }
+    },
+    "partners": {
+      "title": "Partners",
+      "new": "New partner",
+      "enter": "Enter partner scope"
+    },
+    "alerts": {
+      "lowCredits": "Low credits — {name} has less than {amount} EUR remaining",
+      "inactive": "Partner disabled — {name} is currently inactive"
+    },
+    "emptyPortfolio": {
+      "title": "Your portfolio is empty",
+      "description": "Contact your administrator to assign partners to your account."
+    }
+  },
+  "scope": {
+    "banner": {
+      "context": "You are working in the context of {name}",
+      "exit": "Exit context",
+      "credits": "{amount} EUR credits"
+    },
+    "inactive": {
+      "title": "Partner disabled",
+      "description": "This partner is currently disabled. Some actions are unavailable.",
+      "reactivate": "Reactivate"
+    }
   }
 }
