@@ -1321,7 +1321,10 @@
     },
     "alerts": {
       "lowCredits": "Low credits — {name} has less than {amount} EUR remaining",
-      "inactive": "Partner disabled — {name} is currently inactive"
+      "inactive": "Partner disabled — {name} is currently inactive",
+      "title": "Alerts",
+      "empty": "No active alerts",
+      "enter": "View"
     },
     "emptyPortfolio": {
       "title": "Your portfolio is empty",

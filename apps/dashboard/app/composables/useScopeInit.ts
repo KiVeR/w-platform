@@ -4,14 +4,19 @@ import { usePartnerStore } from '@/stores/partner'
 /**
  * Composable for scoped wrapper pages.
  * Reads route.params.id, syncs partner store via fetchPartnerInfo + setPartner,
- * and returns { ready, partnerId, error }.
- * Redirects to Hub dashboard if partnerId is invalid.
+ * and returns { ready, partnerId, error, isInactive }.
+ *
+ * Edge cases handled:
+ * - Invalid (NaN) partnerId → redirect to Hub
+ * - Partner not found (404 / deleted) → redirect to Hub
+ * - Partner inactive → ready = true, isInactive = true
  */
 export function useScopeInit() {
   const route = useRoute()
   const partner = usePartnerStore()
   const ready = ref(false)
   const error = ref<string | null>(null)
+  const isInactive = ref(false)
 
   const partnerId = computed(() => {
     const id = Number(route.params.id)
@@ -25,7 +30,22 @@ export function useScopeInit() {
     }
     try {
       await partner.fetchPartnerInfo(partnerId.value)
-      partner.setPartner(partnerId.value, partner.currentPartnerData?.name ?? '')
+
+      // fetchPartnerInfo catches errors silently — if currentPartnerData is null,
+      // it means 404 or an error occurred → redirect to Hub
+      if (!partner.currentPartnerData) {
+        error.value = 'Partner not found'
+        await navigateTo('/hub/dashboard')
+        return
+      }
+
+      partner.setPartner(partnerId.value, partner.currentPartnerData.name ?? '')
+
+      // Flag inactive partners but still allow the page to render
+      if (partner.currentPartnerData.is_active === false) {
+        isInactive.value = true
+      }
+
       ready.value = true
     } catch {
       error.value = 'Partner not found'
@@ -33,5 +53,5 @@ export function useScopeInit() {
     }
   })
 
-  return { ready, partnerId, error }
+  return { ready, partnerId, error, isInactive }
 }

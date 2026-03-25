@@ -1321,7 +1321,10 @@
     },
     "alerts": {
       "lowCredits": "Credits faibles — {name} a moins de {amount} EUR de credits restants",
-      "inactive": "Partenaire desactive — {name} est actuellement inactif"
+      "inactive": "Partenaire desactive — {name} est actuellement inactif",
+      "title": "Alertes",
+      "empty": "Aucune alerte en cours",
+      "enter": "Voir"
     },
     "emptyPortfolio": {
       "title": "Votre portefeuille est vide",
