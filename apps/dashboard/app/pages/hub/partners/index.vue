@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
+import type { AcceptableValue } from 'reka-ui'
 import type { PartnerRow } from '@/types/partner'
 
 definePageMeta({
@@ -35,7 +36,8 @@ const statusFilter = ref<string>('all')
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
-function onSearchInput(value: string) {
+function onSearchInput(val: string | number) {
+  const value = String(val)
   searchQuery.value = value
   if (searchTimeout) clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
@@ -44,7 +46,8 @@ function onSearchInput(value: string) {
   }, 300)
 }
 
-function onStatusChange(value: string) {
+function onStatusChange(val: AcceptableValue) {
+  const value = String(val)
   statusFilter.value = value
   if (value === 'all') {
     setFilters({ is_active: null })

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { computed, ref, watch } from 'vue'
 import { mockUseI18n } from '../helpers/stubs'
 import { stubAuthGlobals } from '../helpers/auth-stubs'
@@ -18,7 +18,6 @@ const mockMagicKeys = {
 }
 vi.mock('@vueuse/core', () => ({
   useMagicKeys: () => mockMagicKeys,
-  useDebounceFn: (fn: (...args: unknown[]) => unknown) => fn,
 }))
 
 vi.stubGlobal('useScopedNavigation', () => ({
@@ -33,11 +32,21 @@ vi.stubGlobal('onUnmounted', vi.fn())
 
 const { useCommandPalette } = await import('@/composables/useCommandPalette')
 
+const flushDebounce = async () => {
+  vi.advanceTimersByTime(300)
+  await vi.runAllTimersAsync()
+}
+
 describe('useCommandPalette', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     vi.clearAllMocks()
     mockMagicKeys['Meta+k'].value = false
     mockMagicKeys['Ctrl+k'].value = false
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('isOpen starts as false', () => {
@@ -85,8 +94,8 @@ describe('useCommandPalette', () => {
     partners.value = [{ id: 1, name: 'Old' }]
 
     searchQuery.value = 'a'
-    // Trigger the watcher manually (since debounce is mocked to run immediately)
-    await new Promise(r => setTimeout(r, 10))
+    // Flush the 300ms debounce via fake timers
+    await flushDebounce()
 
     expect(partners.value).toEqual([])
     expect(mockGet).not.toHaveBeenCalled()
@@ -105,7 +114,7 @@ describe('useCommandPalette', () => {
     const { searchQuery, partners } = useCommandPalette()
     searchQuery.value = 'ac'
 
-    await new Promise(r => setTimeout(r, 10))
+    await flushDebounce()
 
     expect(mockGet).toHaveBeenCalledWith('/partners', {
       params: {
@@ -127,7 +136,7 @@ describe('useCommandPalette', () => {
 
     const { searchQuery, partners } = useCommandPalette()
     searchQuery.value = 'xyz'
-    await new Promise(r => setTimeout(r, 10))
+    await flushDebounce()
 
     expect(partners.value).toEqual([])
   })
@@ -137,7 +146,7 @@ describe('useCommandPalette', () => {
 
     const { searchQuery, partners } = useCommandPalette()
     searchQuery.value = 'test'
-    await new Promise(r => setTimeout(r, 10))
+    await flushDebounce()
 
     expect(partners.value).toEqual([])
   })

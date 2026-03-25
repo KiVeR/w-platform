@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
+import type { AcceptableValue } from 'reka-ui'
 import type { UserFormData } from '@/types/user'
 
 const props = defineProps<{
@@ -72,12 +73,13 @@ function handleClose(val: boolean) {
   emit('update:open', val)
 }
 
-function handleRoleChange(value: string) {
-  form.value.role = value
+function handleRoleChange(value: AcceptableValue) {
+  form.value.role = String(value)
 }
 
-function handlePartnerChange(value: string) {
-  form.value.partner_id = value ? Number(value) : null
+function handlePartnerChange(value: AcceptableValue) {
+  const str = String(value ?? '')
+  form.value.partner_id = str ? Number(str) : null
 }
 </script>
 

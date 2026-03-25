@@ -38,7 +38,8 @@ const isSaving = ref(false)
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
-function onSearchInput(value: string) {
+function onSearchInput(val: string | number) {
+  const value = String(val)
   searchQuery.value = value
   if (searchTimeout) clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {

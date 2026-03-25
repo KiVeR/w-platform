@@ -68,7 +68,7 @@ function formatDate(dateStr: string): string {
         </div>
       </CardHeader>
       <CardContent>
-        <PageSkeleton v-if="isLoadingBalance" variant="card" />
+        <PageSkeleton v-if="isLoadingBalance" variant="cards" />
         <div v-else-if="balance" class="text-center py-4">
           <p class="text-3xl font-bold" data-balance-amount>
             {{ formatCredits(balance.euro_credits) }}

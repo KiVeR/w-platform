@@ -107,9 +107,10 @@ async function onSubmit() {
             <Label for="partner_id">{{ t('demandes.create.fields.partner') }}</Label>
             <Input
               id="partner_id"
-              v-model.number="form.partner_id"
+              :model-value="form.partner_id ?? undefined"
               data-testid="partner-id-input"
               type="number"
+              @update:model-value="(v: string | number) => form.partner_id = v != null && v !== '' ? Number(v) : null"
             />
             <p v-if="errors.partner_id" class="text-sm text-destructive">
               {{ errors.partner_id[0] }}
@@ -121,9 +122,10 @@ async function onSubmit() {
             <Label for="commercial_id">{{ t('demandes.create.fields.commercial') }}</Label>
             <Input
               id="commercial_id"
-              v-model.number="form.commercial_id"
+              :model-value="form.commercial_id ?? undefined"
               data-testid="commercial-id-input"
               type="number"
+              @update:model-value="(v: string | number) => form.commercial_id = v != null && v !== '' ? Number(v) : null"
             />
             <p v-if="errors.commercial_id" class="text-sm text-destructive">
               {{ errors.commercial_id[0] }}
@@ -135,9 +137,10 @@ async function onSubmit() {
             <Label for="sdr_id">{{ t('demandes.create.fields.sdr') }}</Label>
             <Input
               id="sdr_id"
-              v-model.number="form.sdr_id"
+              :model-value="form.sdr_id ?? undefined"
               data-testid="sdr-id-input"
               type="number"
+              @update:model-value="(v: string | number) => form.sdr_id = v != null && v !== '' ? Number(v) : null"
             />
             <p v-if="errors.sdr_id" class="text-sm text-destructive">
               {{ errors.sdr_id[0] }}

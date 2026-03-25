@@ -175,7 +175,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <PageSkeleton v-if="isLoading" variant="card" />
+    <PageSkeleton v-if="isLoading" variant="cards" />
 
     <div v-else-if="hasError" class="text-center py-12 text-muted-foreground">
       {{ t('hub.partnerDetail.error') }}

@@ -85,9 +85,9 @@ export function useUsers() {
       body: formData,
     } as never)
 
-    if (error) return null
+    if (error || !data) return null
 
-    const raw = (data as { data: Record<string, unknown> }).data
+    const raw = (data as unknown as { data: Record<string, unknown> }).data
     return mapUser(raw)
   }
 
@@ -97,9 +97,9 @@ export function useUsers() {
       body: formData,
     } as never)
 
-    if (error) return null
+    if (error || !data) return null
 
-    const raw = (data as { data: Record<string, unknown> }).data
+    const raw = (data as unknown as { data: Record<string, unknown> }).data
     return mapUser(raw)
   }
 

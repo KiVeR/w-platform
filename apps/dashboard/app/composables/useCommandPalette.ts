@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { useDebounceFn, useMagicKeys } from '@vueuse/core'
+import { useMagicKeys } from '@vueuse/core'
 
 export function useCommandPalette() {
   const isOpen = ref(false)
@@ -20,7 +20,8 @@ export function useCommandPalette() {
   })
 
   // Debounced partner search (300ms)
-  const debouncedSearch = useDebounceFn(async (query: string) => {
+  let searchTimeout: ReturnType<typeof setTimeout> | null = null
+  async function doSearch(query: string) {
     if (!query || query.length < 2) {
       partners.value = []
       return
@@ -32,9 +33,12 @@ export function useCommandPalette() {
       id: p.id,
       name: p.name,
     }))
-  }, 300)
+  }
 
-  watch(searchQuery, (q) => debouncedSearch(q))
+  watch(searchQuery, (q) => {
+    if (searchTimeout) clearTimeout(searchTimeout)
+    searchTimeout = setTimeout(() => doSearch(q), 300)
+  })
 
   function selectPartner(id: number, name: string) {
     isOpen.value = false

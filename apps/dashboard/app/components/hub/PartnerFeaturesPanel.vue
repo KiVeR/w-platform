@@ -53,7 +53,7 @@ function groupedFeatures(features: PartnerFeature[]) {
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <PageSkeleton v-if="isLoading" variant="card" />
+      <PageSkeleton v-if="isLoading" variant="cards" />
       <div v-else-if="features.length === 0" class="text-center py-6 text-muted-foreground">
         {{ t('hub.features.empty') }}
       </div>
