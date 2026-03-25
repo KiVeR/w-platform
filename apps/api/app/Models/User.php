@@ -69,12 +69,26 @@ class User extends Authenticatable implements OAuthenticatable
         return $this->belongsTo(Partner::class);
     }
 
+    /** @return HasMany<Partner, $this> */
+    public function managedPartners(): HasMany
+    {
+        return $this->hasMany(Partner::class, 'adv_id');
+    }
+
     /** @param Builder<User> $query */
     public function scopeForUser(Builder $query, self $user): void
     {
-        if (! $user->hasRole('admin')) {
-            $query->where('partner_id', $user->partner_id);
+        if ($user->hasRole('admin')) {
+            return;
         }
+
+        if ($user->hasRole('adv')) {
+            $query->whereIn('partner_id', $user->managedPartners()->pluck('id'));
+
+            return;
+        }
+
+        $query->where('partner_id', $user->partner_id);
     }
 
     /** @param Builder<User> $query */
