@@ -52,7 +52,7 @@ const { handleSubmit } = useForm({ validationSchema: schema })
 
 const onSubmit = handleSubmit(async (values) => {
   await auth.login(values.email, values.password)
-  if (!auth.error) await navigateTo('/')
+  if (!auth.error) await navigateTo(auth.defaultRoute)
 })
 
 onMounted(async () => {
@@ -63,7 +63,7 @@ onMounted(async () => {
     await loadScript()
     initializeGoogleAuth(clientId, async (response) => {
       await auth.loginWithGoogle(response.credential)
-      if (!auth.error) await navigateTo('/')
+      if (!auth.error) await navigateTo(auth.defaultRoute)
     })
     renderGoogleButton(googleButtonRef.value as unknown as HTMLElement, { width: 368 })
     showGoogleButton.value = true

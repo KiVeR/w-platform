@@ -137,8 +137,14 @@ const navGroups = computed<NavGroup[]>(() => {
 })
 
 function isActive(to: string): boolean {
-  if (to === '/' || to === '/hub/dashboard') return route.path === to
-  return route.path.startsWith(to)
+  const currentPath = route.path
+  const normalizedPath = currentPath.replace(/^\/partners\/\d+/, '')
+  const normalizedTo = to.replace(/^\/partners\/\d+/, '')
+
+  if (normalizedTo === '/' || normalizedTo === '/dashboard')
+    return normalizedPath === '/' || normalizedPath === '/dashboard'
+  if (to === '/hub/dashboard') return currentPath === to
+  return normalizedPath.startsWith(normalizedTo)
 }
 </script>
 
@@ -210,7 +216,7 @@ function isActive(to: string): boolean {
               class="w-56"
             >
               <DropdownMenuItem as-child>
-                <NuxtLink to="/settings">
+                <NuxtLink :to="scopedRoute('/settings')">
                   <Settings class="mr-2 size-4" />
                   {{ t('header.profile') }}
                 </NuxtLink>
