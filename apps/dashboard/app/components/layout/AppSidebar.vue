@@ -9,6 +9,7 @@ import {
   ChevronsUpDown,
   ClipboardList,
   Receipt,
+  FileText,
 } from 'lucide-vue-next'
 import {
   Sidebar,
@@ -66,6 +67,7 @@ const allNavGroups = computed<NavGroup[]>(() => [
     label: t('nav.groups.adv'),
     requiredPermissions: ['view operations'],
     items: [
+      { label: t('nav.demandes'), icon: FileText, to: '/demandes', requiredPermissions: ['view demandes'] },
       { label: t('nav.operations'), icon: ClipboardList, to: '/operations', requiredPermissions: ['view operations'] },
       { label: t('nav.billing'), icon: Receipt, to: '/billing', requiredPermissions: ['view operations'] },
     ],

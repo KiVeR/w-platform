@@ -19,7 +19,8 @@
       "adv": "ADV"
     },
     "operations": "Operations",
-    "billing": "Billing"
+    "billing": "Billing",
+    "demandes": "Requests"
   },
   "sidebar": {
     "toggle": "Toggle sidebar",
@@ -1154,6 +1155,123 @@
       "title": "To invoice",
       "loading": "Loading...",
       "description": "operations pending invoicing"
+    }
+  },
+  "demandes": {
+    "action_zone": {
+      "title": "To handle",
+      "operations_blocked": "{count} blocked operation(s)",
+      "no_operations": "No operations",
+      "stale": "Inactive for more than 7 days"
+    },
+    "aging": {
+      "stale_warning": "Inactive for more than 7 days",
+      "tooltip": "Last transition {days} days ago"
+    },
+    "list": {
+      "title": "Requests",
+      "empty": "No requests found",
+      "search_placeholder": "Search by reference...",
+      "new_button": "New request",
+      "columns": {
+        "reference": "Reference",
+        "partner": "Partner",
+        "operations": "Operations",
+        "blocked": "Blocked",
+        "date": "Date"
+      }
+    },
+    "create": {
+      "title": "New request",
+      "success": "Request created successfully",
+      "fields": {
+        "ref_client": "Client reference",
+        "information": "Information",
+        "is_exoneration": "Exoneration",
+        "partner": "Partner",
+        "commercial": "Commercial",
+        "sdr": "SDR"
+      },
+      "submit": "Create request",
+      "cancel": "Cancel"
+    },
+    "detail": {
+      "title": "Request {ref}",
+      "tabs": {
+        "overview": "Overview",
+        "operations": "Operations",
+        "timeline": "History"
+      }
+    },
+    "progression": {
+      "label": "{completed}/{total}",
+      "complete": "Completed"
+    },
+    "form": {
+      "edit": "Edit",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "fields": {
+        "ref_demande": "Request reference",
+        "ref_client": "Client reference",
+        "information": "Information",
+        "is_exoneration": "Exoneration",
+        "partner": "Partner",
+        "commercial": "Commercial",
+        "sdr": "SDR"
+      }
+    },
+    "timeline": {
+      "empty": "No activity yet",
+      "see_more": "See more",
+      "transition": "{from} → {to}",
+      "by": "by {name}",
+      "loading": "Loading history..."
+    },
+    "hub": {
+      "operations_title": "Operations",
+      "no_operations": "No operations yet — add the first one",
+      "add_operation": "Add an operation"
+    },
+    "operations": {
+      "add_button": "Add an operation",
+      "created": "Operation created",
+      "create_error": "Error creating operation",
+      "type_placeholder": "Choose a type",
+      "name_placeholder": "Operation name",
+      "advertiser_placeholder": "Advertiser",
+      "priority_label": "Priority",
+      "submit": "Create",
+      "cancel": "Cancel"
+    },
+    "config": {
+      "title": "Operation configuration",
+      "saved": "Operation updated",
+      "save_error": "Error updating operation",
+      "save_button": "Save",
+      "close_button": "Close",
+      "sections": {
+        "identity": "Identity",
+        "message": "SMS Message",
+        "targeting": "Targeting & Volume",
+        "scheduling": "Scheduling",
+        "billing": "Billing"
+      },
+      "fields": {
+        "name": "Operation name",
+        "advertiser": "Advertiser",
+        "priority": "Priority",
+        "external_ref": "External reference",
+        "message": "Message",
+        "sender": "Sender",
+        "volume_estimated": "Estimated volume",
+        "configure_targeting": "Configure targeting",
+        "scheduled_at": "Scheduled date",
+        "unit_price": "Unit price",
+        "total_price": "Total price"
+      },
+      "chars_count": "{count}/160 characters"
     }
   }
 }

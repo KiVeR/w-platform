@@ -19,7 +19,8 @@
       "adv": "ADV"
     },
     "operations": "Opérations",
-    "billing": "Facturation"
+    "billing": "Facturation",
+    "demandes": "Demandes"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",
@@ -1154,6 +1155,123 @@
       "title": "A facturer",
       "loading": "Chargement...",
       "description": "operations en attente de facturation"
+    }
+  },
+  "demandes": {
+    "action_zone": {
+      "title": "A traiter",
+      "operations_blocked": "{count} opération(s) bloquée(s)",
+      "no_operations": "Aucune opération",
+      "stale": "Inactif depuis plus de 7 jours"
+    },
+    "aging": {
+      "stale_warning": "Inactif depuis plus de 7 jours",
+      "tooltip": "Dernière transition il y a {days} jours"
+    },
+    "list": {
+      "title": "Demandes",
+      "empty": "Aucune demande trouvée",
+      "search_placeholder": "Rechercher par référence...",
+      "new_button": "Nouvelle demande",
+      "columns": {
+        "reference": "Référence",
+        "partner": "Partenaire",
+        "operations": "Opérations",
+        "blocked": "Bloquées",
+        "date": "Date"
+      }
+    },
+    "create": {
+      "title": "Nouvelle demande",
+      "success": "Demande créée avec succès",
+      "fields": {
+        "ref_client": "Référence client",
+        "information": "Informations",
+        "is_exoneration": "Exonération",
+        "partner": "Partenaire",
+        "commercial": "Commercial",
+        "sdr": "SDR"
+      },
+      "submit": "Créer la demande",
+      "cancel": "Annuler"
+    },
+    "detail": {
+      "title": "Demande {ref}",
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "operations": "Opérations",
+        "timeline": "Historique"
+      }
+    },
+    "progression": {
+      "label": "{completed}/{total}",
+      "complete": "Terminée"
+    },
+    "form": {
+      "edit": "Modifier",
+      "save": "Sauvegarder",
+      "saving": "Sauvegarde...",
+      "cancel": "Annuler",
+      "fields": {
+        "ref_demande": "Référence demande",
+        "ref_client": "Référence client",
+        "information": "Informations",
+        "is_exoneration": "Exonération",
+        "partner": "Partenaire",
+        "commercial": "Commercial",
+        "sdr": "SDR"
+      }
+    },
+    "timeline": {
+      "empty": "Aucune activité pour le moment",
+      "see_more": "Voir plus",
+      "transition": "{from} → {to}",
+      "by": "par {name}",
+      "loading": "Chargement de l'historique..."
+    },
+    "hub": {
+      "operations_title": "Opérations",
+      "no_operations": "Aucune opération — ajoutez la première",
+      "add_operation": "Ajouter une opération"
+    },
+    "operations": {
+      "add_button": "Ajouter une opération",
+      "created": "Opération créée",
+      "create_error": "Erreur lors de la création",
+      "type_placeholder": "Choisir un type",
+      "name_placeholder": "Nom de l'opération",
+      "advertiser_placeholder": "Annonceur",
+      "priority_label": "Priorité",
+      "submit": "Créer",
+      "cancel": "Annuler"
+    },
+    "config": {
+      "title": "Configuration opération",
+      "saved": "Opération mise à jour",
+      "save_error": "Erreur lors de la mise à jour",
+      "save_button": "Sauvegarder",
+      "close_button": "Fermer",
+      "sections": {
+        "identity": "Identité",
+        "message": "Message SMS",
+        "targeting": "Ciblage & Volume",
+        "scheduling": "Planification",
+        "billing": "Tarification"
+      },
+      "fields": {
+        "name": "Nom de l'opération",
+        "advertiser": "Annonceur",
+        "priority": "Priorité",
+        "external_ref": "Référence externe",
+        "message": "Message",
+        "sender": "Expéditeur",
+        "volume_estimated": "Volume estimé",
+        "configure_targeting": "Configurer le ciblage",
+        "scheduled_at": "Date planifiée",
+        "unit_price": "Prix unitaire",
+        "total_price": "Prix total"
+      },
+      "chars_count": "{count}/160 caractères"
     }
   }
 }

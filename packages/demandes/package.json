@@ -1,0 +1,22 @@
+{
+  "name": "@wellpack/demandes",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "lucide-vue-next": "^0.563.0",
+    "vue-sonner": "^2.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.18",
+    "@vue/test-utils": "^2.4.6",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "happy-dom": "^20.5.3",
+    "typescript": "^5.8.0",
+    "vue": "^3.5.27"
+  }
+}

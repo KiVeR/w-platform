@@ -135,3 +135,41 @@ it('audit trail records from and to states correctly', function (): void {
     expect($transition->from_state)->toBe('preparing')
         ->and($transition->to_state)->toBe('on_hold');
 });
+
+it('sets last_transitioned_at on transition', function (): void {
+    $operation = Operation::factory()->create(['lifecycle_status' => LifecycleStatus::DRAFT->value]);
+
+    expect($operation->last_transitioned_at)->toBeNull();
+
+    $service = new TransitionService;
+    $updated = $service->applyTransition($operation, 'lifecycle', LifecycleStatus::PREPARING);
+
+    expect($updated->last_transitioned_at)->not->toBeNull()
+        ->and($updated->last_transitioned_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+});
+
+it('updates last_transitioned_at on subsequent transitions', function (): void {
+    $operation = Operation::factory()->create(['lifecycle_status' => LifecycleStatus::DRAFT->value]);
+
+    $service = new TransitionService;
+
+    $updated1 = $service->applyTransition($operation, 'lifecycle', LifecycleStatus::PREPARING);
+    $firstTimestamp = $updated1->last_transitioned_at?->copy();
+
+    // Wait a tiny bit to ensure timestamps differ
+    \Illuminate\Support\Carbon::setTestNow(now()->addSecond());
+
+    $updated2 = $service->applyTransition($updated1, 'lifecycle', LifecycleStatus::ON_HOLD);
+    $secondTimestamp = $updated2->last_transitioned_at;
+
+    expect($secondTimestamp)->not->toBeNull()
+        ->and($secondTimestamp->greaterThan($firstTimestamp))->toBeTrue();
+
+    \Illuminate\Support\Carbon::setTestNow();
+});
+
+it('has null last_transitioned_at for new operations', function (): void {
+    $operation = Operation::factory()->create();
+
+    expect($operation->last_transitioned_at)->toBeNull();
+});

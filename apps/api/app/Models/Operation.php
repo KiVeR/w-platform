@@ -66,6 +66,7 @@ class Operation extends Model
         'external_ref',
         'scheduled_at',
         'delivered_at',
+        'last_transitioned_at',
     ];
 
     /** @return array<string, string> */
@@ -89,6 +90,7 @@ class Operation extends Model
             'total_price' => 'float',
             'scheduled_at' => 'datetime',
             'delivered_at' => 'datetime',
+            'last_transitioned_at' => 'datetime',
         ];
     }
 
