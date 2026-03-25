@@ -75,6 +75,18 @@ export const fakeAdminUser = {
   ],
 }
 
+export const fakeAdvUser = {
+  ...fakeUser,
+  id: 10,
+  firstname: 'Alice',
+  lastname: 'ADV',
+  full_name: 'Alice ADV',
+  email: 'alice@adv.fr',
+  partner_id: null,
+  roles: ['adv' as const],
+  permissions: ['view partners' as const, 'view operations' as const, 'manage operations' as const, 'transition operations' as const],
+}
+
 export const fakePartner = {
   id: 42,
   name: 'Test Partner',
