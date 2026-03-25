@@ -43,8 +43,10 @@ const DemandesNew = (await import('@/pages/demandes/new.vue')).default
 
 // ---- Shadcn component stubs ----
 const CardStub = { template: '<div data-stub="card"><slot /></div>' }
+const CardHeaderStub = { template: '<div data-stub="card-header"><slot /></div>', props: ['class'] }
+const CardTitleStub = { template: '<div data-stub="card-title"><slot /></div>', props: ['class'] }
 const CardContentStub = { template: '<div data-stub="card-content"><slot /></div>', props: ['class'] }
-const LabelStub = { template: '<label><slot /></label>', props: ['for'] }
+const LabelStub = { template: '<label><slot /></label>', props: ['for', 'class'] }
 const InputStub = {
   template: '<input v-bind="$attrs" :data-testid="$attrs[\'data-testid\']" />',
   inheritAttrs: true,
@@ -66,11 +68,16 @@ const NuxtLinkStub = {
   props: ['to'],
 }
 
+// Lucide icon stub
+const ArrowLeftStub = { template: '<span />' }
+
 function mountPage() {
   return mount(DemandesNew, {
     global: {
       stubs: {
         Card: CardStub,
+        CardHeader: CardHeaderStub,
+        CardTitle: CardTitleStub,
         CardContent: CardContentStub,
         Label: LabelStub,
         Input: InputStub,
@@ -78,6 +85,7 @@ function mountPage() {
         Switch: SwitchStub,
         Button: ButtonStub,
         NuxtLink: NuxtLinkStub,
+        ArrowLeft: ArrowLeftStub,
       },
     },
   })
@@ -134,6 +142,11 @@ describe('demandes/new page', () => {
   })
 
   it('submits form successfully', async () => {
+    // Use non-admin so canSubmit is true without needing partner_id field
+    effectivePartnerId.value = 10
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: { data: { id: 42 } },
       error: null,
@@ -145,6 +158,10 @@ describe('demandes/new page', () => {
   })
 
   it('redirects to detail after creation', async () => {
+    effectivePartnerId.value = 10
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: { data: { id: 99 } },
       error: null,
@@ -156,6 +173,10 @@ describe('demandes/new page', () => {
   })
 
   it('shows success toast after creation', async () => {
+    effectivePartnerId.value = 10
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: { data: { id: 1 } },
       error: null,
@@ -167,6 +188,10 @@ describe('demandes/new page', () => {
   })
 
   it('shows validation errors', async () => {
+    effectivePartnerId.value = 10
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: null,
       error: {

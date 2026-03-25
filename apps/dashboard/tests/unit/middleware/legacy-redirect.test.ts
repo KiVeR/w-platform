@@ -44,12 +44,13 @@ describe('legacy-redirect middleware', () => {
     expect(navigateToMock).toHaveBeenCalledWith('/hub/dashboard')
   })
 
-  it('redirects adv on /billing to /hub/dashboard', () => {
+  it('does NOT redirect adv on /billing (global listing like demandes)', () => {
     authAs(fakeAdvUser)
 
-    middleware({ path: '/billing' })
+    const result = middleware({ path: '/billing' })
 
-    expect(navigateToMock).toHaveBeenCalledWith('/hub/dashboard')
+    expect(navigateToMock).not.toHaveBeenCalled()
+    expect(result).toBeUndefined()
   })
 
   it('redirects admin on /shops to /hub/dashboard', () => {

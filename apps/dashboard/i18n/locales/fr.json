@@ -26,7 +26,9 @@
     "demandes": "Demandes",
     "hubDashboard": "Tableau de bord Hub",
     "partners": "Partenaires",
-    "partnerSettings": "Parametres partenaire"
+    "partnerSettings": "Parametres partenaire",
+    "backToHub": "Retour au Hub",
+    "users": "Utilisateurs"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",
@@ -277,7 +279,72 @@
     "users": {
       "title": "Utilisateurs",
       "new": "Nouvel utilisateur",
-      "edit": "Modifier l utilisateur"
+      "edit": "Modifier l utilisateur",
+      "description": "Gérez les utilisateurs de la plateforme.",
+      "newUser": "Nouvel utilisateur",
+      "searchPlaceholder": "Rechercher un utilisateur...",
+      "roleFilter": {
+        "all": "Tous les rôles"
+      },
+      "statusFilter": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "actions": {
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "empty": {
+        "title": "Aucun utilisateur trouvé",
+        "description": "Aucun utilisateur ne correspond aux filtres actuels."
+      },
+      "error": {
+        "title": "Erreur de chargement",
+        "description": "Impossible de charger la liste des utilisateurs.",
+        "retry": "Réessayer"
+      },
+      "pagination": {
+        "next": "Suivant",
+        "previous": "Précédent",
+        "total": "{total} utilisateur(s)",
+        "page": "Page {page} / {lastPage}"
+      },
+      "columns": {
+        "name": "Nom",
+        "email": "Email",
+        "partner": "Partenaire",
+        "roles": "Rôles",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "form": {
+        "titleCreate": "Nouvel utilisateur",
+        "titleEdit": "Modifier l'utilisateur",
+        "descriptionCreate": "Créez un nouveau compte utilisateur sur la plateforme.",
+        "descriptionEdit": "Modifiez les informations de cet utilisateur.",
+        "firstname": "Prénom",
+        "firstnamePlaceholder": "Jean",
+        "lastname": "Nom",
+        "lastnamePlaceholder": "Dupont",
+        "email": "Email",
+        "emailPlaceholder": "jean.dupont@example.com",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "Mot de passe sécurisé",
+        "partner": "Partenaire",
+        "partnerPlaceholder": "Sélectionner un partenaire",
+        "noPartner": "Aucun partenaire (interne)",
+        "role": "Rôle",
+        "rolePlaceholder": "Sélectionner un rôle",
+        "isActive": "Utilisateur actif",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler"
+      }
     }
   },
   "login": {
@@ -1199,6 +1266,12 @@
         "operations": "Opérations",
         "blocked": "Bloquées",
         "date": "Date"
+      },
+      "error": "Erreur lors du chargement des demandes",
+      "filter_button": "Filtrer",
+      "pagination": {
+        "next": "Suivant",
+        "prev": "Précédent"
       }
     },
     "create": {
@@ -1210,10 +1283,30 @@
         "is_exoneration": "Exonération",
         "partner": "Partenaire",
         "commercial": "Commercial",
-        "sdr": "SDR"
+        "sdr": "SDR",
+        "ref_client_placeholder": "Ex. CLI-2026-001",
+        "ref_client_hint": "Référence interne pour retrouver cette demande côté client.",
+        "information_placeholder": "Décrivez le besoin, le contexte ou les consignes particulières...",
+        "information_hint": "Toute information utile pour le traitement de la demande.",
+        "is_exoneration_hint": "Cochez si cette demande bénéficie d'une exonération de facturation.",
+        "partner_hint": "Le partenaire auquel cette demande sera rattachée.",
+        "partner_placeholder": "ID du partenaire",
+        "commercial_placeholder": "ID du commercial (optionnel)",
+        "commercial_hint": "Le commercial en charge de ce dossier.",
+        "sdr_placeholder": "ID du SDR (optionnel)",
+        "sdr_hint": "Le SDR référent pour cette demande.",
+        "pays_id": "Pays",
+        "pays_id_placeholder": "FR",
+        "pays_id_hint": "Code ISO 2 lettres du pays (ex. FR, BE, CH)."
       },
       "submit": "Créer la demande",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "sections": {
+        "general": "Informations générales",
+        "assignment": "Affectation",
+        "options": "Options"
+      },
+      "submitting": "Création en cours..."
     },
     "detail": {
       "title": "Demande {ref}",
@@ -1312,12 +1405,57 @@
         "totalCredits": "Credits totaux",
         "campaignsThisMonth": "Campagnes ce mois",
         "pendingActions": "Actions en attente"
+      },
+      "description": "Vue d'ensemble de votre portefeuille de partenaires et des actions en cours.",
+      "live": "En direct",
+      "error": {
+        "title": "Erreur de chargement",
+        "description": "Impossible de charger les données du tableau de bord."
       }
     },
     "partners": {
       "title": "Partenaires",
       "new": "Nouveau partenaire",
-      "enter": "Acceder au partenaire"
+      "enter": "Acceder au partenaire",
+      "description": "Gérez les partenaires de votre portefeuille.",
+      "newPartner": "Nouveau partenaire",
+      "searchPlaceholder": "Rechercher un partenaire...",
+      "statusFilter": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "actions": {
+        "enter": "Accéder",
+        "edit": "Modifier"
+      },
+      "empty": {
+        "title": "Aucun partenaire trouvé",
+        "description": "Aucun partenaire ne correspond aux filtres actuels."
+      },
+      "error": {
+        "title": "Erreur de chargement",
+        "description": "Impossible de charger la liste des partenaires.",
+        "retry": "Réessayer"
+      },
+      "pagination": {
+        "next": "Suivant",
+        "previous": "Précédent",
+        "total": "{total} partenaire(s)",
+        "page": "Page {page} / {lastPage}"
+      },
+      "columns": {
+        "name": "Nom",
+        "activity": "Activité",
+        "credits": "Crédits",
+        "shops": "Boutiques",
+        "status": "Statut",
+        "actions": "Actions"
+      }
     },
     "alerts": {
       "lowCredits": "Credits faibles — {name} a moins de {amount} EUR de credits restants",
@@ -1329,6 +1467,93 @@
     "emptyPortfolio": {
       "title": "Votre portefeuille est vide",
       "description": "Contactez votre administrateur pour vous attribuer des partenaires."
+    },
+    "kpis": {
+      "partners": {
+        "label": "Partenaires",
+        "subtitle": "actifs / total"
+      },
+      "credits": {
+        "label": "Crédits",
+        "subtitle": "solde total"
+      },
+      "demandes": {
+        "label": "Demandes",
+        "subtitle": "en cours"
+      }
+    },
+    "credits": {
+      "title": "Crédits",
+      "currentBalance": "Solde actuel",
+      "recharge": "Recharger",
+      "rechargeTitle": "Recharger les crédits",
+      "rechargeDescription": "Ajoutez des crédits au solde de ce partenaire.",
+      "amount": "Montant (EUR)",
+      "amountPlaceholder": "Ex. 500.00",
+      "description": "Description",
+      "descriptionPlaceholder": "Motif de la recharge...",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "processing": "Traitement...",
+      "history": "Historique",
+      "noTransactions": "Aucune transaction"
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "empty": "Aucune fonctionnalité configurée",
+      "groups": {
+        "campaigns": "Campagnes",
+        "features": "Fonctionnalités",
+        "location": "Localisation",
+        "analytics": "Analytics",
+        "other": "Autre"
+      },
+      "keys": {
+        "campaign_prospection": "Prospection SMS",
+        "campaign_fidelisation": "Fidélisation SMS",
+        "campaign_comptage": "Comptage",
+        "shops": "Boutiques",
+        "sms_templates": "Templates SMS",
+        "short_urls": "URLs courtes",
+        "payment": "Paiement",
+        "location_postcode": "Ciblage code postal",
+        "location_geoloc": "Ciblage géolocalisation",
+        "location_iris": "Ciblage IRIS",
+        "analytics_prospection": "Analytics prospection",
+        "analytics_fidelisation": "Analytics fidélisation",
+        "demo_mode": "Mode démo"
+      }
+    },
+    "partnerDetail": {
+      "loading": "Chargement...",
+      "error": "Impossible de charger ce partenaire.",
+      "tabs": {
+        "info": "Informations",
+        "credits": "Crédits",
+        "features": "Fonctionnalités",
+        "users": "Utilisateurs"
+      }
+    },
+    "partnerForm": {
+      "titleCreate": "Nouveau partenaire",
+      "titleEdit": "Modifier le partenaire",
+      "name": "Nom",
+      "namePlaceholder": "Nom du partenaire",
+      "code": "Code",
+      "codePlaceholder": "Code interne",
+      "email": "Email",
+      "emailPlaceholder": "contact@partenaire.fr",
+      "phone": "Téléphone",
+      "phonePlaceholder": "01 23 45 67 89",
+      "address": "Adresse",
+      "city": "Ville",
+      "zipCode": "Code postal",
+      "activityType": "Type d'activité",
+      "billingMode": "Mode de facturation",
+      "isActive": "Partenaire actif",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "cancel": "Annuler"
     }
   },
   "scope": {
@@ -1341,6 +1566,16 @@
       "title": "Partenaire desactive",
       "description": "Ce partenaire est actuellement desactive. Certaines actions ne sont pas disponibles.",
       "reactivate": "Reactiver"
-    }
+    },
+    "exit": "Quitter le contexte",
+    "partner": "Partenaire"
+  },
+  "cancel": "Annuler",
+  "confirm": "Confirmer",
+  "retry": "Réessayer",
+  "refresh": "Actualiser",
+  "recharge": "Recharger",
+  "common": {
+    "retry": "Réessayer"
   }
 }

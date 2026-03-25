@@ -7,7 +7,7 @@ import { useAuthStore } from '@/stores/auth'
  * /demandes and /operations are NOT in this list because they work
  * in Hub mode via Demande::forUser() / Operation::forUser() (global listing).
  */
-const SCOPED_ROUTES = ['/campaigns', '/billing', '/shops', '/landing-pages']
+const SCOPED_ROUTES = ['/campaigns', '/shops', '/landing-pages']
 
 export default defineNuxtRouteMiddleware((to) => {
   const auth = useAuthStore(usePinia())
