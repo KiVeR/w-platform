@@ -22,6 +22,23 @@ const mockNavigateTo = vi.fn()
 vi.stubGlobal('navigateTo', mockNavigateTo)
 vi.stubGlobal('useRoute', () => ({ params: { id: '42' } }))
 
+vi.stubGlobal('useUsers', () => ({
+  users: ref([]),
+  pagination: ref({ page: 1, lastPage: 1, total: 0 }),
+  isLoading: ref(false),
+  hasError: ref(false),
+  filters: ref({}),
+  sort: ref('-created_at'),
+  perPage: ref(15),
+  fetchUsers: vi.fn(async () => {}),
+  createUser: vi.fn(async () => null),
+  updateUser: vi.fn(async () => null),
+  deleteUser: vi.fn(async () => true),
+  setPage: vi.fn(async () => {}),
+  setSort: vi.fn(async () => {}),
+  setFilters: vi.fn(),
+}))
+
 const PartnerDetailPage = (await import('@/pages/hub/partners/[id].vue')).default
 
 function mockPartnerApiCalls() {

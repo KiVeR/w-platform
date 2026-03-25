@@ -7,12 +7,15 @@ import PartnerForm from '@/components/hub/PartnerForm.vue'
 import PartnerCreditPanel from '@/components/hub/PartnerCreditPanel.vue'
 import CreditRechargeDialog from '@/components/hub/CreditRechargeDialog.vue'
 import PartnerFeaturesPanel from '@/components/hub/PartnerFeaturesPanel.vue'
+import UserDataTable from '@/components/admin/UserDataTable.vue'
+import UserFormDialog from '@/components/admin/UserFormDialog.vue'
 import PageSkeleton from '@/components/shared/PageSkeleton.vue'
 import { usePartnerDetail } from '@/composables/usePartnerDetail'
 import { usePartnerCredits } from '@/composables/usePartnerCredits'
 import { usePartnerFeatures } from '@/composables/usePartnerFeatures'
 import { useAuthStore } from '@/stores/auth'
 import type { PartnerFormData } from '@/types/partner'
+import type { UserRow, UserFormData } from '@/types/user'
 
 definePageMeta({
   middleware: ['role-guard'],
@@ -42,7 +45,18 @@ const {
   fetchFeatures, toggleFeature,
 } = usePartnerFeatures()
 
+const {
+  users, pagination: usersPagination, isLoading: isLoadingUsers,
+  hasError: hasUsersError, sort: usersSort,
+  fetchUsers, createUser, updateUser, deleteUser,
+  setPage: setUsersPage, setSort: setUsersSort, setFilters: setUsersFilters,
+} = useUsers()
+
 const showRechargeDialog = ref(false)
+const showUserFormDialog = ref(false)
+const userFormMode = ref<'create' | 'edit'>('create')
+const editingUser = ref<UserRow | null>(null)
+const isUserSaving = ref(false)
 const activeTab = ref('info')
 
 const formData = computed(() => {
@@ -89,12 +103,57 @@ async function handleToggleFeature(key: string, enabled: boolean) {
   await toggleFeature(partnerId.value, key, enabled)
 }
 
+function handleNewUser() {
+  userFormMode.value = 'create'
+  editingUser.value = null
+  showUserFormDialog.value = true
+}
+
+function handleEditUser(user: UserRow) {
+  userFormMode.value = 'edit'
+  editingUser.value = user
+  showUserFormDialog.value = true
+}
+
+async function handleDeleteUser(user: UserRow) {
+  const success = await deleteUser(user.id)
+  if (success) {
+    await fetchUsers()
+  }
+}
+
+async function handleUserFormConfirm(data: UserFormData) {
+  isUserSaving.value = true
+  try {
+    const payload = { ...data, partner_id: partnerId.value }
+    if (userFormMode.value === 'create') {
+      const result = await createUser(payload)
+      if (result) {
+        showUserFormDialog.value = false
+        await fetchUsers()
+      }
+    }
+    else if (editingUser.value) {
+      const result = await updateUser(editingUser.value.id, payload)
+      if (result) {
+        showUserFormDialog.value = false
+        await fetchUsers()
+      }
+    }
+  }
+  finally {
+    isUserSaving.value = false
+  }
+}
+
 onMounted(async () => {
+  setUsersFilters({ partner_id: partnerId.value })
   await Promise.all([
     fetchPartner(partnerId.value),
     fetchBalance(partnerId.value),
     fetchTransactions(partnerId.value),
     fetchFeatures(partnerId.value),
+    fetchUsers(),
   ])
 })
 </script>
@@ -182,8 +241,38 @@ onMounted(async () => {
       </TabsContent>
 
       <TabsContent value="users">
-        <div class="text-center py-12 text-muted-foreground">
-          {{ t('hub.partnerDetail.usersPlaceholder') }}
+        <div class="space-y-4">
+          <div class="flex items-center justify-end">
+            <Button data-new-user-btn size="sm" @click="handleNewUser">
+              {{ t('admin.users.newUser') }}
+            </Button>
+          </div>
+          <UserDataTable
+            :data="users"
+            :is-loading="isLoadingUsers"
+            :has-error="hasUsersError"
+            :sort="usersSort"
+            :pagination="usersPagination"
+            @sort="(f: string) => setUsersSort(f)"
+            @page="(p: number) => setUsersPage(p)"
+            @edit="handleEditUser"
+            @delete="handleDeleteUser"
+            @retry="fetchUsers"
+          />
+          <UserFormDialog
+            v-model:open="showUserFormDialog"
+            :mode="userFormMode"
+            :is-saving="isUserSaving"
+            :initial-data="editingUser ? {
+              firstname: editingUser.firstname,
+              lastname: editingUser.lastname,
+              email: editingUser.email,
+              partner_id: partnerId,
+              role: editingUser.roles[0],
+              is_active: editingUser.is_active,
+            } : { partner_id: partnerId }"
+            @confirm="handleUserFormConfirm"
+          />
         </div>
       </TabsContent>
     </Tabs>
