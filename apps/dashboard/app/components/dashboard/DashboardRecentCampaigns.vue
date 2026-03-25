@@ -19,6 +19,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 
 function getDisplayDate(campaign: CampaignRow): string {
   return campaign.sent_at ?? campaign.scheduled_at ?? campaign.created_at
@@ -53,7 +54,7 @@ function formatRelativeDate(iso: string): string {
           size="sm"
           class="shrink-0"
         >
-          <NuxtLink to="/campaigns">
+          <NuxtLink :to="scopedRoute('/campaigns')">
             {{ t('dashboard.recent.viewAll') }}
             <ArrowRight class="ml-1 size-4" />
           </NuxtLink>
@@ -84,7 +85,7 @@ function formatRelativeDate(iso: string): string {
       <NuxtLink
         v-for="campaign in campaigns"
         :key="campaign.id"
-        :to="`/campaigns/${campaign.id}`"
+        :to="scopedRoute(`/campaigns/${campaign.id}`)"
         data-recent-item
         class="group flex items-start gap-3 rounded-2xl border border-border/70 bg-card px-4 py-4 transition-colors hover:border-primary/30 hover:bg-primary/3"
       >

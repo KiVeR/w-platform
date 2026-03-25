@@ -14,6 +14,7 @@ import type { CampaignFilters as CampaignFiltersState } from '@/types/campaign'
 const { t } = useI18n()
 const wizard = useCampaignWizardStore()
 const api = useApi()
+const { scopedRoute } = useScopedNavigation()
 
 const {
   campaigns,
@@ -53,7 +54,7 @@ async function handleDelete(id: number) {
 }
 
 function handleView(id: number) {
-  navigateTo(`/campaigns/${id}`)
+  navigateTo(scopedRoute(`/campaigns/${id}`))
 }
 
 async function handleFilterUpdate(f: Partial<CampaignFiltersState>) {
@@ -76,11 +77,11 @@ async function handleDuplicate(id: number) {
   if (error || !data) return
   const raw = (data as { data: Record<string, unknown> }).data
   wizard.initFromCampaign(raw)
-  navigateTo('/campaigns/new')
+  navigateTo(scopedRoute('/campaigns/new'))
 }
 
 function handleEdit(id: number) {
-  navigateTo(`/campaigns/new?draft=${id}`)
+  navigateTo(scopedRoute(`/campaigns/new?draft=${id}`))
 }
 </script>
 
@@ -96,7 +97,7 @@ function handleEdit(id: number) {
           {{ t('campaigns.description') }}
         </p>
       </div>
-      <NuxtLink to="/campaigns/new">
+      <NuxtLink :to="scopedRoute('/campaigns/new')">
         <Button>
           <Plus class="mr-2 size-4" />
           {{ t('campaigns.new') }}

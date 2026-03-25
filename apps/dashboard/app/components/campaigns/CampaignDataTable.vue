@@ -37,6 +37,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 
 const columns = [
   { key: 'name', sortable: true },
@@ -84,7 +85,7 @@ function handleRowClick(row: CampaignRow, event: MouseEvent) {
       :title="t('campaigns.empty.title')"
       :description="t('campaigns.empty.description')"
       :action-label="t('campaigns.empty.action')"
-      action-to="/campaigns/new"
+      :action-to="scopedRoute('/campaigns/new')"
     />
 
     <div v-else>

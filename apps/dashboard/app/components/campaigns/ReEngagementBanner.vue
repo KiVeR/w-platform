@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useReEngagementBanner } from '@/composables/useReEngagementBanner'
 
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 const { lastCampaign, daysSinceLastSend, shouldShow, dismiss, fetch } = useReEngagementBanner()
 
 const isCollapsing = ref(false)
@@ -20,7 +21,7 @@ function handleDismiss(): void {
 }
 
 function handleRelaunch(): void {
-  navigateTo('/campaigns/new')
+  navigateTo(scopedRoute('/campaigns/new'))
 }
 </script>
 

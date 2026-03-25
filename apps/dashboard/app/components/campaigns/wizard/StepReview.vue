@@ -31,6 +31,7 @@ const wizard = useCampaignWizardStore()
 const partnerStore = usePartnerStore()
 const api = useApi()
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 
 const euroCredits = ref<number | null>(null)
 
@@ -89,7 +90,7 @@ async function handleLaunch(): Promise<void> {
     ? await wizard.scheduleCampaign()
     : await wizard.sendCampaign()
 
-  if (success) navigateTo('/campaigns')
+  if (success) navigateTo(scopedRoute('/campaigns'))
 }
 
 async function handleTest(): Promise<void> {
