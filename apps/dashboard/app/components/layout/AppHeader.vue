@@ -31,7 +31,9 @@ const { isScope } = useNavigationMode()
     <AppBreadcrumb />
 
     <div class="ml-auto flex items-center gap-2">
-      <ScopeBanner v-if="!auth.isPartnerBound && isScope" />
+      <Transition name="banner">
+        <ScopeBanner v-if="!auth.isPartnerBound && isScope" />
+      </Transition>
       <ThemeSwitcher />
     </div>
   </header>

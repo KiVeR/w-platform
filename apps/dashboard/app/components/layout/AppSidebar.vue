@@ -155,41 +155,45 @@ function isActive(to: string): boolean {
     </SidebarHeader>
 
     <SidebarContent>
-      <SidebarGroup v-for="group in navGroups" :key="group.label">
-        <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem v-for="item in group.items" :key="item.to">
-              <SidebarMenuButton
-                as-child
-                :tooltip="item.label"
-                :data-active="isActive(item.to)"
-              >
-                <NuxtLink :to="item.to">
-                  <component :is="item.icon" />
-                  <span>{{ item.label }}</span>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      <Transition name="sidebar-mode" mode="out-in">
+        <div :key="mode">
+          <SidebarGroup v-for="group in navGroups" :key="group.label">
+            <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem v-for="item in group.items" :key="item.to">
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="item.label"
+                    :data-active="isActive(item.to)"
+                  >
+                    <NuxtLink :to="item.to">
+                      <component :is="item.icon" />
+                      <span>{{ item.label }}</span>
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
 
-      <!-- Back to Hub button in scope mode for internal users -->
-      <SidebarGroup v-if="isScope && !auth.isPartnerBound" data-back-to-hub>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton as-child :tooltip="t('nav.backToHub')">
-                <button type="button" @click="exitToHub">
-                  <ArrowLeft />
-                  <span>{{ t('nav.backToHub') }}</span>
-                </button>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+          <!-- Back to Hub button in scope mode for internal users -->
+          <SidebarGroup v-if="isScope && !auth.isPartnerBound" data-back-to-hub>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton as-child :tooltip="t('nav.backToHub')">
+                    <button type="button" @click="exitToHub">
+                      <ArrowLeft />
+                      <span>{{ t('nav.backToHub') }}</span>
+                    </button>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
+      </Transition>
     </SidebarContent>
 
     <SidebarFooter>
