@@ -21,18 +21,26 @@ const ROLE_PRIORITY: Record<Role, number> = {
 }
 
 /**
+ * Roles that are bound to a single partner — always in scope mode, no Hub access.
+ */
+const PARTNER_BOUND_ROLES: Role[] = ['partner', 'merchant', 'employee']
+
+/**
  * Default redirect route after login, per primary role.
- * ADV-track roles land on /operations; partner-track on /campaigns.
+ * Internal roles (admin, adv, direction, etc.) land on Hub dashboard.
+ * Partner-bound roles land directly on their campaigns page.
  */
 const ROLE_DEFAULT_ROUTES: Partial<Record<Role, string>> = {
-  admin: '/',
-  adv: '/operations',
-  programmer: '/operations',
+  admin: '/hub/dashboard',
+  adv: '/hub/dashboard',
+  direction: '/hub/dashboard',
+  programmer: '/hub/dashboard',
+  commercial: '/hub/dashboard',
+  graphiste: '/hub/dashboard',
+  marketing_manager: '/hub/dashboard',
   partner: '/campaigns',
   merchant: '/campaigns',
-  commercial: '/campaigns',
-  direction: '/',
-  employee: '/',
+  employee: '/campaigns',
 }
 
 interface LoginResponse {
@@ -66,6 +74,14 @@ export const useAuthStore = defineStore('auth', () => {
   const defaultRoute = computed<string>(() =>
     ROLE_DEFAULT_ROUTES[primaryRole.value ?? 'employee'] ?? '/',
   )
+
+  const isPartnerBound = computed(() =>
+    primaryRole.value !== null && PARTNER_BOUND_ROLES.includes(primaryRole.value),
+  )
+
+  function hasRole(role: Role): boolean {
+    return user.value?.roles?.includes(role) ?? false
+  }
 
   function hasPermission(permission: Permission): boolean {
     return user.value?.permissions.includes(permission) ?? false
@@ -164,7 +180,9 @@ export const useAuthStore = defineStore('auth', () => {
     primaryRole,
     partnerId,
     isAdmin,
+    isPartnerBound,
     defaultRoute,
+    hasRole,
     hasPermission,
     setAuth,
     clearAuth,
