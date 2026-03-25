@@ -90,6 +90,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // ADV-specific roles
         Role::findOrCreate('adv', 'api')
             ->givePermissionTo([
+                'view partners',
+                'view users',
                 'view demandes',
                 'manage demandes',
                 'view operations',
