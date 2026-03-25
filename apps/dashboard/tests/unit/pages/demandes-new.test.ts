@@ -18,6 +18,7 @@ import { toast } from 'vue-sonner'
 // Router stub
 const routerPushMock = vi.fn()
 vi.stubGlobal('useRouter', () => ({ push: routerPushMock }))
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 // API stub
 const mockPost = vi.fn()

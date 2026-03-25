@@ -10,6 +10,7 @@ mockUseI18n()
 
 // Route stub
 vi.stubGlobal('useRoute', () => ({ params: { id: '42' } }))
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 // useDemandeDetail stub state
 const demande = ref<DemandeDetail | null>(null)

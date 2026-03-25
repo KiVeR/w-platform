@@ -16,6 +16,7 @@ vi.stubGlobal('definePageMeta', vi.fn())
 const mockNavigateTo = vi.fn()
 vi.stubGlobal('navigateTo', mockNavigateTo)
 vi.stubGlobal('onMounted', onMounted)
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 mockUseI18n()
 
 const { useCampaignWizardStore } = await import('@/stores/campaignWizard')

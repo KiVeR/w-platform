@@ -9,6 +9,7 @@ mockUseI18n()
 const navigateToMock = vi.fn()
 vi.stubGlobal('navigateTo', navigateToMock)
 vi.stubGlobal('onMounted', (fn: Function) => fn())
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 const operations = ref<any[]>([])
 const pagination = ref({ page: 1, lastPage: 1, total: 0 })

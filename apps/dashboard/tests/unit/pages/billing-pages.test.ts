@@ -10,6 +10,7 @@ mockUseI18n()
 vi.stubGlobal('navigateTo', vi.fn())
 vi.stubGlobal('useRoute', () => ({ params: { id: '5' } }))
 vi.stubGlobal('onMounted', (fn: Function) => fn())
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 // Mock partner store (imported directly by billing index page)
 vi.mock('@/stores/partner', () => ({

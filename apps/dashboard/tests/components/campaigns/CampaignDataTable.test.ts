@@ -11,6 +11,7 @@ vi.stubGlobal('ref', ref)
 mockUseI18n()
 vi.stubGlobal('useRoute', () => ({ path: '/campaigns' }))
 vi.stubGlobal('navigateTo', vi.fn())
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 const CampaignDataTable = (await import('@/components/campaigns/CampaignDataTable.vue')).default
 

@@ -12,6 +12,7 @@ mockUseI18n()
 
 const mockNavigateTo = vi.fn()
 vi.stubGlobal('navigateTo', mockNavigateTo)
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 const mockFetch = vi.fn()
 const mockDismiss = vi.fn()

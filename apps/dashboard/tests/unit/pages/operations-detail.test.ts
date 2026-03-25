@@ -9,6 +9,7 @@ mockUseI18n()
 vi.stubGlobal('navigateTo', vi.fn())
 vi.stubGlobal('useRoute', () => ({ params: { id: '42' } }))
 vi.stubGlobal('onMounted', (fn: Function) => fn())
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 const operation = ref<any>(null)
 const isLoadingDetail = ref(false)
