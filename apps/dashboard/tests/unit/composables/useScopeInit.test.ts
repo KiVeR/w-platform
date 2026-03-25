@@ -17,6 +17,11 @@ vi.stubGlobal('navigateTo', navigateToMock)
 const onMountedCallbacks: (() => void | Promise<void>)[] = []
 vi.stubGlobal('onMounted', (cb: () => void | Promise<void>) => { onMountedCallbacks.push(cb) })
 
+vi.stubGlobal('computed', (fn: () => unknown) => {
+  const { computed: vueComputed } = require('vue')
+  return vueComputed(fn)
+})
+
 const { useAuthStore } = await import('@/stores/auth')
 const { usePartnerStore } = await import('@/stores/partner')
 const { useScopeInit } = await import('@/composables/useScopeInit')
@@ -91,5 +96,69 @@ describe('useScopeInit', () => {
 
     const { partnerId } = useScopeInit()
     expect(partnerId.value).toBe(42)
+  })
+
+  // --- Edge cases (8.2) ---
+
+  it('redirects to hub when partner not found (404)', async () => {
+    setupAdmin()
+    mockRoute = { path: '/partners/999/dashboard', params: { id: '999' } }
+
+    // fetchPartnerInfo catches errors and leaves currentPartnerData null
+    mockApi.GET.mockResolvedValue({
+      error: { status: 404 },
+    })
+
+    const { ready, error } = useScopeInit()
+    await onMountedCallbacks[0]()
+
+    expect(ready.value).toBe(false)
+    expect(error.value).toBe('Partner not found')
+    expect(navigateToMock).toHaveBeenCalledWith('/hub/dashboard')
+  })
+
+  it('sets isInactive flag for inactive partner', async () => {
+    setupAdmin()
+    mockRoute = { path: '/partners/42/dashboard', params: { id: '42' } }
+
+    const inactivePartner = { ...fakePartner, is_active: false }
+    mockApi.GET.mockResolvedValue({
+      data: { data: inactivePartner },
+    })
+
+    const { ready, isInactive } = useScopeInit()
+    await onMountedCallbacks[0]()
+
+    expect(ready.value).toBe(true)
+    expect(isInactive.value).toBe(true)
+  })
+
+  it('does not set isInactive for active partner', async () => {
+    setupAdmin()
+    mockRoute = { path: '/partners/42/dashboard', params: { id: '42' } }
+
+    mockApi.GET.mockResolvedValue({
+      data: { data: { ...fakePartner, is_active: true } },
+    })
+
+    const { ready, isInactive } = useScopeInit()
+    await onMountedCallbacks[0]()
+
+    expect(ready.value).toBe(true)
+    expect(isInactive.value).toBe(false)
+  })
+
+  it('redirects to hub when fetch throws (deleted/network error)', async () => {
+    setupAdmin()
+    mockRoute = { path: '/partners/42/dashboard', params: { id: '42' } }
+
+    mockApi.GET.mockRejectedValue(new Error('Network error'))
+
+    const { ready, error } = useScopeInit()
+    await onMountedCallbacks[0]()
+
+    expect(ready.value).toBe(false)
+    expect(error.value).toBe('Partner not found')
+    expect(navigateToMock).toHaveBeenCalledWith('/hub/dashboard')
   })
 })
