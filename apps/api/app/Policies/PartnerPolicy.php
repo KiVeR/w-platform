@@ -17,7 +17,8 @@ class PartnerPolicy
     public function view(User $user, Partner $partner): bool
     {
         return $user->hasRole('admin')
-            || $user->partner_id === $partner->id;
+            || $user->partner_id === $partner->id
+            || ($user->hasRole('adv') && $partner->adv_id === $user->id);
     }
 
     public function create(User $user): bool
