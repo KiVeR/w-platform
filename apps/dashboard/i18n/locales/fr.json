@@ -1273,5 +1273,14 @@
       },
       "chars_count": "{count}/160 caractères"
     }
+  },
+  "commandPalette": {
+    "placeholder": "Rechercher un partenaire, une page ou une action…",
+    "noResults": "Aucun résultat",
+    "partners": "Partenaires",
+    "pages": "Pages",
+    "actions": "Actions",
+    "newCampaign": "Nouvelle campagne",
+    "newPartner": "Nouveau partenaire"
   }
 }
