@@ -10,6 +10,9 @@ import {
   ClipboardList,
   Receipt,
   FileText,
+  Building2,
+  Users,
+  ArrowLeft,
 } from 'lucide-vue-next'
 import {
   Sidebar,
@@ -33,18 +36,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { useAuthStore } from '@/stores/auth'
-import { usePartnerStore } from '@/stores/partner'
 import { usePermission } from '@/composables/usePermission'
+import { useNavigationMode } from '@/composables/useNavigationMode'
+import { useScopedNavigation } from '@/composables/useScopedNavigation'
 import type { NavGroup } from '@/types/navigation'
 import AppLogo from './AppLogo.vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const auth = useAuthStore()
-const partner = usePartnerStore()
 const { can, hasAnyRole } = usePermission()
+const { mode, isScope } = useNavigationMode()
+const { scopedRoute, exitToHub } = useScopedNavigation()
 
 async function handleLogout() {
   await auth.logout()
@@ -52,36 +56,25 @@ async function handleLogout() {
 }
 
 /**
- * Full navigation definition — each group/item declares its access requirements.
- * Admin users always see everything; other roles are filtered below.
+ * Hub navigation — visible when user is on /hub/* or any non-scoped route.
+ * Shows platform-level pages: dashboard, partners list, operations, admin.
  */
-const allNavGroups = computed<NavGroup[]>(() => [
+const hubNavGroups = computed<NavGroup[]>(() => [
   {
-    label: t('nav.groups.main'),
+    label: t('nav.groups.platform'),
     items: [
-      { label: t('nav.dashboard'), icon: Home, to: '/' },
-      { label: t('nav.campaigns'), icon: Send, to: '/campaigns' },
-    ],
-  },
-  {
-    label: t('nav.groups.adv'),
-    requiredPermissions: ['view operations'],
-    items: [
+      { label: t('nav.hubDashboard'), icon: Home, to: '/hub/dashboard' },
+      { label: t('nav.partners'), icon: Building2, to: '/hub/partners' },
       { label: t('nav.demandes'), icon: FileText, to: '/demandes', requiredPermissions: ['view demandes'] },
       { label: t('nav.operations'), icon: ClipboardList, to: '/operations', requiredPermissions: ['view operations'] },
       { label: t('nav.billing'), icon: Receipt, to: '/billing', requiredPermissions: ['view operations'] },
-    ],
-  },
-  {
-    label: t('nav.groups.config'),
-    items: [
-      { label: t('nav.settings'), icon: Settings, to: '/settings' },
     ],
   },
   ...(auth.isAdmin
     ? [{
         label: t('nav.groups.admin'),
         items: [
+          { label: t('nav.users'), icon: Users, to: '/admin/users' },
           { label: t('nav.routers'), icon: Router, to: '/admin/routers' },
           { label: t('nav.variableSchemas'), icon: FileCode, to: '/admin/variable-schemas' },
         ],
@@ -90,11 +83,41 @@ const allNavGroups = computed<NavGroup[]>(() => [
 ])
 
 /**
- * Filter groups and items by role/permissions.
- * Admins bypass all restrictions (handled by allNavGroups already including admin group).
+ * Scope navigation — visible when user is scoped to a partner.
+ * Shows partner-level pages: dashboard, campaigns, shops, etc.
+ */
+const scopeNavGroups = computed<NavGroup[]>(() => [
+  {
+    label: t('nav.groups.main'),
+    items: [
+      { label: t('nav.dashboard'), icon: Home, to: scopedRoute('/dashboard') },
+      { label: t('nav.campaigns'), icon: Send, to: scopedRoute('/campaigns') },
+    ],
+  },
+  {
+    label: t('nav.groups.adv'),
+    requiredPermissions: ['view operations'],
+    items: [
+      { label: t('nav.demandes'), icon: FileText, to: scopedRoute('/demandes'), requiredPermissions: ['view demandes'] },
+      { label: t('nav.operations'), icon: ClipboardList, to: scopedRoute('/operations'), requiredPermissions: ['view operations'] },
+      { label: t('nav.billing'), icon: Receipt, to: scopedRoute('/billing'), requiredPermissions: ['view operations'] },
+    ],
+  },
+  {
+    label: t('nav.groups.config'),
+    items: [
+      { label: t('nav.settings'), icon: Settings, to: scopedRoute('/settings') },
+    ],
+  },
+])
+
+/**
+ * Active navigation groups based on current mode.
+ * Filtered by role/permissions — admins bypass all restrictions.
  */
 const navGroups = computed<NavGroup[]>(() => {
-  return allNavGroups.value
+  const groups = isScope.value ? scopeNavGroups.value : hubNavGroups.value
+  return groups
     .filter((group) => {
       if (auth.isAdmin) return true
       if (group.requiredRoles?.length && !hasAnyRole(group.requiredRoles)) return false
@@ -114,7 +137,7 @@ const navGroups = computed<NavGroup[]>(() => {
 })
 
 function isActive(to: string): boolean {
-  if (to === '/') return route.path === '/'
+  if (to === '/' || to === '/hub/dashboard') return route.path === to
   return route.path.startsWith(to)
 }
 </script>
@@ -123,13 +146,6 @@ function isActive(to: string): boolean {
   <Sidebar collapsible="icon">
     <SidebarHeader class="p-4 group-data-[collapsible=icon]:p-2">
       <AppLogo />
-      <Badge
-        v-if="auth.isAdmin && partner.isScoped"
-        variant="secondary"
-        class="mt-1 truncate group-data-[collapsible=icon]:hidden"
-      >
-        {{ partner.currentPartnerName }}
-      </Badge>
     </SidebarHeader>
 
     <SidebarContent>
@@ -147,6 +163,22 @@ function isActive(to: string): boolean {
                   <component :is="item.icon" />
                   <span>{{ item.label }}</span>
                 </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
+      <!-- Back to Hub button in scope mode for internal users -->
+      <SidebarGroup v-if="isScope && !auth.isPartnerBound" data-back-to-hub>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton as-child :tooltip="t('nav.backToHub')">
+                <button type="button" @click="exitToHub">
+                  <ArrowLeft />
+                  <span>{{ t('nav.backToHub') }}</span>
+                </button>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

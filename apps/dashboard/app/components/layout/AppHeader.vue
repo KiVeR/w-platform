@@ -5,12 +5,14 @@ import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import AppBreadcrumb from './AppBreadcrumb.vue'
 import ThemeSwitcher from './ThemeSwitcher.vue'
-import PartnerSelector from '@/components/partner/PartnerSelector.vue'
+import ScopeBanner from './ScopeBanner.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useNavigationMode } from '@/composables/useNavigationMode'
 
 const { t } = useI18n()
 const { toggleSidebar, state } = useSidebar()
 const auth = useAuthStore()
+const { isScope } = useNavigationMode()
 </script>
 
 <template>
@@ -29,7 +31,7 @@ const auth = useAuthStore()
     <AppBreadcrumb />
 
     <div class="ml-auto flex items-center gap-2">
-      <PartnerSelector v-if="auth.isAdmin" />
+      <ScopeBanner v-if="!auth.isPartnerBound && isScope" />
       <ThemeSwitcher />
     </div>
   </header>
