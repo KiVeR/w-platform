@@ -21,6 +21,8 @@ use App\Http\Controllers\Api\InvoicesController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\OperationsController;
+use App\Http\Controllers\Api\PartnerCreditsController;
+use App\Http\Controllers\Api\PartnerFeaturesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\RouterController;
@@ -125,6 +127,9 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::apiResource('invoices', InvoicesController::class)->only(['index', 'show']);
     Route::get('partners/{partner}/balance', [TransactionsController::class, 'balance']);
     Route::get('partners/{partner}/transactions', [TransactionsController::class, 'index']);
+    Route::post('partners/{partner}/credits', [PartnerCreditsController::class, 'store']);
+    Route::get('partners/{partner}/features', [PartnerFeaturesController::class, 'index']);
+    Route::put('partners/{partner}/features/{feature}', [PartnerFeaturesController::class, 'update']);
 
     Route::prefix('geo')->name('geo.')->group(function (): void {
         Route::get('departments', [GeoController::class, 'departments'])->name('departments.index');
