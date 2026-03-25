@@ -26,6 +26,13 @@ vi.stubGlobal('useNuxtApp', () => ({ $api: { POST: mockPost } }))
 // PartnerStore stub — control admin vs non-admin
 const effectivePartnerId = ref<number | null>(null)
 
+// Mock partner store (imported directly by the page via `import { usePartnerStore } from '@/stores/partner'`)
+vi.mock('@/stores/partner', () => ({
+  usePartnerStore: () => ({
+    get effectivePartnerId() { return effectivePartnerId.value },
+  }),
+}))
+
 vi.stubGlobal('usePartnerStore', () => ({
   effectivePartnerId: effectivePartnerId.value,
 }))

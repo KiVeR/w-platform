@@ -11,6 +11,13 @@ vi.stubGlobal('navigateTo', vi.fn())
 vi.stubGlobal('useRoute', () => ({ params: { id: '5' } }))
 vi.stubGlobal('onMounted', (fn: Function) => fn())
 
+// Mock partner store (imported directly by billing index page)
+vi.mock('@/stores/partner', () => ({
+  usePartnerStore: () => ({
+    effectivePartnerId: 42,
+  }),
+}))
+
 // Stubs for billing index page composables
 const invoices = ref<any[]>([])
 const isLoadingInvoices = ref(false)

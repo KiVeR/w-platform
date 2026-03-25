@@ -113,9 +113,9 @@ describe('useTargetingTemplates', () => {
     const targeting = await useTemplate(1)
 
     expect(mockPost).toHaveBeenCalledWith(
-      '/targeting-templates/{targeting_template}/use',
+      '/targeting-templates/{targetingTemplate}/use',
       expect.objectContaining({
-        params: { path: { targeting_template: 1 } },
+        params: { path: { targetingTemplate: 1 } },
       }),
     )
     expect(targeting).not.toBeNull()

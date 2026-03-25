@@ -26,6 +26,8 @@ vi.stubGlobal('navigateTo', vi.fn())
 vi.stubGlobal('onMounted', onMounted)
 vi.stubGlobal('onBeforeUnmount', onBeforeUnmount)
 vi.stubGlobal('useRoute', () => ({ query: mockRouteQuery }))
+vi.stubGlobal('useApi', () => mockApi)
+vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
 mockUseI18n()
 
 const { useCampaignWizardStore } = await import('@/stores/campaignWizard')
