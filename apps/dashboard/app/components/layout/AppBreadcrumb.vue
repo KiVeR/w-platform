@@ -41,6 +41,21 @@ const routeLabels: Record<string, string> = {
   billing: 'breadcrumb.billing',
 }
 
+/**
+ * Contextual overrides for "new" segment based on parent path.
+ * E.g. demandes/new → breadcrumb.newDemande instead of breadcrumb.newCampaign.
+ */
+const contextualNewLabels: Record<string, string> = {
+  demandes: 'breadcrumb.newDemande',
+}
+
+function resolveLabel(segment: string, previousSegment?: string): string | undefined {
+  if (segment === 'new' && previousSegment && contextualNewLabels[previousSegment]) {
+    return contextualNewLabels[previousSegment]
+  }
+  return routeLabels[segment]
+}
+
 const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
   const segments = route.path.split('/').filter(Boolean)
 
@@ -59,9 +74,10 @@ const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
     const partnerIndex = segments.indexOf('partners')
     const pageSegments = partnerIndex >= 0 ? segments.slice(partnerIndex + 2) : []
     let path = partnerBasePath
-    for (const segment of pageSegments) {
+    for (let i = 0; i < pageSegments.length; i++) {
+      const segment = pageSegments[i]
       path += `/${segment}`
-      const key = routeLabels[segment]
+      const key = resolveLabel(segment, i > 0 ? pageSegments[i - 1] : undefined)
       if (key) {
         items.push({ label: t(key), to: path })
       } else if (/^\d+$/.test(segment)) {
@@ -81,9 +97,10 @@ const breadcrumbs = computed<BreadcrumbEntry[]>(() => {
   ]
 
   let path = ''
-  for (const segment of segments) {
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i]
     path += `/${segment}`
-    const key = routeLabels[segment]
+    const key = resolveLabel(segment, i > 0 ? segments[i - 1] : undefined)
     if (key) {
       items.push({
         label: t(key),

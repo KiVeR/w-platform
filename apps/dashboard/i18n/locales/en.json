@@ -46,8 +46,10 @@
   "breadcrumb": {
     "dashboard": "Dashboard",
     "admin": "Administration",
+    "hub": "Hub",
     "campaigns": "Campaigns",
     "newCampaign": "New campaign",
+    "newDemande": "New request",
     "shops": "Shops",
     "landingPages": "Landing Pages",
     "stats": "Statistics",
@@ -55,7 +57,11 @@
     "routers": "Routers",
     "users": "Users",
     "partner": "Partner",
-    "variableSchemas": "Variable schemas"
+    "partners": "Partners",
+    "variableSchemas": "Variable schemas",
+    "demandes": "Requests",
+    "operations": "Operations",
+    "billing": "Billing"
   },
   "admin": {
     "comingSoon": "Coming soon",
@@ -1290,10 +1296,10 @@
         "information_hint": "Any useful information for processing the request.",
         "is_exoneration_hint": "Check if this request benefits from a billing exoneration.",
         "partner_hint": "The partner this request will be attached to.",
-        "partner_placeholder": "Partner ID",
-        "commercial_placeholder": "Commercial ID (optional)",
+        "partner_placeholder": "Search for a partner...",
+        "commercial_placeholder": "Search for a commercial...",
         "commercial_hint": "The commercial in charge of this case.",
-        "sdr_placeholder": "SDR ID (optional)",
+        "sdr_placeholder": "Search for a SDR...",
         "sdr_hint": "The SDR responsible for this request.",
         "pays_id": "Country",
         "pays_id_placeholder": "FR",
