@@ -36,3 +36,8 @@ export interface PartnerFormData {
   router_id?: number
   billing_mode?: string
 }
+
+export interface PartnerFeature {
+  key: string
+  is_enabled: boolean
+}
