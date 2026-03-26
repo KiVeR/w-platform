@@ -1582,6 +1582,8 @@
   "refresh": "Actualiser",
   "recharge": "Recharger",
   "common": {
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "noResults": "Aucun résultat trouvé.",
+    "minChars": "Tapez au moins 2 caractères"
   }
 }

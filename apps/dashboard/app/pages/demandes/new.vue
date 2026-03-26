@@ -181,7 +181,7 @@ async function onSubmit() {
         <CardContent class="space-y-5">
           <!-- partner_id — admin only -->
           <div v-if="isAdmin" class="space-y-1.5" data-testid="partner-field">
-            <Label for="partner_id">
+            <Label>
               {{ t('demandes.create.fields.partner') }}
               <span class="text-destructive">*</span>
             </Label>
@@ -203,7 +203,7 @@ async function onSubmit() {
           <!-- commercial_id + sdr_id side by side -->
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div class="space-y-1.5">
-              <Label for="commercial_id">{{ t('demandes.create.fields.commercial') }}</Label>
+              <Label>{{ t('demandes.create.fields.commercial') }}</Label>
               <AsyncCombobox
                 :model-value="form.commercial_id"
                 :search-fn="searchUsers"
@@ -220,7 +220,7 @@ async function onSubmit() {
             </div>
 
             <div class="space-y-1.5">
-              <Label for="sdr_id">{{ t('demandes.create.fields.sdr') }}</Label>
+              <Label>{{ t('demandes.create.fields.sdr') }}</Label>
               <AsyncCombobox
                 :model-value="form.sdr_id"
                 :search-fn="searchUsers"

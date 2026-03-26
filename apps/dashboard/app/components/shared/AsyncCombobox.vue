@@ -120,7 +120,7 @@ const hasValue = computed(() => props.modelValue != null)
       </PopoverTrigger>
 
       <PopoverContent class="w-[--reka-popover-trigger-width] p-0" align="start">
-        <Command>
+        <Command :filter-function="() => 1">
           <CommandInput
             v-model="search"
             :placeholder="placeholder"

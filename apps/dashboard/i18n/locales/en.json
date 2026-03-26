@@ -1582,6 +1582,8 @@
   "refresh": "Refresh",
   "recharge": "Recharge",
   "common": {
-    "retry": "Retry"
+    "retry": "Retry",
+    "noResults": "No results found.",
+    "minChars": "Type at least 2 characters"
   }
 }
