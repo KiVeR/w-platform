@@ -96,7 +96,7 @@ const showEmpty = computed(() => search.value.length >= 2 && !isLoading.value &&
 </script>
 
 <template>
-  <div class="flex items-center gap-1" data-testid="async-combobox">
+  <div class="relative" data-testid="async-combobox">
     <Popover v-model:open="open">
       <PopoverTrigger as-child>
         <Button
@@ -105,6 +105,7 @@ const showEmpty = computed(() => search.value.length >= 2 && !isLoading.value &&
           :aria-expanded="open"
           :disabled="disabled"
           class="w-full justify-between"
+          :class="{ 'pr-9': hasValue }"
           data-testid="combobox-trigger"
         >
           <span class="truncate" :class="{ 'text-muted-foreground': !hasValue }">
@@ -175,15 +176,14 @@ const showEmpty = computed(() => search.value.length >= 2 && !isLoading.value &&
       </PopoverContent>
     </Popover>
 
-    <Button
+    <button
       v-if="hasValue"
-      variant="ghost"
-      size="icon"
-      class="size-8 shrink-0"
+      type="button"
+      class="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-1 text-muted-foreground hover:text-foreground"
       data-testid="combobox-clear"
       @click.stop="clear"
     >
-      <X class="size-4" />
-    </Button>
+      <X class="size-3.5" />
+    </button>
   </div>
 </template>
