@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { Check, ChevronsUpDown, X, Loader2 } from 'lucide-vue-next'
+import { Check, ChevronsUpDown, X, Loader2, Search } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
 
 export interface ComboboxOption {
   id: number
@@ -41,20 +34,20 @@ const selectedLabel = ref<string | undefined>(props.displayValue)
 
 let debounceTimer: ReturnType<typeof setTimeout> | undefined
 
-// Watch displayValue prop changes
 watch(() => props.displayValue, (val) => {
   if (val !== undefined) {
     selectedLabel.value = val
   }
 })
 
-// Debounced search
+// Debounced search — fires API call
 watch(search, (value) => {
   clearTimeout(debounceTimer)
   if (value.length < 2) {
     options.value = []
     return
   }
+  isLoading.value = true
   debounceTimer = setTimeout(() => fetchOptions(value), 300)
 })
 
@@ -67,7 +60,6 @@ watch(open, (value) => {
 })
 
 async function fetchOptions(query: string) {
-  isLoading.value = true
   try {
     options.value = await props.searchFn(query)
   } catch {
@@ -98,6 +90,9 @@ const buttonLabel = computed(() => {
 })
 
 const hasValue = computed(() => props.modelValue != null)
+
+const showMinChars = computed(() => search.value.length > 0 && search.value.length < 2)
+const showEmpty = computed(() => search.value.length >= 2 && !isLoading.value && options.value.length === 0)
 </script>
 
 <template>
@@ -120,43 +115,63 @@ const hasValue = computed(() => props.modelValue != null)
       </PopoverTrigger>
 
       <PopoverContent class="w-[--reka-popover-trigger-width] p-0" align="start">
-        <Command :filter-function="() => 1">
-          <CommandInput
+        <!-- Search input -->
+        <div class="flex items-center border-b px-3 py-2">
+          <Search class="mr-2 size-4 shrink-0 opacity-50" />
+          <input
             v-model="search"
+            type="text"
+            class="flex h-8 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             :placeholder="placeholder"
             data-testid="combobox-search"
           />
-          <CommandList>
-            <div v-if="isLoading" class="py-4 text-center text-sm text-muted-foreground" data-testid="combobox-loading">
-              <Loader2 class="mx-auto size-4 animate-spin" />
-            </div>
-            <div
-              v-else-if="search.length > 0 && search.length < 2"
-              class="py-4 text-center text-sm text-muted-foreground"
-              data-testid="combobox-min-chars"
-            >
-              {{ $t?.('common.minChars') ?? 'Type at least 2 characters' }}
-            </div>
-            <CommandEmpty data-testid="combobox-empty">
-              {{ $t?.('common.noResults') ?? 'No results found.' }}
-            </CommandEmpty>
-            <CommandGroup>
-              <CommandItem
-                v-for="option in options"
-                :key="option.id"
-                :value="option.label"
-                data-testid="combobox-option"
-                @select="selectOption(option)"
-              >
-                <Check
-                  class="mr-2 size-4"
-                  :class="modelValue === option.id ? 'opacity-100' : 'opacity-0'"
-                />
-                {{ option.label }}
-              </CommandItem>
-            </CommandGroup>
-          </CommandList>
-        </Command>
+        </div>
+
+        <!-- Results list -->
+        <div class="max-h-[200px] overflow-y-auto p-1">
+          <!-- Loading -->
+          <div
+            v-if="isLoading"
+            class="py-4 text-center text-sm text-muted-foreground"
+            data-testid="combobox-loading"
+          >
+            <Loader2 class="mx-auto size-4 animate-spin" />
+          </div>
+
+          <!-- Min chars hint -->
+          <div
+            v-else-if="showMinChars"
+            class="py-4 text-center text-sm text-muted-foreground"
+            data-testid="combobox-min-chars"
+          >
+            {{ $t?.('common.minChars') ?? 'Type at least 2 characters' }}
+          </div>
+
+          <!-- No results -->
+          <div
+            v-else-if="showEmpty"
+            class="py-4 text-center text-sm text-muted-foreground"
+            data-testid="combobox-empty"
+          >
+            {{ $t?.('common.noResults') ?? 'No results found.' }}
+          </div>
+
+          <!-- Options -->
+          <button
+            v-for="option in options"
+            :key="option.id"
+            type="button"
+            class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+            data-testid="combobox-option"
+            @click="selectOption(option)"
+          >
+            <Check
+              class="mr-2 size-4"
+              :class="modelValue === option.id ? 'opacity-100' : 'opacity-0'"
+            />
+            {{ option.label }}
+          </button>
+        </div>
       </PopoverContent>
     </Popover>
 
