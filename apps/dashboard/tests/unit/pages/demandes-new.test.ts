@@ -39,6 +39,15 @@ vi.stubGlobal('usePartnerStore', () => ({
   effectivePartnerId: effectivePartnerId.value,
 }))
 
+// AuthStore stub — control isPartnerBound
+const isPartnerBound = ref(false)
+
+vi.mock('@/stores/auth', () => ({
+  useAuthStore: () => ({
+    get isPartnerBound() { return isPartnerBound.value },
+  }),
+}))
+
 // Import the page after all stubs are in place
 const DemandesNew = (await import('@/pages/demandes/new.vue')).default
 
@@ -105,6 +114,7 @@ describe('demandes/new page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     effectivePartnerId.value = null
+    isPartnerBound.value = false
     // Re-stub usePartnerStore with the current effectivePartnerId value
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: effectivePartnerId.value,
@@ -143,8 +153,9 @@ describe('demandes/new page', () => {
   })
 
   it('hides partner combobox for non-admin', () => {
-    // effectivePartnerId non-null → partner user
+    // isPartnerBound true → partner user (non-admin)
     effectivePartnerId.value = 5
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 5,
     }))
@@ -159,8 +170,9 @@ describe('demandes/new page', () => {
   })
 
   it('submits form successfully', async () => {
-    // Use non-admin so canSubmit is true without needing partner_id field
+    // Use non-admin (partner-bound) so canSubmit is true without needing partner_id field
     effectivePartnerId.value = 10
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 10,
     }))
@@ -176,6 +188,7 @@ describe('demandes/new page', () => {
 
   it('redirects to detail after creation', async () => {
     effectivePartnerId.value = 10
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 10,
     }))
@@ -191,6 +204,7 @@ describe('demandes/new page', () => {
 
   it('shows success toast after creation', async () => {
     effectivePartnerId.value = 10
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 10,
     }))
@@ -206,6 +220,7 @@ describe('demandes/new page', () => {
 
   it('shows validation errors', async () => {
     effectivePartnerId.value = 10
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 10,
     }))
@@ -242,6 +257,7 @@ describe('demandes/new page', () => {
 
   it('pre-fills partner_id for non-admin', () => {
     effectivePartnerId.value = 7
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 7,
     }))

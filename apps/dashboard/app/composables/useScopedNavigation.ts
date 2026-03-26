@@ -1,3 +1,4 @@
+import { nextTick } from 'vue'
 import { useNavigationMode } from '@/composables/useNavigationMode'
 import { usePartnerStore } from '@/stores/partner'
 
@@ -22,6 +23,7 @@ export function useScopedNavigation() {
 
   async function exitToHub() {
     partner.clearPartner()
+    await nextTick()
     await navigateTo('/hub/dashboard')
   }
 

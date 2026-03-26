@@ -47,6 +47,7 @@ const routeLabels: Record<string, string> = {
  */
 const contextualNewLabels: Record<string, string> = {
   demandes: 'breadcrumb.newDemande',
+  partners: 'breadcrumb.newPartner',
 }
 
 function resolveLabel(segment: string, previousSegment?: string): string | undefined {

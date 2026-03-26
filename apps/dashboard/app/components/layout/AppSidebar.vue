@@ -155,7 +155,7 @@ function isActive(to: string): boolean {
     </SidebarHeader>
 
     <SidebarContent>
-      <Transition name="sidebar-mode" mode="out-in">
+      <Transition name="sidebar-mode">
         <div :key="mode">
           <SidebarGroup v-for="group in navGroups" :key="group.label">
             <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>

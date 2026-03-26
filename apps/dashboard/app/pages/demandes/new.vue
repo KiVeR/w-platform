@@ -3,6 +3,7 @@ import { ref, reactive, computed } from 'vue'
 import { toast } from 'vue-sonner'
 import { ArrowLeft } from 'lucide-vue-next'
 import { usePartnerStore } from '@/stores/partner'
+import { useAuthStore } from '@/stores/auth'
 import AsyncCombobox from '@/components/shared/AsyncCombobox.vue'
 
 definePageMeta({
@@ -15,13 +16,14 @@ const { t } = useI18n()
 const router = useRouter()
 const { scopedRoute } = useScopedNavigation()
 const { $api } = useNuxtApp()
+const auth = useAuthStore()
 const partnerStore = usePartnerStore()
 
 const isSubmitting = ref(false)
 const errors = ref<Record<string, string[]>>({})
 
-// If non-admin, effectivePartnerId is non-null (from auth.partnerId)
-const isAdmin = computed(() => partnerStore.effectivePartnerId === null)
+// Admins (non-partner-bound) see the partner selector; partner-bound users don't
+const isAdmin = computed(() => !auth.isPartnerBound)
 
 const form = reactive({
   ref_client: '',
