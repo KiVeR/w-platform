@@ -181,7 +181,7 @@ onMounted(async () => {
       {{ t('hub.partnerDetail.error') }}
     </div>
 
-    <Tabs v-else default-value="info" class="w-full">
+    <Tabs v-else :model-value="activeTab" class="w-full" @update:model-value="(v) => activeTab = v as string">
       <TabsList data-tabs-list>
         <TabsTrigger value="info" data-tab-info>
           {{ t('hub.partnerDetail.tabs.info') }}
