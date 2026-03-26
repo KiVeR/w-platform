@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-vue-next'
 import PartnerForm from '@/components/hub/PartnerForm.vue'
@@ -181,23 +180,31 @@ onMounted(async () => {
       {{ t('hub.partnerDetail.error') }}
     </div>
 
-    <Tabs v-else :model-value="activeTab" class="w-full" @update:model-value="(v) => activeTab = v as string">
-      <TabsList data-tabs-list>
-        <TabsTrigger value="info" data-tab-info>
-          {{ t('hub.partnerDetail.tabs.info') }}
-        </TabsTrigger>
-        <TabsTrigger value="credits" data-tab-credits>
-          {{ t('hub.partnerDetail.tabs.credits') }}
-        </TabsTrigger>
-        <TabsTrigger value="features" data-tab-features>
-          {{ t('hub.partnerDetail.tabs.features') }}
-        </TabsTrigger>
-        <TabsTrigger value="users" data-tab-users>
-          {{ t('hub.partnerDetail.tabs.users') }}
-        </TabsTrigger>
-      </TabsList>
+    <div v-else class="w-full flex flex-col gap-4">
+      <!-- Manual tabs (reka-ui Tabs has hydration issues in prod SSR) -->
+      <div class="inline-flex h-9 items-center justify-start rounded-lg bg-muted p-1 text-muted-foreground gap-1" data-tabs-list>
+        <button
+          v-for="tab in [
+            { key: 'info', label: t('hub.partnerDetail.tabs.info') },
+            { key: 'credits', label: t('hub.partnerDetail.tabs.credits') },
+            { key: 'features', label: t('hub.partnerDetail.tabs.features') },
+            { key: 'users', label: t('hub.partnerDetail.tabs.users') },
+          ]"
+          :key="tab.key"
+          type="button"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all"
+          :class="activeTab === tab.key
+            ? 'bg-background text-foreground shadow-sm'
+            : 'hover:bg-background/50 hover:text-foreground'"
+          :data-state="activeTab === tab.key ? 'active' : 'inactive'"
+          @click="activeTab = tab.key"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
 
-      <TabsContent value="info">
+      <!-- Tab: Info -->
+      <div v-if="activeTab === 'info'">
         <div v-if="saveError" class="mb-4 p-3 bg-destructive/10 text-destructive rounded-md text-sm" data-save-error>
           {{ saveError }}
         </div>
@@ -209,9 +216,10 @@ onMounted(async () => {
           @submit="handleUpdate"
           @cancel="handleCancel"
         />
-      </TabsContent>
+      </div>
 
-      <TabsContent value="credits">
+      <!-- Tab: Credits -->
+      <div v-if="activeTab === 'credits'">
         <div v-if="rechargeError" class="mb-4 p-3 bg-destructive/10 text-destructive rounded-md text-sm">
           {{ rechargeError }}
         </div>
@@ -229,18 +237,20 @@ onMounted(async () => {
           :is-recharging="isRecharging"
           @confirm="handleRecharge"
         />
-      </TabsContent>
+      </div>
 
-      <TabsContent value="features">
+      <!-- Tab: Features -->
+      <div v-if="activeTab === 'features'">
         <PartnerFeaturesPanel
           :features="features"
           :is-loading="isLoadingFeatures"
           :is-admin="isAdmin"
           @toggle="handleToggleFeature"
         />
-      </TabsContent>
+      </div>
 
-      <TabsContent value="users">
+      <!-- Tab: Users -->
+      <div v-if="activeTab === 'users'">
         <div class="space-y-4">
           <div class="flex items-center justify-end">
             <Button data-new-user-btn size="sm" @click="handleNewUser">
@@ -274,7 +284,7 @@ onMounted(async () => {
             @confirm="handleUserFormConfirm"
           />
         </div>
-      </TabsContent>
-    </Tabs>
+      </div>
+    </div>
   </div>
 </template>
