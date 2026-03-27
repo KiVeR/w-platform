@@ -83,7 +83,7 @@ const baseStubs = {
   Button: { template: '<button data-button @click="$emit(\'click\')"><slot /></button>', emits: ['click'], props: ['disabled'] },
   Switch: { template: '<input type="checkbox" data-switch :checked="modelValue" @change="$emit(\'update:modelValue\', !modelValue)" />', props: ['modelValue'], emits: ['update:modelValue'] },
   DepartmentSelector: { template: '<div data-department-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
-  PostcodeInput: { template: '<div data-postcode-input />', props: ['modelValue'], emits: ['update:modelValue'] },
+  PostcodeSelector: { template: '<div data-postcode-input />', props: ['modelValue'], emits: ['update:modelValue'] },
   CommuneSelector: { template: '<div data-commune-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
   IrisSelector: { template: '<div data-iris-selector />', props: ['modelValue'], emits: ['update:modelValue'] },
   AddressRadius: { template: '<div data-address-radius />', props: ['address', 'lat', 'lng', 'radius'], emits: ['update:address', 'update:lat', 'update:lng', 'update:radius'] },

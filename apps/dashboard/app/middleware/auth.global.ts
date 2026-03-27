@@ -10,6 +10,11 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   if (auth.isAuthenticated && publicRoutes.includes(to.path)) {
-    return navigateTo('/')
+    return navigateTo(auth.defaultRoute)
+  }
+
+  // Redirect bare '/' to the role-appropriate default route
+  if (auth.isAuthenticated && to.path === '/') {
+    return navigateTo(auth.defaultRoute)
   }
 })

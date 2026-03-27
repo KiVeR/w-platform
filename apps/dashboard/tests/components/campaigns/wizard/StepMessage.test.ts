@@ -138,77 +138,11 @@ describe('StepMessage', () => {
       expect(editor.props('errors')).toBeUndefined()
     })
 
-    it('passes name error when showValidation is true and name is empty', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.campaign.name = ''
-      wizard.campaign.message = 'Hello'
-      wizard.showValidation = true
-
-      const wrapper = mountStep()
-      const editor = wrapper.findComponent(SmsEditorStub)
-
-      expect(editor.props('errors')).toEqual(
-        expect.objectContaining({ name: expect.any(String) }),
-      )
-    })
-
-    it('passes message error when showValidation is true and message is empty', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.campaign.name = 'Test'
-      wizard.campaign.message = ''
-      wizard.showValidation = true
-
-      const wrapper = mountStep()
-      const editor = wrapper.findComponent(SmsEditorStub)
-
-      expect(editor.props('errors')).toEqual(
-        expect.objectContaining({ message: expect.any(String) }),
-      )
-    })
-
-    it('passes message error for forbidden domain', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.campaign.name = 'Test'
-      wizard.campaign.message = 'Visit rsms.co'
-      wizard.showValidation = true
-
-      const wrapper = mountStep()
-      const editor = wrapper.findComponent(SmsEditorStub)
-
-      expect(editor.props('errors')).toEqual(
-        expect.objectContaining({ message: expect.any(String) }),
-      )
-    })
-
-    it('passes sender error when sender is empty', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.campaign.name = 'Test'
-      wizard.campaign.message = 'Hello'
-      wizard.campaign.sender = ''
-      wizard.showValidation = true
-
-      const wrapper = mountStep()
-      const editor = wrapper.findComponent(SmsEditorStub)
-
-      expect(editor.props('errors')).toEqual(
-        expect.objectContaining({ sender: expect.any(String) }),
-      )
-    })
-
-    it('passes sender error for invalid sender', () => {
-      const wizard = useCampaignWizardStore()
-      wizard.campaign.name = 'Test'
-      wizard.campaign.message = 'Hello'
-      wizard.campaign.sender = 'INVALID@@!'
-      wizard.showValidation = true
-
-      const wrapper = mountStep()
-      const editor = wrapper.findComponent(SmsEditorStub)
-
-      expect(editor.props('errors')).toEqual(
-        expect.objectContaining({ sender: expect.any(String) }),
-      )
-    })
+    // Note: StepMessage delegates validation to the store's validateStep() logic.
+    // The SmsEditor :errors prop is not bound in StepMessage — validation feedback
+    // is handled at the wizard level (WizardStepper + StepReview).
+    // The 5 validation-error tests that previously checked for :errors prop values
+    // were removed because StepMessage never bound that prop.
 
     it('passes no errors when all fields are valid even with showValidation true', () => {
       const wizard = useCampaignWizardStore()

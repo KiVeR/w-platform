@@ -245,6 +245,7 @@ class PartnerDemoSeeder extends Seeder
                 'is_active' => $profile !== 'inactive',
                 'euro_credits' => $this->creditsForProfile($profile),
                 'router_id' => $this->routerForProfile($profile, $routers)?->id,
+                'activity_type' => $this->activityTypeForKey($key),
             ]);
 
             $this->createUsers($partner, $profile);
@@ -252,6 +253,26 @@ class PartnerDemoSeeder extends Seeder
             $this->createFeatures($partner, $profile);
             $this->createPricing($partner, $profile);
         }
+    }
+
+    private function activityTypeForKey(string $key): ?string
+    {
+        return match ($key) {
+            'large_1' => 'boulangerie',
+            'large_2' => 'automobile',
+            'large_3' => 'immobilier',
+            'medium_1' => 'restauration',
+            'medium_2' => 'bien-etre',
+            'medium_3' => 'jardinerie',
+            'medium_4' => 'optique',
+            'medium_5' => 'sport',
+            'small_1' => 'coiffure',
+            'small_2' => 'pressing',
+            'small_3' => 'fleuriste',
+            'small_4' => 'boucherie',
+            'small_5' => 'tabac',
+            default => null,
+        };
     }
 
     private function creditsForProfile(string $profile): string

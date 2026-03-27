@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { localStorageMock, stubAuthGlobals } from '../../helpers/auth-stubs'
-import { fakeUser, fakeAdminUser, fakeAuthResponse } from '../../helpers/fixtures'
+import { fakeUser, fakeAdminUser, fakeAdvUser, fakeAuthResponse } from '../../helpers/fixtures'
 
-stubAuthGlobals()
+const mockApi = { GET: vi.fn(), POST: vi.fn() }
+stubAuthGlobals({ $api: mockApi })
 
 const { useAuthStore } = await import('@/stores/auth')
 const { usePartnerStore } = await import('@/stores/partner')
@@ -21,11 +22,34 @@ describe('usePartnerStore', () => {
     return usePartnerStore()
   }
 
+  function setupAdv() {
+    const auth = useAuthStore()
+    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdvUser })
+    return usePartnerStore()
+  }
+
   function setupPartner() {
     const auth = useAuthStore()
     auth.setAuth(fakeAuthResponse.data)
     return usePartnerStore()
   }
+
+  describe('canSwitchPartner', () => {
+    it('is true for admin', () => {
+      const partner = setupAdmin()
+      expect(partner.canSwitchPartner).toBe(true)
+    })
+
+    it('is true for adv (internal role)', () => {
+      const partner = setupAdv()
+      expect(partner.canSwitchPartner).toBe(true)
+    })
+
+    it('is false for partner (partner-bound role)', () => {
+      const partner = setupPartner()
+      expect(partner.canSwitchPartner).toBe(false)
+    })
+  })
 
   describe('init', () => {
     it('restores from localStorage for admin', () => {
@@ -37,7 +61,16 @@ describe('usePartnerStore', () => {
       expect(partner.currentPartnerName).toBe('Test Partner')
     })
 
-    it('does nothing for non-admin', () => {
+    it('restores from localStorage for adv', () => {
+      localStorageMock.setItem('wellpack-partner-context', JSON.stringify({ id: 42, name: 'Test Partner' }))
+      const partner = setupAdv()
+      partner.init()
+
+      expect(partner.currentPartnerId).toBe(42)
+      expect(partner.currentPartnerName).toBe('Test Partner')
+    })
+
+    it('does nothing for partner-bound role', () => {
       localStorageMock.setItem('wellpack-partner-context', JSON.stringify({ id: 42, name: 'Test Partner' }))
       const partner = setupPartner()
       partner.init()
@@ -73,7 +106,15 @@ describe('usePartnerStore', () => {
       expect(JSON.parse(localStorageMock.getItem('wellpack-partner-context')!)).toEqual({ id: 42, name: 'Test Partner' })
     })
 
-    it('is rejected for non-admin', () => {
+    it('updates state and localStorage for adv', () => {
+      const partner = setupAdv()
+      partner.setPartner(42, 'Test Partner')
+
+      expect(partner.currentPartnerId).toBe(42)
+      expect(partner.currentPartnerName).toBe('Test Partner')
+    })
+
+    it('is rejected for partner-bound role', () => {
       const partner = setupPartner()
       partner.setPartner(42, 'Test Partner')
 
@@ -90,10 +131,11 @@ describe('usePartnerStore', () => {
 
       expect(partner.currentPartnerId).toBeNull()
       expect(partner.currentPartnerName).toBeNull()
+      expect(partner.currentPartnerData).toBeNull()
       expect(localStorageMock.getItem('wellpack-partner-context')).toBeNull()
     })
 
-    it('is rejected for non-admin', () => {
+    it('is rejected for partner-bound role', () => {
       const partner = setupPartner()
       partner.clearPartner()
 
@@ -115,10 +157,23 @@ describe('usePartnerStore', () => {
       expect(partner.effectivePartnerId).toBeNull()
     })
 
-    it('returns auth.partnerId for non-admin', () => {
+    it('returns auth.partnerId for partner-bound role', () => {
       const partner = setupPartner()
 
       expect(partner.effectivePartnerId).toBe(42)
+    })
+
+    it('returns currentPartnerId for adv with selection', () => {
+      const partner = setupAdv()
+      partner.setPartner(10, 'ADV Partner')
+
+      expect(partner.effectivePartnerId).toBe(10)
+    })
+
+    it('returns null for adv without selection', () => {
+      const partner = setupAdv()
+
+      expect(partner.effectivePartnerId).toBeNull()
     })
   })
 
@@ -134,6 +189,37 @@ describe('usePartnerStore', () => {
       const partner = setupAdmin()
 
       expect(partner.isScoped).toBe(false)
+    })
+  })
+
+  describe('fetchPartnerInfo', () => {
+    it('fetches and stores partner data', async () => {
+      const partner = setupAdmin()
+      mockApi.GET.mockResolvedValue({
+        data: { data: { id: 42, name: 'Test Partner', euro_credits: '150.50', is_active: true } },
+        error: undefined,
+      })
+
+      await partner.fetchPartnerInfo(42)
+
+      expect(mockApi.GET).toHaveBeenCalledWith('/partners/{partner}', {
+        params: { path: { partner: 42 } },
+      })
+      expect(partner.currentPartnerData).toEqual({
+        id: 42,
+        name: 'Test Partner',
+        euro_credits: 150.5,
+        is_active: true,
+      })
+      expect(partner.currentPartnerName).toBe('Test Partner')
+    })
+
+    it('does not throw on API error', async () => {
+      const partner = setupAdmin()
+      mockApi.GET.mockRejectedValue(new Error('Network error'))
+
+      await expect(partner.fetchPartnerInfo(42)).resolves.not.toThrow()
+      expect(partner.currentPartnerData).toBeNull()
     })
   })
 

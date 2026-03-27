@@ -26,11 +26,13 @@ class PartnerResource extends JsonResource
             'logo_url' => $this->logo_url,
             'euro_credits' => $this->euro_credits,
             'is_active' => $this->is_active,
+            'adv_id' => $this->adv_id,
             'created_at' => $this->created_at,
             'users_count' => $this->whenCounted('users'),
             'shops_count' => $this->whenCounted('shops'),
             'users' => UserResource::collection($this->whenLoaded('users')),
             'shops' => ShopResource::collection($this->whenLoaded('shops')),
+            'adv' => new UserResource($this->whenLoaded('adv')),
         ];
     }
 }

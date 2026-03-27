@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Database\Seeders\Demo\CampaignDemoSeeder;
+use Database\Seeders\Demo\HubScopeDemoSeeder;
 use Database\Seeders\Demo\InterestDemoSeeder;
 use Database\Seeders\Demo\LandingPageDemoSeeder;
 use Database\Seeders\Demo\PartnerDemoSeeder;
@@ -21,6 +22,7 @@ class DemoSeeder extends Seeder
             PartnerDemoSeeder::class,
             LandingPageDemoSeeder::class,
             CampaignDemoSeeder::class,
+            HubScopeDemoSeeder::class,
         ]);
     }
 }

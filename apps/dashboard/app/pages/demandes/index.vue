@@ -10,6 +10,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const router = useRouter()
+const { scopedRoute } = useScopedNavigation()
 const {
   demandes, pagination, isLoading, hasError, filters, sort,
   fetchDemandes, setPage, setSort, setFilters,
@@ -30,7 +31,7 @@ function applyFilters() {
 }
 
 function onSelect(demande: { id: number }) {
-  router.push(`/demandes/${demande.id}`)
+  router.push(scopedRoute(`/demandes/${demande.id}`))
 }
 
 const { can } = usePermission()
@@ -46,7 +47,7 @@ onMounted(() => fetchDemandes())
       <h1 class="text-2xl font-semibold tracking-tight">
         {{ t('demandes.list.title') }}
       </h1>
-      <NuxtLink v-if="canManage" to="/demandes/new">
+      <NuxtLink v-if="canManage" :to="scopedRoute('/demandes/new')">
         <Button>{{ t('demandes.list.new_button') }}</Button>
       </NuxtLink>
     </div>

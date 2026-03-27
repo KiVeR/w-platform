@@ -50,6 +50,7 @@ definePageMeta({
 
 const route = useRoute()
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 const wizard = useCampaignWizardStore()
 const api = useApi()
 const { can, hasRole } = usePermission()
@@ -167,12 +168,12 @@ async function handleDuplicate(): Promise<void> {
 
   const raw = (data as { data: Record<string, unknown> }).data
   wizard.initFromCampaign(raw)
-  navigateTo('/campaigns/new')
+  navigateTo(scopedRoute('/campaigns/new'))
 }
 
 function handleEdit(): void {
   if (!campaign.value) return
-  navigateTo(`/campaigns/new?draft=${campaign.value.id}`)
+  navigateTo(scopedRoute(`/campaigns/new?draft=${campaign.value.id}`))
 }
 
 async function handleCancel(): Promise<void> {
@@ -230,7 +231,7 @@ onCampaignRefresh(() => {
         <AlertDescription>{{ t('campaigns.detail.loadErrorDescription') }}</AlertDescription>
       </Alert>
       <div class="mt-4">
-        <NuxtLink to="/campaigns">
+        <NuxtLink :to="scopedRoute('/campaigns')">
           <Button variant="outline">
             <ArrowLeft class="mr-2 size-4" />
             {{ t('campaigns.detail.back') }}
@@ -242,7 +243,7 @@ onCampaignRefresh(() => {
     <template v-else-if="campaign">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div class="flex min-w-0 items-center gap-3">
-          <NuxtLink to="/campaigns">
+          <NuxtLink :to="scopedRoute('/campaigns')">
             <Button variant="ghost" size="icon" class="size-8" data-back-button>
               <ArrowLeft class="size-4" />
             </Button>

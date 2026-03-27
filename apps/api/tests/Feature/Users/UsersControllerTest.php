@@ -56,6 +56,74 @@ it('returns 401 when unauthenticated', function (): void {
     $this->getJson('/api/users')->assertUnauthorized();
 });
 
+it('filters users by role', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $partner = Partner::factory()->create();
+    $partnerUser = User::factory()->forPartner($partner)->create();
+    $partnerUser->assignRole('partner');
+    $merchantUser = User::factory()->forPartner($partner)->create();
+    $merchantUser->assignRole('merchant');
+
+    $response = $this->getJson('/api/users?filter[role]=partner');
+
+    $response->assertOk();
+    $emails = collect($response->json('data'))->pluck('email')->all();
+    expect($emails)->toContain($partnerUser->email)
+        ->and($emails)->not->toContain($merchantUser->email);
+});
+
+it('filters users by search (firstname, lastname, email)', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    User::factory()->create(['firstname' => 'Alphonse', 'lastname' => 'Daudet', 'email' => 'alpha@test.com']);
+    User::factory()->create(['firstname' => 'Victor', 'lastname' => 'Hugo', 'email' => 'victor@test.com']);
+    User::factory()->create(['firstname' => 'Emile', 'lastname' => 'Zola', 'email' => 'alphazola@test.com']);
+
+    // Search by firstname
+    $response = $this->getJson('/api/users?filter[search]=Alphonse');
+    $response->assertOk();
+    $names = collect($response->json('data'))->pluck('firstname')->all();
+    expect($names)->toContain('Alphonse')
+        ->and($names)->not->toContain('Victor');
+
+    // Search by email partial
+    $response2 = $this->getJson('/api/users?filter[search]=alpha');
+    $response2->assertOk();
+    $emails = collect($response2->json('data'))->pluck('email')->all();
+    expect($emails)->toContain('alpha@test.com')
+        ->and($emails)->toContain('alphazola@test.com');
+});
+
+it('supports per_page parameter', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    User::factory()->count(5)->create();
+
+    $response = $this->getJson('/api/users?per_page=3');
+
+    $response->assertOk()
+        ->assertJsonCount(3, 'data')
+        ->assertJsonPath('meta.per_page', 3);
+});
+
+it('caps per_page at 100', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $response = $this->getJson('/api/users?per_page=999');
+
+    $response->assertOk()
+        ->assertJsonPath('meta.per_page', 100);
+});
+
 it('filters users by email', function (): void {
     $admin = User::factory()->create();
     $admin->assignRole('admin');

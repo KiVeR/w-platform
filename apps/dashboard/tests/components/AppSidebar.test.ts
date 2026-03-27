@@ -4,7 +4,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { localStorageMock, stubAuthGlobals } from '../helpers/auth-stubs'
 import { NuxtLinkStub, mockUseI18n } from '../helpers/stubs'
-import { fakeAdminUser, fakeAuthResponse } from '../helpers/fixtures'
+import { fakeAdminUser, fakeAdvUser, fakeAuthResponse } from '../helpers/fixtures'
 
 const mockApi = {
   POST: vi.fn(),
@@ -16,7 +16,9 @@ stubAuthGlobals({ $api: mockApi })
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('ref', ref)
 mockUseI18n()
-vi.stubGlobal('useRoute', () => ({ path: '/' }))
+
+let mockRoute = { path: '/hub/dashboard', params: {} as Record<string, string> }
+vi.stubGlobal('useRoute', () => mockRoute)
 vi.stubGlobal('navigateTo', vi.fn())
 
 vi.stubGlobal('ResizeObserver', class {
@@ -40,7 +42,7 @@ const sidebarStubs = {
   Sidebar: slotStub,
   SidebarContent: slotStub,
   SidebarFooter: slotStub,
-  SidebarGroup: slotStub,
+  SidebarGroup: { template: '<div v-bind="$attrs"><slot /></div>', inheritAttrs: false },
   SidebarGroupContent: slotStub,
   SidebarGroupLabel: slotStub,
   SidebarHeader: slotStub,
@@ -66,15 +68,27 @@ describe('AppSidebar', () => {
     vi.clearAllMocks()
     localStorageMock.clear()
     setActivePinia(createPinia())
+    mockRoute = { path: '/hub/dashboard', params: {} }
   })
 
   function mountSidebar() {
     const auth = useAuthStore()
     auth.setAuth(fakeAuthResponse.data)
+    return mount(AppSidebar, { global: { stubs: sidebarStubs } })
+  }
 
-    return mount(AppSidebar, {
-      global: { stubs: sidebarStubs },
-    })
+  function mountAdminHub() {
+    const auth = useAuthStore()
+    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+    mockRoute = { path: '/hub/dashboard', params: {} }
+    return mount(AppSidebar, { global: { stubs: sidebarStubs } })
+  }
+
+  function mountAdminScope() {
+    const auth = useAuthStore()
+    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+    mockRoute = { path: '/partners/42/dashboard', params: { id: '42' } }
+    return mount(AppSidebar, { global: { stubs: sidebarStubs } })
   }
 
   it('displays name and email from auth store', () => {
@@ -103,110 +117,99 @@ describe('AppSidebar', () => {
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
-  it('renders 2 navigation groups for the shipped scope (no ADV, no admin)', () => {
-    const wrapper = mountSidebar()
-    expect(wrapper.text()).toContain('nav.groups.main')
-    expect(wrapper.text()).toContain('nav.groups.config')
-    expect(wrapper.text()).not.toContain('nav.groups.admin')
-    expect(wrapper.text()).not.toContain('nav.groups.adv')
-    expect(wrapper.text()).not.toContain('nav.shops')
-    expect(wrapper.text()).not.toContain('nav.landingPages')
-    expect(wrapper.text()).not.toContain('nav.stats')
-  })
+  describe('Hub mode (admin)', () => {
+    it('shows platform group with hub dashboard and partners', () => {
+      const wrapper = mountAdminHub()
+      expect(wrapper.text()).toContain('nav.groups.platform')
+      expect(wrapper.text()).toContain('nav.hubDashboard')
+      expect(wrapper.text()).toContain('nav.partners')
+    })
 
-  it('renders admin navigation group and links for admins', () => {
-    const auth = useAuthStore()
-    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+    it('shows admin group for admin users', () => {
+      const wrapper = mountAdminHub()
+      expect(wrapper.text()).toContain('nav.groups.admin')
+      expect(wrapper.text()).toContain('nav.routers')
+      expect(wrapper.text()).toContain('nav.variableSchemas')
+      expect(wrapper.text()).toContain('nav.users')
+    })
 
-    const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
-
-    expect(wrapper.text()).toContain('nav.groups.admin')
-    expect(wrapper.text()).toContain('nav.routers')
-    expect(wrapper.text()).toContain('nav.variableSchemas')
-
-    const links = wrapper.findAll('a').map(link => link.attributes('href'))
-    expect(links).toContain('/admin/routers')
-    expect(links).toContain('/admin/variable-schemas')
-  })
-
-  describe('ADV navigation group', () => {
-    const fakeAdvUser = {
-      ...fakeAdminUser,
-      id: 10,
-      firstname: 'Alice',
-      lastname: 'ADV',
-      full_name: 'Alice ADV',
-      email: 'alice@adv.fr',
-      partner_id: null,
-      roles: ['adv' as const],
-      permissions: ['view operations' as const, 'manage operations' as const, 'transition operations' as const],
-    }
-
-    it('shows ADV group for user with view operations permission', () => {
-      const auth = useAuthStore()
-      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdvUser })
-
-      const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
-
-      expect(wrapper.text()).toContain('nav.groups.adv')
+    it('shows operations and billing in hub mode for admin', () => {
+      const wrapper = mountAdminHub()
       expect(wrapper.text()).toContain('nav.operations')
       expect(wrapper.text()).toContain('nav.billing')
     })
 
-    it('hides ADV group for partner without view operations permission', () => {
-      const wrapper = mountSidebar() // fakeUser has no 'view operations'
+    it('does not show back-to-hub button in hub mode', () => {
+      const wrapper = mountAdminHub()
+      expect(wrapper.find('[data-back-to-hub]').exists()).toBe(false)
+    })
+  })
 
-      expect(wrapper.text()).not.toContain('nav.groups.adv')
-      expect(wrapper.text()).not.toContain('nav.operations')
-      expect(wrapper.text()).not.toContain('nav.billing')
+  describe('Scope mode (admin)', () => {
+    it('shows scope navigation with scoped routes', () => {
+      const wrapper = mountAdminScope()
+      expect(wrapper.text()).toContain('nav.groups.main')
+      expect(wrapper.text()).toContain('nav.dashboard')
+      expect(wrapper.text()).toContain('nav.campaigns')
+
+      const links = wrapper.findAll('a').map(a => a.attributes('href'))
+      expect(links).toContain('/partners/42/dashboard')
+      expect(links).toContain('/partners/42/campaigns')
     })
 
-    it('shows ADV group for admin (admin bypass)', () => {
-      const auth = useAuthStore()
-      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
-
-      const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
-
-      expect(wrapper.text()).toContain('nav.groups.adv')
-      expect(wrapper.text()).toContain('nav.operations')
+    it('shows back-to-hub button in scope mode for internal users', () => {
+      const wrapper = mountAdminScope()
+      expect(wrapper.find('[data-back-to-hub]').exists()).toBe(true)
+      expect(wrapper.text()).toContain('nav.backToHub')
     })
 
-    it('always shows main navigation group', () => {
-      const wrapper = mountSidebar()
+    it('does not show admin group in scope mode', () => {
+      const wrapper = mountAdminScope()
+      expect(wrapper.text()).not.toContain('nav.groups.admin')
+    })
+  })
 
+  describe('Partner-bound user (scope always)', () => {
+    it('shows scope navigation for partner role', () => {
+      const wrapper = mountSidebar() // partner role, always scope
       expect(wrapper.text()).toContain('nav.groups.main')
       expect(wrapper.text()).toContain('nav.dashboard')
       expect(wrapper.text()).toContain('nav.campaigns')
     })
+
+    it('does not show back-to-hub for partner-bound user', () => {
+      const wrapper = mountSidebar()
+      expect(wrapper.find('[data-back-to-hub]').exists()).toBe(false)
+    })
+
+    it('does not show admin group for partner user', () => {
+      const wrapper = mountSidebar()
+      expect(wrapper.text()).not.toContain('nav.groups.admin')
+      expect(wrapper.text()).not.toContain('nav.routers')
+    })
   })
 
-  describe('partner badge', () => {
-    function mountAdminSidebar() {
+  describe('ADV user in hub mode', () => {
+    it('shows operations for user with view operations permission', () => {
       const auth = useAuthStore()
-      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
-      return mount(AppSidebar, { global: { stubs: sidebarStubs } })
-    }
-
-    it('shows badge when admin + scoped', () => {
-      const auth = useAuthStore()
-      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
-      const partnerStore = usePartnerStore()
-      partnerStore.setPartner(42, 'Test Partner')
+      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdvUser })
+      mockRoute = { path: '/hub/dashboard', params: {} }
 
       const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
-      const badge = wrapper.find('[data-badge]')
-      expect(badge.exists()).toBe(true)
-      expect(badge.text()).toContain('Test Partner')
+
+      expect(wrapper.text()).toContain('nav.groups.platform')
+      expect(wrapper.text()).toContain('nav.operations')
+      expect(wrapper.text()).toContain('nav.billing')
     })
 
-    it('hides badge when non-admin', () => {
-      const wrapper = mountSidebar()
-      expect(wrapper.find('[data-badge]').exists()).toBe(false)
-    })
+    it('hides admin group for ADV user', () => {
+      const auth = useAuthStore()
+      auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdvUser })
+      mockRoute = { path: '/hub/dashboard', params: {} }
 
-    it('hides badge when admin without selection', () => {
-      const wrapper = mountAdminSidebar()
-      expect(wrapper.find('[data-badge]').exists()).toBe(false)
+      const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
+
+      expect(wrapper.text()).not.toContain('nav.groups.admin')
     })
   })
 })

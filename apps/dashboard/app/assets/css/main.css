@@ -249,6 +249,34 @@ body {
   transform: translateX(20px);
 }
 
+/* ==================== SIDEBAR MODE TRANSITIONS ==================== */
+.sidebar-mode-enter-active,
+.sidebar-mode-leave-active {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.sidebar-mode-enter-from {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+.sidebar-mode-leave-to {
+  opacity: 0;
+  transform: translateX(8px);
+}
+
+/* ==================== SCOPE BANNER TRANSITIONS ==================== */
+.banner-enter-active,
+.banner-leave-active {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.banner-enter-from {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.banner-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
 /* ==================== REDUCED MOTION ==================== */
 @media (prefers-reduced-motion: reduce) {
   .page-enter-active,
@@ -256,7 +284,11 @@ body {
   .slide-forward-enter-active,
   .slide-forward-leave-active,
   .slide-backward-enter-active,
-  .slide-backward-leave-active {
+  .slide-backward-leave-active,
+  .sidebar-mode-enter-active,
+  .sidebar-mode-leave-active,
+  .banner-enter-active,
+  .banner-leave-active {
     transition: none;
   }
 }

@@ -47,30 +47,64 @@ describe('auth store — role priority & defaultRoute', () => {
     expect(auth.defaultRoute).toBe('/campaigns')
   })
 
-  it('defaultRoute is /operations for adv', () => {
+  it('defaultRoute is /hub/dashboard for adv', () => {
     const auth = useAuthStore()
     auth.setAuth({
       access_token: 'tok',
       refresh_token: 'ref',
       user: { ...fakeUser, roles: ['adv'] },
     })
-    expect(auth.defaultRoute).toBe('/operations')
+    expect(auth.defaultRoute).toBe('/hub/dashboard')
   })
 
-  it('defaultRoute is / for admin', () => {
+  it('defaultRoute is /hub/dashboard for admin', () => {
     const auth = useAuthStore()
     auth.setAuth({ access_token: 'tok', refresh_token: 'ref', user: fakeAdminUser })
-    expect(auth.defaultRoute).toBe('/')
+    expect(auth.defaultRoute).toBe('/hub/dashboard')
   })
 
-  it('defaultRoute is / for unknown role', () => {
+  it('defaultRoute is /campaigns for employee (partner-bound)', () => {
     const auth = useAuthStore()
     auth.setAuth({
       access_token: 'tok',
       refresh_token: 'ref',
       user: { ...fakeUser, roles: ['employee'] },
     })
-    expect(auth.defaultRoute).toBe('/')
+    expect(auth.defaultRoute).toBe('/campaigns')
+  })
+
+  it('isPartnerBound is true for partner role', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ access_token: 'tok', refresh_token: 'ref', user: fakeUser })
+    expect(auth.isPartnerBound).toBe(true)
+  })
+
+  it('isPartnerBound is false for admin role', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ access_token: 'tok', refresh_token: 'ref', user: fakeAdminUser })
+    expect(auth.isPartnerBound).toBe(false)
+  })
+
+  it('isPartnerBound is false for adv role', () => {
+    const auth = useAuthStore()
+    auth.setAuth({
+      access_token: 'tok',
+      refresh_token: 'ref',
+      user: { ...fakeUser, roles: ['adv'] },
+    })
+    expect(auth.isPartnerBound).toBe(false)
+  })
+
+  it('hasRole returns true when user has the role', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ access_token: 'tok', refresh_token: 'ref', user: fakeUser })
+    expect(auth.hasRole('partner')).toBe(true)
+  })
+
+  it('hasRole returns false when user lacks the role', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ access_token: 'tok', refresh_token: 'ref', user: fakeUser })
+    expect(auth.hasRole('admin')).toBe(false)
   })
 
   it('hasPermission returns true when user holds the permission', () => {
