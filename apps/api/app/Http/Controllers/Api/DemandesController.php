@@ -23,12 +23,7 @@ class DemandesController extends Controller
 
         $user = $this->currentUser();
 
-        $demandes = QueryBuilder::for(Demande::forUser($user))
-            ->withCount([
-                'operations',
-                'operations as operations_completed_count' => fn ($q) => $q->where('lifecycle_status', 'completed'),
-                'operations as operations_blocked_count' => fn ($q) => $q->where('lifecycle_status', 'on_hold'),
-            ])
+        $demandes = QueryBuilder::for(Demande::forUser($user)->withOperationCounts())
             ->allowedFilters([
                 AllowedFilter::exact('partner_id'),
                 AllowedFilter::partial('ref_demande'),
@@ -64,12 +59,7 @@ class DemandesController extends Controller
     {
         $this->authorize('view', $demande);
 
-        $demande = QueryBuilder::for(Demande::where('id', $demande->id))
-            ->withCount([
-                'operations',
-                'operations as operations_completed_count' => fn ($q) => $q->where('lifecycle_status', 'completed'),
-                'operations as operations_blocked_count' => fn ($q) => $q->where('lifecycle_status', 'on_hold'),
-            ])
+        $demande = QueryBuilder::for(Demande::where('id', $demande->id)->withOperationCounts())
             ->allowedIncludes(['partner', 'commercial', 'sdr', 'operations'])
             ->firstOrFail();
 

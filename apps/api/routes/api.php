@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\AIContentController;
+use App\Http\Controllers\Api\AIContentDesignController;
+use App\Http\Controllers\Api\AIContentVersionController;
 use App\Http\Controllers\Api\AIGenerationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BroadcastingAuthController;
@@ -161,10 +163,10 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
         Route::get('contents/recent', [AIContentController::class, 'recent']);
         Route::apiResource('contents', AIContentController::class)->except(['edit', 'create'])->parameters(['contents' => 'aiContent']);
         Route::post('contents/{aiContent}/favorite', [AIContentController::class, 'favorite']);
-        Route::get('contents/{aiContent}/design', [AIContentController::class, 'design']);
-        Route::put('contents/{aiContent}/design', [AIContentController::class, 'saveDesign']);
-        Route::get('contents/{aiContent}/versions', [AIContentController::class, 'versions']);
-        Route::get('contents/{aiContent}/versions/{version}', [AIContentController::class, 'showVersion']);
-        Route::post('contents/{aiContent}/versions', [AIContentController::class, 'restoreVersion'])->middleware('throttle:restore-version');
+        Route::get('contents/{aiContent}/design', [AIContentDesignController::class, 'show']);
+        Route::put('contents/{aiContent}/design', [AIContentDesignController::class, 'update']);
+        Route::get('contents/{aiContent}/versions', [AIContentVersionController::class, 'index']);
+        Route::get('contents/{aiContent}/versions/{version}', [AIContentVersionController::class, 'show']);
+        Route::post('contents/{aiContent}/versions', [AIContentVersionController::class, 'restore'])->middleware('throttle:restore-version');
     });
 });
