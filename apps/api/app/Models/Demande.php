@@ -98,4 +98,14 @@ class Demande extends Model
 
         $query->where('partner_id', $user->partner_id);
     }
+
+    /** @param Builder<Demande> $query */
+    public function scopeWithOperationCounts(Builder $query): void
+    {
+        $query->withCount([
+            'operations',
+            'operations as operations_completed_count' => fn ($q) => $q->where('lifecycle_status', 'completed'),
+            'operations as operations_blocked_count' => fn ($q) => $q->where('lifecycle_status', 'on_hold'),
+        ]);
+    }
 }

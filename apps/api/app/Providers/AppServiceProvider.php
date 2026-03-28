@@ -14,6 +14,7 @@ use App\Services\Geo\GeoApiService;
 use App\Services\SmsRouting\SmsRoutingManager;
 use App\Services\Targeting\Adapters\WepakTargetingAdapter;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
@@ -42,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Model::shouldBeStrict(! $this->app->isProduction());
+
         EloquentSpatial::setDefaultSrid(Srid::WGS84);
         Campaign::observe(CampaignObserver::class);
 
@@ -55,6 +58,14 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('restore-version', function (Request $request) {
             return Limit::perHour(10)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('webhooks', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip());
+        });
+
+        RateLimiter::for('campaign-actions', function (Request $request) {
+            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
 
         Gate::define('viewApiDocs', function () {

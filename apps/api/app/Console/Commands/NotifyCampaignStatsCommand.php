@@ -21,29 +21,29 @@ class NotifyCampaignStatsCommand extends Command
     {
         $delayHours = (int) config('campaign-sending.notifications.stats_delay_hours', 72);
 
-        $campaigns = Campaign::query()
+        $notified = 0;
+
+        Campaign::query()
             ->where('status', CampaignStatus::SENT)
             ->where('stats_notified', false)
             ->whereNotNull('sent_at')
             ->where('sent_at', '<=', now()->subHours($delayHours))
             ->with('creator')
-            ->get();
+            ->chunkById(100, function ($campaigns) use (&$notified): void {
+                foreach ($campaigns as $campaign) {
+                    if ($campaign->creator) {
+                        $campaign->creator->notify(new CampaignStatsAvailableNotification($campaign));
+                        $notified++;
+                    }
 
-        if ($campaigns->isEmpty()) {
+                    $campaign->update(['stats_notified' => true]);
+                }
+            });
+
+        if ($notified === 0) {
             $this->info('No campaigns pending stats notification.');
 
             return self::SUCCESS;
-        }
-
-        $notified = 0;
-
-        foreach ($campaigns as $campaign) {
-            if ($campaign->creator) {
-                $campaign->creator->notify(new CampaignStatsAvailableNotification($campaign));
-                $notified++;
-            }
-
-            $campaign->update(['stats_notified' => true]);
         }
 
         $this->info("Notified {$notified} campaign(s) stats available.");

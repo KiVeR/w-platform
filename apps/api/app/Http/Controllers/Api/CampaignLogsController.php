@@ -18,7 +18,7 @@ class CampaignLogsController extends Controller
         return CampaignLogResource::collection(
             $campaign->campaignLogs()
                 ->orderByDesc('created_at')
-                ->get()
+                ->paginate(config('api.pagination.large'))
         );
     }
 }

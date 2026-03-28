@@ -27,7 +27,7 @@ class RouterController extends Controller
             ])
             ->allowedSorts(['name', 'external_id', 'created_at'])
             ->withCount(['partners', 'campaigns'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return RouterResource::collection($routers);
     }

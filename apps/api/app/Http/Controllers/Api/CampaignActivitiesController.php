@@ -20,7 +20,7 @@ class CampaignActivitiesController extends Controller
             ->where('model_type', Campaign::class)
             ->where('model_id', $campaign->id)
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate(config('api.pagination.large'));
 
         return LogActivityResource::collection($activities);
     }

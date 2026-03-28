@@ -6,3 +6,5 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
 uses(TestCase::class, LazilyRefreshDatabase::class)->in('Feature', 'Unit');
+
+require_once __DIR__.'/Helpers.php';

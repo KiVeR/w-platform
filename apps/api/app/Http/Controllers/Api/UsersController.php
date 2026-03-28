@@ -21,10 +21,9 @@ class UsersController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
+        $currentUser = $this->currentUser();
 
-        $users = QueryBuilder::for(User::forUser($currentUser))
+        $users = QueryBuilder::for(User::forUser($currentUser)->with(['roles.permissions', 'permissions']))
             ->allowedFilters([
                 AllowedFilter::exact('partner_id'),
                 'email',
@@ -34,7 +33,7 @@ class UsersController extends Controller
             ])
             ->allowedSorts(['firstname', 'email', 'created_at'])
             ->allowedIncludes(['partner'])
-            ->paginate(min($request->integer('per_page', 15), 100));
+            ->paginate(min($request->integer('per_page', config('api.pagination.default')), 100));
 
         return UserResource::collection($users);
     }
@@ -46,6 +45,7 @@ class UsersController extends Controller
         /** @var User $user */
         $user = User::create($request->safe()->except(['role']));
         $user->assignRole($request->validated('role'));
+        $user->load(['roles.permissions', 'permissions']);
 
         return new UserResource($user);
     }
@@ -54,7 +54,7 @@ class UsersController extends Controller
     {
         $this->authorize('view', $user);
 
-        $user = QueryBuilder::for(User::where('id', $user->id))
+        $user = QueryBuilder::for(User::where('id', $user->id)->with(['roles.permissions', 'permissions']))
             ->allowedIncludes(['partner'])
             ->firstOrFail();
 
@@ -71,7 +71,7 @@ class UsersController extends Controller
 
         $user->update($request->safe()->except(['role']));
 
-        return new UserResource($user->fresh());
+        return new UserResource($user->fresh()->load(['roles.permissions', 'permissions']));
     }
 
     public function destroy(User $user): JsonResponse

@@ -11,6 +11,7 @@ use App\Http\Resources\IrisZoneResource;
 use App\Models\IrisZone;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -43,7 +44,11 @@ class IrisZonesController extends Controller
 
     public function geometry(string $code): JsonResponse
     {
-        $zone = IrisZone::where('code', $code)->firstOrFail();
+        $zone = Cache::remember(
+            "geo:iris:{$code}:geometry",
+            config('api.cache.geo.ttl'),
+            fn () => IrisZone::where('code', $code)->firstOrFail()
+        );
 
         return response()->json($zone->geometry?->toArray());
     }

@@ -120,7 +120,7 @@ class HubScopeDemoSeeder extends Seeder
         }
 
         $this->command->info('Hub/Scope demo data created:');
-        $this->command->info("  - 6 internal users (2 ADV, 1 direction, 1 programmer, 1 commercial, 1 graphiste)");
+        $this->command->info('  - 6 internal users (2 ADV, 1 direction, 1 programmer, 1 commercial, 1 graphiste)');
         $this->command->info("  - {$sophiePartners->count()} partners → Sophie (ADV)");
         $this->command->info("  - {$thomasPartners->count()} partners → Thomas (ADV)");
         $this->command->info('  - Transactions + Demandes created');

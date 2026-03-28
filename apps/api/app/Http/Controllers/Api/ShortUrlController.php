@@ -22,6 +22,8 @@ class ShortUrlController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
+        $this->authorize('viewAny', ShortUrl::class);
+
         $request->validate([
             'search' => ['nullable', 'string'],
             'is_enabled' => ['boolean'],
@@ -61,7 +63,7 @@ class ShortUrlController extends Controller
         $noPagination = (bool) $request->get('no_pagination', false);
 
         return ShortUrlResource::collection(
-            $noPagination ? $query->get() : $query->paginate($request->get('perPage', 15))
+            $noPagination ? $query->get() : $query->paginate($request->get('perPage', config('api.pagination.default')))
         );
     }
 
@@ -70,6 +72,8 @@ class ShortUrlController extends Controller
      */
     public function store(StoreShortUrlRequest $request): JsonResource
     {
+        $this->authorize('create', ShortUrl::class);
+
         if ($request->boolean('fake')) {
             return $this->shortUrlService->getFakeShortUrl($request);
         }
@@ -81,6 +85,8 @@ class ShortUrlController extends Controller
 
     public function show(string $shortUrlIdOrSlug, Request $request): JsonResource|\Illuminate\Http\JsonResponse
     {
+        $this->authorize('viewAny', ShortUrl::class);
+
         $request->validate([
             'is_enabled' => ['boolean'],
         ]);
@@ -105,6 +111,8 @@ class ShortUrlController extends Controller
 
     public function update(UpdateShortUrlRequest $request, ShortUrl $shortUrl): JsonResource
     {
+        $this->authorize('update', $shortUrl);
+
         $validatedData = $request->validated();
 
         $fields = ['slug', 'link', 'import_id', 'is_draft', 'is_enabled', 'is_traceable_by_recipient'];
@@ -122,6 +130,8 @@ class ShortUrlController extends Controller
 
     public function destroy(ShortUrl $shortUrl): Response
     {
+        $this->authorize('delete', $shortUrl);
+
         $shortUrl->delete();
 
         return response()->noContent();

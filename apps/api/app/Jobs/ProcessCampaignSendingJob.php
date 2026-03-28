@@ -34,6 +34,8 @@ class ProcessCampaignSendingJob implements ShouldQueue
 
     public function handle(CampaignSenderInterface $sender): void
     {
+        $this->campaign->load(['partner', 'creator']);
+
         Log::info('Processing campaign sending', ['campaign_id' => $this->campaign->id]);
 
         $result = $sender->send($this->campaign);

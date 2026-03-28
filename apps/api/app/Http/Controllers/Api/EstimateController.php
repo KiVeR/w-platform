@@ -8,7 +8,6 @@ use App\Contracts\CampaignSenderInterface;
 use App\DTOs\Targeting\TargetingInput;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EstimateRequest;
-use App\Models\User;
 use App\Services\PricingService;
 use App\Services\Targeting\TargetingResolver;
 use Illuminate\Http\JsonResponse;
@@ -21,8 +20,7 @@ class EstimateController extends Controller
         CampaignSenderInterface $sender,
         PricingService $pricingService,
     ): JsonResponse {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $validated = $request->validated();
 
