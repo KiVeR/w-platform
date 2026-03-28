@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ShortUrlSuffixResource;
+use App\Models\ShortUrl;
 use App\Models\ShortUrlSuffix;
 use App\Models\ShortUrlSuffixRequest;
 use Illuminate\Http\Request;
@@ -17,6 +18,8 @@ class ShortUrlSuffixRequestController extends Controller
 {
     public function store(Request $request): JsonResource
     {
+        $this->authorize('create', ShortUrl::class);
+
         $data = $request->validate([
             'quantity' => ['required', 'integer'],
             'short_url_id' => [
@@ -32,6 +35,8 @@ class ShortUrlSuffixRequestController extends Controller
 
     public function destroy(Request $request): Response
     {
+        $this->authorize('delete', ShortUrl::class);
+
         $data = $request->validate([
             'batch_uuid' => ['required', 'uuid'],
         ]);
