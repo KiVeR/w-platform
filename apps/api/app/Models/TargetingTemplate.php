@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property array<string, mixed> $targeting_json
+ * @property string|null $targeting_hash
  * @property bool $is_preset
  * @property \Illuminate\Support\Carbon|null $last_used_at
  * @property int|null $partner_id
@@ -33,6 +34,7 @@ class TargetingTemplate extends Model
         'partner_id',
         'name',
         'targeting_json',
+        'targeting_hash',
         'usage_count',
         'last_used_at',
         'is_preset',
