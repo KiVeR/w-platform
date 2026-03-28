@@ -9,7 +9,6 @@ use App\Http\Requests\TargetingTemplate\StoreRequest;
 use App\Http\Requests\TargetingTemplate\UpdateRequest;
 use App\Http\Resources\TargetingTemplateResource;
 use App\Models\TargetingTemplate;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -21,8 +20,7 @@ class TargetingTemplatesController extends Controller
     {
         $this->authorize('viewAny', TargetingTemplate::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $query = QueryBuilder::for(TargetingTemplate::class)
             ->allowedFilters([
@@ -45,8 +43,7 @@ class TargetingTemplatesController extends Controller
 
     public function store(StoreRequest $request): TargetingTemplateResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', TargetingTemplate::class);
 

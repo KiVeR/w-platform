@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
 use App\Models\Transaction;
-use App\Models\User;
 use App\Services\BalanceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,8 +18,7 @@ class TransactionsController extends Controller
 {
     public function index(Partner $partner): AnonymousResourceCollection
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         if (! $user->hasRole('admin') && $user->partner_id !== $partner->id) {
             abort(403);
@@ -39,8 +37,7 @@ class TransactionsController extends Controller
 
     public function balance(Partner $partner, BalanceService $balanceService): JsonResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         if (! $user->hasRole('admin') && $user->partner_id !== $partner->id) {
             abort(403);

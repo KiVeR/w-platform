@@ -8,7 +8,6 @@ use App\Enums\PartnerFeatureKey;
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
 use App\Models\PartnerFeature;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,8 +16,7 @@ class PartnerFeaturesController extends Controller
 {
     public function index(Partner $partner): JsonResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         if (! $user->hasRole('admin') && $user->partner_id !== $partner->id) {
             abort(403);
@@ -41,8 +39,7 @@ class PartnerFeaturesController extends Controller
 
     public function update(Request $request, Partner $partner, string $feature): JsonResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         if (! $user->hasRole('admin')) {
             abort(403);

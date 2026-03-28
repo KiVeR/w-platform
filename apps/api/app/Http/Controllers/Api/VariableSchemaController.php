@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\VariableSchema\StoreVariableSchemaRequest;
 use App\Http\Requests\VariableSchema\UpdateVariableSchemaRequest;
 use App\Http\Resources\VariableSchemaResource;
-use App\Models\User;
 use App\Models\VariableField;
 use App\Models\VariableSchema;
 use Illuminate\Http\JsonResponse;
@@ -23,8 +22,7 @@ class VariableSchemaController extends Controller
     {
         $this->authorize('viewAny', VariableSchema::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $schemas = QueryBuilder::for(VariableSchema::forUser($user))
             ->allowedFilters([AllowedFilter::exact('partner_id')])
@@ -37,8 +35,7 @@ class VariableSchemaController extends Controller
 
     public function store(StoreVariableSchemaRequest $request): VariableSchemaResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', VariableSchema::class);
 
@@ -110,8 +107,7 @@ class VariableSchemaController extends Controller
     {
         $this->authorize('view', $variableSchema);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', VariableSchema::class);
 

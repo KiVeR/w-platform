@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Models\Invoice;
-use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -16,8 +15,7 @@ class InvoicesController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $invoices = QueryBuilder::for(Invoice::forUser($user))
             ->allowedFilters([
@@ -33,8 +31,7 @@ class InvoicesController extends Controller
 
     public function show(Invoice $invoice): InvoiceResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         if (! $user->hasRole('admin') && $user->partner_id !== $invoice->partner_id) {
             abort(403);

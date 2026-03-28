@@ -9,7 +9,6 @@ use App\Http\Requests\Shop\StoreShopRequest;
 use App\Http\Requests\Shop\UpdateShopRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Shop;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -21,8 +20,7 @@ class ShopsController extends Controller
     {
         $this->authorize('viewAny', Shop::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $shops = QueryBuilder::for(Shop::forUser($user))
             ->allowedFilters([AllowedFilter::exact('partner_id'), 'city', AllowedFilter::exact('is_active')])
@@ -35,8 +33,7 @@ class ShopsController extends Controller
 
     public function store(StoreShopRequest $request): ShopResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $data = $request->validated();
 

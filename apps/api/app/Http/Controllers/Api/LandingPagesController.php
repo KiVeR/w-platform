@@ -12,7 +12,6 @@ use App\Http\Requests\LandingPage\UpdateLandingPageRequest;
 use App\Http\Resources\LandingPageResource;
 use App\Http\Resources\VariableSchemaResource;
 use App\Models\LandingPage;
-use App\Models\User;
 use App\Models\VariableSchema;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -25,8 +24,7 @@ class LandingPagesController extends Controller
     {
         $this->authorize('viewAny', LandingPage::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $landingPages = QueryBuilder::for(LandingPage::forUser($user))
             ->allowedFilters([AllowedFilter::exact('partner_id'), AllowedFilter::exact('status'), AllowedFilter::exact('is_active')])
@@ -39,8 +37,7 @@ class LandingPagesController extends Controller
 
     public function store(StoreLandingPageRequest $request): LandingPageResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', LandingPage::class);
 

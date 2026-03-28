@@ -7,15 +7,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InterestGroupResource;
 use App\Models\InterestGroup;
-use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class InterestGroupsController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $query = InterestGroup::query()
             ->whereNull('parent_id')

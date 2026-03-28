@@ -11,7 +11,6 @@ use App\Http\Requests\AIContent\UpdateAIContentRequest;
 use App\Http\Resources\AIContentResource;
 use App\Models\AIContent;
 use App\Models\AIContentVersion;
-use App\Models\User;
 use App\Services\AI\ContentVersionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,8 +26,7 @@ class AIContentController extends Controller
     {
         $this->authorize('viewAny', AIContent::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $contents = QueryBuilder::for(AIContent::forUser($user))
             ->allowedFilters([
@@ -49,8 +47,7 @@ class AIContentController extends Controller
     {
         $this->authorize('viewAny', AIContent::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $baseQuery = AIContent::forUser($user);
 
@@ -76,8 +73,7 @@ class AIContentController extends Controller
 
     public function store(StoreAIContentRequest $request): AIContentResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', AIContent::class);
 

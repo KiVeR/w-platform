@@ -9,7 +9,6 @@ use App\Http\Requests\StoreDemandeRequest;
 use App\Http\Requests\UpdateDemandeRequest;
 use App\Http\Resources\DemandeResource;
 use App\Models\Demande;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -22,8 +21,7 @@ class DemandesController extends Controller
     {
         $this->authorize('viewAny', Demande::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $demandes = QueryBuilder::for(Demande::forUser($user))
             ->withCount([
@@ -61,8 +59,7 @@ class DemandesController extends Controller
     {
         $this->authorize('create', Demande::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $data = $request->validated();
 

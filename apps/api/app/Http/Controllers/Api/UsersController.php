@@ -21,8 +21,7 @@ class UsersController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
+        $currentUser = $this->currentUser();
 
         $users = QueryBuilder::for(User::forUser($currentUser)->with(['roles.permissions', 'permissions']))
             ->allowedFilters([

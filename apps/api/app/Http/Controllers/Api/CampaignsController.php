@@ -18,7 +18,6 @@ use App\Http\Resources\CampaignResource;
 use App\Http\Resources\CampaignStatsResource;
 use App\Models\Campaign;
 use App\Models\TargetingTemplate;
-use App\Models\User;
 use App\Services\CampaignExportService;
 use App\Services\CampaignSending\StopSmsService;
 use App\Services\CreditService;
@@ -41,8 +40,7 @@ class CampaignsController extends Controller
     {
         $this->authorize('viewAny', Campaign::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $campaigns = QueryBuilder::for(Campaign::forUser($user))
             ->allowedFilters([
@@ -86,8 +84,7 @@ class CampaignsController extends Controller
 
     public function store(StoreCampaignRequest $request): CampaignResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', Campaign::class);
 
