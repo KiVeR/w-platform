@@ -12,7 +12,13 @@ class StoreImportableLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'extensions:csv,txt,xls,xlsx'],
+            'file' => [
+                'required',
+                'file',
+                'extensions:csv,txt,xls,xlsx',
+                'mimes:csv,txt,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'max:10240',
+            ],
         ];
     }
 }
