@@ -142,6 +142,52 @@ services:
     ports:
       - "${PORT_PREFIX:-80}25:8025"
 
+  bref-web:
+    image: bref/php-84-dev:3
+    environment:
+      <<: *api-env
+      BREF_RUNTIME: fpm
+      HANDLER: public/index.php
+      DOCUMENT_ROOT: public
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sqs
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      AWS_DEFAULT_REGION: eu-west-3
+      SQS_PREFIX: http://elasticmq:9324/000000000000
+      SQS_QUEUE: default
+      CAMPAIGN_SENDING_DRIVER: stub
+      CAMPAIGN_STATS_DRIVER: stub
+    volumes: *api-volumes
+    ports:
+      - "${PORT_PREFIX:-80}08:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticmq:
+        condition: service_started
+    profiles:
+      - bref
+
+  elasticmq:
+    image: softwaremill/elasticmq-native:latest
+    volumes:
+      - ./docker/elasticmq/elasticmq.conf:/opt/elasticmq.conf
+    ports:
+      - "${PORT_PREFIX:-80}24:9324"
+    profiles:
+      - bref
+
+  dashboard-preview:
+    image: nginx:alpine
+    volumes:
+      - ./apps/dashboard/.output/public:/usr/share/nginx/html:ro
+      - ./docker/nginx/spa.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${PORT_PREFIX:-80}02:80"
+    profiles:
+      - bref
+
   dashboard:
     build:
       context: .
