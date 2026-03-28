@@ -49,7 +49,7 @@ Route::middleware(['client'])->prefix('internal')->group(function (): void {
 });
 
 // SMS provider webhooks — public, no auth
-Route::prefix('webhooks')->group(function (): void {
+Route::prefix('webhooks')->middleware('throttle:webhooks')->group(function (): void {
     Route::post('sinch', [SmsWebhookController::class, 'sinch']);
     Route::post('infobip', [SmsWebhookController::class, 'infobip']);
     Route::post('highconnexion', [SmsWebhookController::class, 'highconnexion']);
