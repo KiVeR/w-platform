@@ -25,8 +25,10 @@ class GeoController extends Controller
 
     public function departments(Request $request): AnonymousResourceCollection
     {
+        $ttl = config('api.cache.geo.ttl');
+
         if ($request->query('include') !== 'geometry') {
-            $departments = Cache::remember('geo:departments:list', 86400, fn () => Department::orderBy('code')->get());
+            $departments = Cache::remember('geo:departments:index', $ttl, fn () => Department::orderBy('code')->get());
 
             return DepartmentResource::collection($departments);
         }
@@ -41,20 +43,34 @@ class GeoController extends Controller
 
     public function showDepartment(string $code): DepartmentResource
     {
-        return new DepartmentResource(Department::where('code', $code)->firstOrFail());
+        $ttl = config('api.cache.geo.ttl');
+        $department = Cache::remember(
+            "geo:departments:{$code}",
+            $ttl,
+            fn () => Department::where('code', $code)->firstOrFail()
+        );
+
+        return new DepartmentResource($department);
     }
 
     public function departmentGeometry(string $code): JsonResponse
     {
-        $department = Department::where('code', $code)->firstOrFail();
+        $ttl = config('api.cache.geo.ttl');
+        $department = Cache::remember(
+            "geo:departments:{$code}:geometry",
+            $ttl,
+            fn () => Department::where('code', $code)->firstOrFail()
+        );
 
         return response()->json($department->geometry?->toArray());
     }
 
     public function regions(Request $request): AnonymousResourceCollection
     {
+        $ttl = config('api.cache.geo.ttl');
+
         if ($request->query('include') !== 'geometry') {
-            $regions = Cache::remember('geo:regions:list', 86400, fn () => Region::orderBy('code')->get());
+            $regions = Cache::remember('geo:regions:index', $ttl, fn () => Region::orderBy('code')->get());
 
             return RegionResource::collection($regions);
         }
@@ -69,12 +85,24 @@ class GeoController extends Controller
 
     public function showRegion(string $code): RegionResource
     {
-        return new RegionResource(Region::where('code', $code)->firstOrFail());
+        $ttl = config('api.cache.geo.ttl');
+        $region = Cache::remember(
+            "geo:regions:{$code}",
+            $ttl,
+            fn () => Region::where('code', $code)->firstOrFail()
+        );
+
+        return new RegionResource($region);
     }
 
     public function regionGeometry(string $code): JsonResponse
     {
-        $region = Region::where('code', $code)->firstOrFail();
+        $ttl = config('api.cache.geo.ttl');
+        $region = Cache::remember(
+            "geo:regions:{$code}:geometry",
+            $ttl,
+            fn () => Region::where('code', $code)->firstOrFail()
+        );
 
         return response()->json($region->geometry?->toArray());
     }
@@ -86,12 +114,24 @@ class GeoController extends Controller
             'nom' => $request->input('filter.nom'),
         ]);
 
-        return CommuneResource::collection($this->geoApi->searchCommunes($filters));
+        $ttl = config('api.cache.geo.ttl');
+        $communes = Cache::remember(
+            'geo:communes:' . md5($request->fullUrl()),
+            $ttl,
+            fn () => $this->geoApi->searchCommunes($filters)
+        );
+
+        return CommuneResource::collection($communes);
     }
 
     public function showCommune(string $code): CommuneResource
     {
-        $commune = $this->geoApi->getCommune($code);
+        $ttl = config('api.cache.geo.ttl');
+        $commune = Cache::remember(
+            "geo:communes:{$code}",
+            $ttl,
+            fn () => $this->geoApi->getCommune($code)
+        );
 
         if ($commune === null) {
             abort(404, 'Commune not found.');

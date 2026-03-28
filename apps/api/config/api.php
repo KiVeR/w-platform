@@ -7,4 +7,9 @@ return [
         'default' => 15,
         'large' => 50,
     ],
+    'cache' => [
+        'geo' => [
+            'ttl' => 86400, // 24h
+        ],
+    ],
 ];
