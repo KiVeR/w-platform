@@ -33,7 +33,7 @@ class UsersController extends Controller
             ])
             ->allowedSorts(['firstname', 'email', 'created_at'])
             ->allowedIncludes(['partner'])
-            ->paginate(min($request->integer('per_page', 15), 100));
+            ->paginate(min($request->integer('per_page', config('api.pagination.default')), 100));
 
         return UserResource::collection($users);
     }

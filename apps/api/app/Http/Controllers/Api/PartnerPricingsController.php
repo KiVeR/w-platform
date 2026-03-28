@@ -28,7 +28,7 @@ class PartnerPricingsController extends Controller
             ])
             ->allowedSorts(['name', 'volume_min', 'created_at'])
             ->allowedIncludes(['partner'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return PartnerPricingResource::collection($pricings);
     }

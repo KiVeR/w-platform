@@ -44,7 +44,7 @@ class OperationsController extends Controller
             ])
             ->allowedSorts(['name', 'created_at', 'scheduled_at', 'lifecycle_status', 'type'])
             ->allowedIncludes(['demande', 'campaign', 'assignedUser', 'parentOperation'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return OperationResource::collection($operations);
     }
@@ -133,7 +133,7 @@ class OperationsController extends Controller
         $transitions = $operation->transitions()
             ->with('user')
             ->orderByDesc('created_at')
-            ->paginate(50);
+            ->paginate(config('api.pagination.large'));
 
         return OperationTransitionResource::collection($transitions);
     }

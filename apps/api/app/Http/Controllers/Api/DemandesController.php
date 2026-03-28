@@ -38,7 +38,7 @@ class DemandesController extends Controller
             ])
             ->allowedSorts(['created_at', 'ref_demande'])
             ->allowedIncludes(['partner', 'commercial', 'sdr', 'operations'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return DemandeResource::collection($demandes);
     }

@@ -30,7 +30,7 @@ class TransactionsController extends Controller
             ])
             ->allowedSorts(['created_at', 'amount'])
             ->defaultSort('-created_at')
-            ->paginate(25);
+            ->paginate(config('api.pagination.default'));
 
         return JsonResource::collection($transactions);
     }

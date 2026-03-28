@@ -30,7 +30,7 @@ class PartnersController extends Controller
             ->allowedSorts(['name', 'created_at'])
             ->allowedIncludes(['users', 'shops', 'adv'])
             ->withCount(['users', 'shops'])
-            ->paginate(min($request->integer('per_page', 15), 100));
+            ->paginate(min($request->integer('per_page', config('api.pagination.default')), 100));
 
         return PartnerResource::collection($partners);
     }

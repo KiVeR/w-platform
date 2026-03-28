@@ -26,7 +26,7 @@ class ShopsController extends Controller
             ->allowedFilters([AllowedFilter::exact('partner_id'), 'city', AllowedFilter::exact('is_active')])
             ->allowedSorts(['name', 'city', 'created_at'])
             ->allowedIncludes(['partner'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return ShopResource::collection($shops);
     }

@@ -30,7 +30,7 @@ class LandingPagesController extends Controller
             ->allowedFilters([AllowedFilter::exact('partner_id'), AllowedFilter::exact('status'), AllowedFilter::exact('is_active')])
             ->allowedSorts(['name', 'status', 'created_at'])
             ->allowedIncludes(['partner', 'creator'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return LandingPageResource::collection($landingPages);
     }

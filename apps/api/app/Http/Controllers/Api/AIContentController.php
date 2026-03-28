@@ -38,7 +38,7 @@ class AIContentController extends Controller
             ])
             ->allowedSorts(['title', 'type', 'status', 'created_at', 'updated_at'])
             ->allowedIncludes(['partner', 'creator'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return AIContentResource::collection($contents);
     }
@@ -174,7 +174,7 @@ class AIContentController extends Controller
 
         $versions = AIContentVersion::where('ai_content_id', $aiContent->id)
             ->orderByDesc('id')
-            ->paginate(20);
+            ->paginate(config('api.pagination.default'));
 
         $items = $versions->getCollection()->map(fn (AIContentVersion $v) => [
             'id' => $v->id,

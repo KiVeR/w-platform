@@ -40,7 +40,7 @@ class CampaignRecipientsController extends Controller
             ])
             ->allowedSorts(['delivered_at', 'phone_number', 'short_url_click', 'status'])
             ->defaultSort('-id')
-            ->paginate((int) $request->query('per_page', 15))
+            ->paginate((int) $request->query('per_page', config('api.pagination.default')))
             ->appends($request->query());
 
         return CampaignRecipientResource::collection($recipients);

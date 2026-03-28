@@ -38,7 +38,7 @@ class TargetingTemplatesController extends Controller
             });
         }
 
-        return TargetingTemplateResource::collection($query->paginate(15));
+        return TargetingTemplateResource::collection($query->paginate(config('api.pagination.default')));
     }
 
     public function store(StoreRequest $request): TargetingTemplateResource

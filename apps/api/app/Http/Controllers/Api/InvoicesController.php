@@ -24,7 +24,7 @@ class InvoicesController extends Controller
             ])
             ->allowedSorts(['invoice_date', 'total_ttc', 'status', 'created_at'])
             ->allowedIncludes(['partner', 'lines'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return InvoiceResource::collection($invoices);
     }

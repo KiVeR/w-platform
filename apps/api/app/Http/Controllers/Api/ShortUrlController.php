@@ -63,7 +63,7 @@ class ShortUrlController extends Controller
         $noPagination = (bool) $request->get('no_pagination', false);
 
         return ShortUrlResource::collection(
-            $noPagination ? $query->get() : $query->paginate($request->get('perPage', 15))
+            $noPagination ? $query->get() : $query->paginate($request->get('perPage', config('api.pagination.default')))
         );
     }
 

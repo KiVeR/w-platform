@@ -28,7 +28,7 @@ class VariableSchemaController extends Controller
             ->allowedFilters([AllowedFilter::exact('partner_id')])
             ->allowedSorts(['name', 'created_at'])
             ->allowedIncludes(['partner', 'variableFields'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return VariableSchemaResource::collection($schemas);
     }

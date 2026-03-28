@@ -66,7 +66,7 @@ class CampaignsController extends Controller
             ])
             ->allowedSorts(['name', 'scheduled_at', 'sent_at', 'created_at'])
             ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return CampaignResource::collection($campaigns);
     }
