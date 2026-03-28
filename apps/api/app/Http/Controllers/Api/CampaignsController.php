@@ -10,6 +10,7 @@ use App\DTOs\Targeting\TargetingInput;
 use App\Enums\CampaignStatus;
 use App\Exceptions\InsufficientCreditsException;
 use App\Http\Controllers\Controller;
+use App\Http\Filters\DateRangeFilter;
 use App\Http\Requests\Campaign\IndexCampaignRequest;
 use App\Http\Requests\Campaign\ScheduleCampaignRequest;
 use App\Http\Requests\Campaign\StoreCampaignRequest;
@@ -60,20 +61,8 @@ class CampaignsController extends Controller
 
                     $query->whereIn('status', $statuses);
                 }),
-                AllowedFilter::callback('created_at_from', function (Builder $query, mixed $value): void {
-                    if (! is_string($value) || $value === '') {
-                        return;
-                    }
-
-                    $query->whereDate('created_at', '>=', $value);
-                }),
-                AllowedFilter::callback('created_at_to', function (Builder $query, mixed $value): void {
-                    if (! is_string($value) || $value === '') {
-                        return;
-                    }
-
-                    $query->whereDate('created_at', '<=', $value);
-                }),
+                AllowedFilter::custom('created_at_from', DateRangeFilter::from('created_at')),
+                AllowedFilter::custom('created_at_to', DateRangeFilter::to('created_at')),
             ])
             ->allowedSorts(['name', 'scheduled_at', 'sent_at', 'created_at'])
             ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])

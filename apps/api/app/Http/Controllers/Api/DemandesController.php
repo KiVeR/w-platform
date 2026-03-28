@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Filters\DateRangeFilter;
 use App\Http\Requests\StoreDemandeRequest;
 use App\Http\Requests\UpdateDemandeRequest;
 use App\Http\Resources\DemandeResource;
 use App\Models\Demande;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -33,20 +33,8 @@ class DemandesController extends Controller
                 AllowedFilter::exact('partner_id'),
                 AllowedFilter::partial('ref_demande'),
                 AllowedFilter::exact('is_exoneration'),
-                AllowedFilter::callback('created_at_from', function (Builder $query, mixed $value): void {
-                    if (! is_string($value) || $value === '') {
-                        return;
-                    }
-
-                    $query->whereDate('created_at', '>=', $value);
-                }),
-                AllowedFilter::callback('created_at_to', function (Builder $query, mixed $value): void {
-                    if (! is_string($value) || $value === '') {
-                        return;
-                    }
-
-                    $query->whereDate('created_at', '<=', $value);
-                }),
+                AllowedFilter::custom('created_at_from', DateRangeFilter::from('created_at')),
+                AllowedFilter::custom('created_at_to', DateRangeFilter::to('created_at')),
             ])
             ->allowedSorts(['created_at', 'ref_demande'])
             ->allowedIncludes(['partner', 'commercial', 'sdr', 'operations'])
