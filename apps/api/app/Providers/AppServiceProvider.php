@@ -64,6 +64,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(120)->by($request->ip());
         });
 
+        RateLimiter::for('campaign-actions', function (Request $request) {
+            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
+        });
+
         Gate::define('viewApiDocs', function () {
             return app()->environment('local');
         });

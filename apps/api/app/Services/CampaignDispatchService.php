@@ -72,7 +72,7 @@ final class CampaignDispatchService
         try {
             $estimate = $this->pricingService->calculate($partnerId, $volume, $useCi);
         } catch (\RuntimeException $e) {
-            return new JsonResponse(['error' => $e->getMessage()], 422);
+            return new JsonResponse(['message' => $e->getMessage()], 422);
         }
 
         $campaign->update([

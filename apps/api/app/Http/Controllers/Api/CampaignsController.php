@@ -185,7 +185,7 @@ class CampaignsController extends Controller
                 'error_message' => $result->error,
             ]);
 
-            return new JsonResponse(['error' => $result->error], 502);
+            return new JsonResponse(['message' => $result->error ?? 'Campaign sending failed.'], 502);
         }
 
         $campaign->update([

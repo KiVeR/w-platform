@@ -29,7 +29,7 @@ class SmsWebhookController extends Controller
     private function storeReport(string $provider, Request $request): JsonResponse
     {
         if (strlen($request->getContent()) > 102400) {
-            return response()->json(['error' => 'Payload too large'], 413);
+            return response()->json(['message' => 'Payload too large.'], 413);
         }
 
         /** @var list<array<string, mixed>>|array<string, mixed> $payload */

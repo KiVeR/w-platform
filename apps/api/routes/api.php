@@ -84,9 +84,12 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('estimate', EstimateController::class);
     Route::post('campaigns', [CampaignsController::class, 'store'])->middleware('deprecate:2026-09-01');
     Route::apiResource('campaigns', CampaignsController::class)->except(['store']);
-    Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
-    Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
-    Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
+    Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel'])
+        ->middleware('throttle:campaign-actions');
     Route::get('campaigns/{campaign}/stats', [CampaignsController::class, 'stats']);
     Route::get('campaigns/{campaign}/export', [CampaignsController::class, 'export']);
     Route::get('campaigns/{campaign}/activities', [CampaignActivitiesController::class, 'index']);
