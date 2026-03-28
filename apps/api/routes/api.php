@@ -114,13 +114,9 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'attachVariableSchema']);
     Route::delete('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'detachVariableSchema']);
 
-    Route::post('variable-schemas/discover', [VariableSchemaController::class, 'discover']);
-    Route::post('variable-schemas/preview', [VariableSchemaController::class, 'preview']);
     Route::apiResource('variable-schemas', VariableSchemaController::class)
         ->parameters(['variable-schemas' => 'variableSchema']);
     Route::post('variable-schemas/{variableSchema}/clone', [VariableSchemaController::class, 'clone']);
-    Route::post('variable-schemas/{variableSchema}/mark-used', [VariableSchemaController::class, 'markUsed']);
-    Route::post('variable-schemas/{variableSchema}/mark-unused', [VariableSchemaController::class, 'markUnused']);
 
     Route::apiResource('short-urls', ShortUrlController::class);
     Route::post('short-urls/list', [ShortUrlController::class, 'index']);

@@ -116,7 +116,7 @@ class GeoController extends Controller
 
         $ttl = config('api.cache.geo.ttl');
         $communes = Cache::remember(
-            'geo:communes:' . md5($request->fullUrl()),
+            'geo:communes:'.md5($request->fullUrl()),
             $ttl,
             fn () => $this->geoApi->searchCommunes($filters)
         );

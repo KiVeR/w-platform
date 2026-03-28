@@ -29,7 +29,7 @@ class ShortUrlPolicy
         return $user->hasPermissionTo('manage short-urls', 'api');
     }
 
-    public function delete(User $user, ShortUrl|null $shortUrl = null): bool
+    public function delete(User $user, ?ShortUrl $shortUrl = null): bool
     {
         return $user->hasPermissionTo('manage short-urls', 'api');
     }

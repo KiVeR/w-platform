@@ -19,7 +19,7 @@ it('creates a targeting template when method is send', function (): void {
         'is_demo' => false,
     ]);
 
-    $listener = new AutoSaveTargetingTemplate(new TargetingTemplateService());
+    $listener = new AutoSaveTargetingTemplate(new TargetingTemplateService);
     $event = new CampaignDispatched($campaign, 'send');
 
     $listener->handle($event);
@@ -45,7 +45,7 @@ it('increments usage_count when identical targeting already exists and method is
         'is_demo' => false,
     ]);
 
-    $listener = new AutoSaveTargetingTemplate(new TargetingTemplateService());
+    $listener = new AutoSaveTargetingTemplate(new TargetingTemplateService);
     $event = new CampaignDispatched($campaign, 'send');
 
     $listener->handle($event);
@@ -64,7 +64,7 @@ it('does nothing when method is schedule', function (): void {
         'is_demo' => false,
     ]);
 
-    $listener = new AutoSaveTargetingTemplate(new TargetingTemplateService());
+    $listener = new AutoSaveTargetingTemplate(new TargetingTemplateService);
     $event = new CampaignDispatched($campaign, 'schedule');
 
     $listener->handle($event);

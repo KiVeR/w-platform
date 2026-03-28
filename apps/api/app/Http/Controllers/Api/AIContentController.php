@@ -129,5 +129,4 @@ class AIContentController extends Controller
             ],
         ]);
     }
-
 }

@@ -12,7 +12,7 @@ final class TargetingTemplateService
     /**
      * Compute a deterministic hash for a targeting array.
      *
-     * @param array<string, mixed> $targeting
+     * @param  array<string, mixed>  $targeting
      */
     public static function computeHash(array $targeting): string
     {
@@ -64,7 +64,7 @@ final class TargetingTemplateService
     /**
      * Generate a human-readable name from a targeting array.
      *
-     * @param array<string, mixed> $targeting
+     * @param  array<string, mixed>  $targeting
      */
     public function generateName(array $targeting): string
     {
