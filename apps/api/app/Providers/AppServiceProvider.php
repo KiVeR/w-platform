@@ -14,6 +14,7 @@ use App\Services\Geo\GeoApiService;
 use App\Services\SmsRouting\SmsRoutingManager;
 use App\Services\Targeting\Adapters\WepakTargetingAdapter;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
@@ -42,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Model::shouldBeStrict(! $this->app->isProduction());
+
         EloquentSpatial::setDefaultSrid(Srid::WGS84);
         Campaign::observe(CampaignObserver::class);
 

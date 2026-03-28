@@ -21,7 +21,7 @@ class CampaignRecipientsController extends Controller
         $this->authorize('view', $campaign);
 
         $recipients = QueryBuilder::for(
-            CampaignRecipient::query()->whereBelongsTo($campaign)
+            CampaignRecipient::query()->with('campaign.variableSchema')->whereBelongsTo($campaign)
         )
             ->allowedFilters([
                 AllowedFilter::callback('status', function (Builder $query, mixed $value): void {

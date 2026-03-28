@@ -145,6 +145,7 @@ class AuthController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $user->load(['roles.permissions', 'permissions']);
 
         return new UserResource($user);
     }
@@ -167,6 +168,7 @@ class AuthController extends Controller
 
     private function issueTokens(User $user): AuthResource
     {
+        $user->load(['roles.permissions', 'permissions']);
         $tokenResult = $user->createToken('auth-token');
 
         /** @var Token $token */
