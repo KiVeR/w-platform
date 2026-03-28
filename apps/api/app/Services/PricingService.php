@@ -7,28 +7,25 @@ namespace App\Services;
 use App\DTOs\CostEstimate;
 use App\DTOs\NextTierInfo;
 use App\Models\PartnerPricing;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class PricingService
 {
+    private const CACHE_TTL = 300; // 5 minutes
+
     public function calculate(int $partnerId, int $volume, bool $useCi = false): CostEstimate
     {
-        $pricing = PartnerPricing::query()
-            ->where('partner_id', $partnerId)
-            ->where('is_active', true)
+        $tiers = $this->getActiveTiers($partnerId);
+
+        $pricing = $tiers
             ->where('volume_min', '<=', $volume)
-            ->where(function ($query) use ($volume): void {
-                $query->where('volume_max', '>=', $volume)
-                    ->orWhereNull('volume_max');
-            })
-            ->orderByDesc('volume_min')
+            ->filter(fn (PartnerPricing $p) => $p->volume_max === null || $p->volume_max >= $volume)
+            ->sortByDesc('volume_min')
             ->first();
 
         if (! $pricing) {
-            $pricing = PartnerPricing::query()
-                ->where('partner_id', $partnerId)
-                ->where('is_active', true)
-                ->where('is_default', true)
-                ->first();
+            $pricing = $tiers->where('is_default', true)->first();
         }
 
         if (! $pricing) {
@@ -47,11 +44,11 @@ class PricingService
 
     public function findNextTier(int $partnerId, int $currentVolume, bool $useCi = false): ?NextTierInfo
     {
-        $nextPricing = PartnerPricing::query()
-            ->where('partner_id', $partnerId)
-            ->where('is_active', true)
+        $tiers = $this->getActiveTiers($partnerId);
+
+        $nextPricing = $tiers
             ->where('volume_min', '>', $currentVolume)
-            ->orderBy('volume_min')
+            ->sortBy('volume_min')
             ->first();
 
         if (! $nextPricing) {
@@ -71,6 +68,25 @@ class PricingService
             volumeThreshold: $nextPricing->volume_min,
             unitPrice: round($nextUnitPrice, 4),
             savingsPercent: round($savingsPercent, 1),
+        );
+    }
+
+    public function invalidateCache(int $partnerId): void
+    {
+        Cache::forget("pricing:partner:{$partnerId}");
+    }
+
+    /** @return Collection<int, PartnerPricing> */
+    private function getActiveTiers(int $partnerId): Collection
+    {
+        return Cache::remember(
+            "pricing:partner:{$partnerId}",
+            self::CACHE_TTL,
+            fn (): Collection => PartnerPricing::query()
+                ->where('partner_id', $partnerId)
+                ->where('is_active', true)
+                ->orderByDesc('volume_min')
+                ->get()
         );
     }
 

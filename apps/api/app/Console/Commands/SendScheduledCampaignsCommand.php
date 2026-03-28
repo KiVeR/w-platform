@@ -26,23 +26,26 @@ class SendScheduledCampaignsCommand extends Command
             return self::SUCCESS;
         }
 
-        $campaigns = Campaign::query()
+        $dispatched = 0;
+
+        Campaign::query()
             ->where('status', CampaignStatus::SCHEDULED)
             ->where('scheduled_at', '<=', now())
-            ->get();
+            ->chunkById(100, function ($campaigns) use (&$dispatched): void {
+                foreach ($campaigns as $campaign) {
+                    $campaign->update(['status' => CampaignStatus::SENDING]);
+                    ProcessCampaignSendingJob::dispatch($campaign);
+                    $dispatched++;
+                }
+            });
 
-        if ($campaigns->isEmpty()) {
+        if ($dispatched === 0) {
             $this->info('No campaigns to send.');
 
             return self::SUCCESS;
         }
 
-        foreach ($campaigns as $campaign) {
-            $campaign->update(['status' => CampaignStatus::SENDING]);
-            ProcessCampaignSendingJob::dispatch($campaign);
-        }
-
-        $this->info("Dispatched {$campaigns->count()} campaign(s) for sending.");
+        $this->info("Dispatched {$dispatched} campaign(s) for sending.");
 
         return self::SUCCESS;
     }
