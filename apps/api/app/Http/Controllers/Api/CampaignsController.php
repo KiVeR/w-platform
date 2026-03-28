@@ -17,10 +17,11 @@ use App\Http\Requests\Campaign\UpdateCampaignRequest;
 use App\Http\Resources\CampaignResource;
 use App\Http\Resources\CampaignStatsResource;
 use App\Models\Campaign;
+use App\Events\CampaignCancelled;
+use App\Events\CampaignDispatched;
 use App\Services\CampaignDispatchService;
 use App\Services\CampaignExportService;
 use App\Services\Targeting\TargetingResolver;
-use App\Services\TargetingTemplateService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -153,10 +154,12 @@ class CampaignsController extends Controller
             'scheduled_at' => $request->validated('scheduled_at'),
         ]);
 
+        CampaignDispatched::dispatch($campaign, 'schedule');
+
         return new CampaignResource($campaign->fresh());
     }
 
-    public function send(Campaign $campaign, CampaignSenderInterface $sender, CampaignDispatchService $dispatch, TargetingTemplateService $templateService): CampaignResource|JsonResponse
+    public function send(Campaign $campaign, CampaignSenderInterface $sender, CampaignDispatchService $dispatch): CampaignResource|JsonResponse
     {
         $this->authorize('send', $campaign);
 
@@ -192,7 +195,7 @@ class CampaignsController extends Controller
             'external_id' => $result->externalId,
         ]);
 
-        $templateService->autoSaveFromCampaign($campaign);
+        CampaignDispatched::dispatch($campaign, 'send');
 
         return new CampaignResource($campaign->fresh());
     }
@@ -206,6 +209,8 @@ class CampaignsController extends Controller
         $campaign->update([
             'status' => CampaignStatus::CANCELLED,
         ]);
+
+        CampaignCancelled::dispatch($campaign);
 
         return new CampaignResource($campaign->fresh());
     }
