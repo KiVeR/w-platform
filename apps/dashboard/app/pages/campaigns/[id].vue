@@ -349,7 +349,7 @@ onCampaignRefresh(() => {
             <template v-if="availableRoutingActions.startRouting || availableRoutingActions.pauseRouting || availableRoutingActions.cancelRouting || availableRoutingActions.pullReport">
               <DropdownMenuSeparator />
               <DropdownMenuItem v-if="availableRoutingActions.startRouting" data-mobile-start-routing @select="handleStartRouting">
-                <Play class="mr-2 size-4" /> {{ t('campaigns.routingActions.start') }}
+                <Play class="mr-2 size-4" /> {{ campaign.routing_status === 'ROUTING_PAUSED' ? t('campaigns.routingActions.resume') : t('campaigns.routingActions.start') }}
               </DropdownMenuItem>
               <DropdownMenuItem v-if="availableRoutingActions.pauseRouting" data-mobile-pause-routing @select="handlePauseRouting">
                 <Pause class="mr-2 size-4" /> {{ t('campaigns.routingActions.pause') }}

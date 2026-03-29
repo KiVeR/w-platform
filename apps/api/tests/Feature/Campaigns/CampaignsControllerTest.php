@@ -517,7 +517,7 @@ it('filters by routing_status', function (): void {
         ->assertJsonPath('data.0.routing_status', 'ROUTING_COMPLETED');
 });
 
-it('sorts by routing_at', function (): void {
+it('sorts by routing_at descending', function (): void {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
     Passport::actingAs($admin);
@@ -529,4 +529,18 @@ it('sorts by routing_at', function (): void {
 
     $response->assertOk();
     expect($response->json('data.0.id'))->toBe($recent->id);
+});
+
+it('sorts by routing_at ascending', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $old = Campaign::factory()->create(['routing_at' => now()->subDays(5)]);
+    $recent = Campaign::factory()->create(['routing_at' => now()]);
+
+    $response = $this->getJson('/api/campaigns?sort=routing_at');
+
+    $response->assertOk();
+    expect($response->json('data.0.id'))->toBe($old->id);
 });

@@ -45,7 +45,8 @@ it('resumes routing from ROUTING_PAUSED', function (): void {
 
     $response = $this->postJson("/api/campaigns/{$campaign->id}/routing/start");
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertJsonPath('data.routing_status', 'ROUTING_IN_PROGRESS');
     Queue::assertPushed(RoutingLogicStartJob::class);
 });
 
@@ -151,4 +152,45 @@ it('rejects routing actions for campaign without routing_status', function (): v
     ]);
 
     $this->postJson("/api/campaigns/{$campaign->id}/routing/start")->assertStatus(409);
+    $this->postJson("/api/campaigns/{$campaign->id}/routing/pause")->assertStatus(409);
+    $this->postJson("/api/campaigns/{$campaign->id}/routing/cancel")->assertStatus(409);
+});
+
+it('rejects cancel from ROUTING_CANCELED', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $campaign = Campaign::factory()->create([
+        'routing_status' => CampaignRoutingStatus::RoutingCanceled,
+    ]);
+
+    $this->postJson("/api/campaigns/{$campaign->id}/routing/cancel")->assertStatus(409);
+});
+
+it('rejects cancel from ROUTING_FAILED', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $campaign = Campaign::factory()->create([
+        'routing_status' => CampaignRoutingStatus::RoutingFailed,
+    ]);
+
+    $this->postJson("/api/campaigns/{$campaign->id}/routing/cancel")->assertStatus(409);
+});
+
+it('resumes from ROUTING_PAUSED with status ROUTING_IN_PROGRESS', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $campaign = Campaign::factory()->create([
+        'routing_status' => CampaignRoutingStatus::RoutingPaused,
+    ]);
+
+    $response = $this->postJson("/api/campaigns/{$campaign->id}/routing/start");
+
+    $response->assertOk()
+        ->assertJsonPath('data.routing_status', 'ROUTING_IN_PROGRESS');
 });

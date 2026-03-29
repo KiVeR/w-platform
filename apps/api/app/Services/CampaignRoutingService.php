@@ -22,7 +22,13 @@ class CampaignRoutingService
                 throw new InvalidRoutingStateException($campaign->routing_status, 'start');
             }
 
-            $campaign->update(['routing_status' => CampaignRoutingStatus::RoutingPending]);
+            $isResume = $campaign->routing_status === CampaignRoutingStatus::RoutingPaused;
+
+            $campaign->update([
+                'routing_status' => $isResume
+                    ? CampaignRoutingStatus::RoutingInProgress
+                    : CampaignRoutingStatus::RoutingPending,
+            ]);
 
             RoutingLogicStartJob::dispatch($campaign->id);
         });

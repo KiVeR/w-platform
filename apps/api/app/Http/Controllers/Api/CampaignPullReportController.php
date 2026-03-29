@@ -21,6 +21,8 @@ class CampaignPullReportController extends Controller
             ], 422);
         }
 
+        // PullReportsJob is global (ShouldBeUnique) — it pulls reports for ALL routed campaigns.
+        // The per-campaign route binding serves as authorization + routing_executed_at validation gate.
         PullReportsJob::dispatch();
 
         return response()->json([

@@ -65,9 +65,6 @@ enum CampaignRoutingStatus: string
 
     public function canCancel(): bool
     {
-        return ! in_array($this, [
-            self::RoutingCompleted,
-            self::RoutingCanceled,
-        ]);
+        return ! $this->isTerminal() && ! $this->isFailed();
     }
 }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Exceptions\InvalidRoutingStateException;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,5 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (InvalidRoutingStateException $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
     })->create();

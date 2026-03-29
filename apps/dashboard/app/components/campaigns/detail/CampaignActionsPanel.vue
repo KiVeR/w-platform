@@ -179,17 +179,17 @@ const { t } = useI18n()
           <AlertDialogTrigger as-child>
             <Button data-action-start-routing variant="outline" class="w-full justify-start" :disabled="isRoutingActionPending">
               <Play class="mr-2 size-4" />
-              {{ t('campaigns.routingActions.start') }}
+              {{ campaign.routing_status === 'ROUTING_PAUSED' ? t('campaigns.routingActions.resume') : t('campaigns.routingActions.start') }}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>{{ t('campaigns.routingActions.start') }}</AlertDialogTitle>
+              <AlertDialogTitle>{{ campaign.routing_status === 'ROUTING_PAUSED' ? t('campaigns.routingActions.resume') : t('campaigns.routingActions.start') }}</AlertDialogTitle>
               <AlertDialogDescription>{{ t('campaigns.routingActions.confirmStart') }}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>{{ t('campaigns.deleteConfirm.cancel') }}</AlertDialogCancel>
-              <AlertDialogAction @click="emit('startRouting')">{{ t('campaigns.routingActions.start') }}</AlertDialogAction>
+              <AlertDialogAction @click="emit('startRouting')">{{ campaign.routing_status === 'ROUTING_PAUSED' ? t('campaigns.routingActions.resume') : t('campaigns.routingActions.start') }}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
