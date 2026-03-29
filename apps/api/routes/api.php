@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\BroadcastingAuthController;
 use App\Http\Controllers\Api\CampaignActivitiesController;
 use App\Http\Controllers\Api\CampaignLogsController;
 use App\Http\Controllers\Api\CampaignRecipientsController;
+use App\Http\Controllers\Api\CampaignRoutingController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\DemandesController;
 use App\Http\Controllers\Api\EstimateController;
@@ -97,6 +98,12 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::get('campaigns/{campaign}/activities', [CampaignActivitiesController::class, 'index']);
     Route::get('campaigns/{campaign}/logs', [CampaignLogsController::class, 'index']);
     Route::get('campaigns/{campaign}/recipients', [CampaignRecipientsController::class, 'index']);
+    Route::post('campaigns/{campaign}/routing/start', [CampaignRoutingController::class, 'start'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/routing/pause', [CampaignRoutingController::class, 'pause'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/routing/cancel', [CampaignRoutingController::class, 'cancel'])
+        ->middleware('throttle:campaign-actions');
 
     Route::apiResource('demandes', DemandesController::class);
     Route::apiResource('operations', OperationsController::class);

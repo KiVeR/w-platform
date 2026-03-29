@@ -66,4 +66,9 @@ class CampaignPolicy
         return $user->hasRole('admin')
             || $user->partner_id === $campaign->partner_id;
     }
+
+    public function routing(User $user, Campaign $campaign): bool
+    {
+        return $user->hasRole('admin');
+    }
 }
