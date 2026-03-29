@@ -27,6 +27,7 @@ const baseStubs = {
   TableHead: { template: '<th><slot /></th>' },
   TableCell: { template: '<td><slot /></td>' },
   CampaignStatusBadge: { template: '<span data-badge>{{ status }}</span>', props: ['status'] },
+  RoutingStatusBadge: { template: '<span data-routing-badge>{{ status }}</span>', props: ['status'] },
   EmptyState: { template: '<div data-empty>{{ title }}<slot /></div>', props: ['icon', 'title', 'description', 'actionLabel', 'actionTo'] },
   PageSkeleton: { template: '<div data-skeleton />', props: ['variant'] },
   Button: { template: '<button><slot /></button>' },
@@ -46,9 +47,9 @@ const baseStubs = {
 }
 
 const fakeCampaigns: CampaignRow[] = [
-  { id: 1, name: 'Promo ete', type: 'prospection', status: 'sent', is_demo: false, volume_estimated: 12450, scheduled_at: '2026-02-05T09:00:00Z', sent_at: '2026-02-05T09:02:00Z', created_at: '2026-02-01T10:00:00Z' },
-  { id: 2, name: 'Noel 2026', type: 'fidelisation', status: 'draft', is_demo: false, volume_estimated: null, scheduled_at: null, sent_at: null, created_at: '2026-02-02T10:00:00Z' },
-  { id: 3, name: 'Test demo', type: 'prospection', status: 'scheduled', is_demo: true, volume_estimated: 500, scheduled_at: '2026-03-01T10:00:00Z', sent_at: null, created_at: '2026-02-03T10:00:00Z' },
+  { id: 1, name: 'Promo ete', type: 'prospection', status: 'sent', is_demo: false, volume_estimated: 12450, scheduled_at: '2026-02-05T09:00:00Z', sent_at: '2026-02-05T09:02:00Z', created_at: '2026-02-01T10:00:00Z', routing_status: 'ROUTING_COMPLETED', routing_at: '2026-02-05T08:00:00Z', routing_executed_at: '2026-02-05T08:30:00Z', router_name: 'sinch' },
+  { id: 2, name: 'Noel 2026', type: 'fidelisation', status: 'draft', is_demo: false, volume_estimated: null, scheduled_at: null, sent_at: null, created_at: '2026-02-02T10:00:00Z', routing_status: null, routing_at: null, routing_executed_at: null, router_name: null },
+  { id: 3, name: 'Test demo', type: 'prospection', status: 'scheduled', is_demo: true, volume_estimated: 500, scheduled_at: '2026-03-01T10:00:00Z', sent_at: null, created_at: '2026-02-03T10:00:00Z', routing_status: 'ROUTING_PENDING', routing_at: '2026-03-01T09:00:00Z', routing_executed_at: null, router_name: null },
 ]
 
 const basePagination: CampaignPagination = { page: 1, lastPage: 3, total: 42 }
@@ -122,7 +123,7 @@ describe('CampaignDataTable', () => {
   it('bouton "Relancer" visible pour status sent', () => {
     const wrapper = mount(CampaignDataTable, {
       props: {
-        data: [{ id: 1, name: 'Sent', type: 'prospection', status: 'sent', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: '2026-02-05', created_at: '2026-02-01' }],
+        data: [{ id: 1, name: 'Sent', type: 'prospection', status: 'sent', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: '2026-02-05', created_at: '2026-02-01', routing_status: null, routing_at: null, routing_executed_at: null, router_name: null }],
         isLoading: false,
         hasError: false,
         sort: '-created_at',
@@ -136,7 +137,7 @@ describe('CampaignDataTable', () => {
   it('bouton "Relancer" visible pour status scheduled', () => {
     const wrapper = mount(CampaignDataTable, {
       props: {
-        data: [{ id: 1, name: 'Scheduled', type: 'prospection', status: 'scheduled', is_demo: false, volume_estimated: 100, scheduled_at: '2026-03-01', sent_at: null, created_at: '2026-02-01' }],
+        data: [{ id: 1, name: 'Scheduled', type: 'prospection', status: 'scheduled', is_demo: false, volume_estimated: 100, scheduled_at: '2026-03-01', sent_at: null, created_at: '2026-02-01', routing_status: null, routing_at: null, routing_executed_at: null, router_name: null }],
         isLoading: false,
         hasError: false,
         sort: '-created_at',
@@ -150,7 +151,7 @@ describe('CampaignDataTable', () => {
   it('bouton "Relancer" visible pour status cancelled', () => {
     const wrapper = mount(CampaignDataTable, {
       props: {
-        data: [{ id: 1, name: 'Cancelled', type: 'prospection', status: 'cancelled', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: null, created_at: '2026-02-01' }],
+        data: [{ id: 1, name: 'Cancelled', type: 'prospection', status: 'cancelled', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: null, created_at: '2026-02-01', routing_status: null, routing_at: null, routing_executed_at: null, router_name: null }],
         isLoading: false,
         hasError: false,
         sort: '-created_at',
@@ -164,7 +165,7 @@ describe('CampaignDataTable', () => {
   it('bouton "Relancer" visible pour status failed', () => {
     const wrapper = mount(CampaignDataTable, {
       props: {
-        data: [{ id: 1, name: 'Failed', type: 'prospection', status: 'failed', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: null, created_at: '2026-02-01' }],
+        data: [{ id: 1, name: 'Failed', type: 'prospection', status: 'failed', is_demo: false, volume_estimated: 100, scheduled_at: null, sent_at: null, created_at: '2026-02-01', routing_status: null, routing_at: null, routing_executed_at: null, router_name: null }],
         isLoading: false,
         hasError: false,
         sort: '-created_at',
@@ -178,7 +179,7 @@ describe('CampaignDataTable', () => {
   it('bouton "Relancer" ABSENT pour status draft', () => {
     const wrapper = mount(CampaignDataTable, {
       props: {
-        data: [{ id: 2, name: 'Draft', type: 'fidelisation', status: 'draft', is_demo: false, volume_estimated: null, scheduled_at: null, sent_at: null, created_at: '2026-02-02' }],
+        data: [{ id: 2, name: 'Draft', type: 'fidelisation', status: 'draft', is_demo: false, volume_estimated: null, scheduled_at: null, sent_at: null, created_at: '2026-02-02', routing_status: null, routing_at: null, routing_executed_at: null, router_name: null }],
         isLoading: false,
         hasError: false,
         sort: '-created_at',
@@ -187,5 +188,53 @@ describe('CampaignDataTable', () => {
       global: { stubs: baseStubs },
     })
     expect(wrapper.find('[data-duplicate-action]').exists()).toBe(false)
+  })
+
+  // Routing columns
+  it('affiche le RoutingStatusBadge quand routing_status est present', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: fakeCampaigns,
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+
+    const badges = wrapper.findAll('[data-routing-badge]')
+    expect(badges.length).toBeGreaterThanOrEqual(2) // campaigns 1 and 3 have routing_status
+  })
+
+  it('affiche le nom du routeur quand present', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: fakeCampaigns,
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.text()).toContain('sinch')
+  })
+
+  it('affiche — quand routing_status est null', () => {
+    const wrapper = mount(CampaignDataTable, {
+      props: {
+        data: [fakeCampaigns[1]], // Noel 2026, routing_status null
+        isLoading: false,
+        hasError: false,
+        sort: '-created_at',
+        pagination: basePagination,
+      },
+      global: { stubs: baseStubs },
+    })
+
+    // Le tiret est présent pour routing_status, router_name, et routing_at
+    expect(wrapper.text()).toContain('—')
   })
 })
