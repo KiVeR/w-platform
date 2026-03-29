@@ -68,6 +68,14 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
 
+        RateLimiter::for('ai-design-save', fn (Request $request) =>
+            Limit::perMinute(60)->by($request->user()?->id)
+        );
+
+        RateLimiter::for('ai-content-create', fn (Request $request) =>
+            Limit::perHour(50)->by($request->user()?->id)
+        );
+
         Gate::define('viewApiDocs', function () {
             return app()->environment('local');
         });

@@ -167,10 +167,11 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
         Route::get('generate/{jobId}/status', [AIGenerationController::class, 'status']);
 
         Route::get('contents/recent', [AIContentController::class, 'recent']);
-        Route::apiResource('contents', AIContentController::class)->except(['edit', 'create'])->parameters(['contents' => 'aiContent']);
+        Route::post('contents', [AIContentController::class, 'store'])->middleware('throttle:ai-content-create');
+        Route::apiResource('contents', AIContentController::class)->except(['edit', 'create', 'store'])->parameters(['contents' => 'aiContent']);
         Route::post('contents/{aiContent}/favorite', [AIContentController::class, 'favorite']);
         Route::get('contents/{aiContent}/design', [AIContentDesignController::class, 'show']);
-        Route::put('contents/{aiContent}/design', [AIContentDesignController::class, 'update']);
+        Route::put('contents/{aiContent}/design', [AIContentDesignController::class, 'update'])->middleware('throttle:ai-design-save');
         Route::get('contents/{aiContent}/versions', [AIContentVersionController::class, 'index']);
         Route::get('contents/{aiContent}/versions/{version}', [AIContentVersionController::class, 'show']);
         Route::post('contents/{aiContent}/versions', [AIContentVersionController::class, 'restore'])->middleware('throttle:restore-version');
