@@ -28,7 +28,8 @@
     "partners": "Partenaires",
     "partnerSettings": "Parametres partenaire",
     "backToHub": "Retour au Hub",
-    "users": "Utilisateurs"
+    "users": "Utilisateurs",
+    "shortUrls": "URLs courtes"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",
@@ -1586,5 +1587,79 @@
     "retry": "Réessayer",
     "noResults": "Aucun résultat trouvé.",
     "minChars": "Tapez au moins 2 caractères"
+  },
+  "shortUrls": {
+    "title": "URLs courtes",
+    "description": "Gestion des liens courts avec suivi de clics",
+    "columns": {
+      "slug": "Slug",
+      "link": "URL de destination",
+      "clicks": "Clics",
+      "clicksBots": "Clics bots",
+      "status": "Statut",
+      "traceable": "Traçable",
+      "createdAt": "Créé le"
+    },
+    "filters": {
+      "search": "Rechercher par slug ou URL...",
+      "status": "Statut",
+      "statusAll": "Tous",
+      "statusEnabled": "Actifs",
+      "statusDisabled": "Désactivés"
+    },
+    "actions": {
+      "create": "Nouvelle URL courte",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "view": "Voir le détail",
+      "export": "Exporter CSV",
+      "copySlug": "Copier le lien court"
+    },
+    "form": {
+      "slugLabel": "Slug personnalisé",
+      "slugPlaceholder": "Laisser vide pour génération auto",
+      "slugHint": "Ne doit pas contenir de underscore (_)",
+      "linkLabel": "URL de destination",
+      "linkPlaceholder": "https://...",
+      "traceableLabel": "Traçable par destinataire",
+      "traceableHint": "Active le suivi individuel via suffixes",
+      "draftLabel": "Brouillon",
+      "enabledLabel": "Activé",
+      "prefixLabel": "Préfixe",
+      "prefixPlaceholder": "ex: promo",
+      "lengthLabel": "Longueur du slug",
+      "createTitle": "Nouvelle URL courte",
+      "editTitle": "Modifier l'URL courte",
+      "saveSuccess": "URL courte enregistrée",
+      "deleteConfirm": {
+        "title": "Supprimer cette URL courte ?",
+        "description": "Cette action est irréversible. Les redirections vers cette URL ne fonctionneront plus."
+      }
+    },
+    "detail": {
+      "title": "Détail de l'URL courte",
+      "statsTitle": "Statistiques de clics",
+      "humanClicks": "Clics humains",
+      "botClicks": "Clics bots",
+      "totalClicks": "Total clics",
+      "shortLink": "Lien court",
+      "destination": "Destination",
+      "internalLink": "Lien interne (pas de destination externe)",
+      "enabled": "Activé",
+      "disabled": "Désactivé",
+      "draft": "Brouillon",
+      "published": "Publiée",
+      "traceable": "Traçable",
+      "notTraceable": "Non traçable",
+      "copySuccess": "Lien copié dans le presse-papier"
+    },
+    "empty": {
+      "title": "Aucune URL courte",
+      "description": "Créez votre première URL courte pour commencer le suivi"
+    },
+    "pagination": {
+      "total": "{total} URL(s) courte(s)",
+      "page": "Page {page} sur {lastPage}"
+    }
   }
 }

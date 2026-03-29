@@ -28,7 +28,8 @@
     "partners": "Partners",
     "partnerSettings": "Partner settings",
     "backToHub": "Back to Hub",
-    "users": "Users"
+    "users": "Users",
+    "shortUrls": "Short URLs"
   },
   "sidebar": {
     "toggle": "Toggle sidebar",
@@ -1586,5 +1587,79 @@
     "retry": "Retry",
     "noResults": "No results found.",
     "minChars": "Type at least 2 characters"
+  },
+  "shortUrls": {
+    "title": "Short URLs",
+    "description": "Manage short links with click tracking",
+    "columns": {
+      "slug": "Slug",
+      "link": "Destination URL",
+      "clicks": "Clicks",
+      "clicksBots": "Bot clicks",
+      "status": "Status",
+      "traceable": "Traceable",
+      "createdAt": "Created at"
+    },
+    "filters": {
+      "search": "Search by slug or URL...",
+      "status": "Status",
+      "statusAll": "All",
+      "statusEnabled": "Active",
+      "statusDisabled": "Disabled"
+    },
+    "actions": {
+      "create": "New short URL",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View detail",
+      "export": "Export CSV",
+      "copySlug": "Copy short link"
+    },
+    "form": {
+      "slugLabel": "Custom slug",
+      "slugPlaceholder": "Leave empty for auto-generation",
+      "slugHint": "Must not contain underscores (_)",
+      "linkLabel": "Destination URL",
+      "linkPlaceholder": "https://...",
+      "traceableLabel": "Traceable per recipient",
+      "traceableHint": "Enables individual tracking via suffixes",
+      "draftLabel": "Draft",
+      "enabledLabel": "Enabled",
+      "prefixLabel": "Prefix",
+      "prefixPlaceholder": "e.g. promo",
+      "lengthLabel": "Slug length",
+      "createTitle": "New short URL",
+      "editTitle": "Edit short URL",
+      "saveSuccess": "Short URL saved",
+      "deleteConfirm": {
+        "title": "Delete this short URL?",
+        "description": "This action is irreversible. Redirections to this URL will no longer work."
+      }
+    },
+    "detail": {
+      "title": "Short URL detail",
+      "statsTitle": "Click statistics",
+      "humanClicks": "Human clicks",
+      "botClicks": "Bot clicks",
+      "totalClicks": "Total clicks",
+      "shortLink": "Short link",
+      "destination": "Destination",
+      "internalLink": "Internal link (no external destination)",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "draft": "Draft",
+      "published": "Published",
+      "traceable": "Traceable",
+      "notTraceable": "Not traceable",
+      "copySuccess": "Link copied to clipboard"
+    },
+    "empty": {
+      "title": "No short URLs",
+      "description": "Create your first short URL to start tracking"
+    },
+    "pagination": {
+      "total": "{total} short URL(s)",
+      "page": "Page {page} of {lastPage}"
+    }
   }
 }
