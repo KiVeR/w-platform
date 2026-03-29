@@ -53,9 +53,7 @@ x-dashboard-env: &dashboard-env
   NUXT_PUBLIC_PUSHER_LOG_TO_CONSOLE: ${NUXT_PUBLIC_PUSHER_LOG_TO_CONSOLE:-false}
 
 x-kreo-env: &kreo-env
-  DATABASE_URL: postgresql://${POSTGRES_USER:-wellpack}:${POSTGRES_PASSWORD:-secret}@postgres:5432/kreo?schema=public
-  PLATFORM_API_URL: http://api
-  JWT_ACCESS_EXPIRATION: 15m
+  NUXT_PUBLIC_PLATFORM_API_URL: http://api:8000
   KREO_PORT: 3000
 
 services:
@@ -236,8 +234,6 @@ services:
     depends_on:
       api:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
 
   kreo-dev:
     profiles: ["dev"]
@@ -259,8 +255,6 @@ services:
       - "${PORT_PREFIX:-80}02:3000"
     depends_on:
       api:
-        condition: service_healthy
-      postgres:
         condition: service_healthy
 
 volumes:

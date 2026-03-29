@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Kreo - Visual content editor in Vue 3 with drag-and-drop interface. Create landing pages, RCS campaigns, and AI-powered marketing content.
 
+> **Frontend-only SPA** — all data comes from platform-api. No local server, no database, no Prisma.
+
 ## Commands
 
 ```bash
@@ -16,12 +18,6 @@ pnpm lint:fix     # ESLint with auto-fix
 pnpm test         # Vitest unit tests
 pnpm test:coverage # Vitest with coverage
 pnpm test:e2e     # Playwright E2E tests
-pnpm db:generate  # Prisma generate
-pnpm db:push      # Prisma db push
-pnpm db:migrate   # Prisma migrate dev
-pnpm db:studio    # Prisma Studio
-pnpm user         # User management CLI
-pnpm user:seed    # Seed users
 ```
 
 ## Architecture
@@ -233,39 +229,6 @@ import { STATUS_COLORS } from '#shared/constants/status'
 
 import { useAuthStore } from '@/stores/auth'
 ```
-
-**Server (`server/api/`, `server/utils/`)**
-- All exports from `server/utils/*.ts` are **auto-imported by Nitro** - no import needed!
-- Use `#shared/` for imports from `shared/`
-
-```typescript
-// ✅ Good - server/api/v1/auth/login.post.ts
-import type { LoginResponse } from '#shared/types/api'
-import { loginSchema } from '#shared/schemas/auth.schema'
-
-// No import needed for prisma, createAuditLog, verifyPassword, etc.
-// They are auto-imported from server/utils/
-
-export default defineEventHandler(async (event) => {
-  const user = await prisma.user.findUnique({ ... })  // ✅ Auto-imported
-  await createAuditLog(event, { ... })                // ✅ Auto-imported
-})
-
-// ❌ Bad - redundant imports
-import prisma from '../../../utils/prisma'
-import { createAuditLog } from '../../../utils/audit'
-```
-
-### Nitro Auto-Imports (Server)
-
-All exports from `server/utils/` are globally available in server code:
-- `prisma` - Prisma client
-- `createAuditLog`, `logAudit` - Audit logging
-- `requireAuth`, `requireContentAccess` - Permission checks
-- `generateAccessToken`, `verifyAccessToken` - JWT utilities
-- `enforceRateLimit`, `RATE_LIMITS` - Rate limiting
-- `toPrismaContentType`, `toApiContentType` - Type mappers
-- And more... (see `server/utils/` for full list)
 
 ## Conventions
 
