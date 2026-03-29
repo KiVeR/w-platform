@@ -2,7 +2,7 @@ import { vi } from 'vitest'
 
 export function stubEditorConfig(overrides: Record<string, unknown> = {}) {
   const config = {
-    apiBaseUrl: '/api/v1',
+    apiBaseUrl: '/api',
     getAuthToken: () => 'test-token',
     refreshToken: vi.fn().mockResolvedValue('new-token'),
     onContentCreated: vi.fn(),

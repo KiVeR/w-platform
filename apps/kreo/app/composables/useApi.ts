@@ -15,7 +15,6 @@ export function useApi() {
     const token = tokenRefreshManager.getAccessToken()
     const headers: Record<string, string> = {
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     }
 

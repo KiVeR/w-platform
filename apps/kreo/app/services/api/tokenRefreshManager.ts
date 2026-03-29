@@ -75,6 +75,11 @@ class TokenRefreshManager {
       const json = await response.json()
       const data = json.data
 
+      if (!data?.access_token || !data?.refresh_token) {
+        this.handleFailure()
+        return null
+      }
+
       this.saveTokens({
         access_token: data.access_token,
         refresh_token: data.refresh_token,

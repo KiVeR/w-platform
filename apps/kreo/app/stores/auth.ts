@@ -120,7 +120,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function fetchMe(): Promise<boolean> {
+  async function fetchMe(isRetry = false): Promise<boolean> {
     const token = tokenRefreshManager.getAccessToken()
     if (!token) {
       // Try to refresh first
@@ -154,15 +154,16 @@ export const useAuthStore = defineStore('auth', () => {
       return true
     }
     catch {
-      // Try to refresh token
-      try {
-        const newToken = await tokenRefreshManager.refreshToken()
-        if (newToken) {
-          return fetchMe()
+      if (!isRetry) {
+        try {
+          const newToken = await tokenRefreshManager.refreshToken()
+          if (newToken) {
+            return fetchMe(true)
+          }
         }
-      }
-      catch {
-        // refresh failed
+        catch {
+          // refresh failed
+        }
       }
       clearAuth()
       return false

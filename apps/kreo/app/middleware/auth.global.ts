@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/stores/auth'
 
 // Routes that don't require authentication
-const publicRoutes = ['/login', '/register']
+const publicRoutes = ['/login']
 
 export default defineNuxtRouteMiddleware(async (to) => {
   // Skip on server side

@@ -52,7 +52,10 @@ export function useAIChat() {
       const submitResponse = await api.post<{ data: { job_id: string, status: string } }>('/ai/generate', {
         prompt,
         image,
-        conversationHistory: chatStore.getConversationHistory().slice(0, -1),
+        conversation_history: chatStore.getConversationHistory().slice(0, -1).map(m => ({
+          role: m.role,
+          content: m.content,
+        })),
         context: {
           currentWidgets: editorStore.design?.widgets?.length ?? 0,
           contentType: contentStore.type || 'landing-page',
