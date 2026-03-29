@@ -43,6 +43,7 @@ class CampaignResource extends JsonResource
             'variable_schema_id' => $this->variable_schema_id,
             'router_id' => $this->router_id,
             'routing_at' => $this->routing_at,
+            'routing_executed_at' => $this->routing_executed_at,
             'recipients_count' => $this->whenCounted('campaignRecipients'),
             'created_at' => $this->created_at,
             'partner' => new PartnerResource($this->whenLoaded('partner')),

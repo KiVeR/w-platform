@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\CampaignChannel;
+use App\Enums\CampaignRoutingStatus;
 use App\Enums\CampaignStatus;
 use App\Enums\CampaignType;
 use App\Models\Partner;
@@ -147,6 +148,15 @@ class CampaignFactory extends Factory
         return $this->state(fn (array $attributes): array => [
             'volume_estimated' => $estimated,
             'volume_sent' => $sent,
+        ]);
+    }
+
+    public function withRouting(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'routing_status' => CampaignRoutingStatus::RoutingCompleted,
+            'routing_at' => now()->subHour(),
+            'routing_executed_at' => now(),
         ]);
     }
 }
