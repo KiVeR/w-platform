@@ -41,8 +41,8 @@ async function loadDashboard(): Promise<void> {
 
   try {
     const [recentResponse, contentsResponse] = await Promise.all([
-      api.get<RecentContentsResponse>('/api/v1/contents/recent'),
-      api.get<ContentsListResponse>('/api/v1/contents', {
+      api.get<RecentContentsResponse>('/ai/contents/recent'),
+      api.get<ContentsListResponse>('/ai/contents', {
         query: {
           sortBy: 'updatedAt',
           sortOrder: 'desc',
@@ -102,7 +102,7 @@ const filteredContents = computed(() => {
 
 async function handleToggleFavorite(content: ContentListItem): Promise<void> {
   try {
-    await api.post<{ success: boolean, isFavorite: boolean }>(`/api/v1/contents/${content.id}/favorite`)
+    await api.post<{ success: boolean, isFavorite: boolean }>(`/ai/contents/${content.id}/favorite`)
     contentsStore.toggleFavorite(content.id)
   }
   catch {
@@ -116,7 +116,7 @@ async function handleDeleteContent(content: ContentListItem): Promise<void> {
     return
 
   try {
-    await api.delete(`/api/v1/contents/${content.id}`)
+    await api.delete(`/ai/contents/${content.id}`)
     contentsStore.removeItem(content.id)
   }
   catch {

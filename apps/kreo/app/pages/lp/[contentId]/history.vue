@@ -36,7 +36,7 @@ async function loadContent(): Promise<void> {
   loadError.value = null
 
   try {
-    const data = await api.get<ContentDesignResponse>(`/api/v1/contents/${contentId.value}/design`)
+    const data = await api.get<ContentDesignResponse>(`/ai/contents/${contentId.value}/design`)
 
     editorStore.setDesign(data.design)
     widgetsStore.setWidgets(data.design.widgets || [])

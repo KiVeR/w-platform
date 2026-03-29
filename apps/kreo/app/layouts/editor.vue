@@ -1,24 +1,21 @@
 <script setup lang="ts">
 import { getContentTypeSlug } from '#shared/utils/content'
+import { tokenRefreshManager } from '@/services/api/tokenRefreshManager'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
-const router = useRouter()
+const config = useRuntimeConfig()
 const route = useRoute()
 
 const schemaUuid = computed(() => (route.query.schemaUuid as string) || undefined)
 
 const editorBaseConfig = {
-  apiBaseUrl: '/api/v1',
-  getAuthToken: () => authStore.accessToken,
-  refreshToken: async () => {
-    const { tokenRefreshManager } = await import('@/services/api/tokenRefreshManager')
-    const newToken = await tokenRefreshManager.refreshToken()
-    return newToken
-  },
+  apiBaseUrl: `${config.public.platformApiUrl}/api`,
+  getAuthToken: () => tokenRefreshManager.getAccessToken(),
+  refreshToken: () => tokenRefreshManager.refreshToken(),
   onContentCreated: (id: number) => {
     const type = useContentStore().type || 'landing-page'
-    router.replace(`/${getContentTypeSlug(type)}/${id}`)
+    navigateTo(`/${getContentTypeSlug(type)}/${id}`, { replace: true })
   },
   onNavigateToHistory: (contentId: number) => {
     const type = useContentStore().type || 'landing-page'
@@ -30,7 +27,7 @@ const editorBaseConfig = {
   },
   onAuthFailure: () => {
     authStore.clearAuth()
-    router.push('/login')
+    navigateTo('/login')
   },
   features: {
     ai: true,
