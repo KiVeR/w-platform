@@ -12,8 +12,9 @@ const editorBaseConfig = {
   apiBaseUrl: '/api/v1',
   getAuthToken: () => authStore.accessToken,
   refreshToken: async () => {
-    const success = await authStore.refresh()
-    return success ? authStore.accessToken : null
+    const { tokenRefreshManager } = await import('@/services/api/tokenRefreshManager')
+    const newToken = await tokenRefreshManager.refreshToken()
+    return newToken
   },
   onContentCreated: (id: number) => {
     const type = useContentStore().type || 'landing-page'

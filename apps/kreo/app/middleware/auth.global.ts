@@ -26,7 +26,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // Check if authenticated
   if (!authStore.isAuthenticated) {
     // Try to fetch user with existing token
-    const success = await authStore.fetchUser()
+    const success = await authStore.fetchMe()
     if (!success) {
       return navigateTo('/login')
     }
