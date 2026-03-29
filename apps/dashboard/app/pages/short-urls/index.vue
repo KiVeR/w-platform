@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus } from 'lucide-vue-next'
+import { Download, Plus } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { toast } from 'vue-sonner'
 import ShortUrlFilters from '@/components/short-urls/ShortUrlFilters.vue'
@@ -17,8 +17,8 @@ const { t } = useI18n()
 const { can } = usePermission()
 
 const {
-  shortUrls, pagination, isLoading, hasError, filters, sort,
-  fetchShortUrls, deleteShortUrl, setPage, setSort, setFilters,
+  shortUrls, pagination, isLoading, hasError, filters, sort, isExporting,
+  fetchShortUrls, deleteShortUrl, setPage, setSort, setFilters, exportCsv,
 } = useShortUrls()
 
 onMounted(() => fetchShortUrls())
@@ -37,6 +37,7 @@ async function handleFilterUpdate(f: Partial<ShortUrlFiltersState>) {
 
 async function handleSort(field: string) { await setSort(field) }
 async function handlePage(page: number) { await setPage(page) }
+async function handleExport() { await exportCsv() }
 </script>
 
 <template>
@@ -46,9 +47,14 @@ async function handlePage(page: number) { await setPage(page) }
         <h1 class="text-2xl font-semibold tracking-tight">{{ t('shortUrls.title') }}</h1>
         <p class="text-sm text-muted-foreground mt-1">{{ t('shortUrls.description') }}</p>
       </div>
-      <NuxtLink v-if="can('manage short-urls')" to="/short-urls/new">
-        <Button><Plus class="mr-2 size-4" />{{ t('shortUrls.actions.create') }}</Button>
-      </NuxtLink>
+      <div class="flex gap-2">
+        <Button variant="outline" :disabled="isExporting" @click="handleExport">
+          <Download class="mr-2 size-4" />{{ t('shortUrls.actions.export') }}
+        </Button>
+        <NuxtLink v-if="can('manage short-urls')" to="/short-urls/new">
+          <Button><Plus class="mr-2 size-4" />{{ t('shortUrls.actions.create') }}</Button>
+        </NuxtLink>
+      </div>
     </div>
     <ShortUrlFilters :filters="filters" @update:filters="handleFilterUpdate" />
     <ShortUrlDataTable :data="shortUrls" :is-loading="isLoading" :has-error="hasError" :sort="sort" :pagination="pagination" @sort="handleSort" @page="handlePage" @delete="handleDelete" @view="handleView" @edit="handleEdit" @retry="fetchShortUrls" />

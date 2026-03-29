@@ -3,6 +3,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { localStorageMock, stubAuthGlobals } from '../../helpers/auth-stubs'
 import { useShortUrls } from '@/composables/useShortUrls'
 
+const { mockDownloadCsv } = vi.hoisted(() => ({ mockDownloadCsv: vi.fn() }))
+vi.mock('@/utils/exportCsv', () => ({ downloadCsv: mockDownloadCsv }))
+
 const mockGet = vi.fn()
 const mockDelete = vi.fn()
 
@@ -225,5 +228,42 @@ describe('useShortUrls', () => {
     const { isLoading, fetchShortUrls } = useShortUrls()
     await fetchShortUrls()
     expect(isLoading.value).toBe(false)
+  })
+
+  test('exportCsv fetche toutes les pages et appelle downloadCsv', async () => {
+    const page1Meta = { ...fakePaginationMeta, current_page: 1, last_page: 2 }
+    const page2Meta = { ...fakePaginationMeta, current_page: 2, last_page: 2 }
+    mockGet
+      .mockResolvedValueOnce({ data: { data: fakeShortUrlList(2), meta: page1Meta } })
+      .mockResolvedValueOnce({ data: { data: fakeShortUrlList(1), meta: page2Meta } })
+
+    const { exportCsv, isExporting } = useShortUrls()
+    expect(isExporting.value).toBe(false)
+    const exportPromise = exportCsv()
+    await exportPromise
+    expect(isExporting.value).toBe(false)
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockDownloadCsv).toHaveBeenCalledOnce()
+    expect(mockDownloadCsv).toHaveBeenCalledWith(
+      'short-urls-export.csv',
+      ['Slug', 'URL destination', 'Clics humains', 'Clics bots', 'Statut', 'Traçable'],
+      expect.arrayContaining([
+        expect.arrayContaining(['slug-1']),
+      ]),
+    )
+    const rows: string[][] = mockDownloadCsv.mock.calls[0][2]
+    expect(rows).toHaveLength(3)
+  })
+
+  test('exportCsv met isExporting a false apres echec', async () => {
+    mockGet.mockResolvedValue({ error: { message: 'fail' } })
+    const { exportCsv, isExporting } = useShortUrls()
+    await exportCsv()
+    expect(isExporting.value).toBe(false)
+    expect(mockDownloadCsv).toHaveBeenCalledWith(
+      'short-urls-export.csv',
+      expect.any(Array),
+      [],
+    )
   })
 })
