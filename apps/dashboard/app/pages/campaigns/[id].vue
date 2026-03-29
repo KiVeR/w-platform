@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Copy, Download, Eye, MoreHorizontal, Pencil, XCircle } from 'lucide-vue-next'
+import { ArrowLeft, Copy, Download, Eye, FileDown, MoreHorizontal, Pause, Pencil, Play, StopCircle, XCircle } from 'lucide-vue-next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -33,6 +34,7 @@ import SectionRecipients from '@/components/campaigns/detail/SectionRecipients.v
 import SectionTargeting from '@/components/campaigns/detail/SectionTargeting.vue'
 import SectionTimeline from '@/components/campaigns/detail/SectionTimeline.vue'
 import CampaignStatusBadge from '@/components/shared/CampaignStatusBadge.vue'
+import RoutingStatusBadge from '@/components/shared/RoutingStatusBadge.vue'
 import { useCampaignActions } from '@/composables/useCampaignActions'
 import { useCampaignDetail } from '@/composables/useCampaignDetail'
 import { useCampaignSync } from '@/composables/useCampaignSync'
@@ -73,6 +75,12 @@ const {
   isCancelling,
   cancelError,
   cancelCampaign,
+  isRoutingActionPending,
+  routingActionError,
+  startRouting,
+  pauseRouting,
+  cancelRouting,
+  pullReport,
 } = useCampaignActions(campaignId)
 
 const {
@@ -131,6 +139,15 @@ const availableActions = computed(() => ({
   cancel: !!campaign.value && canManageCampaigns.value && campaign.value.status === 'scheduled',
 }))
 
+const availableRoutingActions = computed(() => ({
+  startRouting: isAdmin.value && !!campaign.value?.routing_status
+    && ['ROUTING_PENDING', 'ROUTING_PAUSED'].includes(campaign.value.routing_status),
+  pauseRouting: isAdmin.value && campaign.value?.routing_status === 'ROUTING_IN_PROGRESS',
+  cancelRouting: isAdmin.value && !!campaign.value?.routing_status
+    && !['ROUTING_COMPLETED', 'ROUTING_CANCELED'].includes(campaign.value.routing_status),
+  pullReport: isAdmin.value && !!campaign.value?.routing_executed_at,
+}))
+
 const statsAlertText = computed(() => {
   switch (statsErrorType.value) {
     case 'not_yet':
@@ -182,6 +199,26 @@ async function handleCancel(): Promise<void> {
   if (cancelled) {
     await fetchCampaign()
   }
+}
+
+async function handleStartRouting(): Promise<void> {
+  const success = await startRouting()
+  if (success) await fetchCampaign()
+}
+
+async function handlePauseRouting(): Promise<void> {
+  const success = await pauseRouting()
+  if (success) await fetchCampaign()
+}
+
+async function handleCancelRouting(): Promise<void> {
+  const success = await cancelRouting()
+  if (success) await fetchCampaign()
+}
+
+async function handlePullReport(): Promise<void> {
+  const success = await pullReport()
+  if (success) await fetchCampaign()
 }
 
 watch(campaignId, async () => {
@@ -258,6 +295,7 @@ onCampaignRefresh(() => {
                 {{ campaign.name }}
               </h1>
               <CampaignStatusBadge :status="campaign.status" />
+              <RoutingStatusBadge v-if="campaign.routing_status" :status="campaign.routing_status" />
             </div>
           </div>
         </div>
@@ -307,6 +345,22 @@ onCampaignRefresh(() => {
               <XCircle class="mr-2 size-4" />
               {{ t('campaigns.detail.cancel') }}
             </DropdownMenuItem>
+
+            <template v-if="availableRoutingActions.startRouting || availableRoutingActions.pauseRouting || availableRoutingActions.cancelRouting || availableRoutingActions.pullReport">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem v-if="availableRoutingActions.startRouting" data-mobile-start-routing @select="handleStartRouting">
+                <Play class="mr-2 size-4" /> {{ t('campaigns.routingActions.start') }}
+              </DropdownMenuItem>
+              <DropdownMenuItem v-if="availableRoutingActions.pauseRouting" data-mobile-pause-routing @select="handlePauseRouting">
+                <Pause class="mr-2 size-4" /> {{ t('campaigns.routingActions.pause') }}
+              </DropdownMenuItem>
+              <DropdownMenuItem v-if="availableRoutingActions.cancelRouting" data-mobile-cancel-routing class="text-destructive" @select="handleCancelRouting">
+                <StopCircle class="mr-2 size-4" /> {{ t('campaigns.routingActions.cancel') }}
+              </DropdownMenuItem>
+              <DropdownMenuItem v-if="availableRoutingActions.pullReport" data-mobile-pull-report @select="handlePullReport">
+                <FileDown class="mr-2 size-4" /> {{ t('campaigns.routingActions.pullReport') }}
+              </DropdownMenuItem>
+            </template>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -370,13 +424,23 @@ onCampaignRefresh(() => {
               :show-duplicate="availableActions.duplicate"
               :show-export="availableActions.export"
               :show-cancel="availableActions.cancel"
+              :show-start-routing="availableRoutingActions.startRouting"
+              :show-pause-routing="availableRoutingActions.pauseRouting"
+              :show-cancel-routing="availableRoutingActions.cancelRouting"
+              :show-pull-report="availableRoutingActions.pullReport"
               :is-exporting="isExporting"
               :is-cancelling="isCancelling"
               :cancel-error="cancelError"
+              :is-routing-action-pending="isRoutingActionPending"
+              :routing-action-error="routingActionError"
               @edit="handleEdit"
               @duplicate="handleDuplicate"
               @export="exportCampaign"
               @cancel="handleCancel"
+              @start-routing="handleStartRouting"
+              @pause-routing="handlePauseRouting"
+              @cancel-routing="handleCancelRouting"
+              @pull-report="handlePullReport"
             />
           </template>
         </div>
@@ -420,13 +484,23 @@ onCampaignRefresh(() => {
             :show-duplicate="availableActions.duplicate"
             :show-export="availableActions.export"
             :show-cancel="availableActions.cancel"
+            :show-start-routing="availableRoutingActions.startRouting"
+            :show-pause-routing="availableRoutingActions.pauseRouting"
+            :show-cancel-routing="availableRoutingActions.cancelRouting"
+            :show-pull-report="availableRoutingActions.pullReport"
             :is-exporting="isExporting"
             :is-cancelling="isCancelling"
             :cancel-error="cancelError"
+            :is-routing-action-pending="isRoutingActionPending"
+            :routing-action-error="routingActionError"
             @edit="handleEdit"
             @duplicate="handleDuplicate"
             @export="exportCampaign"
             @cancel="handleCancel"
+            @start-routing="handleStartRouting"
+            @pause-routing="handlePauseRouting"
+            @cancel-routing="handleCancelRouting"
+            @pull-report="handlePullReport"
           />
         </div>
       </div>
