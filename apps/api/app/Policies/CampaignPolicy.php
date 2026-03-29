@@ -71,4 +71,9 @@ class CampaignPolicy
     {
         return $user->hasRole('admin');
     }
+
+    public function pullReport(User $user, Campaign $campaign): bool
+    {
+        return $user->hasRole('admin');
+    }
 }

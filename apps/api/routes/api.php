@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\BroadcastingAuthController;
 use App\Http\Controllers\Api\CampaignActivitiesController;
 use App\Http\Controllers\Api\CampaignLogsController;
 use App\Http\Controllers\Api\CampaignRecipientsController;
+use App\Http\Controllers\Api\CampaignPullReportController;
 use App\Http\Controllers\Api\CampaignRoutingController;
 use App\Http\Controllers\Api\CampaignsController;
 use App\Http\Controllers\Api\DemandesController;
@@ -103,6 +104,8 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('campaigns/{campaign}/routing/pause', [CampaignRoutingController::class, 'pause'])
         ->middleware('throttle:campaign-actions');
     Route::post('campaigns/{campaign}/routing/cancel', [CampaignRoutingController::class, 'cancel'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/pull-report', CampaignPullReportController::class)
         ->middleware('throttle:campaign-actions');
 
     Route::apiResource('demandes', DemandesController::class);
