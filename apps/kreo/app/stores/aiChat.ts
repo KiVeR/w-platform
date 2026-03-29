@@ -1,53 +1,30 @@
 import type { AIChatMessage, AIImageInput, AIQuotaInfo } from '#shared/types/ai'
 
 const MAX_CONVERSATION_LENGTH = 20
-const JSON_SEPARATOR = '---JSON---'
 
-/**
- * Extract the human-readable description text from a stream response,
- * stripping the JSON design payload that follows the separator.
- */
-function extractDescriptionText(text: string): string {
-  const sepIndex = text.indexOf(JSON_SEPARATOR)
-  if (sepIndex !== -1)
-    return text.slice(0, sepIndex).trim()
-
-  const braceIndex = text.indexOf('\n{')
-  if (braceIndex !== -1)
-    return text.slice(0, braceIndex).trim()
-
-  if (text.trimStart().startsWith('{'))
-    return ''
-
-  return text
-}
+export type AIProgressState = 'idle' | 'submitting' | 'generating' | 'completed' | 'failed'
 
 export const useAIChatStore = defineStore('aiChat', () => {
   // State
   const isOpen = ref(false)
   const messages = ref<AIChatMessage[]>([])
-  const isStreaming = ref(false)
-  const currentStreamText = ref('')
+  const isGenerating = ref(false)
+  const progress = ref<AIProgressState>('idle')
+  const elapsedSeconds = ref(0)
   const pendingImage = ref<AIImageInput | null>(null)
   const quota = ref<AIQuotaInfo | null>(null)
   const error = ref<string | null>(null)
+  const _cancelled = ref(false)
+
+  let _elapsedTimer: ReturnType<typeof setInterval> | null = null
 
   // Getters
-  const canSend = computed(() => !isStreaming.value && quota.value?.canGenerate !== false)
+  const canSend = computed(() => !isGenerating.value && quota.value?.canGenerate !== false)
   const hasMessages = computed(() => messages.value.length > 0)
   const lastAssistantMessage = computed(() =>
     [...messages.value].reverse().find(m => m.role === 'assistant'),
   )
   const lastGeneratedDesign = computed(() => lastAssistantMessage.value?.design as DesignDocument | undefined)
-
-  const displayStreamText = computed(() => extractDescriptionText(currentStreamText.value))
-
-  const isGeneratingDesign = computed(() => {
-    if (!isStreaming.value)
-      return false
-    const text = currentStreamText.value
-    return text.includes(JSON_SEPARATOR) || text.trimStart().startsWith('{')
-  })
 
   // Actions
   function open() {
@@ -84,33 +61,70 @@ export const useAIChatStore = defineStore('aiChat', () => {
     }
   }
 
-  function startAssistantMessage() {
-    currentStreamText.value = ''
-    isStreaming.value = true
-    error.value = null
+  function setGenerating(value: boolean) {
+    isGenerating.value = value
+    if (value) {
+      _cancelled.value = false
+      error.value = null
+    }
   }
 
-  function appendStreamText(text: string) {
-    currentStreamText.value += text
+  function setProgress(p: AIProgressState) {
+    progress.value = p
+
+    if (p === 'generating') {
+      _startElapsedTimer()
+    }
+    else if (p === 'idle' || p === 'completed' || p === 'failed') {
+      _stopElapsedTimer()
+    }
   }
 
-  function completeAssistantMessage(design?: DesignDocument) {
+  function _startElapsedTimer() {
+    elapsedSeconds.value = 0
+    _stopElapsedTimer()
+    _elapsedTimer = setInterval(() => {
+      elapsedSeconds.value++
+    }, 1000)
+  }
+
+  function _stopElapsedTimer() {
+    if (_elapsedTimer) {
+      clearInterval(_elapsedTimer)
+      _elapsedTimer = null
+    }
+  }
+
+  function completeGeneration(design: DesignDocument, _usage?: unknown) {
     const message: AIChatMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
       role: 'assistant',
-      content: extractDescriptionText(currentStreamText.value),
+      content: 'Design genere avec succes.',
       design,
       createdAt: new Date(),
     }
     messages.value.push(message)
-    currentStreamText.value = ''
-    isStreaming.value = false
+    isGenerating.value = false
+    progress.value = 'completed'
+    _stopElapsedTimer()
+  }
+
+  function cancelGeneration() {
+    _cancelled.value = true
+    isGenerating.value = false
+    progress.value = 'idle'
+    _stopElapsedTimer()
+  }
+
+  function isCancelled(): boolean {
+    return _cancelled.value
   }
 
   function setError(errorMessage: string) {
     error.value = errorMessage
-    isStreaming.value = false
-    currentStreamText.value = ''
+    isGenerating.value = false
+    progress.value = 'failed'
+    _stopElapsedTimer()
   }
 
   function clearError() {
@@ -127,13 +141,14 @@ export const useAIChatStore = defineStore('aiChat', () => {
 
   function clearConversation() {
     messages.value = []
-    currentStreamText.value = ''
     error.value = null
     pendingImage.value = null
+    progress.value = 'idle'
+    elapsedSeconds.value = 0
+    _stopElapsedTimer()
   }
 
   function getConversationHistory(): AIChatMessage[] {
-    // Return messages for context (excluding current streaming)
     return messages.value.slice(-MAX_CONVERSATION_LENGTH)
   }
 
@@ -141,8 +156,9 @@ export const useAIChatStore = defineStore('aiChat', () => {
     // State
     isOpen,
     messages,
-    isStreaming,
-    currentStreamText,
+    isGenerating,
+    progress,
+    elapsedSeconds,
     pendingImage,
     quota,
     error,
@@ -151,16 +167,16 @@ export const useAIChatStore = defineStore('aiChat', () => {
     hasMessages,
     lastAssistantMessage,
     lastGeneratedDesign,
-    displayStreamText,
-    isGeneratingDesign,
     // Actions
     open,
     close,
     toggle,
     addUserMessage,
-    startAssistantMessage,
-    appendStreamText,
-    completeAssistantMessage,
+    setGenerating,
+    setProgress,
+    completeGeneration,
+    cancelGeneration,
+    isCancelled,
     setError,
     clearError,
     setPendingImage,

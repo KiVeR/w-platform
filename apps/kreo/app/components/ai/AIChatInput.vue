@@ -105,7 +105,7 @@ defineExpose({ focus, setPrompt })
       <!-- Attach button -->
       <button
         class="ai-input-attach"
-        :disabled="store.isStreaming"
+        :disabled="store.isGenerating"
         title="Joindre une image"
         @click="triggerFileSelect"
       >
@@ -119,7 +119,7 @@ defineExpose({ focus, setPrompt })
         class="ai-input-textarea"
         placeholder="Décrivez ce que vous voulez créer..."
         rows="1"
-        :disabled="store.isStreaming"
+        :disabled="store.isGenerating"
         @keydown="handleKeyDown"
       />
 

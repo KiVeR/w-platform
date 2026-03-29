@@ -1,10 +1,13 @@
-import type { AIChatRequest, AIImageInput, AIQuotaResponse, AIStreamChunk } from '#shared/types/ai'
+import type { AIImageInput, AIQuotaResponse } from '#shared/types/ai'
+
+const MAX_POLLS = 150
+const POLL_INTERVAL = 2000
 
 /**
  * Composable for AI chat functionality
  *
  * Handles:
- * - SSE streaming for chat messages
+ * - Async polling for AI generation (POST /ai/generate -> poll GET /ai/generate/{jobId}/status)
  * - Quota management
  * - Image upload preparation
  * - Design application with history integration
@@ -14,8 +17,7 @@ export function useAIChat() {
   const editorStore = useEditorStore()
   const historyStore = useHistoryStore()
   const widgetsStore = useWidgetsStore()
-  const config = useEditorConfig()
-  const api = useEditorApi()
+  const api = useApi()
 
   /**
    * Fetch current quota from API
@@ -31,134 +33,87 @@ export function useAIChat() {
   }
 
   /**
-   * Send a message to the AI and stream the response
+   * Send a message to the AI and poll for the generated result
    */
   async function sendMessage(prompt: string, image?: AIImageInput): Promise<void> {
     if (!chatStore.canSend || !prompt.trim())
       return
 
     chatStore.addUserMessage(prompt, image)
-    chatStore.startAssistantMessage()
+    chatStore.setGenerating(true)
     chatStore.setPendingImage(null)
 
     const contentStore = useContentStore()
 
-    const request: AIChatRequest = {
-      prompt,
-      image,
-      conversationHistory: chatStore.getConversationHistory().slice(0, -1), // Exclude the message we just added
-      context: {
-        currentWidgets: editorStore.design?.widgets?.length ?? 0,
-        contentType: contentStore.type || 'landing-page',
-      },
-    }
-
     try {
-      // Make SSE request using native fetch (not $fetch) for streaming support
-      const token = config.getAuthToken()
-      const url = `${config.apiBaseUrl}/ai/chat`
+      // 1. Submit generation job
+      chatStore.setProgress('submitting')
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      const submitResponse = await api.post<{ data: { job_id: string, status: string } }>('/ai/generate', {
+        prompt,
+        image,
+        conversationHistory: chatStore.getConversationHistory().slice(0, -1),
+        context: {
+          currentWidgets: editorStore.design?.widgets?.length ?? 0,
+          contentType: contentStore.type || 'landing-page',
         },
-        body: JSON.stringify(request),
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(errorText || `HTTP ${response.status}`)
-      }
+      const jobId = submitResponse.data.job_id
 
-      if (!response.body) {
-        throw new Error('No response body')
-      }
+      // 2. Poll for result
+      chatStore.setProgress('generating')
+      const result = await pollForResult(jobId)
 
-      // Process SSE stream
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-      let generatedDesign: DesignDocument | undefined
-
-      while (true) {
-        const { done, value } = await reader.read()
-
-        if (done)
-          break
-
-        buffer += decoder.decode(value, { stream: true })
-
-        // Parse SSE events from buffer
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || '' // Keep incomplete line in buffer
-
-        let eventType = ''
-        let eventData = ''
-
-        for (const line of lines) {
-          if (line.startsWith('event: ')) {
-            eventType = line.slice(7)
-          }
-          else if (line.startsWith('data: ')) {
-            eventData = line.slice(6)
-          }
-          else if (line === '' && eventType && eventData) {
-            // End of event, process it
-            try {
-              const chunk = JSON.parse(eventData) as AIStreamChunk
-              handleStreamChunk(chunk, (design) => {
-                generatedDesign = design
-              })
-            }
-            catch (parseError) {
-              console.error('[AI] Failed to parse chunk:', parseError)
-            }
-
-            eventType = ''
-            eventData = ''
-          }
-        }
-      }
-
-      // Complete the message
-      chatStore.completeAssistantMessage(generatedDesign)
-
-      // Refresh quota after generation
+      // 3. Apply result
+      chatStore.completeGeneration(result.design, result.usage)
       fetchQuota()
     }
     catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
+      const message = error instanceof Error ? error.message : 'Erreur inconnue'
       chatStore.setError(message)
       console.error('[AI] Chat error:', error)
     }
   }
 
   /**
-   * Handle a single stream chunk
+   * Poll the generation job status until completed, failed, or cancelled
    */
-  function handleStreamChunk(
-    chunk: AIStreamChunk,
-    onDesign: (design: DesignDocument) => void,
-  ): void {
-    switch (chunk.type) {
-      case 'token':
-        chatStore.appendStreamText(chunk.content)
-        break
+  async function pollForResult(jobId: string): Promise<{ design: DesignDocument, usage?: unknown }> {
+    for (let i = 0; i < MAX_POLLS; i++) {
+      await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL))
 
-      case 'design':
-        onDesign(chunk.content as DesignDocument)
-        break
+      // Check if user cancelled
+      if (chatStore.isCancelled()) {
+        throw new Error('Generation annulee')
+      }
 
-      case 'error':
-        chatStore.setError(chunk.content)
-        break
+      const pollResponse = await api.get<{ data: { status: string, result?: { design: DesignDocument, usage?: unknown }, error?: string } }>(
+        `/ai/generate/${jobId}/status`,
+      )
 
-      case 'done':
-        // Stream complete - usage info available in chunk.usage if needed
-        break
+      const data = pollResponse.data
+
+      if (data.status === 'completed') {
+        if (!data.result) {
+          throw new Error('Resultat manquant dans la reponse')
+        }
+        return data.result
+      }
+
+      if (data.status === 'failed') {
+        throw new Error(data.error || 'Generation echouee')
+      }
     }
+
+    throw new Error('Timeout — generation trop longue')
+  }
+
+  /**
+   * Cancel an ongoing generation
+   */
+  function cancel(): void {
+    chatStore.cancelGeneration()
   }
 
   /**
@@ -181,7 +136,7 @@ export function useAIChat() {
     // Validate file type
     const validTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
     if (!validTypes.includes(file.type)) {
-      chatStore.setError(`Type de fichier non supporté: ${file.type}`)
+      chatStore.setError(`Type de fichier non supporte: ${file.type}`)
       return null
     }
 
@@ -227,6 +182,7 @@ export function useAIChat() {
     // Actions
     fetchQuota,
     sendMessage,
+    cancel,
     applyDesign,
     prepareImage,
     attachImage,

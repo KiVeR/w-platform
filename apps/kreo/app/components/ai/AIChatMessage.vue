@@ -4,8 +4,6 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   message: AIChatMessage
-  isStreaming?: boolean
-  isGeneratingDesign?: boolean
 }>()
 
 const isUser = computed(() => props.message.role === 'user')
@@ -52,21 +50,6 @@ const formattedTime = computed(() => {
         <template v-if="message.content">
           {{ message.content }}
         </template>
-        <span
-          v-if="isStreaming"
-          class="ai-message-cursor"
-        >|</span>
-      </div>
-
-      <!-- Design generation indicator -->
-      <div
-        v-if="isGeneratingDesign"
-        class="ai-message-generating"
-      >
-        <div class="ai-generating-icon">
-          <span class="ai-generating-spinner" />
-        </div>
-        <span class="ai-generating-text">Création du design en cours...</span>
       </div>
 
       <!-- User attached image -->
@@ -167,52 +150,6 @@ const formattedTime = computed(() => {
 
 .ai-message--assistant .ai-message-text {
   padding: 4px 0;
-}
-
-/* Streaming cursor */
-.ai-message-cursor {
-  animation: blink 1s step-end infinite;
-  color: var(--color-info-500);
-  font-weight: bold;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-/* Design generation indicator */
-.ai-message-generating {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  margin-top: 8px;
-  background: linear-gradient(135deg, var(--color-info-50), #f0f9ff);
-  border: 1px solid var(--color-info-200);
-  border-radius: 10px;
-  animation: message-fade-in 0.3s ease;
-}
-
-.ai-generating-spinner {
-  display: block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--color-info-200);
-  border-top-color: var(--color-info-500);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.ai-generating-text {
-  font-size: 13px;
-  color: var(--color-info-500);
-  font-weight: 500;
 }
 
 /* Attached image */

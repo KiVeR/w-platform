@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { X } from 'lucide-vue-next'
+import { Loader2, X } from 'lucide-vue-next'
 import { onMounted, ref, watch } from 'vue'
 
-const { store, fetchQuota } = useAIChat()
+const { store, fetchQuota, cancel } = useAIChat()
 
 const messagesContainer = ref<HTMLElement | null>(null)
 const inputRef = ref<InstanceType<typeof AIChatInput> | null>(null)
 
 // Example prompts for empty state
 const examplePrompts = [
-  'Crée une landing page pour un restaurant avec menu et réservation',
-  'Génère un formulaire de contact avec nom, email et message',
-  'Crée une page promotionnelle avec carrousel d\'images et bouton CTA',
+  'Cree une landing page pour un restaurant avec menu et reservation',
+  'Genere un formulaire de contact avec nom, email et message',
+  'Cree une page promotionnelle avec carrousel d\'images et bouton CTA',
 ]
 
 // Fetch quota on mount
@@ -28,8 +28,8 @@ watch(() => store.isOpen, (isOpen) => {
   }
 })
 
-// Auto-scroll to bottom when messages change
-watch([() => store.messages.length, () => store.currentStreamText], () => {
+// Auto-scroll to bottom when messages change or progress updates
+watch([() => store.messages.length, () => store.progress], () => {
   scrollToBottom()
 })
 
@@ -51,6 +51,14 @@ function handleEscape(e: KeyboardEvent) {
 
 function handleExampleClick(prompt: string) {
   inputRef.value?.setPrompt(prompt)
+}
+
+function handleCancel() {
+  cancel()
+}
+
+function handleRetry() {
+  store.clearError()
 }
 </script>
 
@@ -107,17 +115,17 @@ function handleExampleClick(prompt: string) {
           >
             <!-- Empty state -->
             <div
-              v-if="!store.hasMessages && !store.isStreaming"
+              v-if="!store.hasMessages && !store.isGenerating"
               class="ai-chat-empty"
             >
               <div class="ai-chat-empty-icon">
-                ✨
+                <span aria-hidden="true">&#10024;</span>
               </div>
               <h3 class="ai-chat-empty-title">
                 Comment puis-je vous aider ?
               </h3>
               <p class="ai-chat-empty-text">
-                Décrivez le design que vous souhaitez créer. Vous pouvez aussi joindre une image ou un screenshot.
+                Decrivez le design que vous souhaitez creer. Vous pouvez aussi joindre une image ou un screenshot.
               </p>
               <div class="ai-chat-examples">
                 <p class="ai-chat-examples-label">
@@ -142,18 +150,33 @@ function handleExampleClick(prompt: string) {
                 :message="message"
               />
 
-              <!-- Streaming message -->
-              <AIChatMessage
-                v-if="store.isStreaming"
-                :message="{
-                  id: 'streaming',
-                  role: 'assistant',
-                  content: store.displayStreamText,
-                  createdAt: new Date(),
-                }"
-                :is-streaming="true"
-                :is-generating-design="store.isGeneratingDesign"
-              />
+              <!-- Generation progress indicator -->
+              <div
+                v-if="store.isGenerating"
+                class="ai-chat-progress"
+              >
+                <div class="ai-chat-progress-content">
+                  <Loader2
+                    :size="20"
+                    class="ai-chat-spinner"
+                  />
+                  <span v-if="store.progress === 'submitting'" class="ai-chat-progress-text">
+                    Envoi...
+                  </span>
+                  <span v-else-if="store.progress === 'generating'" class="ai-chat-progress-text">
+                    Generation en cours...
+                    <span v-if="store.elapsedSeconds > 0" class="ai-chat-elapsed">
+                      {{ store.elapsedSeconds }}s
+                    </span>
+                  </span>
+                </div>
+                <button
+                  class="ai-chat-cancel"
+                  @click="handleCancel"
+                >
+                  Annuler
+                </button>
+              </div>
             </template>
           </div>
 
@@ -163,9 +186,17 @@ function handleExampleClick(prompt: string) {
             class="ai-chat-error"
           >
             <span>{{ store.error }}</span>
-            <button @click="store.clearError()">
-              ×
-            </button>
+            <div class="ai-chat-error-actions">
+              <button
+                class="ai-chat-retry"
+                @click="handleRetry"
+              >
+                Reessayer
+              </button>
+              <button @click="store.clearError()">
+                &times;
+              </button>
+            </div>
           </div>
 
           <!-- Input -->
@@ -323,6 +354,59 @@ function handleExampleClick(prompt: string) {
   border-color: var(--color-neutral-300);
 }
 
+/* Generation progress indicator */
+.ai-chat-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 8px;
+}
+
+.ai-chat-progress-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-chat-spinner {
+  animation: spin 1s linear infinite;
+  color: var(--color-primary-500);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ai-chat-progress-text {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.ai-chat-elapsed {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ai-chat-cancel {
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ai-chat-cancel:hover {
+  background: var(--color-neutral-200);
+  color: var(--color-text-primary);
+}
+
 /* Error message */
 .ai-chat-error {
   display: flex;
@@ -337,7 +421,28 @@ function handleExampleClick(prompt: string) {
   font-size: 13px;
 }
 
-.ai-chat-error button {
+.ai-chat-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-chat-retry {
+  padding: 2px 8px;
+  background: transparent;
+  border: 1px solid var(--color-error-300);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--color-error-600);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ai-chat-retry:hover {
+  background: var(--color-error-100);
+}
+
+.ai-chat-error button:last-child {
   background: none;
   border: none;
   color: var(--color-error-600);
