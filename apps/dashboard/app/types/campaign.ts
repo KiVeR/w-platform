@@ -93,6 +93,10 @@ export interface CampaignRow {
   scheduled_at: string | null
   sent_at: string | null
   created_at: string
+  routing_status: CampaignRoutingStatus | null
+  routing_at: string | null
+  routing_executed_at: string | null
+  router_name: string | null
 }
 
 export interface CampaignPagination {
@@ -107,6 +111,7 @@ export interface CampaignFilters {
   type: string
   dateFrom: string
   dateTo: string
+  routingStatus?: CampaignRoutingStatus
 }
 
 export interface Shop {
@@ -246,6 +251,7 @@ export interface CampaignDetailEnriched extends CampaignDetail {
   router_id: number | null
   variable_schema_id: number | null
   routing_at: string | null
+  routing_executed_at: string | null
   recipients_count: number | null
   router?: { id: number, name: string, external_id: number | null } | null
 }
