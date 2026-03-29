@@ -83,6 +83,7 @@ class RoutingLogicStartJob implements ShouldBeUnique, ShouldQueue
             ->then(function (Batch $batch) use ($campaign): void {
                 $campaign->update([
                     'routing_status' => CampaignRoutingStatus::RoutingCompleted,
+                    'routing_executed_at' => now(),
                 ]);
             })
             ->catch(function (Batch $batch, Throwable $e) use ($campaign): void {
