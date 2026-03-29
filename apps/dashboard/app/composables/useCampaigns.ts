@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { useApi } from '@/composables/useApi'
 import { usePartnerScope } from '@/composables/usePartnerScope'
 import type { operations } from '@/types/api'
-import type { CampaignFilters, CampaignPagination, CampaignRow, CampaignStatus, CampaignType } from '@/types/campaign'
+import type { CampaignFilters, CampaignPagination, CampaignRow, CampaignRoutingStatus, CampaignStatus, CampaignType } from '@/types/campaign'
 
 type CampaignsIndexQuery = NonNullable<operations['campaigns.index']['parameters']['query']>
 
@@ -28,6 +28,10 @@ export function useCampaigns() {
       scheduled_at: raw.scheduled_at ? String(raw.scheduled_at) : null,
       sent_at: raw.sent_at ? String(raw.sent_at) : null,
       created_at: String(raw.created_at ?? ''),
+      routing_status: (raw.routing_status as CampaignRoutingStatus | undefined) ?? null,
+      routing_at: raw.routing_at ? String(raw.routing_at) : null,
+      routing_executed_at: raw.routing_executed_at ? String(raw.routing_executed_at) : null,
+      router_name: raw.router && typeof raw.router === 'object' ? String((raw.router as Record<string, unknown>).name ?? '') : null,
     }
   }
 
@@ -43,6 +47,8 @@ export function useCampaigns() {
         'filter[name]': filters.value.search || undefined,
         'filter[created_at_from]': filters.value.dateFrom || undefined,
         'filter[created_at_to]': filters.value.dateTo || undefined,
+        'filter[routing_status]': filters.value.routingStatus || undefined,
+        include: 'router',
       }) as CampaignsIndexQuery
 
       const { data, error } = await api.GET('/campaigns', {

@@ -34,9 +34,106 @@ export function useCampaignActions(campaignId: MaybeRef<number>) {
     }
   }
 
+  const isRoutingActionPending = ref(false)
+  const routingActionError = ref<string | null>(null)
+
+  async function startRouting(): Promise<boolean> {
+    isRoutingActionPending.value = true
+    routingActionError.value = null
+    try {
+      const { error } = await api.POST('/campaigns/{campaign}/routing/start' as never, {
+        params: { path: { campaign: toValue(campaignId) } },
+      } as never)
+      if (error) {
+        routingActionError.value = 'routing_error'
+        return false
+      }
+      return true
+    }
+    catch {
+      routingActionError.value = 'routing_error'
+      return false
+    }
+    finally {
+      isRoutingActionPending.value = false
+    }
+  }
+
+  async function pauseRouting(): Promise<boolean> {
+    isRoutingActionPending.value = true
+    routingActionError.value = null
+    try {
+      const { error } = await api.POST('/campaigns/{campaign}/routing/pause' as never, {
+        params: { path: { campaign: toValue(campaignId) } },
+      } as never)
+      if (error) {
+        routingActionError.value = 'routing_error'
+        return false
+      }
+      return true
+    }
+    catch {
+      routingActionError.value = 'routing_error'
+      return false
+    }
+    finally {
+      isRoutingActionPending.value = false
+    }
+  }
+
+  async function cancelRouting(): Promise<boolean> {
+    isRoutingActionPending.value = true
+    routingActionError.value = null
+    try {
+      const { error } = await api.POST('/campaigns/{campaign}/routing/cancel' as never, {
+        params: { path: { campaign: toValue(campaignId) } },
+      } as never)
+      if (error) {
+        routingActionError.value = 'routing_error'
+        return false
+      }
+      return true
+    }
+    catch {
+      routingActionError.value = 'routing_error'
+      return false
+    }
+    finally {
+      isRoutingActionPending.value = false
+    }
+  }
+
+  async function pullReport(): Promise<boolean> {
+    isRoutingActionPending.value = true
+    routingActionError.value = null
+    try {
+      const { error } = await api.POST('/campaigns/{campaign}/pull-report' as never, {
+        params: { path: { campaign: toValue(campaignId) } },
+      } as never)
+      if (error) {
+        routingActionError.value = 'routing_error'
+        return false
+      }
+      return true
+    }
+    catch {
+      routingActionError.value = 'routing_error'
+      return false
+    }
+    finally {
+      isRoutingActionPending.value = false
+    }
+  }
+
   return {
     isCancelling,
     cancelError,
     cancelCampaign,
+    isRoutingActionPending,
+    routingActionError,
+    startRouting,
+    pauseRouting,
+    cancelRouting,
+    pullReport,
   }
 }

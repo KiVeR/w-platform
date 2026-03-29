@@ -60,6 +60,7 @@ function mapCampaign(raw: Record<string, unknown>): CampaignDetailEnriched {
     router_id: optionalNumber(raw.router_id),
     variable_schema_id: optionalNumber(raw.variable_schema_id),
     routing_at: optionalString(raw.routing_at),
+    routing_executed_at: optionalString(raw.routing_executed_at),
     recipients_count: optionalNumber(raw.recipients_count),
     router: raw.router ? raw.router as CampaignDetailEnriched['router'] : null,
   }
@@ -80,7 +81,7 @@ export function useCampaignDetail(id: MaybeRef<number>) {
       const { data: resp, error: apiError } = await api.GET('/campaigns/{campaign}', {
         params: {
           path: { campaign: toValue(id) },
-          query: { include: 'partner,creator' },
+          query: { include: 'partner,creator,router' },
         },
       } as never)
       if (apiError) {
