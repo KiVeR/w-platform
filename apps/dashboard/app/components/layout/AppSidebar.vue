@@ -13,6 +13,7 @@ import {
   Building2,
   Users,
   ArrowLeft,
+  Link,
 } from 'lucide-vue-next'
 import {
   Sidebar,
@@ -68,6 +69,7 @@ const hubNavGroups = computed<NavGroup[]>(() => [
       { label: t('nav.demandes'), icon: FileText, to: '/demandes', requiredPermissions: ['view demandes'] },
       { label: t('nav.operations'), icon: ClipboardList, to: '/operations', requiredPermissions: ['view operations'] },
       { label: t('nav.billing'), icon: Receipt, to: '/billing', requiredPermissions: ['view operations'] },
+      { label: t('nav.shortUrls'), icon: Link, to: '/short-urls', requiredPermissions: ['view short-urls'] },
     ],
   },
   ...(auth.isAdmin
