@@ -69,11 +69,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('ai-design-save', fn (Request $request) =>
-            Limit::perMinute(60)->by($request->user()?->id)
+            Limit::perMinute(60)->by($request->user()?->id ?: $request->ip())
         );
 
         RateLimiter::for('ai-content-create', fn (Request $request) =>
-            Limit::perHour(50)->by($request->user()?->id)
+            Limit::perHour(50)->by($request->user()?->id ?: $request->ip())
         );
 
         Gate::define('viewApiDocs', function () {
