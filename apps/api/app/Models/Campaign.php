@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $sent_at
  * @property \Illuminate\Support\Carbon|null $draft_notified_at
  * @property \Illuminate\Support\Carbon|null $routing_at
+ * @property \Illuminate\Support\Carbon|null $routing_executed_at
  * @property string|null $routing_batch_id
  * @property string|null $wp_routing_id
  * @property int|null $operation_id
@@ -78,6 +79,7 @@ class Campaign extends Model
         'router_id',
         'routing_status',
         'routing_at',
+        'routing_executed_at',
         'routing_batch_id',
         'wp_routing_id',
         'operation_id',
@@ -103,6 +105,7 @@ class Campaign extends Model
             'draft_notified_at' => 'datetime',
             'routing_status' => CampaignRoutingStatus::class,
             'routing_at' => 'datetime',
+            'routing_executed_at' => 'datetime',
         ];
     }
 
