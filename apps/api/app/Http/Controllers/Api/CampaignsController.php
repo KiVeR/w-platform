@@ -61,9 +61,11 @@ class CampaignsController extends Controller
                 }),
                 AllowedFilter::custom('created_at_from', DateRangeFilter::from('created_at')),
                 AllowedFilter::custom('created_at_to', DateRangeFilter::to('created_at')),
+                AllowedFilter::exact('routing_status'),
+                AllowedFilter::exact('router_id'),
             ])
-            ->allowedSorts(['name', 'scheduled_at', 'sent_at', 'created_at'])
-            ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage'])
+            ->allowedSorts(['name', 'scheduled_at', 'sent_at', 'created_at', 'routing_at'])
+            ->allowedIncludes(['partner', 'creator', 'interestGroups', 'landingPage', 'router'])
             ->paginate(config('api.pagination.default'));
 
         return CampaignResource::collection($campaigns);
