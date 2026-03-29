@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { mockUseI18n } from '../../../helpers/stubs'
-import type { ShortUrlFilters } from '@/types/short-url'
+import type { ShortUrlFilters } from '@/types/shortUrl'
 
 vi.stubGlobal('ref', ref)
 mockUseI18n()

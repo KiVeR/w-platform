@@ -59,14 +59,14 @@ describe('ShortUrlStatsCard', () => {
     expect(wrapper.find('[data-total-clicks]').text()).toContain('50')
   })
 
-  it('affiche le pourcentage humain', () => {
+  it('affiche le pourcentage humain via i18n', () => {
     const wrapper = mountCard({ click_count: 75, click_count_bots: 25 })
-    expect(wrapper.text()).toContain('75%')
+    expect(wrapper.text()).toContain('shortUrls.detail.humanPercent')
   })
 
-  it('gère le cas 0 clics avec 0%', () => {
+  it('gère le cas 0 clics', () => {
     const wrapper = mountCard({ click_count: 0, click_count_bots: 0 })
-    expect(wrapper.text()).toContain('0%')
+    expect(wrapper.text()).toContain('shortUrls.detail.humanPercent')
   })
 
   it('la barre de proportion a la bonne largeur (75%)', () => {

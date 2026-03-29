@@ -4,7 +4,7 @@ import { Search } from 'lucide-vue-next'
 import type { AcceptableValue } from 'reka-ui'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import type { ShortUrlFilters } from '@/types/short-url'
+import type { ShortUrlFilters } from '@/types/shortUrl'
 
 const props = defineProps<{ filters: ShortUrlFilters }>()
 const emit = defineEmits<{ 'update:filters': [filters: Partial<ShortUrlFilters>] }>()

@@ -174,7 +174,7 @@ describe('short-urls/[id]/index page', () => {
     await flushPromises()
 
     expect(mockDeleteShortUrl).toHaveBeenCalled()
-    expect(toast.success).toHaveBeenCalledWith('Deleted')
+    expect(toast.success).toHaveBeenCalledWith('shortUrls.form.deleteSuccess')
     expect(mockNavigateTo).toHaveBeenCalledWith('/short-urls')
   })
 

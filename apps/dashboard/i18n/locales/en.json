@@ -1590,7 +1590,9 @@
   "common": {
     "retry": "Retry",
     "noResults": "No results found.",
-    "minChars": "Type at least 2 characters"
+    "minChars": "Type at least 2 characters",
+    "yes": "Yes",
+    "no": "No"
   },
   "shortUrls": {
     "title": "Short URLs",
@@ -1635,6 +1637,8 @@
       "createTitle": "New short URL",
       "editTitle": "Edit short URL",
       "saveSuccess": "Short URL saved",
+      "deleteSuccess": "Short URL deleted",
+      "preview": "Preview",
       "deleteConfirm": {
         "title": "Delete this short URL?",
         "description": "This action is irreversible. Redirections to this URL will no longer work."
@@ -1655,7 +1659,11 @@
       "published": "Published",
       "traceable": "Traceable",
       "notTraceable": "Not traceable",
-      "copySuccess": "Link copied to clipboard"
+      "copySuccess": "Link copied to clipboard",
+      "humanPercent": "{pct}% human",
+      "importId": "Import",
+      "actionEnable": "Enable",
+      "actionDisable": "Disable"
     },
     "empty": {
       "title": "No short URLs",
@@ -1663,7 +1671,18 @@
     },
     "pagination": {
       "total": "{total} short URL(s)",
-      "page": "Page {page} of {lastPage}"
+      "page": "Page {page} of {lastPage}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "error": {
+      "title": "Loading error",
+      "description": "Unable to load short URLs.",
+      "retry": "Retry"
+    },
+    "status": {
+      "active": "Active",
+      "disabled": "Disabled"
     }
   }
 }

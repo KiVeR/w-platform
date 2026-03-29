@@ -37,7 +37,20 @@ async function handleFilterUpdate(f: Partial<ShortUrlFiltersState>) {
 
 async function handleSort(field: string) { await setSort(field) }
 async function handlePage(page: number) { await setPage(page) }
-async function handleExport() { await exportCsv() }
+async function handleExport() {
+  await exportCsv({
+    slug: t('shortUrls.columns.slug'),
+    link: t('shortUrls.columns.link'),
+    clicks: t('shortUrls.columns.clicks'),
+    bots: t('shortUrls.columns.clicksBots'),
+    status: t('shortUrls.columns.status'),
+    traceable: t('shortUrls.columns.traceable'),
+    active: t('shortUrls.filters.statusEnabled'),
+    inactive: t('shortUrls.filters.statusDisabled'),
+    yes: t('common.yes'),
+    no: t('common.no'),
+  })
+}
 </script>
 
 <template>

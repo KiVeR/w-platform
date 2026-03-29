@@ -34,7 +34,7 @@ const { shortUrl, isLoading, hasError, deleteShortUrl, toggleEnabled } = useShor
 async function handleDelete() {
   const success = await deleteShortUrl()
   if (success) {
-    toast.success('Deleted')
+    toast.success(t('shortUrls.form.deleteSuccess'))
     navigateTo('/short-urls')
   }
 }
@@ -69,12 +69,12 @@ async function handleToggle() {
               <AlertDialogDescription>{{ t('shortUrls.form.deleteConfirm.description') }}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{{ t('cancel') }}</AlertDialogCancel>
+              <AlertDialogCancel>{{ t('common.cancel') }}</AlertDialogCancel>
               <AlertDialogAction
                 class="bg-destructive text-destructive-foreground"
                 @click="handleDelete"
               >
-                {{ t('confirm') }}
+                {{ t('common.confirm') }}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { computed, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { mockUseI18n, NuxtLinkStub } from '../../../helpers/stubs'
-import type { ShortUrlRow, ShortUrlPagination } from '@/types/short-url'
+import type { ShortUrlRow, ShortUrlPagination } from '@/types/shortUrl'
 
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('ref', ref)
@@ -83,7 +83,7 @@ describe('ShortUrlDataTable', () => {
   it('affiche l\'erreur state quand hasError est true', () => {
     const wrapper = mountTable({ data: [], isLoading: false, hasError: true })
     expect(wrapper.find('[data-empty]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('campaigns.error.title')
+    expect(wrapper.text()).toContain('shortUrls.error.title')
   })
 
   it('affiche le bouton retry quand hasError est true', async () => {
@@ -91,7 +91,7 @@ describe('ShortUrlDataTable', () => {
     const emptyState = wrapper.find('[data-empty]')
     expect(emptyState.exists()).toBe(true)
     // The EmptyState stub renders title, and has action-label prop
-    expect(wrapper.text()).toContain('campaigns.error.title')
+    expect(wrapper.text()).toContain('shortUrls.error.title')
   })
 
   it('affiche les lignes avec les données correctes', () => {
@@ -171,7 +171,7 @@ describe('ShortUrlDataTable', () => {
   it('émet page(page-1) quand on clique sur précédent', async () => {
     const wrapper = mountTable({ pagination: { page: 2, lastPage: 3, total: 30 } })
     const buttons = wrapper.findAll('button')
-    const prevButton = buttons.find(b => !b.attributes('disabled') && b.text().includes('campaigns.pagination.previous'))
+    const prevButton = buttons.find(b => !b.attributes('disabled') && b.text().includes('shortUrls.pagination.previous'))
     expect(prevButton).toBeDefined()
     await prevButton!.trigger('click')
     expect(wrapper.emitted('page')).toBeTruthy()
@@ -181,7 +181,7 @@ describe('ShortUrlDataTable', () => {
   it('émet page(page+1) quand on clique sur suivant', async () => {
     const wrapper = mountTable({ pagination: { page: 1, lastPage: 3, total: 30 } })
     const buttons = wrapper.findAll('button')
-    const nextButton = buttons.find(b => !b.attributes('disabled') && b.text().includes('campaigns.pagination.next'))
+    const nextButton = buttons.find(b => !b.attributes('disabled') && b.text().includes('shortUrls.pagination.next'))
     expect(nextButton).toBeDefined()
     await nextButton!.trigger('click')
     expect(wrapper.emitted('page')).toBeTruthy()

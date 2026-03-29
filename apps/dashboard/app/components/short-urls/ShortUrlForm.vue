@@ -51,7 +51,7 @@ async function handleSubmit() {
             <Input v-model.number="form.length" type="number" min="3" max="12" />
           </div>
           <Button variant="outline" class="mt-auto" @click="generatePreview" data-preview-btn>
-            <Eye class="mr-2 size-4" />Preview
+            <Eye class="mr-2 size-4" />{{ t('shortUrls.form.preview') }}
           </Button>
         </div>
         <p v-if="fakePreview" class="text-sm font-mono bg-muted p-2 rounded" data-preview-text>{{ fakePreview }}</p>
@@ -86,8 +86,8 @@ async function handleSubmit() {
       <p v-if="saveError" class="text-sm text-destructive" data-save-error>{{ saveError }}</p>
     </CardContent>
     <CardFooter class="flex justify-end gap-3">
-      <Button variant="ghost" @click="emit('cancel')" data-cancel-btn>{{ t('cancel') }}</Button>
-      <Button @click="handleSubmit" :disabled="isSaving" data-save-btn>{{ t('confirm') }}</Button>
+      <Button variant="ghost" @click="emit('cancel')" data-cancel-btn>{{ t('common.cancel') }}</Button>
+      <Button @click="handleSubmit" :disabled="isSaving" data-save-btn>{{ t('common.confirm') }}</Button>
     </CardFooter>
   </Card>
 </template>

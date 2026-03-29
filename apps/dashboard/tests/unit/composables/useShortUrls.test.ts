@@ -237,16 +237,17 @@ describe('useShortUrls', () => {
       .mockResolvedValueOnce({ data: { data: fakeShortUrlList(2), meta: page1Meta } })
       .mockResolvedValueOnce({ data: { data: fakeShortUrlList(1), meta: page2Meta } })
 
+    const fakeHeaders = { slug: 'Slug', link: 'URL', clicks: 'Clicks', bots: 'Bots', status: 'Status', traceable: 'Traceable', active: 'Active', inactive: 'Inactive', yes: 'Yes', no: 'No' }
     const { exportCsv, isExporting } = useShortUrls()
     expect(isExporting.value).toBe(false)
-    const exportPromise = exportCsv()
+    const exportPromise = exportCsv(fakeHeaders)
     await exportPromise
     expect(isExporting.value).toBe(false)
     expect(mockGet).toHaveBeenCalledTimes(2)
     expect(mockDownloadCsv).toHaveBeenCalledOnce()
     expect(mockDownloadCsv).toHaveBeenCalledWith(
       'short-urls-export.csv',
-      ['Slug', 'URL destination', 'Clics humains', 'Clics bots', 'Statut', 'Traçable'],
+      ['Slug', 'URL', 'Clicks', 'Bots', 'Status', 'Traceable'],
       expect.arrayContaining([
         expect.arrayContaining(['slug-1']),
       ]),
@@ -255,15 +256,12 @@ describe('useShortUrls', () => {
     expect(rows).toHaveLength(3)
   })
 
-  test('exportCsv met isExporting a false apres echec', async () => {
+  test('exportCsv met isExporting a false apres echec et ne genere pas de CSV vide', async () => {
+    const fakeHeaders = { slug: 'Slug', link: 'URL', clicks: 'Clicks', bots: 'Bots', status: 'Status', traceable: 'Traceable', active: 'Active', inactive: 'Inactive', yes: 'Yes', no: 'No' }
     mockGet.mockResolvedValue({ error: { message: 'fail' } })
     const { exportCsv, isExporting } = useShortUrls()
-    await exportCsv()
+    await exportCsv(fakeHeaders)
     expect(isExporting.value).toBe(false)
-    expect(mockDownloadCsv).toHaveBeenCalledWith(
-      'short-urls-export.csv',
-      expect.any(Array),
-      [],
-    )
+    expect(mockDownloadCsv).not.toHaveBeenCalled()
   })
 })

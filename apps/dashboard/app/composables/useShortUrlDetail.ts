@@ -1,22 +1,9 @@
 import { ref, watch, type Ref } from 'vue'
 import { useApi } from '@/composables/useApi'
+import { mapShortUrl } from '@/utils/shortUrlMapper'
 import type { ShortUrl } from '@/types/shortUrl'
 
 type UpdateShortUrlPayload = Partial<Pick<ShortUrl, 'slug' | 'link' | 'import_id' | 'is_enabled' | 'is_draft' | 'is_traceable_by_recipient'>>
-
-function mapShortUrl(raw: Record<string, unknown>): ShortUrl {
-  return {
-    id: Number(raw.id),
-    slug: String(raw.slug ?? ''),
-    link: raw.link ? String(raw.link) : null,
-    click_count: Number(raw.click_count ?? 0),
-    click_count_bots: Number(raw.click_count_bots ?? 0),
-    is_draft: raw.is_draft === 'true' || raw.is_draft === true,
-    is_enabled: raw.is_enabled === 'true' || raw.is_enabled === true,
-    is_traceable_by_recipient: raw.is_traceable_by_recipient === 'true' || raw.is_traceable_by_recipient === true,
-    import_id: raw.import_id ? String(raw.import_id) : null,
-  }
-}
 
 export function useShortUrlDetail(shortUrlId: Ref<number | null>) {
   const api = useApi()

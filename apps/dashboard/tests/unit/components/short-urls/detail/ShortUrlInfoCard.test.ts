@@ -106,7 +106,8 @@ describe('ShortUrlInfoCard', () => {
 
   it('affiche l\'import ID quand présent', () => {
     const wrapper = mountCard({ import_id: 'IMP-42' })
-    expect(wrapper.text()).toContain('Import: IMP-42')
+    expect(wrapper.text()).toContain('shortUrls.detail.importId')
+    expect(wrapper.text()).toContain('IMP-42')
   })
 
   it('n\'affiche pas l\'import ID quand absent', () => {
@@ -137,15 +138,15 @@ describe('ShortUrlInfoCard', () => {
     expect(wrapper.emitted('toggle')).toHaveLength(1)
   })
 
-  it('le bouton toggle affiche "disabled" quand is_enabled est true (action: désactiver)', () => {
+  it('le bouton toggle affiche "actionDisable" quand is_enabled est true (action: désactiver)', () => {
     const wrapper = mountCard({ is_enabled: true }, true)
     const btn = wrapper.find('[data-toggle-btn]')
-    expect(btn.text()).toContain('shortUrls.detail.disabled')
+    expect(btn.text()).toContain('shortUrls.detail.actionDisable')
   })
 
-  it('le bouton toggle affiche "enabled" quand is_enabled est false (action: activer)', () => {
+  it('le bouton toggle affiche "actionEnable" quand is_enabled est false (action: activer)', () => {
     const wrapper = mountCard({ is_enabled: false }, true)
     const btn = wrapper.find('[data-toggle-btn]')
-    expect(btn.text()).toContain('shortUrls.detail.enabled')
+    expect(btn.text()).toContain('shortUrls.detail.actionEnable')
   })
 })

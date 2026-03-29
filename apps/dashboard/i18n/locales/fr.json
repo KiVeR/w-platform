@@ -1590,7 +1590,9 @@
   "common": {
     "retry": "Réessayer",
     "noResults": "Aucun résultat trouvé.",
-    "minChars": "Tapez au moins 2 caractères"
+    "minChars": "Tapez au moins 2 caractères",
+    "yes": "Oui",
+    "no": "Non"
   },
   "shortUrls": {
     "title": "URLs courtes",
@@ -1635,6 +1637,8 @@
       "createTitle": "Nouvelle URL courte",
       "editTitle": "Modifier l'URL courte",
       "saveSuccess": "URL courte enregistrée",
+      "deleteSuccess": "URL courte supprimée",
+      "preview": "Aperçu",
       "deleteConfirm": {
         "title": "Supprimer cette URL courte ?",
         "description": "Cette action est irréversible. Les redirections vers cette URL ne fonctionneront plus."
@@ -1655,7 +1659,11 @@
       "published": "Publiée",
       "traceable": "Traçable",
       "notTraceable": "Non traçable",
-      "copySuccess": "Lien copié dans le presse-papier"
+      "copySuccess": "Lien copié dans le presse-papier",
+      "humanPercent": "{pct}% humains",
+      "importId": "Import",
+      "actionEnable": "Activer",
+      "actionDisable": "Désactiver"
     },
     "empty": {
       "title": "Aucune URL courte",
@@ -1663,7 +1671,18 @@
     },
     "pagination": {
       "total": "{total} URL(s) courte(s)",
-      "page": "Page {page} sur {lastPage}"
+      "page": "Page {page} sur {lastPage}",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "error": {
+      "title": "Erreur de chargement",
+      "description": "Impossible de charger les URLs courtes.",
+      "retry": "Réessayer"
+    },
+    "status": {
+      "active": "Actif",
+      "disabled": "Désactivé"
     }
   }
 }

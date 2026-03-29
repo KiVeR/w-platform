@@ -65,12 +65,12 @@ async function copySlug() {
         data-toggle-btn
         @click="emit('toggle')"
       >
-        {{ shortUrl.is_enabled ? t('shortUrls.detail.disabled') : t('shortUrls.detail.enabled') }}
+        {{ shortUrl.is_enabled ? t('shortUrls.detail.actionDisable') : t('shortUrls.detail.actionEnable') }}
       </Button>
 
       <!-- Import ID -->
       <p v-if="shortUrl.import_id" class="text-sm text-muted-foreground">
-        Import: {{ shortUrl.import_id }}
+        {{ t('shortUrls.detail.importId') }} : {{ shortUrl.import_id }}
       </p>
     </CardContent>
   </Card>

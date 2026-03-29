@@ -43,7 +43,7 @@ const humanPercent = computed(() =>
           :style="{ width: humanPercent + '%' }"
         />
       </div>
-      <p class="text-sm text-muted-foreground mt-2">{{ humanPercent }}% humains</p>
+      <p class="text-sm text-muted-foreground mt-2">{{ t('shortUrls.detail.humanPercent', { pct: humanPercent }) }}</p>
     </CardContent>
   </Card>
 </template>

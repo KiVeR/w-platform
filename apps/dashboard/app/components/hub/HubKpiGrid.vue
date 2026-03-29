@@ -52,7 +52,7 @@ const cards = computed(() => [
 <template>
   <div
     data-hub-kpi-grid
-    class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+    :class="['grid gap-4 md:grid-cols-2', cards.length > 3 ? 'xl:grid-cols-4' : 'xl:grid-cols-3']"
   >
     <DashboardKpiCard
       v-for="card in cards"

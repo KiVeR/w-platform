@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useApi } from '@/composables/useApi'
 import { downloadCsv } from '@/utils/exportCsv'
+import { mapShortUrlToRow } from '@/utils/shortUrlMapper'
 import type { ShortUrlFilters, ShortUrlPagination, ShortUrlRow } from '@/types/shortUrl'
 
 export function useShortUrls() {
@@ -14,19 +15,7 @@ export function useShortUrls() {
   const sort = ref('-id')
   const isExporting = ref(false)
 
-  function mapShortUrl(raw: Record<string, unknown>): ShortUrlRow {
-    return {
-      id: Number(raw.id),
-      slug: String(raw.slug ?? ''),
-      link: raw.link ? String(raw.link) : null,
-      clickCount: Number(raw.click_count ?? 0),
-      clickCountBots: Number(raw.click_count_bots ?? 0),
-      isDraft: raw.is_draft === 'true' || raw.is_draft === true,
-      isEnabled: raw.is_enabled === 'true' || raw.is_enabled === true,
-      isTraceable: raw.is_traceable_by_recipient === 'true' || raw.is_traceable_by_recipient === true,
-      importId: raw.import_id ? String(raw.import_id) : null,
-    }
-  }
+  const mapShortUrl = mapShortUrlToRow
 
   async function fetchShortUrls(): Promise<void> {
     isLoading.value = true
@@ -89,15 +78,18 @@ export function useShortUrls() {
     pagination.value.page = 1
   }
 
-  async function exportCsv(): Promise<void> {
+  async function exportCsv(headers: { slug: string, link: string, clicks: string, bots: string, status: string, traceable: string, active: string, inactive: string, yes: string, no: string }): Promise<void> {
     isExporting.value = true
     try {
       const allRows: ShortUrlRow[] = []
       let page = 1
       let hasMore = true
       while (hasMore) {
+        const query: Record<string, unknown> = { page, perPage: '100' }
+        if (filters.value.search) query.search = filters.value.search
+        if (filters.value.isEnabled !== 'all') query.is_enabled = filters.value.isEnabled === 'true'
         const { data, error } = await api.GET('/short-urls', {
-          params: { query: { page, perPage: '100' } },
+          params: { query },
         } as never)
         if (error || !data) break
         const raw = data as { data: Record<string, unknown>[], meta: Record<string, unknown> }
@@ -105,16 +97,17 @@ export function useShortUrls() {
         hasMore = page < Number(raw.meta.last_page ?? 1)
         page++
       }
+      if (allRows.length === 0) return
       downloadCsv(
         'short-urls-export.csv',
-        ['Slug', 'URL destination', 'Clics humains', 'Clics bots', 'Statut', 'Traçable'],
+        [headers.slug, headers.link, headers.clicks, headers.bots, headers.status, headers.traceable],
         allRows.map(row => [
           row.slug,
           row.link ?? '',
           String(row.clickCount),
           String(row.clickCountBots),
-          row.isEnabled ? 'Actif' : 'Inactif',
-          row.isTraceable ? 'Oui' : 'Non',
+          row.isEnabled ? headers.active : headers.inactive,
+          row.isTraceable ? headers.yes : headers.no,
         ]),
       )
     }

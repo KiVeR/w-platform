@@ -16,7 +16,7 @@ import {
 import EmptyState from '@/components/shared/EmptyState.vue'
 import PageSkeleton from '@/components/shared/PageSkeleton.vue'
 import { formatNumber } from '@/utils/format'
-import type { ShortUrlRow, ShortUrlPagination } from '@/types/short-url'
+import type { ShortUrlRow, ShortUrlPagination } from '@/types/shortUrl'
 
 const props = defineProps<{
   data: ShortUrlRow[]
@@ -38,11 +38,11 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const columns = [
-  { key: 'slug', sortable: true },
-  { key: 'link', sortable: true },
-  { key: 'clickCount', sortable: true },
-  { key: 'isEnabled', field: 'is_enabled', sortable: false },
-  { key: 'actions', sortable: false },
+  { key: 'slug', label: 'slug', sortable: true },
+  { key: 'link', label: 'link', sortable: true },
+  { key: 'clickCount', label: 'clicks', sortable: true },
+  { key: 'isEnabled', label: 'status', field: 'is_enabled', sortable: false },
+  { key: 'actions', label: '', sortable: false },
 ] as const
 
 function getSortIcon(field: string) {
@@ -66,7 +66,7 @@ function handleRowClick(row: ShortUrlRow, event: MouseEvent) {
 <template>
   <div>
     <PageSkeleton v-if="isLoading" variant="table" />
-    <EmptyState v-else-if="hasError" :icon="AlertTriangle" :title="t('campaigns.error.title')" :description="t('campaigns.error.description')" :action-label="t('campaigns.error.retry')" @action="emit('retry')" />
+    <EmptyState v-else-if="hasError" :icon="AlertTriangle" :title="t('shortUrls.error.title')" :description="t('shortUrls.error.description')" :action-label="t('shortUrls.error.retry')" @action="emit('retry')" />
     <EmptyState v-else-if="data.length === 0" :icon="Link" :title="t('shortUrls.empty.title')" :description="t('shortUrls.empty.description')" />
     <div v-else>
       <div class="overflow-x-auto rounded-lg border">
@@ -75,10 +75,10 @@ function handleRowClick(row: ShortUrlRow, event: MouseEvent) {
             <TableRow>
               <TableHead v-for="col in columns" :key="col.key" :class="col.key === 'actions' ? 'w-[60px]' : ''">
                 <button v-if="col.sortable" class="inline-flex items-center gap-1 text-xs font-medium hover:text-foreground transition-colors" @click="emit('sort', (col as { field?: string }).field ?? col.key)">
-                  {{ t(`shortUrls.columns.${col.key}`) }}
+                  {{ t(`shortUrls.columns.${col.label}`) }}
                   <component :is="getSortIcon((col as { field?: string }).field ?? col.key)" class="size-3.5" />
                 </button>
-                <span v-else-if="col.key !== 'actions'" class="text-xs font-medium">{{ t(`shortUrls.columns.${col.key}`) }}</span>
+                <span v-else-if="col.label" class="text-xs font-medium">{{ t(`shortUrls.columns.${col.label}`) }}</span>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -99,7 +99,7 @@ function handleRowClick(row: ShortUrlRow, event: MouseEvent) {
                 <DropdownMenu>
                   <DropdownMenuTrigger as-child>
                     <Button variant="ghost" size="icon" class="size-8">
-                      <component :is="Eye" class="size-4" />
+                      <Eye class="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -137,9 +137,9 @@ function handleRowClick(row: ShortUrlRow, event: MouseEvent) {
       <div class="flex items-center justify-between px-2 py-4">
         <p class="text-sm text-muted-foreground">{{ t('shortUrls.pagination.total', { total: pagination.total }) }}</p>
         <div class="flex items-center gap-2">
-          <Button variant="outline" size="sm" :disabled="pagination.page <= 1" @click="emit('page', pagination.page - 1)">{{ t('campaigns.pagination.previous') }}</Button>
+          <Button variant="outline" size="sm" :disabled="pagination.page <= 1" @click="emit('page', pagination.page - 1)">{{ t('shortUrls.pagination.previous') }}</Button>
           <span class="text-sm text-muted-foreground">{{ t('shortUrls.pagination.page', { page: pagination.page, lastPage: pagination.lastPage }) }}</span>
-          <Button variant="outline" size="sm" :disabled="pagination.page >= pagination.lastPage" @click="emit('page', pagination.page + 1)">{{ t('campaigns.pagination.next') }}</Button>
+          <Button variant="outline" size="sm" :disabled="pagination.page >= pagination.lastPage" @click="emit('page', pagination.page + 1)">{{ t('shortUrls.pagination.next') }}</Button>
         </div>
       </div>
     </div>

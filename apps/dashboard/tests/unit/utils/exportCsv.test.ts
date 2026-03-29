@@ -58,6 +58,37 @@ describe('downloadCsv', () => {
     expect(link.download).toBe('my-file.csv')
   })
 
+  test('echappe les cellules contenant des points-virgules', () => {
+    const BlobSpy = vi.spyOn(globalThis, 'Blob')
+    downloadCsv('test.csv', ['H1'], [['val;ue']])
+    const content: string = BlobSpy.mock.calls[0][0][0]
+    expect(content).toContain('"val;ue"')
+  })
+
+  test('echappe les cellules contenant des guillemets', () => {
+    const BlobSpy = vi.spyOn(globalThis, 'Blob')
+    downloadCsv('test.csv', ['H1'], [['val"ue']])
+    const content: string = BlobSpy.mock.calls[0][0][0]
+    expect(content).toContain('"val""ue"')
+  })
+
+  test('protege contre l\'injection de formule CSV', () => {
+    const BlobSpy = vi.spyOn(globalThis, 'Blob')
+    downloadCsv('test.csv', ['H1'], [['=CMD()']])
+    const content: string = BlobSpy.mock.calls[0][0][0]
+    expect(content).toContain("'=CMD()")
+    expect(content).not.toMatch(/^=CMD/)
+  })
+
+  test('protege les cellules commencant par + - @', () => {
+    const BlobSpy = vi.spyOn(globalThis, 'Blob')
+    downloadCsv('test.csv', ['A', 'B', 'C'], [['+danger', '-danger', '@danger']])
+    const content: string = BlobSpy.mock.calls[0][0][0]
+    expect(content).toContain("'+danger")
+    expect(content).toContain("'-danger")
+    expect(content).toContain("'@danger")
+  })
+
   test('genere plusieurs lignes pour plusieurs rows', () => {
     const BlobSpy = vi.spyOn(globalThis, 'Blob')
     downloadCsv('test.csv', ['A', 'B'], [['1', '2'], ['3', '4']])
