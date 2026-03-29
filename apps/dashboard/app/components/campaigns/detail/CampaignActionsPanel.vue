@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Copy, Download, Pencil, XCircle } from 'lucide-vue-next'
+import { Copy, Download, FileDown, Pause, Pencil, Play, StopCircle, XCircle } from 'lucide-vue-next'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   Card,
   CardContent,
@@ -31,6 +32,12 @@ const props = withDefaults(defineProps<{
   isExporting?: boolean
   isCancelling?: boolean
   cancelError?: string | null
+  showStartRouting?: boolean
+  showPauseRouting?: boolean
+  showCancelRouting?: boolean
+  showPullReport?: boolean
+  isRoutingActionPending?: boolean
+  routingActionError?: string | null
 }>(), {
   showEdit: false,
   showDuplicate: false,
@@ -39,6 +46,12 @@ const props = withDefaults(defineProps<{
   isExporting: false,
   isCancelling: false,
   cancelError: null,
+  showStartRouting: false,
+  showPauseRouting: false,
+  showCancelRouting: false,
+  showPullReport: false,
+  isRoutingActionPending: false,
+  routingActionError: null,
 })
 
 const emit = defineEmits<{
@@ -46,7 +59,15 @@ const emit = defineEmits<{
   duplicate: []
   export: []
   cancel: []
+  startRouting: []
+  pauseRouting: []
+  cancelRouting: []
+  pullReport: []
 }>()
+
+const hasRoutingActions = computed(() =>
+  props.showStartRouting || props.showPauseRouting || props.showCancelRouting || props.showPullReport,
+)
 
 const { t } = useI18n()
 </script>
@@ -142,6 +163,97 @@ const { t } = useI18n()
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <!-- Routing actions -->
+      <template v-if="hasRoutingActions">
+        <Separator class="my-2" />
+
+        <Alert v-if="routingActionError" data-routing-error variant="destructive">
+          <AlertDescription>
+            {{ t('campaigns.routingActions.error') }}
+          </AlertDescription>
+        </Alert>
+
+        <!-- Start/Resume Routing -->
+        <AlertDialog v-if="showStartRouting">
+          <AlertDialogTrigger as-child>
+            <Button data-action-start-routing variant="outline" class="w-full justify-start" :disabled="isRoutingActionPending">
+              <Play class="mr-2 size-4" />
+              {{ t('campaigns.routingActions.start') }}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{{ t('campaigns.routingActions.start') }}</AlertDialogTitle>
+              <AlertDialogDescription>{{ t('campaigns.routingActions.confirmStart') }}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{{ t('campaigns.deleteConfirm.cancel') }}</AlertDialogCancel>
+              <AlertDialogAction @click="emit('startRouting')">{{ t('campaigns.routingActions.start') }}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <!-- Pause Routing -->
+        <AlertDialog v-if="showPauseRouting">
+          <AlertDialogTrigger as-child>
+            <Button data-action-pause-routing variant="outline" class="w-full justify-start" :disabled="isRoutingActionPending">
+              <Pause class="mr-2 size-4" />
+              {{ t('campaigns.routingActions.pause') }}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{{ t('campaigns.routingActions.pause') }}</AlertDialogTitle>
+              <AlertDialogDescription>{{ t('campaigns.routingActions.confirmPause') }}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{{ t('campaigns.deleteConfirm.cancel') }}</AlertDialogCancel>
+              <AlertDialogAction @click="emit('pauseRouting')">{{ t('campaigns.routingActions.pause') }}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <!-- Cancel Routing -->
+        <AlertDialog v-if="showCancelRouting">
+          <AlertDialogTrigger as-child>
+            <Button data-action-cancel-routing variant="destructive" class="w-full justify-start" :disabled="isRoutingActionPending">
+              <StopCircle class="mr-2 size-4" />
+              {{ t('campaigns.routingActions.cancel') }}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{{ t('campaigns.routingActions.cancel') }}</AlertDialogTitle>
+              <AlertDialogDescription>{{ t('campaigns.routingActions.confirmCancel') }}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{{ t('campaigns.deleteConfirm.cancel') }}</AlertDialogCancel>
+              <AlertDialogAction class="bg-destructive text-destructive-foreground hover:bg-destructive/90" @click="emit('cancelRouting')">{{ t('campaigns.routingActions.cancel') }}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <!-- Pull Report -->
+        <AlertDialog v-if="showPullReport">
+          <AlertDialogTrigger as-child>
+            <Button data-action-pull-report variant="outline" class="w-full justify-start" :disabled="isRoutingActionPending">
+              <FileDown class="mr-2 size-4" />
+              {{ t('campaigns.routingActions.pullReport') }}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{{ t('campaigns.routingActions.pullReport') }}</AlertDialogTitle>
+              <AlertDialogDescription>{{ t('campaigns.routingActions.confirmPullReport') }}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{{ t('campaigns.deleteConfirm.cancel') }}</AlertDialogCancel>
+              <AlertDialogAction @click="emit('pullReport')">{{ t('campaigns.routingActions.pullReport') }}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </template>
     </CardContent>
   </Card>
 </template>
