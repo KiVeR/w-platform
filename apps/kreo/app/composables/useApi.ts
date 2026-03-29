@@ -1,61 +1,57 @@
-import type { NitroFetchOptions } from 'nitropack'
 import { tokenRefreshManager } from '@/services/api/tokenRefreshManager'
-import { useAuthStore } from '@/stores/auth'
-
-type FetchOptions = NitroFetchOptions<string>
 
 /**
- * Composable for API calls with automatic 401 handling.
- * - Adds Authorization header automatically
- * - On 401: attempts token refresh, retries once
- * - On refresh failure: clears auth and redirects to /login
+ * Composable for API calls pointing to platform-api with automatic 401 handling.
+ * - Uses Bearer token from tokenRefreshManager (not HttpOnly cookies)
+ * - Base URL from runtimeConfig.public.platformApiUrl
+ * - On 401: attempts token refresh via tokenRefreshManager, retries once
+ * - On refresh failure: redirects to /login via navigateTo
  */
 export function useApi() {
-  const authStore = useAuthStore()
-  const router = useRouter()
+  const config = useRuntimeConfig()
+  const baseURL = `${config.public.platformApiUrl}/api`
 
-  async function apiFetch<T>(url: string, options: FetchOptions = {}): Promise<T> {
-    const headers = authStore.accessToken
-      ? { ...options.headers, Authorization: `Bearer ${authStore.accessToken}` }
-      : options.headers
+  async function request<T>(url: string, options: Record<string, unknown> = {}): Promise<T> {
+    const token = tokenRefreshManager.getAccessToken()
+    const headers: Record<string, string> = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    }
 
     try {
-      return await $fetch<T>(url, { ...options, credentials: 'include', headers })
+      return await $fetch<T>(url, {
+        baseURL,
+        headers,
+        ...options,
+      })
     }
     catch (error: unknown) {
-      const fetchError = error as { statusCode?: number }
+      const fetchError = error as { statusCode?: number; status?: number }
 
-      if (fetchError.statusCode !== 401) {
+      if (fetchError.statusCode !== 401 && fetchError.status !== 401) {
         throw error
       }
 
       const newToken = await tokenRefreshManager.refreshToken()
       if (newToken) {
-        const retryHeaders = { ...options.headers, Authorization: `Bearer ${newToken}` }
-        return $fetch<T>(url, { ...options, credentials: 'include', headers: retryHeaders })
+        return $fetch<T>(url, {
+          baseURL,
+          headers: { ...headers, Authorization: `Bearer ${newToken}` },
+          ...options,
+        })
       }
 
-      authStore.clearAuth()
-      router.push('/login')
+      navigateTo('/login')
       throw new Error('Session expirée')
     }
   }
 
-  function get<T>(url: string, options?: FetchOptions): Promise<T> {
-    return apiFetch<T>(url, { ...options, method: 'GET' })
+  return {
+    get: <T>(url: string, opts?: Record<string, unknown>) => request<T>(url, { method: 'GET', ...opts }),
+    post: <T>(url: string, body?: unknown, opts?: Record<string, unknown>) => request<T>(url, { method: 'POST', body, ...opts }),
+    put: <T>(url: string, body?: unknown, opts?: Record<string, unknown>) => request<T>(url, { method: 'PUT', body, ...opts }),
+    patch: <T>(url: string, body?: unknown, opts?: Record<string, unknown>) => request<T>(url, { method: 'PATCH', body, ...opts }),
+    delete: <T>(url: string, opts?: Record<string, unknown>) => request<T>(url, { method: 'DELETE', ...opts }),
   }
-
-  function post<T>(url: string, body?: unknown, options?: FetchOptions): Promise<T> {
-    return apiFetch<T>(url, { ...options, method: 'POST', body })
-  }
-
-  function put<T>(url: string, body?: unknown, options?: FetchOptions): Promise<T> {
-    return apiFetch<T>(url, { ...options, method: 'PUT', body })
-  }
-
-  function del<T>(url: string, options?: FetchOptions): Promise<T> {
-    return apiFetch<T>(url, { ...options, method: 'DELETE' })
-  }
-
-  return { apiFetch, get, post, put, delete: del }
 }
