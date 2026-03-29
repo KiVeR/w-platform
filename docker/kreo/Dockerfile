@@ -14,7 +14,7 @@ RUN chmod +x /usr/local/bin/ensure-workspace-deps
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "ensure-workspace-deps /app/apps/kreo/node_modules/.bin/nuxt /app/apps/kreo/node_modules/.bin/prisma && cd apps/kreo && pnpm exec prisma generate && pnpm exec nuxt dev --host 0.0.0.0 --port ${KREO_PORT:-3000}"]
+CMD ["sh", "-c", "ensure-workspace-deps /app/apps/kreo/node_modules/.bin/nuxt && cd apps/kreo && pnpm exec nuxt dev --host 0.0.0.0 --port ${KREO_PORT:-3000}"]
 
 # =============================================================================
 # Stage: build — production build
@@ -38,7 +38,6 @@ RUN pnpm install --frozen-lockfile
 COPY apps/kreo apps/kreo
 COPY packages packages
 
-RUN cd apps/kreo && pnpm exec prisma generate
 RUN pnpm build:kreo
 
 # =============================================================================

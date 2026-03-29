@@ -33,8 +33,7 @@ setup: ## Premier lancement complet du monorepo v2
 	docker compose exec -T api php artisan migrate --force
 	docker compose exec -T api php artisan db:seed --force
 	docker compose exec -T api php scripts/ensure_passport_personal_access_client.php Wellpack users
-	./bin/generate-kreo-env
-	docker compose run --rm kreo-dev sh -lc "if [ ! -f 'node_modules/.modules.yaml' ]; then pnpm install --frozen-lockfile; fi && cd apps/kreo && pnpm exec prisma generate && pnpm db:push && pnpm user:seed"
+	docker compose run --rm kreo-dev sh -lc "if [ ! -f 'node_modules/.modules.yaml' ]; then pnpm install --frozen-lockfile; fi"
 	$(MAKE) up
 	@echo ""
 	@echo "V2 ready:"
@@ -47,13 +46,11 @@ setup: ## Premier lancement complet du monorepo v2
 
 # ── Lifecycle ─────────────────────────────────────────────────
 up: ## Démarrer le stack stable (API + dashboard + kreo)
-	touch .env.kreo.generated
 	-docker compose stop dashboard-dev kreo-dev
 	$(MAKE) bootstrap-api-local
 	docker compose up -d postgres redis mailpit api horizon scheduler dashboard kreo
 
 dev: ## Démarrer le stack HMR (API + dashboard-dev + kreo-dev)
-	touch .env.kreo.generated
 	-docker compose stop dashboard kreo
 	$(MAKE) bootstrap-api-local
 	docker compose --profile dev up -d postgres redis mailpit api horizon scheduler dashboard-dev kreo-dev
@@ -108,12 +105,6 @@ pnpm-kreo: ## Commande pnpm kreo (usage: make pnpm-kreo cmd="typecheck")
 
 types: ## Régénérer les types OpenAPI du dashboard
 	docker compose run --rm dashboard-dev pnpm --filter dashboard generate:types
-
-kreo-db: ## Générer Prisma + pousser le schéma Kreo
-	docker compose run --rm kreo-dev sh -lc "cd apps/kreo && pnpm exec prisma generate && pnpm db:push"
-
-kreo-seed: ## Seeder les utilisateurs Kreo
-	docker compose run --rm kreo-dev sh -lc "cd apps/kreo && pnpm user:seed"
 
 # ── Tests + Qualité ───────────────────────────────────────────
 test: test-api test-dashboard test-kreo ## Lancer les tests v2

@@ -225,8 +225,6 @@ services:
       context: .
       dockerfile: docker/kreo/Dockerfile
       target: prod
-    env_file:
-      - ./.env.kreo.generated
     environment:
       <<: *kreo-env
     ports:
@@ -241,8 +239,6 @@ services:
       context: .
       dockerfile: docker/kreo/Dockerfile
       target: dev
-    env_file:
-      - ./.env.kreo.generated
     volumes:
       - .:/app
       - workspace_node_modules:/app/node_modules
