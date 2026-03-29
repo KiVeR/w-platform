@@ -4,6 +4,7 @@ import { mockUseI18n, NuxtLinkStub } from '../../helpers/stubs'
 import { fakeCampaignList } from '../../helpers/fixtures'
 
 mockUseI18n()
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 const DashboardRecentCampaigns = (await import('@/components/dashboard/DashboardRecentCampaigns.vue')).default
 

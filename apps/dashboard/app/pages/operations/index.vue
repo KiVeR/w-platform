@@ -7,6 +7,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { scopedRoute } = useScopedNavigation()
 
 const {
   operations,
@@ -24,7 +25,7 @@ function onFilterStatus(status: LifecycleStatus | undefined) {
 }
 
 function onSelect(id: number) {
-  navigateTo(`/operations/${id}`)
+  navigateTo(scopedRoute(`/operations/${id}`))
 }
 
 onMounted(() => {

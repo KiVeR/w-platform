@@ -8,11 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\VariableSchema\StoreVariableSchemaRequest;
 use App\Http\Requests\VariableSchema\UpdateVariableSchemaRequest;
 use App\Http\Resources\VariableSchemaResource;
-use App\Models\User;
 use App\Models\VariableField;
 use App\Models\VariableSchema;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -23,22 +21,20 @@ class VariableSchemaController extends Controller
     {
         $this->authorize('viewAny', VariableSchema::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $schemas = QueryBuilder::for(VariableSchema::forUser($user))
             ->allowedFilters([AllowedFilter::exact('partner_id')])
             ->allowedSorts(['name', 'created_at'])
             ->allowedIncludes(['partner', 'variableFields'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return VariableSchemaResource::collection($schemas);
     }
 
     public function store(StoreVariableSchemaRequest $request): VariableSchemaResource
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', VariableSchema::class);
 
@@ -110,8 +106,7 @@ class VariableSchemaController extends Controller
     {
         $this->authorize('view', $variableSchema);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->authorize('create', VariableSchema::class);
 
@@ -134,45 +129,5 @@ class VariableSchemaController extends Controller
         }
 
         return new VariableSchemaResource($clone->load('variableFields'));
-    }
-
-    public function markUsed(Request $request, VariableSchema $variableSchema): VariableSchemaResource
-    {
-        $this->authorize('update', $variableSchema);
-
-        /** @var array{variables?: list<string>} $payload */
-        $payload = $request->validate([
-            'variables' => ['sometimes', 'array', 'min:1'],
-            'variables.*' => ['string', 'max:255'],
-        ]);
-
-        $variableSchema->syncUsage($payload['variables'] ?? null, true);
-
-        return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
-    }
-
-    public function markUnused(Request $request, VariableSchema $variableSchema): VariableSchemaResource
-    {
-        $this->authorize('update', $variableSchema);
-
-        /** @var array{variables?: list<string>} $payload */
-        $payload = $request->validate([
-            'variables' => ['sometimes', 'array', 'min:1'],
-            'variables.*' => ['string', 'max:255'],
-        ]);
-
-        $variableSchema->syncUsage($payload['variables'] ?? null, false);
-
-        return new VariableSchemaResource($variableSchema->refresh()->load('variableFields'));
-    }
-
-    public function discover(): JsonResponse
-    {
-        return new JsonResponse(['message' => 'Not implemented.'], 501);
-    }
-
-    public function preview(): JsonResponse
-    {
-        return new JsonResponse(['message' => 'Not implemented.'], 501);
     }
 }

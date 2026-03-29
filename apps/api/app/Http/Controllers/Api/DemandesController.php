@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Filters\DateRangeFilter;
 use App\Http\Requests\StoreDemandeRequest;
 use App\Http\Requests\UpdateDemandeRequest;
 use App\Http\Resources\DemandeResource;
 use App\Models\Demande;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -22,37 +21,19 @@ class DemandesController extends Controller
     {
         $this->authorize('viewAny', Demande::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
-        $demandes = QueryBuilder::for(Demande::forUser($user))
-            ->withCount([
-                'operations',
-                'operations as operations_completed_count' => fn ($q) => $q->where('lifecycle_status', 'completed'),
-                'operations as operations_blocked_count' => fn ($q) => $q->where('lifecycle_status', 'on_hold'),
-            ])
+        $demandes = QueryBuilder::for(Demande::forUser($user)->withOperationCounts())
             ->allowedFilters([
                 AllowedFilter::exact('partner_id'),
                 AllowedFilter::partial('ref_demande'),
                 AllowedFilter::exact('is_exoneration'),
-                AllowedFilter::callback('created_at_from', function (Builder $query, mixed $value): void {
-                    if (! is_string($value) || $value === '') {
-                        return;
-                    }
-
-                    $query->whereDate('created_at', '>=', $value);
-                }),
-                AllowedFilter::callback('created_at_to', function (Builder $query, mixed $value): void {
-                    if (! is_string($value) || $value === '') {
-                        return;
-                    }
-
-                    $query->whereDate('created_at', '<=', $value);
-                }),
+                AllowedFilter::custom('created_at_from', DateRangeFilter::from('created_at')),
+                AllowedFilter::custom('created_at_to', DateRangeFilter::to('created_at')),
             ])
             ->allowedSorts(['created_at', 'ref_demande'])
             ->allowedIncludes(['partner', 'commercial', 'sdr', 'operations'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return DemandeResource::collection($demandes);
     }
@@ -61,8 +42,7 @@ class DemandesController extends Controller
     {
         $this->authorize('create', Demande::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $data = $request->validated();
 
@@ -79,12 +59,7 @@ class DemandesController extends Controller
     {
         $this->authorize('view', $demande);
 
-        $demande = QueryBuilder::for(Demande::where('id', $demande->id))
-            ->withCount([
-                'operations',
-                'operations as operations_completed_count' => fn ($q) => $q->where('lifecycle_status', 'completed'),
-                'operations as operations_blocked_count' => fn ($q) => $q->where('lifecycle_status', 'on_hold'),
-            ])
+        $demande = QueryBuilder::for(Demande::where('id', $demande->id)->withOperationCounts())
             ->allowedIncludes(['partner', 'commercial', 'sdr', 'operations'])
             ->firstOrFail();
 

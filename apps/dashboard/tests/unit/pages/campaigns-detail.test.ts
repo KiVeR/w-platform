@@ -19,6 +19,7 @@ vi.stubGlobal('onMounted', onMounted)
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('watch', watch)
 vi.stubGlobal('useRoute', () => ({ params: { id: '1' } }))
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 mockUseI18n()
 
 const stats = ref({

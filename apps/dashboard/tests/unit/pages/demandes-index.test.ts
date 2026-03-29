@@ -11,6 +11,7 @@ mockUseI18n()
 // Router stub
 const routerPushMock = vi.fn()
 vi.stubGlobal('useRouter', () => ({ push: routerPushMock }))
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 // useDemandes stub state
 const demandes = ref<any[]>([])

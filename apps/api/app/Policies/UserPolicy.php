@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\Partner;
 use App\Models\User;
 
 class UserPolicy
@@ -15,8 +16,21 @@ class UserPolicy
 
     public function view(User $user, User $target): bool
     {
-        return $user->hasRole('admin')
-            || ($user->partner_id !== null && $user->partner_id === $target->partner_id);
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        if ($user->partner_id !== null && $user->partner_id === $target->partner_id) {
+            return true;
+        }
+
+        if ($user->hasRole('adv') && $target->partner_id !== null) {
+            return Partner::where('id', $target->partner_id)
+                ->where('adv_id', $user->id)
+                ->exists();
+        }
+
+        return false;
     }
 
     public function create(User $user): bool

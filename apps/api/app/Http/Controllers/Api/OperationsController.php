@@ -12,7 +12,6 @@ use App\Http\Requests\UpdateOperationRequest;
 use App\Http\Resources\OperationResource;
 use App\Http\Resources\OperationTransitionResource;
 use App\Models\Operation;
-use App\Models\User;
 use App\Services\StateMachine\TransitionMap;
 use App\Services\StateMachine\TransitionService;
 use Illuminate\Http\JsonResponse;
@@ -30,8 +29,7 @@ class OperationsController extends Controller
     {
         $this->authorize('viewAny', Operation::class);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $operations = QueryBuilder::for(Operation::forUser($user))
             ->allowedFilters([
@@ -46,7 +44,7 @@ class OperationsController extends Controller
             ])
             ->allowedSorts(['name', 'created_at', 'scheduled_at', 'lifecycle_status', 'type'])
             ->allowedIncludes(['demande', 'campaign', 'assignedUser', 'parentOperation'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return OperationResource::collection($operations);
     }
@@ -100,8 +98,7 @@ class OperationsController extends Controller
     {
         $this->authorize('transition', $operation);
 
-        /** @var User $user */
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $track = $request->validated('track');
         $toStateValue = $request->validated('to_state');
@@ -136,7 +133,7 @@ class OperationsController extends Controller
         $transitions = $operation->transitions()
             ->with('user')
             ->orderByDesc('created_at')
-            ->paginate(50);
+            ->paginate(config('api.pagination.large'));
 
         return OperationTransitionResource::collection($transitions);
     }

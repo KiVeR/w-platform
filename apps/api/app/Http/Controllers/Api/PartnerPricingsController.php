@@ -9,6 +9,7 @@ use App\Http\Requests\PartnerPricing\StorePartnerPricingRequest;
 use App\Http\Requests\PartnerPricing\UpdatePartnerPricingRequest;
 use App\Http\Resources\PartnerPricingResource;
 use App\Models\PartnerPricing;
+use App\Services\PricingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -16,6 +17,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class PartnerPricingsController extends Controller
 {
+    public function __construct(private readonly PricingService $pricingService) {}
+
     public function index(): AnonymousResourceCollection
     {
         $this->authorize('viewAny', PartnerPricing::class);
@@ -28,7 +31,7 @@ class PartnerPricingsController extends Controller
             ])
             ->allowedSorts(['name', 'volume_min', 'created_at'])
             ->allowedIncludes(['partner'])
-            ->paginate(15);
+            ->paginate(config('api.pagination.default'));
 
         return PartnerPricingResource::collection($pricings);
     }
@@ -38,6 +41,8 @@ class PartnerPricingsController extends Controller
         $this->authorize('create', PartnerPricing::class);
 
         $pricing = PartnerPricing::create($request->validated());
+
+        $this->pricingService->invalidateCache($pricing->partner_id);
 
         return new PartnerPricingResource($pricing);
     }
@@ -59,6 +64,8 @@ class PartnerPricingsController extends Controller
 
         $partnerPricing->update($request->validated());
 
+        $this->pricingService->invalidateCache($partnerPricing->partner_id);
+
         return new PartnerPricingResource($partnerPricing->fresh());
     }
 
@@ -66,7 +73,11 @@ class PartnerPricingsController extends Controller
     {
         $this->authorize('delete', $partnerPricing);
 
+        $partnerId = $partnerPricing->partner_id;
+
         $partnerPricing->delete();
+
+        $this->pricingService->invalidateCache($partnerId);
 
         return new JsonResponse(['message' => 'Partner pricing deleted.']);
     }

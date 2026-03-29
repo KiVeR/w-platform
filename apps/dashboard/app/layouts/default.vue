@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { Sonner } from '@/components/ui/sonner'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
+import CommandPalette from '@/components/shared/CommandPalette.vue'
 import { useColorMode } from '@/composables/useColorMode'
 import { useCampaignSync } from '@/composables/useCampaignSync'
 
@@ -30,5 +31,6 @@ onMounted(() => {
       </main>
     </SidebarInset>
   </SidebarProvider>
+  <CommandPalette />
   <Sonner position="bottom-right" :theme="sonnerTheme" />
 </template>

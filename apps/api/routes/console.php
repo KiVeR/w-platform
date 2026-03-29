@@ -13,7 +13,7 @@ Schedule::command('app:notify-abandoned-drafts')->dailyAt('09:00');
 Schedule::command('operations:auto-transition')->everyMinute()->onOneServer();
 Schedule::command('operations:auto-bill')->everyFiveMinutes()->onOneServer();
 
-// SMS routing scheduler
+// SMS routing scheduler (consolidated from trigger-api)
 Schedule::command('app:request-campaign-query')->everyMinute()->onOneServer();
 Schedule::command('app:request-campaign-routing')->everyMinute()->onOneServer();
 Schedule::command('app:digest-delivery-reports')->everyMinute()->onOneServer();

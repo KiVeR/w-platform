@@ -6,6 +6,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const route = useRoute()
+const { scopedRoute } = useScopedNavigation()
 
 const { invoice, isLoading, hasError, fetchInvoice } = useInvoiceDetail()
 
@@ -15,7 +16,7 @@ onMounted(async () => {
 })
 
 function goBack() {
-  navigateTo('/billing')
+  navigateTo(scopedRoute('/billing'))
 }
 </script>
 

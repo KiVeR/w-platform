@@ -18,16 +18,34 @@ import { toast } from 'vue-sonner'
 // Router stub
 const routerPushMock = vi.fn()
 vi.stubGlobal('useRouter', () => ({ push: routerPushMock }))
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 
 // API stub
 const mockPost = vi.fn()
-vi.stubGlobal('useNuxtApp', () => ({ $api: { POST: mockPost } }))
+const mockGet = vi.fn()
+vi.stubGlobal('useNuxtApp', () => ({ $api: { POST: mockPost, GET: mockGet } }))
 
 // PartnerStore stub — control admin vs non-admin
 const effectivePartnerId = ref<number | null>(null)
 
+// Mock partner store (imported directly by the page via `import { usePartnerStore } from '@/stores/partner'`)
+vi.mock('@/stores/partner', () => ({
+  usePartnerStore: () => ({
+    get effectivePartnerId() { return effectivePartnerId.value },
+  }),
+}))
+
 vi.stubGlobal('usePartnerStore', () => ({
   effectivePartnerId: effectivePartnerId.value,
+}))
+
+// AuthStore stub — control isPartnerBound
+const isPartnerBound = ref(false)
+
+vi.mock('@/stores/auth', () => ({
+  useAuthStore: () => ({
+    get isPartnerBound() { return isPartnerBound.value },
+  }),
 }))
 
 // Import the page after all stubs are in place
@@ -35,8 +53,10 @@ const DemandesNew = (await import('@/pages/demandes/new.vue')).default
 
 // ---- Shadcn component stubs ----
 const CardStub = { template: '<div data-stub="card"><slot /></div>' }
+const CardHeaderStub = { template: '<div data-stub="card-header"><slot /></div>', props: ['class'] }
+const CardTitleStub = { template: '<div data-stub="card-title"><slot /></div>', props: ['class'] }
 const CardContentStub = { template: '<div data-stub="card-content"><slot /></div>', props: ['class'] }
-const LabelStub = { template: '<label><slot /></label>', props: ['for'] }
+const LabelStub = { template: '<label><slot /></label>', props: ['for', 'class'] }
 const InputStub = {
   template: '<input v-bind="$attrs" :data-testid="$attrs[\'data-testid\']" />',
   inheritAttrs: true,
@@ -58,11 +78,24 @@ const NuxtLinkStub = {
   props: ['to'],
 }
 
+// AsyncCombobox stub — renders a simplified version that exposes data-testid and emits update:modelValue
+const AsyncComboboxStub = {
+  template: '<div :data-testid="$attrs[\'data-testid\']" data-stub="async-combobox"><slot /></div>',
+  props: ['modelValue', 'searchFn', 'placeholder', 'disabled', 'displayValue'],
+  emits: ['update:modelValue'],
+  inheritAttrs: true,
+}
+
+// Lucide icon stub
+const ArrowLeftStub = { template: '<span />' }
+
 function mountPage() {
   return mount(DemandesNew, {
     global: {
       stubs: {
         Card: CardStub,
+        CardHeader: CardHeaderStub,
+        CardTitle: CardTitleStub,
         CardContent: CardContentStub,
         Label: LabelStub,
         Input: InputStub,
@@ -70,6 +103,8 @@ function mountPage() {
         Switch: SwitchStub,
         Button: ButtonStub,
         NuxtLink: NuxtLinkStub,
+        ArrowLeft: ArrowLeftStub,
+        AsyncCombobox: AsyncComboboxStub,
       },
     },
   })
@@ -79,6 +114,7 @@ describe('demandes/new page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     effectivePartnerId.value = null
+    isPartnerBound.value = false
     // Re-stub usePartnerStore with the current effectivePartnerId value
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: effectivePartnerId.value,
@@ -105,7 +141,7 @@ describe('demandes/new page', () => {
     expect(wrapper.find('[data-testid="exoneration-switch"]').exists()).toBe(true)
   })
 
-  it('has partner select for admin', () => {
+  it('has partner combobox for admin', () => {
     // effectivePartnerId is null → admin
     effectivePartnerId.value = null
     vi.stubGlobal('usePartnerStore', () => ({
@@ -113,11 +149,13 @@ describe('demandes/new page', () => {
     }))
     const wrapper = mountPage()
     expect(wrapper.find('[data-testid="partner-field"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="partner-id-combobox"]').exists()).toBe(true)
   })
 
-  it('hides partner select for non-admin', () => {
-    // effectivePartnerId non-null → partner user
+  it('hides partner combobox for non-admin', () => {
+    // isPartnerBound true → partner user (non-admin)
     effectivePartnerId.value = 5
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 5,
     }))
@@ -125,7 +163,19 @@ describe('demandes/new page', () => {
     expect(wrapper.find('[data-testid="partner-field"]').exists()).toBe(false)
   })
 
+  it('has commercial and sdr comboboxes', () => {
+    const wrapper = mountPage()
+    expect(wrapper.find('[data-testid="commercial-id-combobox"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="sdr-id-combobox"]').exists()).toBe(true)
+  })
+
   it('submits form successfully', async () => {
+    // Use non-admin (partner-bound) so canSubmit is true without needing partner_id field
+    effectivePartnerId.value = 10
+    isPartnerBound.value = true
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: { data: { id: 42 } },
       error: null,
@@ -137,6 +187,11 @@ describe('demandes/new page', () => {
   })
 
   it('redirects to detail after creation', async () => {
+    effectivePartnerId.value = 10
+    isPartnerBound.value = true
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: { data: { id: 99 } },
       error: null,
@@ -148,6 +203,11 @@ describe('demandes/new page', () => {
   })
 
   it('shows success toast after creation', async () => {
+    effectivePartnerId.value = 10
+    isPartnerBound.value = true
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: { data: { id: 1 } },
       error: null,
@@ -159,6 +219,11 @@ describe('demandes/new page', () => {
   })
 
   it('shows validation errors', async () => {
+    effectivePartnerId.value = 10
+    isPartnerBound.value = true
+    vi.stubGlobal('usePartnerStore', () => ({
+      effectivePartnerId: 10,
+    }))
     mockPost.mockResolvedValueOnce({
       data: null,
       error: {
@@ -192,6 +257,7 @@ describe('demandes/new page', () => {
 
   it('pre-fills partner_id for non-admin', () => {
     effectivePartnerId.value = 7
+    isPartnerBound.value = true
     vi.stubGlobal('usePartnerStore', () => ({
       effectivePartnerId: 7,
     }))

@@ -1,6 +1,8 @@
 import type { Component } from 'vue'
 import type { Role, Permission } from './auth'
 
+export type NavigationMode = 'hub' | 'scope'
+
 export interface NavItem {
   label: string
   icon: Component

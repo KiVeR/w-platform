@@ -16,7 +16,10 @@ stubAuthGlobals({ $api: mockApi })
 vi.stubGlobal('computed', computed)
 vi.stubGlobal('ref', ref)
 mockUseI18n()
-vi.stubGlobal('useRoute', () => ({ path: '/' }))
+
+let mockRoute = { path: '/hub/dashboard', params: {} as Record<string, string> }
+vi.stubGlobal('useRoute', () => mockRoute)
+vi.stubGlobal('navigateTo', vi.fn())
 
 const mockToggleSidebar = vi.fn()
 vi.mock('@/components/ui/sidebar', () => ({
@@ -35,7 +38,7 @@ const headerStubs = {
   Separator: voidStub,
   AppBreadcrumb: { template: '<div data-breadcrumb />' },
   ThemeSwitcher: { template: '<div data-theme-switcher />' },
-  PartnerSelector: { template: '<div data-partner-selector />' },
+  ScopeBanner: { template: '<div data-scope-banner />' },
   ChevronsLeft: voidStub,
   Menu: voidStub,
 } as Record<string, unknown>
@@ -46,46 +49,56 @@ describe('AppHeader', () => {
     localStorageMock.clear()
     setActivePinia(createPinia())
     mockApi.GET.mockResolvedValue({ data: { data: [] } })
+    mockRoute = { path: '/hub/dashboard', params: {} }
   })
 
-  it('shows PartnerSelector for admin', () => {
+  it('shows ScopeBanner for admin in scope mode', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+    mockRoute = { path: '/partners/42/dashboard', params: { id: '42' } }
+
+    const wrapper = mount(AppHeader, { global: { stubs: headerStubs } })
+    expect(wrapper.find('[data-scope-banner]').exists()).toBe(true)
+  })
+
+  it('hides ScopeBanner for admin in hub mode', () => {
     const auth = useAuthStore()
     auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
 
     const wrapper = mount(AppHeader, { global: { stubs: headerStubs } })
-    expect(wrapper.find('[data-partner-selector]').exists()).toBe(true)
+    expect(wrapper.find('[data-scope-banner]').exists()).toBe(false)
   })
 
-  it('hides PartnerSelector for non-admin', () => {
+  it('hides ScopeBanner for partner-bound user (always in scope but no banner needed)', () => {
     const auth = useAuthStore()
     auth.setAuth(fakeAuthResponse.data)
 
     const wrapper = mount(AppHeader, { global: { stubs: headerStubs } })
-    expect(wrapper.find('[data-partner-selector]').exists()).toBe(false)
+    expect(wrapper.find('[data-scope-banner]').exists()).toBe(false)
   })
 
-  it('renders breadcrumb, selector (admin), and theme switcher in order', () => {
-    const auth = useAuthStore()
-    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
-
-    const wrapper = mount(AppHeader, { global: { stubs: headerStubs } })
-    const html = wrapper.html()
-
-    const breadcrumbPos = html.indexOf('data-breadcrumb')
-    const selectorPos = html.indexOf('data-partner-selector')
-    const themePos = html.indexOf('data-theme-switcher')
-
-    expect(breadcrumbPos).toBeLessThan(selectorPos)
-    expect(selectorPos).toBeLessThan(themePos)
-  })
-
-  it('renders breadcrumb and theme switcher without selector for partner', () => {
+  it('renders breadcrumb and theme switcher', () => {
     const auth = useAuthStore()
     auth.setAuth(fakeAuthResponse.data)
 
     const wrapper = mount(AppHeader, { global: { stubs: headerStubs } })
     expect(wrapper.find('[data-breadcrumb]').exists()).toBe(true)
     expect(wrapper.find('[data-theme-switcher]').exists()).toBe(true)
-    expect(wrapper.find('[data-partner-selector]').exists()).toBe(false)
+  })
+
+  it('renders breadcrumb, scope banner, and theme switcher in order for scoped admin', () => {
+    const auth = useAuthStore()
+    auth.setAuth({ ...fakeAuthResponse.data, user: fakeAdminUser })
+    mockRoute = { path: '/partners/42/dashboard', params: { id: '42' } }
+
+    const wrapper = mount(AppHeader, { global: { stubs: headerStubs } })
+    const html = wrapper.html()
+
+    const breadcrumbPos = html.indexOf('data-breadcrumb')
+    const bannerPos = html.indexOf('data-scope-banner')
+    const themePos = html.indexOf('data-theme-switcher')
+
+    expect(breadcrumbPos).toBeLessThan(bannerPos)
+    expect(bannerPos).toBeLessThan(themePos)
   })
 })

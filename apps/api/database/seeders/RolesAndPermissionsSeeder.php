@@ -34,6 +34,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage variable-schemas',
             'view ai-contents',
             'manage ai-contents',
+            'view short-urls',
+            'manage short-urls',
             'view demandes',
             'manage demandes',
             'view operations',
@@ -64,6 +66,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage variable-schemas',
                 'view ai-contents',
                 'manage ai-contents',
+                'view short-urls',
+                'manage short-urls',
                 'view demandes',
                 'view operations',
             ]);
@@ -81,6 +85,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'manage variable-schemas',
                 'view ai-contents',
                 'manage ai-contents',
+                'view short-urls',
+                'manage short-urls',
                 'view demandes',
                 'view operations',
             ]);
@@ -90,6 +96,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // ADV-specific roles
         Role::findOrCreate('adv', 'api')
             ->givePermissionTo([
+                'view partners',
+                'view users',
                 'view demandes',
                 'manage demandes',
                 'view operations',

@@ -16,11 +16,20 @@
       "main": "Principal",
       "config": "Configuration",
       "admin": "Administration",
-      "adv": "ADV"
+      "adv": "ADV",
+      "platform": "Plateforme",
+      "operations": "Operations",
+      "management": "Gestion"
     },
     "operations": "Opérations",
     "billing": "Facturation",
-    "demandes": "Demandes"
+    "demandes": "Demandes",
+    "hubDashboard": "Tableau de bord Hub",
+    "partners": "Partenaires",
+    "partnerSettings": "Parametres partenaire",
+    "backToHub": "Retour au Hub",
+    "users": "Utilisateurs",
+    "shortUrls": "URLs courtes"
   },
   "sidebar": {
     "toggle": "Basculer la barre latérale",
@@ -38,8 +47,11 @@
   "breadcrumb": {
     "dashboard": "Dashboard",
     "admin": "Administration",
+    "hub": "Hub",
     "campaigns": "Campagnes",
     "newCampaign": "Nouvelle campagne",
+    "newDemande": "Nouvelle demande",
+    "newPartner": "Nouveau partenaire",
     "shops": "Boutiques",
     "landingPages": "Landing Pages",
     "stats": "Statistiques",
@@ -47,7 +59,11 @@
     "routers": "Routeurs",
     "users": "Utilisateurs",
     "partner": "Partenaire",
-    "variableSchemas": "Schemas variables"
+    "partners": "Partenaires",
+    "variableSchemas": "Schemas variables",
+    "demandes": "Demandes",
+    "operations": "Opérations",
+    "billing": "Facturation"
   },
   "admin": {
     "comingSoon": "Bientot disponible",
@@ -267,6 +283,76 @@
           "jsonError": "Le JSON doit etre un objet valide."
         }
       }
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "new": "Nouvel utilisateur",
+      "edit": "Modifier l utilisateur",
+      "description": "Gérez les utilisateurs de la plateforme.",
+      "newUser": "Nouvel utilisateur",
+      "searchPlaceholder": "Rechercher un utilisateur...",
+      "roleFilter": {
+        "all": "Tous les rôles"
+      },
+      "statusFilter": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "actions": {
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "empty": {
+        "title": "Aucun utilisateur trouvé",
+        "description": "Aucun utilisateur ne correspond aux filtres actuels."
+      },
+      "error": {
+        "title": "Erreur de chargement",
+        "description": "Impossible de charger la liste des utilisateurs.",
+        "retry": "Réessayer"
+      },
+      "pagination": {
+        "next": "Suivant",
+        "previous": "Précédent",
+        "total": "{total} utilisateur(s)",
+        "page": "Page {page} / {lastPage}"
+      },
+      "columns": {
+        "name": "Nom",
+        "email": "Email",
+        "partner": "Partenaire",
+        "roles": "Rôles",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "form": {
+        "titleCreate": "Nouvel utilisateur",
+        "titleEdit": "Modifier l'utilisateur",
+        "descriptionCreate": "Créez un nouveau compte utilisateur sur la plateforme.",
+        "descriptionEdit": "Modifiez les informations de cet utilisateur.",
+        "firstname": "Prénom",
+        "firstnamePlaceholder": "Jean",
+        "lastname": "Nom",
+        "lastnamePlaceholder": "Dupont",
+        "email": "Email",
+        "emailPlaceholder": "jean.dupont{'@'}example.com",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "Mot de passe sécurisé",
+        "partner": "Partenaire",
+        "partnerPlaceholder": "Sélectionner un partenaire",
+        "noPartner": "Aucun partenaire (interne)",
+        "role": "Rôle",
+        "rolePlaceholder": "Sélectionner un rôle",
+        "isActive": "Utilisateur actif",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler"
+      }
     }
   },
   "login": {
@@ -348,13 +434,13 @@
     }
   },
   "error": {
-    "404": {
-      "title": "Page introuvable",
-      "description": "Cette page n'existe pas ou a été déplacée."
-    },
     "403": {
       "title": "Accès non autorisé",
       "description": "Vous n'avez pas les permissions pour accéder à cette page."
+    },
+    "404": {
+      "title": "Page introuvable",
+      "description": "Cette page n'existe pas ou a été déplacée."
     },
     "500": {
       "title": "Erreur serveur",
@@ -370,7 +456,16 @@
   "partner": {
     "allPartners": "Tous les partenaires",
     "search": "Rechercher un partenaire…",
-    "noResults": "Aucun partenaire trouvé"
+    "noResults": "Aucun partenaire trouvé",
+    "credits": {
+      "title": "Credits",
+      "recharge": "Recharger",
+      "history": "Historique des credits"
+    },
+    "features": {
+      "title": "Fonctionnalites",
+      "toggle": "Activer / desactiver"
+    }
   },
   "campaigns": {
     "title": "Campagnes",
@@ -477,14 +572,14 @@
         "volumeSent": "Volume envoyé",
         "unitPrice": "Prix unitaire",
         "totalPrice": "Prix total",
-      "smsCount": "Nombre de SMS",
-      "shortUrl": "Lien court",
-      "showFull": "Voir complet",
-      "showLess": "Replier",
-      "emptyMessage": "Aucun message disponible",
-      "createdAt": "Créée le",
-      "scheduledAt": "Planifiée le",
-      "sentAt": "Envoyée le"
+        "smsCount": "Nombre de SMS",
+        "shortUrl": "Lien court",
+        "showFull": "Voir complet",
+        "showLess": "Replier",
+        "emptyMessage": "Aucun message disponible",
+        "createdAt": "Créée le",
+        "scheduledAt": "Planifiée le",
+        "sentAt": "Envoyée le"
       },
       "targeting": {
         "title": "Ciblage",
@@ -1179,6 +1274,12 @@
         "operations": "Opérations",
         "blocked": "Bloquées",
         "date": "Date"
+      },
+      "error": "Erreur lors du chargement des demandes",
+      "filter_button": "Filtrer",
+      "pagination": {
+        "next": "Suivant",
+        "prev": "Précédent"
       }
     },
     "create": {
@@ -1190,10 +1291,30 @@
         "is_exoneration": "Exonération",
         "partner": "Partenaire",
         "commercial": "Commercial",
-        "sdr": "SDR"
+        "sdr": "SDR",
+        "ref_client_placeholder": "Ex. CLI-2026-001",
+        "ref_client_hint": "Référence interne pour retrouver cette demande côté client.",
+        "information_placeholder": "Décrivez le besoin, le contexte ou les consignes particulières...",
+        "information_hint": "Toute information utile pour le traitement de la demande.",
+        "is_exoneration_hint": "Cochez si cette demande bénéficie d'une exonération de facturation.",
+        "partner_hint": "Le partenaire auquel cette demande sera rattachée.",
+        "partner_placeholder": "Rechercher un partenaire...",
+        "commercial_placeholder": "Rechercher un commercial...",
+        "commercial_hint": "Le commercial en charge de ce dossier.",
+        "sdr_placeholder": "Rechercher un SDR...",
+        "sdr_hint": "Le SDR référent pour cette demande.",
+        "pays_id": "Pays",
+        "pays_id_placeholder": "FR",
+        "pays_id_hint": "Code ISO 2 lettres du pays (ex. FR, BE, CH)."
       },
       "submit": "Créer la demande",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "sections": {
+        "general": "Informations générales",
+        "assignment": "Affectation",
+        "options": "Options"
+      },
+      "submitting": "Création en cours..."
     },
     "detail": {
       "title": "Demande {ref}",
@@ -1272,6 +1393,296 @@
         "total_price": "Prix total"
       },
       "chars_count": "{count}/160 caractères"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "Rechercher un partenaire, une page ou une action…",
+    "noResults": "Aucun résultat",
+    "partners": "Partenaires",
+    "pages": "Pages",
+    "actions": "Actions",
+    "newCampaign": "Nouvelle campagne",
+    "newPartner": "Nouveau partenaire"
+  },
+  "hub": {
+    "dashboard": {
+      "title": "Tableau de bord",
+      "welcome": "Bienvenue, {firstname}",
+      "kpi": {
+        "activePartners": "Partenaires actifs",
+        "totalCredits": "Credits totaux",
+        "campaignsThisMonth": "Campagnes ce mois",
+        "pendingActions": "Actions en attente"
+      },
+      "description": "Vue d'ensemble de votre portefeuille de partenaires et des actions en cours.",
+      "live": "En direct",
+      "error": {
+        "title": "Erreur de chargement",
+        "description": "Impossible de charger les données du tableau de bord."
+      }
+    },
+    "partners": {
+      "title": "Partenaires",
+      "new": "Nouveau partenaire",
+      "enter": "Acceder au partenaire",
+      "description": "Gérez les partenaires de votre portefeuille.",
+      "newPartner": "Nouveau partenaire",
+      "searchPlaceholder": "Rechercher un partenaire...",
+      "statusFilter": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "actions": {
+        "enter": "Accéder",
+        "edit": "Modifier"
+      },
+      "empty": {
+        "title": "Aucun partenaire trouvé",
+        "description": "Aucun partenaire ne correspond aux filtres actuels."
+      },
+      "error": {
+        "title": "Erreur de chargement",
+        "description": "Impossible de charger la liste des partenaires.",
+        "retry": "Réessayer"
+      },
+      "pagination": {
+        "next": "Suivant",
+        "previous": "Précédent",
+        "total": "{total} partenaire(s)",
+        "page": "Page {page} / {lastPage}"
+      },
+      "columns": {
+        "name": "Nom",
+        "activity": "Activité",
+        "credits": "Crédits",
+        "shops": "Boutiques",
+        "status": "Statut",
+        "actions": "Actions"
+      }
+    },
+    "alerts": {
+      "lowCredits": "Credits faibles — {name} a moins de {amount} EUR de credits restants",
+      "inactive": "Partenaire desactive — {name} est actuellement inactif",
+      "title": "Alertes",
+      "empty": "Aucune alerte en cours",
+      "enter": "Voir"
+    },
+    "emptyPortfolio": {
+      "title": "Votre portefeuille est vide",
+      "description": "Contactez votre administrateur pour vous attribuer des partenaires."
+    },
+    "kpis": {
+      "partners": {
+        "label": "Partenaires",
+        "subtitle": "actifs / total"
+      },
+      "credits": {
+        "label": "Crédits",
+        "subtitle": "solde total"
+      },
+      "demandes": {
+        "label": "Demandes",
+        "subtitle": "en cours"
+      },
+      "shortUrls": {
+        "label": "URLs courtes",
+        "subtitle": "actives / total"
+      }
+    },
+    "credits": {
+      "title": "Crédits",
+      "currentBalance": "Solde actuel",
+      "recharge": "Recharger",
+      "rechargeTitle": "Recharger les crédits",
+      "rechargeDescription": "Ajoutez des crédits au solde de ce partenaire.",
+      "amount": "Montant (EUR)",
+      "amountPlaceholder": "Ex. 500.00",
+      "description": "Description",
+      "descriptionPlaceholder": "Motif de la recharge...",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "processing": "Traitement...",
+      "history": "Historique",
+      "noTransactions": "Aucune transaction"
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "empty": "Aucune fonctionnalité configurée",
+      "groups": {
+        "campaigns": "Campagnes",
+        "features": "Fonctionnalités",
+        "location": "Localisation",
+        "analytics": "Analytics",
+        "other": "Autre"
+      },
+      "keys": {
+        "campaign_prospection": "Prospection SMS",
+        "campaign_fidelisation": "Fidélisation SMS",
+        "campaign_comptage": "Comptage",
+        "shops": "Boutiques",
+        "sms_templates": "Templates SMS",
+        "short_urls": "URLs courtes",
+        "payment": "Paiement",
+        "location_postcode": "Ciblage code postal",
+        "location_geoloc": "Ciblage géolocalisation",
+        "location_iris": "Ciblage IRIS",
+        "analytics_prospection": "Analytics prospection",
+        "analytics_fidelisation": "Analytics fidélisation",
+        "demo_mode": "Mode démo"
+      }
+    },
+    "partnerDetail": {
+      "loading": "Chargement...",
+      "error": "Impossible de charger ce partenaire.",
+      "tabs": {
+        "info": "Informations",
+        "credits": "Crédits",
+        "features": "Fonctionnalités",
+        "users": "Utilisateurs"
+      }
+    },
+    "partnerForm": {
+      "titleCreate": "Nouveau partenaire",
+      "titleEdit": "Modifier le partenaire",
+      "name": "Nom",
+      "namePlaceholder": "Nom du partenaire",
+      "code": "Code",
+      "codePlaceholder": "Code interne",
+      "email": "Email",
+      "emailPlaceholder": "contact{'@'}partenaire.fr",
+      "phone": "Téléphone",
+      "phonePlaceholder": "01 23 45 67 89",
+      "address": "Adresse",
+      "city": "Ville",
+      "zipCode": "Code postal",
+      "activityType": "Type d'activité",
+      "billingMode": "Mode de facturation",
+      "isActive": "Partenaire actif",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "cancel": "Annuler"
+    }
+  },
+  "scope": {
+    "banner": {
+      "context": "Vous travaillez dans le contexte de {name}",
+      "exit": "Quitter le contexte",
+      "credits": "{amount} EUR de credits"
+    },
+    "inactive": {
+      "title": "Partenaire desactive",
+      "description": "Ce partenaire est actuellement desactive. Certaines actions ne sont pas disponibles.",
+      "reactivate": "Reactiver"
+    },
+    "exit": "Quitter le contexte",
+    "partner": "Partenaire"
+  },
+  "cancel": "Annuler",
+  "confirm": "Confirmer",
+  "retry": "Réessayer",
+  "refresh": "Actualiser",
+  "recharge": "Recharger",
+  "common": {
+    "retry": "Réessayer",
+    "noResults": "Aucun résultat trouvé.",
+    "minChars": "Tapez au moins 2 caractères",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "shortUrls": {
+    "title": "URLs courtes",
+    "description": "Gestion des liens courts avec suivi de clics",
+    "columns": {
+      "slug": "Slug",
+      "link": "URL de destination",
+      "clicks": "Clics",
+      "clicksBots": "Clics bots",
+      "status": "Statut",
+      "traceable": "Traçable",
+      "createdAt": "Créé le"
+    },
+    "filters": {
+      "search": "Rechercher par slug ou URL...",
+      "status": "Statut",
+      "statusAll": "Tous",
+      "statusEnabled": "Actifs",
+      "statusDisabled": "Désactivés"
+    },
+    "actions": {
+      "create": "Nouvelle URL courte",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "view": "Voir le détail",
+      "export": "Exporter CSV",
+      "copySlug": "Copier le lien court"
+    },
+    "form": {
+      "slugLabel": "Slug personnalisé",
+      "slugPlaceholder": "Laisser vide pour génération auto",
+      "slugHint": "Ne doit pas contenir de underscore (_)",
+      "linkLabel": "URL de destination",
+      "linkPlaceholder": "https://...",
+      "traceableLabel": "Traçable par destinataire",
+      "traceableHint": "Active le suivi individuel via suffixes",
+      "draftLabel": "Brouillon",
+      "enabledLabel": "Activé",
+      "prefixLabel": "Préfixe",
+      "prefixPlaceholder": "ex: promo",
+      "lengthLabel": "Longueur du slug",
+      "createTitle": "Nouvelle URL courte",
+      "editTitle": "Modifier l'URL courte",
+      "saveSuccess": "URL courte enregistrée",
+      "deleteSuccess": "URL courte supprimée",
+      "preview": "Aperçu",
+      "deleteConfirm": {
+        "title": "Supprimer cette URL courte ?",
+        "description": "Cette action est irréversible. Les redirections vers cette URL ne fonctionneront plus."
+      }
+    },
+    "detail": {
+      "title": "Détail de l'URL courte",
+      "statsTitle": "Statistiques de clics",
+      "humanClicks": "Clics humains",
+      "botClicks": "Clics bots",
+      "totalClicks": "Total clics",
+      "shortLink": "Lien court",
+      "destination": "Destination",
+      "internalLink": "Lien interne (pas de destination externe)",
+      "enabled": "Activé",
+      "disabled": "Désactivé",
+      "draft": "Brouillon",
+      "published": "Publiée",
+      "traceable": "Traçable",
+      "notTraceable": "Non traçable",
+      "copySuccess": "Lien copié dans le presse-papier",
+      "humanPercent": "{pct}% humains",
+      "importId": "Import",
+      "actionEnable": "Activer",
+      "actionDisable": "Désactiver"
+    },
+    "empty": {
+      "title": "Aucune URL courte",
+      "description": "Créez votre première URL courte pour commencer le suivi"
+    },
+    "pagination": {
+      "total": "{total} URL(s) courte(s)",
+      "page": "Page {page} sur {lastPage}",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "error": {
+      "title": "Erreur de chargement",
+      "description": "Impossible de charger les URLs courtes.",
+      "retry": "Réessayer"
+    },
+    "status": {
+      "active": "Actif",
+      "disabled": "Désactivé"
     }
   }
 }

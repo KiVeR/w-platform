@@ -10,22 +10,27 @@ use App\Http\Requests\Partner\UpdatePartnerRequest;
 use App\Http\Resources\PartnerResource;
 use App\Models\Partner;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PartnersController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Partner::class);
 
-        $partners = QueryBuilder::for(Partner::class)
-            ->allowedFilters([AllowedFilter::partial('name'), AllowedFilter::exact('is_active')])
+        $partners = QueryBuilder::for(Partner::forUser($request->user()))
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::exact('is_active'),
+                AllowedFilter::exact('adv_id'),
+            ])
             ->allowedSorts(['name', 'created_at'])
-            ->allowedIncludes(['users', 'shops'])
+            ->allowedIncludes(['users', 'shops', 'adv'])
             ->withCount(['users', 'shops'])
-            ->paginate(15);
+            ->paginate(min($request->integer('per_page', config('api.pagination.default')), 100));
 
         return PartnerResource::collection($partners);
     }
@@ -44,7 +49,7 @@ class PartnersController extends Controller
         $this->authorize('view', $partner);
 
         $partner = QueryBuilder::for(Partner::where('id', $partner->id))
-            ->allowedIncludes(['users', 'shops'])
+            ->allowedIncludes(['users', 'shops', 'adv'])
             ->withCount(['users', 'shops'])
             ->firstOrFail();
 

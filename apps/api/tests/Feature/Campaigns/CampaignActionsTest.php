@@ -235,7 +235,7 @@ it('handles sender failure gracefully', function (): void {
     $response = $this->postJson("/api/campaigns/{$campaign->id}/send");
 
     $response->assertStatus(502)
-        ->assertJsonPath('error', 'API timeout');
+        ->assertJsonPath('message', 'API timeout');
 
     $campaign->refresh();
     expect($campaign->status)->toBe(CampaignStatus::FAILED);

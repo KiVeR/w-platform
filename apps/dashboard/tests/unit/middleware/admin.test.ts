@@ -8,6 +8,7 @@ stubAuthGlobals()
 const navigateToMock = vi.fn((path: string) => path)
 vi.stubGlobal('navigateTo', navigateToMock)
 vi.stubGlobal('defineNuxtRouteMiddleware', (fn: Function) => fn)
+vi.stubGlobal('usePinia', () => undefined)
 
 const { useAuthStore } = await import('@/stores/auth')
 const middleware = (await import('@/middleware/admin')).default as () => string | undefined

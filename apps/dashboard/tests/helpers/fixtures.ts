@@ -75,11 +75,59 @@ export const fakeAdminUser = {
   ],
 }
 
+export const fakeAdvUser = {
+  ...fakeUser,
+  id: 10,
+  firstname: 'Alice',
+  lastname: 'ADV',
+  full_name: 'Alice ADV',
+  email: 'alice@adv.fr',
+  partner_id: null,
+  roles: ['adv' as const],
+  permissions: ['view partners' as const, 'view operations' as const, 'manage operations' as const, 'transition operations' as const],
+}
+
 export const fakePartner = {
   id: 42,
   name: 'Test Partner',
   is_active: true,
   euro_credits: '100.00',
+}
+
+export const fakePartnerRow = {
+  id: '1',
+  name: 'Boulangerie Dupont',
+  code: 'BDP-001',
+  activity_type: 'boulangerie',
+  email: 'contact@dupont.fr',
+  euro_credits: '1500.50',
+  is_active: true,
+  users_count: '3',
+  shops_count: '2',
+  created_at: '2026-01-15T10:00:00Z',
+}
+
+export function fakePartnerList(count = 3) {
+  return Array.from({ length: count }, (_, i) => ({
+    ...fakePartnerRow,
+    id: String(i + 1),
+    name: `Partner ${i + 1}`,
+    euro_credits: String((i + 1) * 500),
+    is_active: i % 3 !== 2,
+    users_count: String(i + 1),
+    shops_count: String((i + 1) * 2),
+  }))
+}
+
+export const fakePartnerPaginationMeta = {
+  current_page: 1,
+  from: 1,
+  last_page: 2,
+  links: [],
+  path: '/api/partners',
+  per_page: 15,
+  to: 15,
+  total: 25,
 }
 
 export const fakeAuthResponse = {

@@ -16,11 +16,20 @@
       "main": "Main",
       "config": "Configuration",
       "admin": "Administration",
-      "adv": "ADV"
+      "adv": "ADV",
+      "platform": "Platform",
+      "operations": "Operations",
+      "management": "Management"
     },
     "operations": "Operations",
     "billing": "Billing",
-    "demandes": "Requests"
+    "demandes": "Requests",
+    "hubDashboard": "Hub Dashboard",
+    "partners": "Partners",
+    "partnerSettings": "Partner settings",
+    "backToHub": "Back to Hub",
+    "users": "Users",
+    "shortUrls": "Short URLs"
   },
   "sidebar": {
     "toggle": "Toggle sidebar",
@@ -38,8 +47,11 @@
   "breadcrumb": {
     "dashboard": "Dashboard",
     "admin": "Administration",
+    "hub": "Hub",
     "campaigns": "Campaigns",
     "newCampaign": "New campaign",
+    "newDemande": "New request",
+    "newPartner": "New partner",
     "shops": "Shops",
     "landingPages": "Landing Pages",
     "stats": "Statistics",
@@ -47,7 +59,11 @@
     "routers": "Routers",
     "users": "Users",
     "partner": "Partner",
-    "variableSchemas": "Variable schemas"
+    "partners": "Partners",
+    "variableSchemas": "Variable schemas",
+    "demandes": "Requests",
+    "operations": "Operations",
+    "billing": "Billing"
   },
   "admin": {
     "comingSoon": "Coming soon",
@@ -267,6 +283,76 @@
           "jsonError": "JSON must be a valid object."
         }
       }
+    },
+    "users": {
+      "title": "Users",
+      "new": "New user",
+      "edit": "Edit user",
+      "description": "Manage platform users.",
+      "newUser": "New user",
+      "searchPlaceholder": "Search a user...",
+      "roleFilter": {
+        "all": "All roles"
+      },
+      "statusFilter": {
+        "all": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "empty": {
+        "title": "No users found",
+        "description": "No users match the current filters."
+      },
+      "error": {
+        "title": "Loading error",
+        "description": "Unable to load the users list.",
+        "retry": "Retry"
+      },
+      "pagination": {
+        "next": "Next",
+        "previous": "Previous",
+        "total": "{total} user(s)",
+        "page": "Page {page} / {lastPage}"
+      },
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "partner": "Partner",
+        "roles": "Roles",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "form": {
+        "titleCreate": "New user",
+        "titleEdit": "Edit user",
+        "descriptionCreate": "Create a new user account on the platform.",
+        "descriptionEdit": "Edit this user's information.",
+        "firstname": "First name",
+        "firstnamePlaceholder": "John",
+        "lastname": "Last name",
+        "lastnamePlaceholder": "Doe",
+        "email": "Email",
+        "emailPlaceholder": "john.doe{'@'}example.com",
+        "password": "Password",
+        "passwordPlaceholder": "Secure password",
+        "partner": "Partner",
+        "partnerPlaceholder": "Select a partner",
+        "noPartner": "No partner (internal)",
+        "role": "Role",
+        "rolePlaceholder": "Select a role",
+        "isActive": "Active user",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      }
     }
   },
   "login": {
@@ -348,13 +434,13 @@
     }
   },
   "error": {
-    "404": {
-      "title": "Page not found",
-      "description": "This page doesn't exist or has been moved."
-    },
     "403": {
       "title": "Access denied",
       "description": "You don't have permission to access this page."
+    },
+    "404": {
+      "title": "Page not found",
+      "description": "This page doesn't exist or has been moved."
     },
     "500": {
       "title": "Server error",
@@ -370,7 +456,16 @@
   "partner": {
     "allPartners": "All partners",
     "search": "Search a partner…",
-    "noResults": "No partner found"
+    "noResults": "No partner found",
+    "credits": {
+      "title": "Credits",
+      "recharge": "Recharge",
+      "history": "Credits history"
+    },
+    "features": {
+      "title": "Features",
+      "toggle": "Enable / disable"
+    }
   },
   "campaigns": {
     "title": "Campaigns",
@@ -477,14 +572,14 @@
         "volumeSent": "Volume sent",
         "unitPrice": "Unit price",
         "totalPrice": "Total price",
-      "smsCount": "SMS count",
-      "shortUrl": "Short link",
-      "showFull": "View full message",
-      "showLess": "Collapse",
-      "emptyMessage": "No message available",
-      "createdAt": "Created on",
-      "scheduledAt": "Scheduled on",
-      "sentAt": "Sent on"
+        "smsCount": "SMS count",
+        "shortUrl": "Short link",
+        "showFull": "View full message",
+        "showLess": "Collapse",
+        "emptyMessage": "No message available",
+        "createdAt": "Created on",
+        "scheduledAt": "Scheduled on",
+        "sentAt": "Sent on"
       },
       "targeting": {
         "title": "Targeting",
@@ -1179,6 +1274,12 @@
         "operations": "Operations",
         "blocked": "Blocked",
         "date": "Date"
+      },
+      "error": "Error loading requests",
+      "filter_button": "Filter",
+      "pagination": {
+        "next": "Next",
+        "prev": "Previous"
       }
     },
     "create": {
@@ -1190,10 +1291,30 @@
         "is_exoneration": "Exoneration",
         "partner": "Partner",
         "commercial": "Commercial",
-        "sdr": "SDR"
+        "sdr": "SDR",
+        "ref_client_placeholder": "E.g. CLI-2026-001",
+        "ref_client_hint": "Internal reference to find this request on the client side.",
+        "information_placeholder": "Describe the need, context or specific instructions...",
+        "information_hint": "Any useful information for processing the request.",
+        "is_exoneration_hint": "Check if this request benefits from a billing exoneration.",
+        "partner_hint": "The partner this request will be attached to.",
+        "partner_placeholder": "Search for a partner...",
+        "commercial_placeholder": "Search for a commercial...",
+        "commercial_hint": "The commercial in charge of this case.",
+        "sdr_placeholder": "Search for a SDR...",
+        "sdr_hint": "The SDR responsible for this request.",
+        "pays_id": "Country",
+        "pays_id_placeholder": "FR",
+        "pays_id_hint": "ISO 2-letter country code (e.g. FR, BE, CH)."
       },
       "submit": "Create request",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sections": {
+        "general": "General information",
+        "assignment": "Assignment",
+        "options": "Options"
+      },
+      "submitting": "Creating..."
     },
     "detail": {
       "title": "Request {ref}",
@@ -1272,6 +1393,296 @@
         "total_price": "Total price"
       },
       "chars_count": "{count}/160 characters"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "Search a partner, page or action…",
+    "noResults": "No results found",
+    "partners": "Partners",
+    "pages": "Pages",
+    "actions": "Actions",
+    "newCampaign": "New campaign",
+    "newPartner": "New partner"
+  },
+  "hub": {
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome, {firstname}",
+      "kpi": {
+        "activePartners": "Active partners",
+        "totalCredits": "Total credits",
+        "campaignsThisMonth": "Campaigns this month",
+        "pendingActions": "Pending actions"
+      },
+      "description": "Overview of your partner portfolio and ongoing actions.",
+      "live": "Live",
+      "error": {
+        "title": "Loading error",
+        "description": "Unable to load dashboard data."
+      }
+    },
+    "partners": {
+      "title": "Partners",
+      "new": "New partner",
+      "enter": "Enter partner scope",
+      "description": "Manage partners in your portfolio.",
+      "newPartner": "New partner",
+      "searchPlaceholder": "Search a partner...",
+      "statusFilter": {
+        "all": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "enter": "Enter",
+        "edit": "Edit"
+      },
+      "empty": {
+        "title": "No partners found",
+        "description": "No partners match the current filters."
+      },
+      "error": {
+        "title": "Loading error",
+        "description": "Unable to load the partners list.",
+        "retry": "Retry"
+      },
+      "pagination": {
+        "next": "Next",
+        "previous": "Previous",
+        "total": "{total} partner(s)",
+        "page": "Page {page} / {lastPage}"
+      },
+      "columns": {
+        "name": "Name",
+        "activity": "Activity",
+        "credits": "Credits",
+        "shops": "Shops",
+        "status": "Status",
+        "actions": "Actions"
+      }
+    },
+    "alerts": {
+      "lowCredits": "Low credits — {name} has less than {amount} EUR remaining",
+      "inactive": "Partner disabled — {name} is currently inactive",
+      "title": "Alerts",
+      "empty": "No active alerts",
+      "enter": "View"
+    },
+    "emptyPortfolio": {
+      "title": "Your portfolio is empty",
+      "description": "Contact your administrator to assign partners to your account."
+    },
+    "kpis": {
+      "partners": {
+        "label": "Partners",
+        "subtitle": "active / total"
+      },
+      "credits": {
+        "label": "Credits",
+        "subtitle": "total balance"
+      },
+      "demandes": {
+        "label": "Requests",
+        "subtitle": "in progress"
+      },
+      "shortUrls": {
+        "label": "Short URLs",
+        "subtitle": "active / total"
+      }
+    },
+    "credits": {
+      "title": "Credits",
+      "currentBalance": "Current balance",
+      "recharge": "Recharge",
+      "rechargeTitle": "Recharge credits",
+      "rechargeDescription": "Add credits to this partner's balance.",
+      "amount": "Amount (EUR)",
+      "amountPlaceholder": "E.g. 500.00",
+      "description": "Description",
+      "descriptionPlaceholder": "Reason for recharge...",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "processing": "Processing...",
+      "history": "History",
+      "noTransactions": "No transactions"
+    },
+    "features": {
+      "title": "Features",
+      "empty": "No features configured",
+      "groups": {
+        "campaigns": "Campaigns",
+        "features": "Features",
+        "location": "Location",
+        "analytics": "Analytics",
+        "other": "Other"
+      },
+      "keys": {
+        "campaign_prospection": "SMS prospection",
+        "campaign_fidelisation": "SMS loyalty",
+        "campaign_comptage": "Volume count",
+        "shops": "Shops",
+        "sms_templates": "SMS templates",
+        "short_urls": "Short URLs",
+        "payment": "Payment",
+        "location_postcode": "Postcode targeting",
+        "location_geoloc": "Geolocation targeting",
+        "location_iris": "IRIS targeting",
+        "analytics_prospection": "Prospection analytics",
+        "analytics_fidelisation": "Loyalty analytics",
+        "demo_mode": "Demo mode"
+      }
+    },
+    "partnerDetail": {
+      "loading": "Loading...",
+      "error": "Unable to load this partner.",
+      "tabs": {
+        "info": "Information",
+        "credits": "Credits",
+        "features": "Features",
+        "users": "Users"
+      }
+    },
+    "partnerForm": {
+      "titleCreate": "New partner",
+      "titleEdit": "Edit partner",
+      "name": "Name",
+      "namePlaceholder": "Partner name",
+      "code": "Code",
+      "codePlaceholder": "Internal code",
+      "email": "Email",
+      "emailPlaceholder": "contact{'@'}partner.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+33 1 23 45 67 89",
+      "address": "Address",
+      "city": "City",
+      "zipCode": "Zip code",
+      "activityType": "Activity type",
+      "billingMode": "Billing mode",
+      "isActive": "Active partner",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    }
+  },
+  "scope": {
+    "banner": {
+      "context": "You are working in the context of {name}",
+      "exit": "Exit context",
+      "credits": "{amount} EUR credits"
+    },
+    "inactive": {
+      "title": "Partner disabled",
+      "description": "This partner is currently disabled. Some actions are unavailable.",
+      "reactivate": "Reactivate"
+    },
+    "exit": "Exit context",
+    "partner": "Partner"
+  },
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "retry": "Retry",
+  "refresh": "Refresh",
+  "recharge": "Recharge",
+  "common": {
+    "retry": "Retry",
+    "noResults": "No results found.",
+    "minChars": "Type at least 2 characters",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "shortUrls": {
+    "title": "Short URLs",
+    "description": "Manage short links with click tracking",
+    "columns": {
+      "slug": "Slug",
+      "link": "Destination URL",
+      "clicks": "Clicks",
+      "clicksBots": "Bot clicks",
+      "status": "Status",
+      "traceable": "Traceable",
+      "createdAt": "Created at"
+    },
+    "filters": {
+      "search": "Search by slug or URL...",
+      "status": "Status",
+      "statusAll": "All",
+      "statusEnabled": "Active",
+      "statusDisabled": "Disabled"
+    },
+    "actions": {
+      "create": "New short URL",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View detail",
+      "export": "Export CSV",
+      "copySlug": "Copy short link"
+    },
+    "form": {
+      "slugLabel": "Custom slug",
+      "slugPlaceholder": "Leave empty for auto-generation",
+      "slugHint": "Must not contain underscores (_)",
+      "linkLabel": "Destination URL",
+      "linkPlaceholder": "https://...",
+      "traceableLabel": "Traceable per recipient",
+      "traceableHint": "Enables individual tracking via suffixes",
+      "draftLabel": "Draft",
+      "enabledLabel": "Enabled",
+      "prefixLabel": "Prefix",
+      "prefixPlaceholder": "e.g. promo",
+      "lengthLabel": "Slug length",
+      "createTitle": "New short URL",
+      "editTitle": "Edit short URL",
+      "saveSuccess": "Short URL saved",
+      "deleteSuccess": "Short URL deleted",
+      "preview": "Preview",
+      "deleteConfirm": {
+        "title": "Delete this short URL?",
+        "description": "This action is irreversible. Redirections to this URL will no longer work."
+      }
+    },
+    "detail": {
+      "title": "Short URL detail",
+      "statsTitle": "Click statistics",
+      "humanClicks": "Human clicks",
+      "botClicks": "Bot clicks",
+      "totalClicks": "Total clicks",
+      "shortLink": "Short link",
+      "destination": "Destination",
+      "internalLink": "Internal link (no external destination)",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "draft": "Draft",
+      "published": "Published",
+      "traceable": "Traceable",
+      "notTraceable": "Not traceable",
+      "copySuccess": "Link copied to clipboard",
+      "humanPercent": "{pct}% human",
+      "importId": "Import",
+      "actionEnable": "Enable",
+      "actionDisable": "Disable"
+    },
+    "empty": {
+      "title": "No short URLs",
+      "description": "Create your first short URL to start tracking"
+    },
+    "pagination": {
+      "total": "{total} short URL(s)",
+      "page": "Page {page} of {lastPage}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "error": {
+      "title": "Loading error",
+      "description": "Unable to load short URLs.",
+      "retry": "Retry"
+    },
+    "status": {
+      "active": "Active",
+      "disabled": "Disabled"
     }
   }
 }

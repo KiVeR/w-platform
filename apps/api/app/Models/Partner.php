@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\BillingMode;
 use App\Enums\PartnerFeatureKey;
 use Database\Factories\PartnerFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,7 @@ class Partner extends Model
         'logo_url',
         'euro_credits',
         'router_id',
+        'adv_id',
         'activity_type',
         'billing_mode',
     ];
@@ -49,6 +51,28 @@ class Partner extends Model
     public function router(): BelongsTo
     {
         return $this->belongsTo(Router::class);
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function adv(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'adv_id');
+    }
+
+    /** @param Builder<Partner> $query */
+    public function scopeForUser(Builder $query, User $user): void
+    {
+        if ($user->hasRole('admin')) {
+            return;
+        }
+
+        if ($user->hasRole('adv')) {
+            $query->where('adv_id', $user->id);
+
+            return;
+        }
+
+        $query->where('id', $user->partner_id);
     }
 
     /** @return HasMany<User, $this> */

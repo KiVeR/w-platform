@@ -9,6 +9,7 @@ use App\Http\Requests\ShortUrl\StoreImportableLinkRequest;
 use App\Http\Resources\ImportableLinkResource;
 use App\Http\Resources\ShortUrlResource;
 use App\Models\ImportableLink;
+use App\Models\ShortUrl;
 use App\Rules\NoUnderscoreSlug;
 use App\Services\ShortUrl\ShortUrlService;
 use Exception;
@@ -26,6 +27,8 @@ class ImportableLinkController extends Controller
      */
     public function upload(StoreImportableLinkRequest $request): JsonResource
     {
+        $this->authorize('create', ShortUrl::class);
+
         $importableLink = new ImportableLink;
         $importableLink->save();
 
@@ -46,6 +49,8 @@ class ImportableLinkController extends Controller
      */
     public function import(string $importableLinkUuid, Request $request): AnonymousResourceCollection
     {
+        $this->authorize('create', ShortUrl::class);
+
         $request->validate([
             'length' => ['nullable', 'integer', 'min:1'],
             'prefix' => ['nullable', 'string', 'max:15', new NoUnderscoreSlug],

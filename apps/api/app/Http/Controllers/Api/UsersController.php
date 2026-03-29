@@ -10,24 +10,30 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UsersController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
 
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
+        $currentUser = $this->currentUser();
 
-        $users = QueryBuilder::for(User::forUser($currentUser))
-            ->allowedFilters([AllowedFilter::exact('partner_id'), 'email', AllowedFilter::exact('is_active')])
+        $users = QueryBuilder::for(User::forUser($currentUser)->with(['roles.permissions', 'permissions']))
+            ->allowedFilters([
+                AllowedFilter::exact('partner_id'),
+                'email',
+                AllowedFilter::exact('is_active'),
+                AllowedFilter::callback('role', fn ($query, $value) => $query->whereHas('roles', fn ($q) => $q->where('name', $value))),
+                AllowedFilter::callback('search', fn ($query, $value) => $query->where(fn ($q) => $q->where('firstname', 'ilike', "%{$value}%")->orWhere('lastname', 'ilike', "%{$value}%")->orWhere('email', 'ilike', "%{$value}%"))),
+            ])
             ->allowedSorts(['firstname', 'email', 'created_at'])
             ->allowedIncludes(['partner'])
-            ->paginate(15);
+            ->paginate(min($request->integer('per_page', config('api.pagination.default')), 100));
 
         return UserResource::collection($users);
     }
@@ -39,6 +45,7 @@ class UsersController extends Controller
         /** @var User $user */
         $user = User::create($request->safe()->except(['role']));
         $user->assignRole($request->validated('role'));
+        $user->load(['roles.permissions', 'permissions']);
 
         return new UserResource($user);
     }
@@ -47,7 +54,7 @@ class UsersController extends Controller
     {
         $this->authorize('view', $user);
 
-        $user = QueryBuilder::for(User::where('id', $user->id))
+        $user = QueryBuilder::for(User::where('id', $user->id)->with(['roles.permissions', 'permissions']))
             ->allowedIncludes(['partner'])
             ->firstOrFail();
 
@@ -64,7 +71,7 @@ class UsersController extends Controller
 
         $user->update($request->safe()->except(['role']));
 
-        return new UserResource($user->fresh());
+        return new UserResource($user->fresh()->load(['roles.permissions', 'permissions']));
     }
 
     public function destroy(User $user): JsonResponse

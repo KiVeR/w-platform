@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\AIContentController;
+use App\Http\Controllers\Api\AIContentDesignController;
+use App\Http\Controllers\Api\AIContentVersionController;
 use App\Http\Controllers\Api\AIGenerationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BroadcastingAuthController;
@@ -21,6 +23,8 @@ use App\Http\Controllers\Api\InvoicesController;
 use App\Http\Controllers\Api\IrisZonesController;
 use App\Http\Controllers\Api\LandingPagesController;
 use App\Http\Controllers\Api\OperationsController;
+use App\Http\Controllers\Api\PartnerCreditsController;
+use App\Http\Controllers\Api\PartnerFeaturesController;
 use App\Http\Controllers\Api\PartnerPricingsController;
 use App\Http\Controllers\Api\PartnersController;
 use App\Http\Controllers\Api\RouterController;
@@ -47,7 +51,7 @@ Route::middleware(['client'])->prefix('internal')->group(function (): void {
 });
 
 // SMS provider webhooks — public, no auth
-Route::prefix('webhooks')->group(function (): void {
+Route::prefix('webhooks')->middleware('throttle:webhooks')->group(function (): void {
     Route::post('sinch', [SmsWebhookController::class, 'sinch']);
     Route::post('infobip', [SmsWebhookController::class, 'infobip']);
     Route::post('highconnexion', [SmsWebhookController::class, 'highconnexion']);
@@ -82,9 +86,12 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('estimate', EstimateController::class);
     Route::post('campaigns', [CampaignsController::class, 'store'])->middleware('deprecate:2026-09-01');
     Route::apiResource('campaigns', CampaignsController::class)->except(['store']);
-    Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule']);
-    Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send']);
-    Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel']);
+    Route::post('campaigns/{campaign}/schedule', [CampaignsController::class, 'schedule'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/send', [CampaignsController::class, 'send'])
+        ->middleware('throttle:campaign-actions');
+    Route::post('campaigns/{campaign}/cancel', [CampaignsController::class, 'cancel'])
+        ->middleware('throttle:campaign-actions');
     Route::get('campaigns/{campaign}/stats', [CampaignsController::class, 'stats']);
     Route::get('campaigns/{campaign}/export', [CampaignsController::class, 'export']);
     Route::get('campaigns/{campaign}/activities', [CampaignActivitiesController::class, 'index']);
@@ -107,13 +114,9 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::post('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'attachVariableSchema']);
     Route::delete('landing-pages/{landing_page}/variable-schema', [LandingPagesController::class, 'detachVariableSchema']);
 
-    Route::post('variable-schemas/discover', [VariableSchemaController::class, 'discover']);
-    Route::post('variable-schemas/preview', [VariableSchemaController::class, 'preview']);
     Route::apiResource('variable-schemas', VariableSchemaController::class)
         ->parameters(['variable-schemas' => 'variableSchema']);
     Route::post('variable-schemas/{variableSchema}/clone', [VariableSchemaController::class, 'clone']);
-    Route::post('variable-schemas/{variableSchema}/mark-used', [VariableSchemaController::class, 'markUsed']);
-    Route::post('variable-schemas/{variableSchema}/mark-unused', [VariableSchemaController::class, 'markUnused']);
 
     Route::apiResource('short-urls', ShortUrlController::class);
     Route::post('short-urls/list', [ShortUrlController::class, 'index']);
@@ -125,6 +128,9 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
     Route::apiResource('invoices', InvoicesController::class)->only(['index', 'show']);
     Route::get('partners/{partner}/balance', [TransactionsController::class, 'balance']);
     Route::get('partners/{partner}/transactions', [TransactionsController::class, 'index']);
+    Route::post('partners/{partner}/credits', [PartnerCreditsController::class, 'store']);
+    Route::get('partners/{partner}/features', [PartnerFeaturesController::class, 'index']);
+    Route::put('partners/{partner}/features/{feature}', [PartnerFeaturesController::class, 'update']);
 
     Route::prefix('geo')->name('geo.')->group(function (): void {
         Route::get('departments', [GeoController::class, 'departments'])->name('departments.index');
@@ -153,10 +159,10 @@ Route::middleware(['auth:api', 'active'])->group(function (): void {
         Route::get('contents/recent', [AIContentController::class, 'recent']);
         Route::apiResource('contents', AIContentController::class)->except(['edit', 'create'])->parameters(['contents' => 'aiContent']);
         Route::post('contents/{aiContent}/favorite', [AIContentController::class, 'favorite']);
-        Route::get('contents/{aiContent}/design', [AIContentController::class, 'design']);
-        Route::put('contents/{aiContent}/design', [AIContentController::class, 'saveDesign']);
-        Route::get('contents/{aiContent}/versions', [AIContentController::class, 'versions']);
-        Route::get('contents/{aiContent}/versions/{version}', [AIContentController::class, 'showVersion']);
-        Route::post('contents/{aiContent}/versions', [AIContentController::class, 'restoreVersion'])->middleware('throttle:restore-version');
+        Route::get('contents/{aiContent}/design', [AIContentDesignController::class, 'show']);
+        Route::put('contents/{aiContent}/design', [AIContentDesignController::class, 'update']);
+        Route::get('contents/{aiContent}/versions', [AIContentVersionController::class, 'index']);
+        Route::get('contents/{aiContent}/versions/{version}', [AIContentVersionController::class, 'show']);
+        Route::post('contents/{aiContent}/versions', [AIContentVersionController::class, 'restore'])->middleware('throttle:restore-version');
     });
 });

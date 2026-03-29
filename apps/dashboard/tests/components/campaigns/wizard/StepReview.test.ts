@@ -13,6 +13,7 @@ vi.stubGlobal('ref', ref)
 vi.stubGlobal('onMounted', onMounted)
 mockUseI18n()
 vi.stubGlobal('navigateTo', vi.fn())
+vi.stubGlobal('useScopedNavigation', () => ({ scopedRoute: (p: string) => p, hubRoute: (p: string) => p, enterPartner: vi.fn(), exitToHub: vi.fn() }))
 vi.stubGlobal('isForbiddenMessage', (msg: string) => msg.toLowerCase().includes('rsms.co'))
 const mockGetSmsStats = (msg: string) => ({
   charCount: msg.length,
