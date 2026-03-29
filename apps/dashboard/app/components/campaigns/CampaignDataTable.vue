@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil, Trash2, Send } from 'lucide-vue-next'
+import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil, Trash2, Send, Server } from 'lucide-vue-next'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -13,9 +13,10 @@ import {
   AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import CampaignStatusBadge from '@/components/shared/CampaignStatusBadge.vue'
+import RoutingStatusBadge from '@/components/shared/RoutingStatusBadge.vue'
 import EmptyState from '@/components/shared/EmptyState.vue'
 import PageSkeleton from '@/components/shared/PageSkeleton.vue'
-import { formatNumber, formatDate } from '@/utils/format'
+import { formatNumber, formatDate, formatDateTime } from '@/utils/format'
 import type { CampaignRow, CampaignPagination } from '@/types/campaign'
 
 const props = defineProps<{
@@ -43,6 +44,9 @@ const columns = [
   { key: 'name', sortable: true },
   { key: 'type', sortable: false },
   { key: 'status', sortable: false },
+  { key: 'routingStatus', sortable: false },
+  { key: 'router', sortable: false },
+  { key: 'routingDates', field: 'routing_at', sortable: true },
   { key: 'volume', field: 'volume_estimated', sortable: true },
   { key: 'date', field: 'created_at', sortable: true },
   { key: 'actions', sortable: false },
@@ -96,7 +100,10 @@ function handleRowClick(row: CampaignRow, event: MouseEvent) {
               <TableHead
                 v-for="col in columns"
                 :key="col.key"
-                :class="col.key === 'actions' ? 'w-[60px]' : ''"
+                :class="[
+                  col.key === 'actions' ? 'w-[60px]' : '',
+                  col.key === 'routingDates' ? 'hidden xl:table-cell' : '',
+                ]"
               >
                 <button
                   v-if="col.sortable"
@@ -129,6 +136,33 @@ function handleRowClick(row: CampaignRow, event: MouseEvent) {
               <TableCell>
                 <CampaignStatusBadge :status="row.status" />
               </TableCell>
+
+              <!-- Routing Status -->
+              <TableCell>
+                <RoutingStatusBadge v-if="row.routing_status" :status="row.routing_status" />
+                <span v-else class="text-muted-foreground">—</span>
+              </TableCell>
+
+              <!-- Router -->
+              <TableCell>
+                <span v-if="row.router_name" class="inline-flex items-center gap-1.5">
+                  <Server class="size-3.5 text-muted-foreground" />
+                  {{ row.router_name }}
+                </span>
+                <span v-else class="text-muted-foreground">—</span>
+              </TableCell>
+
+              <!-- Routing Dates -->
+              <TableCell class="hidden xl:table-cell">
+                <div v-if="row.routing_at" class="flex flex-col gap-0.5 text-xs">
+                  <span class="text-muted-foreground">{{ formatDateTime(row.routing_at) }}</span>
+                  <span v-if="row.routing_executed_at" class="text-success-600">
+                    {{ formatDateTime(row.routing_executed_at) }}
+                  </span>
+                </div>
+                <span v-else class="text-muted-foreground">—</span>
+              </TableCell>
+
               <TableCell>
                 {{ row.volume_estimated != null ? formatNumber(row.volume_estimated) : '—' }}
               </TableCell>
