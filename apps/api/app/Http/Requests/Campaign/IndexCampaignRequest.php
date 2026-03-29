@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Campaign;
 
 use App\Enums\CampaignChannel;
+use App\Enums\CampaignRoutingStatus;
 use App\Enums\CampaignStatus;
 use App\Enums\CampaignType;
 use Illuminate\Foundation\Http\FormRequest;
@@ -43,6 +44,8 @@ class IndexCampaignRequest extends FormRequest
                     '-sent_at',
                     'created_at',
                     '-created_at',
+                    'routing_at',
+                    '-routing_at',
                 ]),
             ],
             'include' => ['sometimes', 'string'],
@@ -55,6 +58,8 @@ class IndexCampaignRequest extends FormRequest
             'filter.name' => ['sometimes', 'string', 'max:255'],
             'filter.created_at_from' => ['sometimes', 'date'],
             'filter.created_at_to' => ['sometimes', 'date', 'after_or_equal:filter.created_at_from'],
+            'filter.routing_status' => ['sometimes', Rule::enum(CampaignRoutingStatus::class)],
+            'filter.router_id' => ['sometimes', 'integer', 'exists:routers,id'],
         ];
     }
 }

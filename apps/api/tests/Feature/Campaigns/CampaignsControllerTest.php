@@ -484,3 +484,49 @@ it('denies deleting a sending campaign', function (): void {
 
     $this->deleteJson("/api/campaigns/{$campaign->id}")->assertForbidden();
 });
+
+// --- ROUTING INDEX FEATURES ---
+
+it('includes router when requested', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $router = Router::factory()->sinch()->create();
+    Campaign::factory()->create(['router_id' => $router->id]);
+
+    $response = $this->getJson('/api/campaigns?include=router');
+
+    $response->assertOk()
+        ->assertJsonPath('data.0.router.id', $router->id);
+});
+
+it('filters by routing_status', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    Campaign::factory()->withRouting()->create();
+    Campaign::factory()->create(['routing_status' => CampaignRoutingStatus::RoutingPending]);
+    Campaign::factory()->create();
+
+    $response = $this->getJson('/api/campaigns?filter[routing_status]=ROUTING_COMPLETED');
+
+    $response->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.routing_status', 'ROUTING_COMPLETED');
+});
+
+it('sorts by routing_at', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    Passport::actingAs($admin);
+
+    $old = Campaign::factory()->create(['routing_at' => now()->subDays(5)]);
+    $recent = Campaign::factory()->create(['routing_at' => now()]);
+
+    $response = $this->getJson('/api/campaigns?sort=-routing_at');
+
+    $response->assertOk();
+    expect($response->json('data.0.id'))->toBe($recent->id);
+});
