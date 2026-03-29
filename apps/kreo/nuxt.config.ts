@@ -54,18 +54,9 @@ export default defineNuxtConfig({
 
   // Runtime config (env variables)
   runtimeConfig: {
-    // Server-only secrets
-    jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
-    jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-in-production',
-    jwtAccessExpiration: process.env.JWT_ACCESS_EXPIRATION || '15m',
-    databaseUrl: process.env.DATABASE_URL,
-    platformApiUrl: process.env.PLATFORM_API_URL || '',
-    platformApiClientId: process.env.PLATFORM_API_CLIENT_ID || '',
-    platformApiClientSecret: process.env.PLATFORM_API_CLIENT_SECRET || '',
-
-    // Public (exposed to client)
+    // Public (exposed to client — set via NUXT_PUBLIC_PLATFORM_API_URL)
     public: {
-      apiBase: '/api/v1',
+      platformApiUrl: '',
     },
   },
 
