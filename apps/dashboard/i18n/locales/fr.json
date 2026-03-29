@@ -487,7 +487,10 @@
       "status": "Statut",
       "volume": "Destinataires",
       "date": "Date",
-      "actions": "Actions"
+      "actions": "Actions",
+      "routingStatus": "Statut routage",
+      "router": "Routeur",
+      "routingDates": "Planification routage"
     },
     "filters": {
       "search": "Rechercher…",
@@ -519,6 +522,37 @@
       "editDraft": "Reprendre le brouillon",
       "delete": "Supprimer",
       "duplicate": "Relancer"
+    },
+    "routingStatus": {
+      "QUERY_PENDING": "Requêtage en attente",
+      "QUERY_IN_PROGRESS": "Requêtage en cours",
+      "QUERY_FAILED": "Requêtage échoué",
+      "SHORT_URL_ERROR": "Erreur URL courte",
+      "SHORT_URL_SUFFIX_PENDING": "Suffixe URL en attente",
+      "SHORT_URL_SUFFIX_REQUESTED": "Suffixe URL demandé",
+      "SHORT_URL_SUFFIX_FAILED": "Suffixe URL échoué",
+      "MESSAGE_GENERATION_PENDING": "Génération message en attente",
+      "MESSAGE_GENERATION_REQUESTED": "Génération message demandée",
+      "MESSAGE_GENERATION_FAILED": "Génération message échouée",
+      "ROUTING_PENDING": "Routage en attente",
+      "ROUTING_IN_PROGRESS": "Routage en cours",
+      "ROUTING_COMPLETED": "Routage terminé",
+      "ROUTING_PAUSED": "Routage en pause",
+      "ROUTING_FAILED": "Routage échoué",
+      "ROUTING_CANCELED": "Routage annulé"
+    },
+    "routingActions": {
+      "start": "Lancer routage",
+      "resume": "Relancer routage",
+      "pause": "Mettre en pause",
+      "cancel": "Annuler routage",
+      "pullReport": "Récupérer rapports",
+      "confirmStart": "Êtes-vous sûr de vouloir lancer le routage de cette campagne ?",
+      "confirmPause": "Le routage en cours sera suspendu. Vous pourrez le relancer ultérieurement.",
+      "confirmCancel": "Cette action est irréversible. Le routage sera définitivement annulé.",
+      "confirmPullReport": "Déclencher la récupération manuelle des rapports de livraison ?",
+      "success": "Action de routage effectuée",
+      "error": "Échec de l'action de routage"
     },
     "deleteConfirm": {
       "title": "Supprimer cette campagne ?",
