@@ -49,4 +49,25 @@ enum CampaignRoutingStatus: string
             self::RoutingFailed,
         ]);
     }
+
+    public function canStart(): bool
+    {
+        return in_array($this, [
+            self::RoutingPending,
+            self::RoutingPaused,
+        ]);
+    }
+
+    public function canPause(): bool
+    {
+        return $this === self::RoutingInProgress;
+    }
+
+    public function canCancel(): bool
+    {
+        return ! in_array($this, [
+            self::RoutingCompleted,
+            self::RoutingCanceled,
+        ]);
+    }
 }
