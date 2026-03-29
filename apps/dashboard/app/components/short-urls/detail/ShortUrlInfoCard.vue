@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { ShortUrl } from '@/types/shortUrl'
 
-const props = defineProps<{ shortUrl: ShortUrl }>()
+const props = defineProps<{ shortUrl: ShortUrl; canManage?: boolean }>()
+const emit = defineEmits<{ toggle: [] }>()
 const { t } = useI18n()
 
 async function copySlug() {
@@ -55,6 +56,17 @@ async function copySlug() {
           {{ shortUrl.is_traceable_by_recipient ? t('shortUrls.detail.traceable') : t('shortUrls.detail.notTraceable') }}
         </Badge>
       </div>
+
+      <!-- Toggle enabled button -->
+      <Button
+        v-if="canManage"
+        :variant="shortUrl.is_enabled ? 'destructive' : 'default'"
+        size="sm"
+        data-toggle-btn
+        @click="emit('toggle')"
+      >
+        {{ shortUrl.is_enabled ? t('shortUrls.detail.disabled') : t('shortUrls.detail.enabled') }}
+      </Button>
 
       <!-- Import ID -->
       <p v-if="shortUrl.import_id" class="text-sm text-muted-foreground">

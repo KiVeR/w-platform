@@ -100,9 +100,14 @@ export function useShortUrlDetail(shortUrlId: Ref<number | null>) {
     }
   }
 
+  async function toggleEnabled(): Promise<boolean> {
+    if (!shortUrlId.value || !shortUrl.value) return false
+    return updateShortUrl({ is_enabled: !shortUrl.value.is_enabled })
+  }
+
   watch(shortUrlId, (id) => {
     if (id) fetchShortUrl()
   })
 
-  return { shortUrl, isLoading, hasError, fetchShortUrl, updateShortUrl, deleteShortUrl }
+  return { shortUrl, isLoading, hasError, fetchShortUrl, updateShortUrl, deleteShortUrl, toggleEnabled }
 }

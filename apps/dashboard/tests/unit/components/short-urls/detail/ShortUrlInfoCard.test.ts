@@ -38,9 +38,9 @@ const fakeShortUrl: ShortUrl = {
   is_enabled: true,
 }
 
-function mountCard(overrides: Partial<ShortUrl> = {}) {
+function mountCard(overrides: Partial<ShortUrl> = {}, canManage = false) {
   return mount(ShortUrlInfoCard, {
-    props: { shortUrl: { ...fakeShortUrl, ...overrides } },
+    props: { shortUrl: { ...fakeShortUrl, ...overrides }, canManage },
     global: { stubs: baseStubs },
   })
 }
@@ -118,5 +118,34 @@ describe('ShortUrlInfoCard', () => {
     const wrapper = mountCard()
     await wrapper.find('[data-copy-btn]').trigger('click')
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('test-slug')
+  })
+
+  it('n\'affiche pas le bouton toggle quand canManage est false', () => {
+    const wrapper = mountCard()
+    expect(wrapper.find('[data-toggle-btn]').exists()).toBe(false)
+  })
+
+  it('affiche le bouton toggle quand canManage est true', () => {
+    const wrapper = mountCard({}, true)
+    expect(wrapper.find('[data-toggle-btn]').exists()).toBe(true)
+  })
+
+  it('émet l\'événement toggle au clic sur le bouton toggle', async () => {
+    const wrapper = mountCard({}, true)
+    await wrapper.find('[data-toggle-btn]').trigger('click')
+    expect(wrapper.emitted('toggle')).toBeTruthy()
+    expect(wrapper.emitted('toggle')).toHaveLength(1)
+  })
+
+  it('le bouton toggle affiche "disabled" quand is_enabled est true (action: désactiver)', () => {
+    const wrapper = mountCard({ is_enabled: true }, true)
+    const btn = wrapper.find('[data-toggle-btn]')
+    expect(btn.text()).toContain('shortUrls.detail.disabled')
+  })
+
+  it('le bouton toggle affiche "enabled" quand is_enabled est false (action: activer)', () => {
+    const wrapper = mountCard({ is_enabled: false }, true)
+    const btn = wrapper.find('[data-toggle-btn]')
+    expect(btn.text()).toContain('shortUrls.detail.enabled')
   })
 })

@@ -29,7 +29,7 @@ const { can } = usePermission()
 const shortUrlId = ref<number | null>(null)
 onMounted(() => { shortUrlId.value = Number(route.params.id) })
 
-const { shortUrl, isLoading, hasError, deleteShortUrl } = useShortUrlDetail(shortUrlId)
+const { shortUrl, isLoading, hasError, deleteShortUrl, toggleEnabled } = useShortUrlDetail(shortUrlId)
 
 async function handleDelete() {
   const success = await deleteShortUrl()
@@ -37,6 +37,10 @@ async function handleDelete() {
     toast.success('Deleted')
     navigateTo('/short-urls')
   }
+}
+
+async function handleToggle() {
+  await toggleEnabled()
 }
 </script>
 
@@ -88,7 +92,7 @@ async function handleDelete() {
 
     <!-- Content -->
     <div v-else-if="shortUrl" class="grid gap-6 lg:grid-cols-2">
-      <ShortUrlInfoCard :short-url="shortUrl" />
+      <ShortUrlInfoCard :short-url="shortUrl" :can-manage="can('manage short-urls')" @toggle="handleToggle" />
       <ShortUrlStatsCard :short-url="shortUrl" />
     </div>
   </div>

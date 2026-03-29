@@ -158,6 +158,58 @@ describe('useShortUrlDetail', () => {
     expect(hasError.value).toBe(true)
   })
 
+  it('toggleEnabled appelle updateShortUrl avec is_enabled inversé (true → false)', async () => {
+    mockGet.mockResolvedValueOnce({ data: { data: shortUrlFixture }, error: null })
+    mockPut.mockResolvedValueOnce({ data: { data: { ...shortUrlFixture, is_enabled: false } }, error: null })
+
+    const { useShortUrlDetail } = await import('@/composables/useShortUrlDetail')
+    const id = ref<number | null>(1)
+    const { shortUrl, toggleEnabled, fetchShortUrl } = useShortUrlDetail(id)
+
+    await fetchShortUrl()
+    expect(shortUrl.value?.is_enabled).toBe(true)
+
+    const result = await toggleEnabled()
+
+    expect(result).toBe(true)
+    expect(mockPut).toHaveBeenCalledWith('/short-urls/{shortUrl}', expect.objectContaining({
+      body: { is_enabled: false },
+    }))
+    expect(shortUrl.value?.is_enabled).toBe(false)
+  })
+
+  it('toggleEnabled appelle updateShortUrl avec is_enabled inversé (false → true)', async () => {
+    const disabledFixture = { ...shortUrlFixture, is_enabled: false }
+    mockGet.mockResolvedValueOnce({ data: { data: disabledFixture }, error: null })
+    mockPut.mockResolvedValueOnce({ data: { data: { ...disabledFixture, is_enabled: true } }, error: null })
+
+    const { useShortUrlDetail } = await import('@/composables/useShortUrlDetail')
+    const id = ref<number | null>(1)
+    const { shortUrl, toggleEnabled, fetchShortUrl } = useShortUrlDetail(id)
+
+    await fetchShortUrl()
+    expect(shortUrl.value?.is_enabled).toBe(false)
+
+    const result = await toggleEnabled()
+
+    expect(result).toBe(true)
+    expect(mockPut).toHaveBeenCalledWith('/short-urls/{shortUrl}', expect.objectContaining({
+      body: { is_enabled: true },
+    }))
+    expect(shortUrl.value?.is_enabled).toBe(true)
+  })
+
+  it('toggleEnabled retourne false si shortUrl est null', async () => {
+    const { useShortUrlDetail } = await import('@/composables/useShortUrlDetail')
+    const id = ref<number | null>(1)
+    const { toggleEnabled } = useShortUrlDetail(id)
+
+    const result = await toggleEnabled()
+
+    expect(result).toBe(false)
+    expect(mockPut).not.toHaveBeenCalled()
+  })
+
   it('watch triggers fetchShortUrl when shortUrlId changes', async () => {
     mockGet.mockResolvedValue({ data: { data: shortUrlFixture }, error: null })
 
