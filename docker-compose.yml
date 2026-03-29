@@ -9,6 +9,7 @@ x-api-env: &api-env
   APP_DEBUG: ${APP_DEBUG:-true}
   APP_URL: http://localhost:${PORT_PREFIX:-80}00
   FRONTEND_URL: http://localhost:${PORT_PREFIX:-80}01
+  KREO_URL: http://localhost:${PORT_PREFIX:-80}02
   LOG_CHANNEL: stderr
   LOG_LEVEL: ${LOG_LEVEL:-debug}
   DB_CONNECTION: pgsql
