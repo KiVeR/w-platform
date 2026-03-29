@@ -3,6 +3,8 @@ export interface HubStats {
   activePartnersCount: number
   totalCredits: number
   totalDemandes: number
+  shortUrlsCount: number | null
+  activeShortUrlsCount: number | null
 }
 
 export interface PartnerAlert {

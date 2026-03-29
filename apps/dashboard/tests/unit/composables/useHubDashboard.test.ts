@@ -30,6 +30,10 @@ function mockDemandesResponse(total: number) {
   }
 }
 
+function mockShortUrlsResponse(total: number) {
+  return { data: { data: [], meta: { total } }, error: undefined }
+}
+
 describe('useHubDashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -45,6 +49,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce(mockPartnersResponse(partners))
       .mockResolvedValueOnce(mockDemandesResponse(7))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { stats, alerts, isLoading, fetchDashboard } = useHubDashboard()
 
@@ -71,6 +77,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce(mockPartnersResponse(partners))
       .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { alerts, fetchDashboard } = useHubDashboard()
 
@@ -94,6 +102,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce(mockPartnersResponse(partners))
       .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { alerts, fetchDashboard } = useHubDashboard()
 
@@ -109,6 +119,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockReturnValueOnce(partnersPromise)
       .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { isLoading, fetchDashboard } = useHubDashboard()
 
@@ -125,6 +137,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce({ data: undefined, error: { status: 500 } })
       .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { stats, alerts, hasError, fetchDashboard } = useHubDashboard()
 
@@ -143,6 +157,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce(mockPartnersResponse(partners))
       .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { stats, fetchDashboard } = useHubDashboard()
 
@@ -155,6 +171,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce(mockPartnersResponse([fakePartnerRow()]))
       .mockResolvedValueOnce({ data: undefined, error: { status: 500 } })
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { stats, fetchDashboard } = useHubDashboard()
 
@@ -167,6 +185,8 @@ describe('useHubDashboard', () => {
     mockApi.GET
       .mockResolvedValueOnce(mockPartnersResponse([]))
       .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(0))
 
     const { fetchDashboard } = useHubDashboard()
 
@@ -178,5 +198,29 @@ describe('useHubDashboard', () => {
     expect(mockApi.GET).toHaveBeenCalledWith('/demandes', {
       params: { query: { per_page: 1 } },
     })
+  })
+
+  it('includes shortUrlsCount and activeShortUrlsCount in stats', async () => {
+    mockApi.GET
+      .mockResolvedValueOnce(mockPartnersResponse([fakePartnerRow()]))
+      .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce(mockShortUrlsResponse(10))
+      .mockResolvedValueOnce(mockShortUrlsResponse(7))
+    const { stats, fetchDashboard } = useHubDashboard()
+    await fetchDashboard()
+    expect(stats.value!.shortUrlsCount).toBe(10)
+    expect(stats.value!.activeShortUrlsCount).toBe(7)
+  })
+
+  it('sets shortUrlsCount to null when short-urls API errors', async () => {
+    mockApi.GET
+      .mockResolvedValueOnce(mockPartnersResponse([fakePartnerRow()]))
+      .mockResolvedValueOnce(mockDemandesResponse(0))
+      .mockResolvedValueOnce({ data: undefined, error: { status: 403 } })
+      .mockResolvedValueOnce({ data: undefined, error: { status: 403 } })
+    const { stats, fetchDashboard } = useHubDashboard()
+    await fetchDashboard()
+    expect(stats.value!.shortUrlsCount).toBeNull()
+    expect(stats.value!.activeShortUrlsCount).toBeNull()
   })
 })

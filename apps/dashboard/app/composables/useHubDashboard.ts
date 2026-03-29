@@ -24,13 +24,15 @@ export function useHubDashboard() {
     hasError.value = false
 
     try {
-      const [partnersRes, demandesRes] = await Promise.all([
+      const [partnersRes, demandesRes, shortUrlsTotalRes, shortUrlsActiveRes] = await Promise.all([
         api.GET('/partners', {
           params: { query: { per_page: 100 } } as { query: Record<string, unknown> },
         }),
         api.GET('/demandes', {
           params: { query: { per_page: 1 } } as { query: Record<string, unknown> },
         }),
+        api.GET('/short-urls', { params: { query: { perPage: '1' } } } as never),
+        api.GET('/short-urls', { params: { query: { perPage: '1', is_enabled: true } } } as never),
       ])
 
       if (partnersRes.error || !partnersRes.data) {
@@ -57,11 +59,22 @@ export function useHubDashboard() {
         totalDemandes = Number(demandesPayload.meta?.total ?? 0)
       }
 
+      let shortUrlsCount: number | null = null
+      let activeShortUrlsCount: number | null = null
+      if (!shortUrlsTotalRes.error && shortUrlsTotalRes.data && !shortUrlsActiveRes.error && shortUrlsActiveRes.data) {
+        const totalPayload = shortUrlsTotalRes.data as { meta: Record<string, unknown> }
+        const activePayload = shortUrlsActiveRes.data as { meta: Record<string, unknown> }
+        shortUrlsCount = Number(totalPayload.meta?.total ?? 0)
+        activeShortUrlsCount = Number(activePayload.meta?.total ?? 0)
+      }
+
       stats.value = {
         partnersCount: partners.length,
         activePartnersCount: activePartners.length,
         totalCredits: partners.reduce((sum, p) => sum + parseFloat(p.euro_credits), 0),
         totalDemandes,
+        shortUrlsCount,
+        activeShortUrlsCount,
       }
 
       const detectedAlerts: PartnerAlert[] = []

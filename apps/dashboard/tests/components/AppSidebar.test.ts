@@ -212,4 +212,22 @@ describe('AppSidebar', () => {
       expect(wrapper.text()).not.toContain('nav.groups.admin')
     })
   })
+
+  describe('Short URLs permission', () => {
+    it('shows short-urls entry in hub mode for admin', () => {
+      const wrapper = mountAdminHub()
+      expect(wrapper.text()).toContain('nav.shortUrls')
+    })
+
+    it('hides short-urls entry for user without view short-urls permission', () => {
+      const auth = useAuthStore()
+      auth.setAuth({ ...fakeAuthResponse.data, user: {
+        ...fakeAdvUser,
+        permissions: fakeAdvUser.permissions.filter(p => p !== 'view short-urls'),
+      }})
+      mockRoute = { path: '/hub/dashboard', params: {} }
+      const wrapper = mount(AppSidebar, { global: { stubs: sidebarStubs } })
+      expect(wrapper.text()).not.toContain('nav.shortUrls')
+    })
+  })
 })

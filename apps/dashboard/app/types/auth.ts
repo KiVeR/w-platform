@@ -10,6 +10,7 @@ export type Permission = 'view partners' | 'manage partners' | 'view users' | 'm
   | 'view ai-contents' | 'manage ai-contents'
   | 'view demandes' | 'manage demandes'
   | 'view operations' | 'manage operations' | 'transition operations'
+  | 'view short-urls' | 'manage short-urls'
 
 export interface AuthUser {
   id: number
