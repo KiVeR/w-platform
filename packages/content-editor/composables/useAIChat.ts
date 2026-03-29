@@ -13,7 +13,12 @@ export function useAIChat() {
   async function fetchQuota(): Promise<void> {
     try {
       const response = await api.get<{ remaining: number; limit: number; resets_at: string; can_generate: boolean }>('/ai/quota')
-      chatStore.setQuota(response)
+      chatStore.setQuota({
+        remaining: response.remaining,
+        limit: response.limit,
+        resetsAt: new Date(response.resets_at),
+        canGenerate: response.can_generate,
+      })
     }
     catch (error) {
       console.error('[AI] Failed to fetch quota:', error)
@@ -25,7 +30,8 @@ export function useAIChat() {
       return
 
     chatStore.addUserMessage(prompt, image)
-    chatStore.startAssistantMessage()
+    chatStore.setGenerating(true)
+    chatStore.setProgress('submitting')
     chatStore.setPendingImage(null)
 
     try {
@@ -50,15 +56,17 @@ export function useAIChat() {
         status = jobResult.status
       }
 
+      chatStore.setProgress('generating')
+
       if (status === 'completed' && jobResult?.design) {
-        chatStore.completeAssistantMessage(jobResult.design as unknown as DesignDocument, jobResult.description ?? '')
+        chatStore.completeGeneration(jobResult.design as unknown as DesignDocument)
       }
       else if (status === 'failed') {
         chatStore.setError(jobResult?.error ?? 'Generation failed')
       }
       else {
         // completed but no design
-        chatStore.completeAssistantMessage(undefined, jobResult?.description ?? '')
+        chatStore.completeGeneration(undefined as unknown as DesignDocument)
       }
 
       // Refresh quota after generation (fire-and-forget)
