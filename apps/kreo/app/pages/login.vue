@@ -123,12 +123,6 @@ function togglePassword() {
         </button>
       </form>
 
-      <p class="login-footer">
-        Pas encore de compte ?
-        <NuxtLink to="/register" class="login-link">
-          Créer un compte
-        </NuxtLink>
-      </p>
     </div>
   </div>
 </template>
@@ -354,23 +348,6 @@ function togglePassword() {
 .submit-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-.login-footer {
-  margin-top: var(--space-6);
-  text-align: center;
-  font-size: var(--text-sm);
-  color: #64748b;
-}
-
-.login-link {
-  color: #14b8a6;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.login-link:hover {
-  text-decoration: underline;
 }
 
 .animate-spin {
