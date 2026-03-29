@@ -155,4 +155,41 @@ describe('useCampaignDetail', () => {
 
     createElementSpy.mockRestore()
   })
+
+  test('fetchCampaign mappe routing_executed_at quand present', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        data: {
+          ...fakeCampaign,
+          routing_status: 'ROUTING_COMPLETED',
+          routing_executed_at: '2026-03-15T10:30:00Z',
+          router: { id: 7, name: 'sinch', external_id: 3 },
+        },
+      },
+      error: null,
+    })
+
+    const { campaign, fetchCampaign } = useCampaignDetail(1)
+    await fetchCampaign()
+
+    expect(campaign.value!.routing_executed_at).toBe('2026-03-15T10:30:00Z')
+  })
+
+  test('fetchCampaign inclut router dans le query', async () => {
+    mockGet.mockResolvedValue({
+      data: { data: fakeCampaign },
+      error: null,
+    })
+
+    const { fetchCampaign } = useCampaignDetail(1)
+    await fetchCampaign()
+
+    expect(mockGet).toHaveBeenCalledWith('/campaigns/{campaign}', expect.objectContaining({
+      params: expect.objectContaining({
+        query: expect.objectContaining({
+          include: expect.stringContaining('router'),
+        }),
+      }),
+    }))
+  })
 })

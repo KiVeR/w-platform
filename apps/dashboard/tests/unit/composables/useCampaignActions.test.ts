@@ -58,4 +58,66 @@ describe('useCampaignActions', () => {
     await cancelCampaign()
     expect(cancelError.value).toBeNull()
   })
+
+  test('startRouting appelle POST routing/start et retourne true', async () => {
+    mockPost.mockResolvedValue({ data: {}, error: null })
+
+    const { startRouting, routingActionError } = useCampaignActions(42)
+    const result = await startRouting()
+
+    expect(mockPost).toHaveBeenCalledWith('/campaigns/{campaign}/routing/start', {
+      params: { path: { campaign: 42 } },
+    })
+    expect(result).toBe(true)
+    expect(routingActionError.value).toBeNull()
+  })
+
+  test('pauseRouting appelle POST routing/pause et retourne true', async () => {
+    mockPost.mockResolvedValue({ data: {}, error: null })
+
+    const { pauseRouting, routingActionError } = useCampaignActions(42)
+    const result = await pauseRouting()
+
+    expect(mockPost).toHaveBeenCalledWith('/campaigns/{campaign}/routing/pause', {
+      params: { path: { campaign: 42 } },
+    })
+    expect(result).toBe(true)
+    expect(routingActionError.value).toBeNull()
+  })
+
+  test('cancelRouting appelle POST routing/cancel et retourne true', async () => {
+    mockPost.mockResolvedValue({ data: {}, error: null })
+
+    const { cancelRouting, routingActionError } = useCampaignActions(42)
+    const result = await cancelRouting()
+
+    expect(mockPost).toHaveBeenCalledWith('/campaigns/{campaign}/routing/cancel', {
+      params: { path: { campaign: 42 } },
+    })
+    expect(result).toBe(true)
+    expect(routingActionError.value).toBeNull()
+  })
+
+  test('pullReport appelle POST pull-report et retourne true', async () => {
+    mockPost.mockResolvedValue({ data: {}, error: null })
+
+    const { pullReport, routingActionError } = useCampaignActions(42)
+    const result = await pullReport()
+
+    expect(mockPost).toHaveBeenCalledWith('/campaigns/{campaign}/pull-report', {
+      params: { path: { campaign: 42 } },
+    })
+    expect(result).toBe(true)
+    expect(routingActionError.value).toBeNull()
+  })
+
+  test('startRouting retourne false si API echoue', async () => {
+    mockPost.mockResolvedValue({ data: null, error: { status: 409 } })
+
+    const { startRouting, routingActionError } = useCampaignActions(42)
+    const result = await startRouting()
+
+    expect(result).toBe(false)
+    expect(routingActionError.value).toBe('routing_error')
+  })
 })

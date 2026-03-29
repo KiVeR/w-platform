@@ -136,4 +136,39 @@ describe('useCampaigns', () => {
     })
     expect(result).toBe(true)
   })
+
+  test('mapCampaign extrait les champs routing', async () => {
+    const campaignWithRouting = {
+      ...fakeCampaignList(1)[0],
+      routing_status: 'ROUTING_COMPLETED',
+      routing_at: '2026-03-15T10:00:00Z',
+      routing_executed_at: '2026-03-15T10:30:00Z',
+      router: { id: 3, name: 'sinch', external_id: 5 },
+    }
+    mockGet.mockResolvedValue({
+      data: { data: [campaignWithRouting], meta: fakePaginationMeta },
+    })
+
+    const { campaigns, fetchCampaigns } = useCampaigns()
+    await fetchCampaigns()
+
+    expect(campaigns.value[0].routing_status).toBe('ROUTING_COMPLETED')
+    expect(campaigns.value[0].routing_at).toBe('2026-03-15T10:00:00Z')
+    expect(campaigns.value[0].routing_executed_at).toBe('2026-03-15T10:30:00Z')
+    expect(campaigns.value[0].router_name).toBe('sinch')
+  })
+
+  test('mapCampaign retourne null pour les champs routing absents', async () => {
+    mockGet.mockResolvedValue({
+      data: { data: fakeCampaignList(1), meta: fakePaginationMeta },
+    })
+
+    const { campaigns, fetchCampaigns } = useCampaigns()
+    await fetchCampaigns()
+
+    expect(campaigns.value[0].routing_status).toBeNull()
+    expect(campaigns.value[0].routing_at).toBeNull()
+    expect(campaigns.value[0].routing_executed_at).toBeNull()
+    expect(campaigns.value[0].router_name).toBeNull()
+  })
 })
