@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Building2, CreditCard, FileText } from 'lucide-vue-next'
+import { Building2, CreditCard, FileText, Link } from 'lucide-vue-next'
 import DashboardKpiCard from '@/components/dashboard/DashboardKpiCard.vue'
 import { formatNumber, formatCurrency } from '@/utils/format'
 import type { HubStats } from '@/types/hub'
@@ -38,13 +38,21 @@ const cards = computed(() => [
     icon: FileText,
     tone: 'info' as const,
   },
+  ...(props.stats?.shortUrlsCount !== null && props.stats?.shortUrlsCount !== undefined ? [{
+    key: 'shortUrls',
+    label: t('hub.kpis.shortUrls.label'),
+    value: `${formatNumber(props.stats.activeShortUrlsCount ?? 0)} / ${formatNumber(props.stats.shortUrlsCount)}`,
+    subtitle: t('hub.kpis.shortUrls.subtitle'),
+    icon: Link,
+    tone: 'default' as const,
+  }] : []),
 ])
 </script>
 
 <template>
   <div
     data-hub-kpi-grid
-    class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+    class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
   >
     <DashboardKpiCard
       v-for="card in cards"

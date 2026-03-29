@@ -1488,6 +1488,10 @@
       "demandes": {
         "label": "Demandes",
         "subtitle": "en cours"
+      },
+      "shortUrls": {
+        "label": "URLs courtes",
+        "subtitle": "actives / total"
       }
     },
     "credits": {
