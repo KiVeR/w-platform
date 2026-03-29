@@ -38,12 +38,14 @@ const fakeCampaign: CampaignDetailEnriched = {
   router_id: null,
   variable_schema_id: null,
   routing_at: null,
+  routing_executed_at: null,
   recipients_count: 72,
   router: null,
 }
 
 const baseStubs = {
   Badge: { template: '<span data-type-badge><slot /></span>' },
+  RoutingStatusBadge: { template: '<span data-routing-badge>{{ status }}</span>', props: ['status'] },
 }
 
 describe('ContextBar', () => {
@@ -97,5 +99,49 @@ describe('ContextBar', () => {
     })
 
     expect(wrapper.get('[data-context-item="price"]').text()).toContain('—')
+  })
+
+  it('affiche les items routing quand router est present', () => {
+    const campaignWithRouting = {
+      ...fakeCampaign,
+      routing_status: 'ROUTING_COMPLETED' as const,
+      router: { id: 7, name: 'sinch', external_id: 3 },
+      routing_at: '2026-02-05T08:00:00Z',
+      routing_executed_at: '2026-02-05T08:30:00Z',
+    }
+    const wrapper = mount(ContextBar, {
+      props: { campaign: campaignWithRouting },
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.find('[data-context-item="router"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('sinch')
+    expect(wrapper.find('[data-context-item="routing"]').exists()).toBe(true)
+  })
+
+  it('cache les items routing quand router est null', () => {
+    const wrapper = mount(ContextBar, {
+      props: { campaign: fakeCampaign },
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.find('[data-context-item="router"]').exists()).toBe(false)
+    expect(wrapper.find('[data-context-item="routing"]').exists()).toBe(false)
+  })
+
+  it('affiche Effectue quand routing_executed_at present', () => {
+    const campaignWithRouting = {
+      ...fakeCampaign,
+      routing_status: 'ROUTING_COMPLETED' as const,
+      router: { id: 7, name: 'sinch', external_id: 3 },
+      routing_at: '2026-02-05T08:00:00Z',
+      routing_executed_at: '2026-02-05T08:30:00Z',
+    }
+    const wrapper = mount(ContextBar, {
+      props: { campaign: campaignWithRouting },
+      global: { stubs: baseStubs },
+    })
+
+    expect(wrapper.text()).toContain('campaigns.detail.summary.routingExecuted')
   })
 })

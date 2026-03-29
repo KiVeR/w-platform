@@ -30,6 +30,7 @@ const baseStubs = {
   AlertDialogFooter: slotStub,
   AlertDialogCancel: slotStub,
   AlertDialogAction: { template: '<button v-bind="$attrs" @click="$emit(\'click\')"><slot /></button>' },
+  Separator: { template: '<hr />' },
 }
 
 const campaign = {
@@ -45,6 +46,7 @@ const campaign = {
   router_id: null,
   variable_schema_id: null,
   routing_at: null,
+  routing_executed_at: null,
   recipients_count: 72,
   router: null,
 } satisfies CampaignDetailEnriched
@@ -101,5 +103,26 @@ describe('CampaignActionsPanel', () => {
     const wrapper = mountComponent({ cancelError: 'cancel_error' })
 
     expect(wrapper.find('[data-actions-error]').exists()).toBe(true)
+  })
+
+  it('affiche le bouton start routing quand showStartRouting est true', () => {
+    const wrapper = mountComponent({ showStartRouting: true })
+    expect(wrapper.find('[data-action-start-routing]').exists()).toBe(true)
+  })
+
+  it('cache les boutons routing quand les props sont false', () => {
+    const wrapper = mountComponent()
+    expect(wrapper.find('[data-action-start-routing]').exists()).toBe(false)
+    expect(wrapper.find('[data-action-pause-routing]').exists()).toBe(false)
+    expect(wrapper.find('[data-action-cancel-routing]').exists()).toBe(false)
+    expect(wrapper.find('[data-action-pull-report]').exists()).toBe(false)
+  })
+
+  it('affiche l erreur routing quand routingActionError present', () => {
+    const wrapper = mountComponent({
+      showStartRouting: true,
+      routingActionError: 'routing_error',
+    })
+    expect(wrapper.find('[data-routing-error]').exists()).toBe(true)
   })
 })
