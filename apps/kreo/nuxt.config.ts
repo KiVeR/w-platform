@@ -42,11 +42,6 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['vuedraggable'],
     },
-    build: {
-      rollupOptions: {
-        external: ['@anthropic-ai/sdk', 'openai', 'bcryptjs', 'jsonwebtoken', '@prisma/client'],
-      },
-    },
   },
 
   // CSS
@@ -64,14 +59,6 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     shim: false,
-  },
-
-  // Nitro server config
-  nitro: {
-    // Enable experimental tasks for background jobs
-    experimental: {
-      tasks: true,
-    },
   },
 
   // Dev server
